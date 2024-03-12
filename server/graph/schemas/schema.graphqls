@@ -1,0 +1,4 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+scalar Time

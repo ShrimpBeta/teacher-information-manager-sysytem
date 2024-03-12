@@ -1,0 +1,23 @@
+type Class {
+  id: ID!
+  teachersIn: [ID]!
+  teachersOut: [String]!
+  className: String!
+  classLocation: String!
+  classType: String
+  startWeek: Int
+  endWeek: Int
+  
+  studentNumber: Int
+  createdAt: Time!
+  updateAt: Time!
+}
+
+type Term {
+  id: ID!
+  userID: ID!
+  termName: String
+  classes: [Class]!
+  createdAt: Time!
+  updateAt: Time!
+}

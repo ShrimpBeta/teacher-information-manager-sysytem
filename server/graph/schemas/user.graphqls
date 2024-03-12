@@ -1,0 +1,12 @@
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  password: String!
+  avatar: String!
+  phoneNumber: String!
+  wechatToken: String
+  createdAt: Time!
+  updateAt: Time!
+}
+
