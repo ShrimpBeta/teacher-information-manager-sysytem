@@ -1,12 +1,40 @@
+# 用户
 type User {
   id: ID!
   username: String!
   email: String!
-  password: String!
   avatar: String!
-  phoneNumber: String!
+  phoneNumber: String
   wechatToken: String
+  activate: Boolean!
   createdAt: Time!
   updateAt: Time!
 }
 
+type UserSpecial {
+  username: String!
+  email: String!
+  password: String!
+}
+
+extend type Query {
+  user(id: String!): User!
+  users: [User!]!
+  signIn(email: String!, password: String!): String!
+}
+
+extend type Mutation {
+  signUp(username: String!, email: String!, password: String!): UserSpecial!
+  deleteAccount(id:ID!)
+  updatePassword(
+    email: String!
+    verificationCode: String!
+    password: String!
+  ): UserSpecial!
+  updateAvatar(id: ID!, avatar: String!): User!
+  updateUsername(id: ID!, username: String!): User!
+  updatePhoneNumber(id: ID!, phoneNumber: String!): User!
+  deletePhoneNumber(id: ID!): User!
+  updateWechatToken(id: ID!, wechatToken: String!): User!
+  deleteWechatToken(id: ID!): User!
+}

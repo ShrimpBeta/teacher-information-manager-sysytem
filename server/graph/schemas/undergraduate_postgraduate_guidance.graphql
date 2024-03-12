@@ -1,0 +1,23 @@
+# 本科生研究生指导
+type UndergraduatePostgraduateGuidance {
+  id: ID!
+  teacherId: ID!
+  studentName: String!
+  thesisTopic: String!
+  openingCheckDate: Time
+  openingCheckResult: String
+  midtermCheckDate: Time
+  midtermCheckResult: String
+  defenseDate: Time
+  defenseResult: String
+  createdAt: Time
+  updateAt: Time
+}
+
+extend type Query{
+
+}
+
+extend type Mutation{
+
+}

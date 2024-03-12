@@ -1,23 +1,11 @@
-# 科研项目管理
-
-type AwardScientificResearch {
-  id: ID!
-  teachersIn: [UserPart]!
-  teachersOut: [String]!
-  number: String!
-  title: Strin!
-  awardDate: Time
-  level: String
-  createdAt: String
-  updateAt: Time
-}
-
-type ScientificResearch {
+# 教改项目
+type EducationReform {
   id: ID!
   teachersIn: [UserPart]!
   teachersOut: [String]!
   number: String!
   title: String!
+  startDate: Time
   duration: String
   level: String
   rank: String

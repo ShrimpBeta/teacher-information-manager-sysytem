@@ -1,23 +1,33 @@
+# 单个课程
 type Class {
   id: ID!
-  teachersIn: [ID]!
+  teachersIn: [User]!
   teachersOut: [String]!
   className: String!
-  classLocation: String!
+  classLocation: String
   classType: String
   startWeek: Int
   endWeek: Int
-  
+
   studentNumber: Int
   createdAt: Time!
   updateAt: Time!
 }
 
+# 课程表学期
 type Term {
   id: ID!
-  userID: ID!
+  # userID: ID!
   termName: String
   classes: [Class]!
   createdAt: Time!
   updateAt: Time!
+}
+
+extend type Query{
+
+}
+
+extend type Mutation{
+  
 }

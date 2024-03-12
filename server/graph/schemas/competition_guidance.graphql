@@ -1,0 +1,20 @@
+# 竞赛指导
+type CompetitionGuidance {
+  id: ID!
+  teacherId: ID!
+  projectName: String!
+  students: [String]!
+  grade: String!
+  guidanceDate: Time!
+  awardStatus: String!
+  createdAt: Time!
+  updateAt: Time!
+}
+
+extend type Query{
+
+}
+
+extend type Mutation{
+  
+}

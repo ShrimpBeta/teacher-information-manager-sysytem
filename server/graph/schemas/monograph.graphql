@@ -1,0 +1,21 @@
+# 专著
+
+type Monograph {
+  id: ID!
+  teachersIn: [UserPart]!
+  teachersOut: [String]!
+  title: String
+  publishDate: Time
+  publishLevel: Time
+  rank: String
+  createdAt: Time!
+  updateAt: Time!
+}
+
+extend type Query{
+
+}
+
+extend type Mutation{
+  
+}

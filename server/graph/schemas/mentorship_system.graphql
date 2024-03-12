@@ -1,0 +1,19 @@
+# 导师制
+type MentorshipSystem {
+  id: ID!
+  # teacherId: ID!
+  projectName: String!
+  students: [String]!
+  grade: String
+  guidanceDate: Time
+  createdAt: Time!
+  updateAt: Time!
+}
+
+extend type Query{
+
+}
+
+extend type Mutation{
+  
+}

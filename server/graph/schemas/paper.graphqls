@@ -1,0 +1,21 @@
+# 论文
+type Paper {
+  id: ID!
+  teachersIn: [UserPart]!
+  teachersOut: [String]!
+  title: String
+  publishDate: Time
+  rank: String
+  journalName: String
+  journalLevel: String
+  createdAt: Time!
+  updateAt: Time!
+}
+
+extend type Query{
+
+}
+
+extend type Mutation{
+  
+}
