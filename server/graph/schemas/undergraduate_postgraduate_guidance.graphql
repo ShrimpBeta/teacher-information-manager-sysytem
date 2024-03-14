@@ -1,7 +1,6 @@
 # 本科生研究生指导
 type UndergraduatePostgraduateGuidance {
   id: ID!
-  teacherId: ID!
   studentName: String!
   thesisTopic: String!
   openingCheckDate: Time
@@ -10,14 +9,46 @@ type UndergraduatePostgraduateGuidance {
   midtermCheckResult: String
   defenseDate: Time
   defenseResult: String
-  createdAt: Time
-  updateAt: Time
+  createdAt: Time!
+  updateAt: Time!
 }
 
-extend type Query{
-
+extend type Query {
+  undergraduatePostgraduateGuidance(
+    id: ID!
+    teacherId: ID!
+  ): UndergraduatePostgraduateGuidance!
+  undergraduatePostgraduateGuidances(
+    teacherId: ID!
+  ): [UndergraduatePostgraduateGuidance]!
 }
 
-extend type Mutation{
+extend type Mutation {
+  createundergraduatePostgraduateGuidance(
+    userid: ID!
+    studentName: String!
+    thesisTopic: String!
+    openingCheckDate: Time
+    openingCheckResult: String
+    midtermCheckDate: Time
+    midtermCheckResult: String
+    defenseDate: Time
+    defenseResult: String
+  ): UndergraduatePostgraduateGuidance!
 
+  updateundergraduatePostgraduateGuidance(
+    id: ID!
+    studentName: String
+    thesisTopic: String
+    openingCheckDate: Time
+    openingCheckResult: String
+    midtermCheckDate: Time
+    midtermCheckResult: String
+    defenseDate: Time
+    defenseResult: String
+  ): UndergraduatePostgraduateGuidance!
+
+  deleteundergraduatePostgraduateGuidance(
+    id: ID!
+  ): UndergraduatePostgraduateGuidance!
 }

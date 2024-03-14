@@ -1,7 +1,6 @@
 # 竞赛指导
 type CompetitionGuidance {
   id: ID!
-  teacherId: ID!
   projectName: String!
   students: [String]!
   grade: String!

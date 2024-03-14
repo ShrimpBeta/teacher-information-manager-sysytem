@@ -1,7 +1,6 @@
 # 导师制
 type MentorshipSystem {
   id: ID!
-  # teacherId: ID!
   projectName: String!
   students: [String]!
   grade: String

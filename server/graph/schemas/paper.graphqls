@@ -1,7 +1,7 @@
 # 论文
 type Paper {
   id: ID!
-  teachersIn: [UserPart]!
+  teachersIn: [User]!
   teachersOut: [String]!
   title: String
   publishDate: Time
@@ -12,10 +12,24 @@ type Paper {
   updateAt: Time!
 }
 
-extend type Query{
-
+extend type Query {
+  paper(id: ID!): Paper!
+  papers(teacherId: ID!): [Paper]!
 }
 
-extend type Mutation{
-  
+extend type Mutation {
+  createPaper(
+    teachersIn: [ID]!
+    teachersOut: [String]!
+    title: String
+    publishDate: Time
+    rank: String
+    journalName: String
+    journalLevel: String
+  ): Paper!
+
+  updatePaper(
+    id:ID!
+    teachersIn:[User]
+  )
 }

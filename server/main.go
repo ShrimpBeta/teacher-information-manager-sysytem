@@ -6,10 +6,12 @@ import (
 	"os/signal"
 	"server/database"
 	"server/graph"
+	"server/services/auth"
 	"syscall"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -39,6 +41,15 @@ func main() {
 
 	// Setting up Gin
 	r := gin.Default()
+
+	r.Use(cors.New(cors.Config{
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		AllowCredentials: true,
+	}))
+
+	// add Auth Middleware
+	r.Use(auth.AuthMiddleware())
+
 	r.POST("/query", graphHandler())
 	r.GET("/", playgroundHandler())
 

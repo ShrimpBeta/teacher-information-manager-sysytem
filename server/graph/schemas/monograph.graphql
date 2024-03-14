@@ -6,7 +6,7 @@ type Monograph {
   teachersOut: [String]!
   title: String
   publishDate: Time
-  publishLevel: Time
+  publishLevel: String
   rank: String
   createdAt: Time!
   updateAt: Time!

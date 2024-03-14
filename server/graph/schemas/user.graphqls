@@ -3,6 +3,7 @@ type User {
   id: ID!
   username: String!
   email: String!
+  password String
   avatar: String!
   phoneNumber: String
   wechatToken: String
@@ -11,26 +12,20 @@ type User {
   updateAt: Time!
 }
 
-type UserSpecial {
-  username: String!
-  email: String!
-  password: String!
-}
-
 extend type Query {
   user(id: String!): User!
-  users: [User!]!
+  users: [User]!
   signIn(email: String!, password: String!): String!
 }
 
 extend type Mutation {
-  signUp(username: String!, email: String!, password: String!): UserSpecial!
-  deleteAccount(id:ID!)
+  signUp(username: String!, email: String!, password: String!): User!
+  deleteAccount(id:ID!):User!
   updatePassword(
-    email: String!
-    verificationCode: String!
+    email: String!,
+    verificationCode: String!,
     password: String!
-  ): UserSpecial!
+  ): User!
   updateAvatar(id: ID!, avatar: String!): User!
   updateUsername(id: ID!, username: String!): User!
   updatePhoneNumber(id: ID!, phoneNumber: String!): User!
