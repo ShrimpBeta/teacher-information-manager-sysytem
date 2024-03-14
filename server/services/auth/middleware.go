@@ -2,7 +2,7 @@ package auth
 
 import (
 	"net/http"
-	"server/models"
+	"server/persistence/models"
 	"server/services/jwt"
 
 	"github.com/gin-gonic/gin"

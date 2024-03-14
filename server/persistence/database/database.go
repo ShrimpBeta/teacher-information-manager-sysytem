@@ -44,11 +44,3 @@ func (db *DB) DisConnect() {
 		log.Fatal(err)
 	}
 }
-
-func (db *DB) InsertDataById() {
-
-}
-
-func (db *DB) UpdateDataById() {
-
-}

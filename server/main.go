@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"server/database"
 	"server/graph"
+	"server/persistence/database"
 	"server/services/auth"
 	"syscall"
 
