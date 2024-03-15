@@ -1,4 +1,12 @@
-.PHONY: init generate fix_generate
+.PHONY: init generate fix_generate run build
+
+BINARY_NAME=server
+
+run:build
+	./${BINARY_NAME}-windows.exe
+
+build:
+	GOARCH=amd64 GOOS=windows go build -o ${BINARY_NAME}-windows.exe server.go
 
 init:
 	go run github.com/99designs/gqlgen init

@@ -9,10 +9,11 @@ type MentorshipSystem {
   updateAt: Time!
 }
 
-# extend type Query{
-
-# }
+extend type Query {
+  mentorshipSystem(id: ID!): MentorshipSystem!
+  mentorshipSystems(teacherid: ID!): [MentorshipSystem]!
+}
 
 # extend type Mutation{
-  
+
 # }

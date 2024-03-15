@@ -4,10 +4,15 @@
 scalar Time
 scalar Upload
 
-# type Query{
+input AdminSignIn {
+  account: String!
+  password: String
+}
 
-# }
+type Query {
+  AdminSignIn()
+}
 
-# type Mutation{
-    
-# }
+type Mutation {
+  world(msg: String): String!
+}

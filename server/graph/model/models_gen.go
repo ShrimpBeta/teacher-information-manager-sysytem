@@ -16,6 +16,17 @@ type AwardScientificResearch struct {
 	UpdateAt   time.Time  `json:"updateAt"`
 }
 
+type CGuidance struct {
+	ID           string     `json:"id"`
+	ProjectName  string     `json:"projectName"`
+	Students     []*string  `json:"students"`
+	Grade        *string    `json:"grade,omitempty"`
+	GuidanceDate *time.Time `json:"guidanceDate,omitempty"`
+	AwardStatus  *string    `json:"awardStatus,omitempty"`
+	CreatedAt    time.Time  `json:"createdAt"`
+	UpdateAt     time.Time  `json:"updateAt"`
+}
+
 type ChangePassword struct {
 	OldPassword *string `json:"oldPassword,omitempty"`
 	NewPassword *string `json:"newPassword,omitempty"`
@@ -23,7 +34,7 @@ type ChangePassword struct {
 
 type Course struct {
 	ID            string     `json:"id"`
-	Teachers      []*string  `json:"teachers"`
+	Teachers      string     `json:"teachers"`
 	Name          string     `json:"name"`
 	Location      *string    `json:"location,omitempty"`
 	Type          *string    `json:"type,omitempty"`
@@ -34,7 +45,7 @@ type Course struct {
 }
 
 type CoursePreview struct {
-	Teachers      []*string  `json:"teachers,omitempty"`
+	Teachers      *string    `json:"teachers,omitempty"`
 	Name          *string    `json:"name,omitempty"`
 	Location      *string    `json:"location,omitempty"`
 	Type          *string    `json:"type,omitempty"`
@@ -47,7 +58,7 @@ type CoursePreview struct {
 type EducationReform struct {
 	ID          string        `json:"id"`
 	TeachersIn  []*UserExport `json:"teachersIn"`
-	TeachersOut []*string     `json:"teachersOut"`
+	TeachersOut []*string     `json:"teachersOut,omitempty"`
 	Number      string        `json:"number"`
 	Title       string        `json:"title"`
 	StartDate   *time.Time    `json:"startDate,omitempty"`
@@ -60,6 +71,28 @@ type EducationReform struct {
 	UpdateAt    time.Time     `json:"updateAt"`
 }
 
+type MentorshipSystem struct {
+	ID           string     `json:"id"`
+	ProjectName  string     `json:"projectName"`
+	Students     []*string  `json:"students"`
+	Grade        *string    `json:"grade,omitempty"`
+	GuidanceDate *time.Time `json:"guidanceDate,omitempty"`
+	CreatedAt    time.Time  `json:"createdAt"`
+	UpdateAt     time.Time  `json:"updateAt"`
+}
+
+type Monograph struct {
+	ID           string        `json:"id"`
+	TeachersIn   []*UserExport `json:"teachersIn"`
+	TeachersOut  []*string     `json:"teachersOut,omitempty"`
+	Title        *string       `json:"title,omitempty"`
+	PublishDate  *time.Time    `json:"publishDate,omitempty"`
+	PublishLevel *string       `json:"publishLevel,omitempty"`
+	Rank         *string       `json:"rank,omitempty"`
+	CreatedAt    time.Time     `json:"createdAt"`
+	UpdateAt     time.Time     `json:"updateAt"`
+}
+
 type Mutation struct {
 }
 
@@ -70,8 +103,16 @@ type NewAwardScientificResearch struct {
 	AwardRank  *string    `json:"awardRank,omitempty"`
 }
 
+type NewCGuidance struct {
+	ProjectName  string     `json:"projectName"`
+	Students     []*string  `json:"students"`
+	Grade        *string    `json:"grade,omitempty"`
+	GuidanceDate *time.Time `json:"guidanceDate,omitempty"`
+	AwardStatus  *string    `json:"awardStatus,omitempty"`
+}
+
 type NewCourse struct {
-	Teachers      []*string     `json:"teachers"`
+	Teachers      *string       `json:"teachers,omitempty"`
 	Name          string        `json:"name"`
 	Location      *string       `json:"location,omitempty"`
 	Type          *string       `json:"type,omitempty"`
@@ -79,6 +120,19 @@ type NewCourse struct {
 	Schedule      []*NewWorkday `json:"schedule"`
 	StudentNumber *int          `json:"studentNumber,omitempty"`
 	Background    *string       `json:"background,omitempty"`
+}
+
+type NewEducationReform struct {
+	TeachersIn  []*string  `json:"teachersIn"`
+	TeachersOut []*string  `json:"teachersOut,omitempty"`
+	Number      string     `json:"number"`
+	Title       string     `json:"title"`
+	StartDate   *time.Time `json:"startDate,omitempty"`
+	Duration    *string    `json:"duration,omitempty"`
+	Level       *string    `json:"level,omitempty"`
+	Rank        *string    `json:"rank,omitempty"`
+	Achievement *string    `json:"achievement,omitempty"`
+	Fund        *string    `json:"fund,omitempty"`
 }
 
 type NewScientificResearch struct {

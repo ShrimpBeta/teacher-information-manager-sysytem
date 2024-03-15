@@ -29,9 +29,10 @@ type Course struct {
 
 // 学期
 type Term struct {
-	ID       primitive.ObjectID   `bson:"_id"`
-	Name     string               `bson:"name"`
-	Courses  []primitive.ObjectID `bson:"courses"`
-	CreateAt time.Time            `bson:"createAt"`
-	UpdateAt time.Time            `bson:"updateAt"`
+	ID        primitive.ObjectID   `bson:"_id"`
+	TeacherId primitive.ObjectID   `bson:"teacherId"`
+	Name      string               `bson:"name"`
+	Courses   []primitive.ObjectID `bson:"courses"`
+	CreateAt  time.Time            `bson:"createAt"`
+	UpdateAt  time.Time            `bson:"updateAt"`
 }

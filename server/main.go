@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"server/graph"
+	"server/graph/resolvers"
 	"server/persistence/database"
 	"server/services/auth"
 	"syscall"
@@ -19,7 +20,7 @@ const defaultPort = "8080"
 const defaultMongodbUrl = "mongodb://localhost:27017"
 
 func graphHandler() gin.HandlerFunc {
-	h := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolver: &graph.Resolver{}}))
+	h := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolvers.Resolver{}}))
 	return func(ctx *gin.Context) {
 		h.ServeHTTP(ctx.Writer, ctx.Request)
 	}
@@ -55,7 +56,7 @@ func main() {
 
 	go func() {
 		if err := r.Run(`:` + defaultPort); err != nil {
-			log.Fatal("Failed to start server: %v", err)
+			log.Fatalf("Failed to start server: %v", err)
 		}
 	}()
 

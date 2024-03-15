@@ -2,7 +2,7 @@
 type Monograph {
   id: ID!
   teachersIn: [UserExport]!
-  teachersOut: [String]!
+  teachersOut: [String]
   title: String
   publishDate: Time
   publishLevel: String
@@ -11,10 +11,11 @@ type Monograph {
   updateAt: Time!
 }
 
-# extend type Query{
-
-# }
+extend type Query {
+  monograph(id: ID!): Monograph!
+  monographs(teacherid: ID!): [Monograph]!
+}
 
 # extend type Mutation{
-  
+
 # }
