@@ -1,0 +1,62 @@
+# 科研项目管理
+
+type AwardScientificResearch {
+  id: ID!
+  awardName: String!
+  awardDate: Time
+  awardlevel: String
+  awardRank: String
+  createdAt: Time!
+  updateAt: Time!
+}
+
+type ScientificResearch {
+  id: ID!
+  teachersIn: [UserExport]!
+  teachersOut: [String]!
+  number: String
+  title: String!
+  startDate: Time
+  duration: String
+  level: String
+  rank: String
+  achievement: String
+  fund: String
+  isAward: Boolean!
+  awards: [AwardScientificResearch]!
+  createdAt: Time!
+  updateAt: Time!
+}
+
+input NewAwardScientificResearch {
+  awardName: String!
+  awardDate: Time
+  awardlevel: String
+  awardRank: String
+}
+
+input NewScientificResearch {
+  teachersIn: [ID]!
+  teachersOut: [String]!
+  number: String
+  title: String!
+  startDate: Time
+  duration: String
+  level: String
+  rank: String
+  achievement: String
+  fund: String
+  isAward: Boolean!
+  awards: [NewAwardScientificResearch]!
+}
+
+extend type Query {
+  awardScientificResearch(id: ID!): AwardScientificResearch!
+  awardScientificResearchs(teacherId: ID!): [AwardScientificResearch]!
+  scientificResearch(id: ID!): ScientificResearch!
+  scientificResearchs(teacherId: ID!): [AwardScientificResearch]!
+}
+
+extend type Mutation {
+  createScientificResearch(input: NewScientificResearch!): ScientificResearch
+}

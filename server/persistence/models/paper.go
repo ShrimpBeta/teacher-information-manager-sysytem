@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// 论文
 type Paper struct {
 	ID           primitive.ObjectID   `bson:"_id"`
 	TeacherIn    []primitive.ObjectID `bson:"teacherIn"`

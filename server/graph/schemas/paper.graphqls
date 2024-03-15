@@ -1,7 +1,7 @@
 # 论文
 type Paper {
   id: ID!
-  teachersIn: [User]!
+  teachersIn: [UserExport]!
   teachersOut: [String]!
   title: String
   publishDate: Time
@@ -27,9 +27,4 @@ extend type Mutation {
     journalName: String
     journalLevel: String
   ): Paper!
-
-  updatePaper(
-    id:ID!
-    teachersIn:[User]
-  )
 }

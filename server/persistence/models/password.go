@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// 密码
 type Password struct {
 	ID          primitive.ObjectID `bson:"_id"`
 	UserId      primitive.ObjectID `bson:"userId"`

@@ -1,8 +1,7 @@
 # 专著
-
 type Monograph {
   id: ID!
-  teachersIn: [UserPart]!
+  teachersIn: [UserExport]!
   teachersOut: [String]!
   title: String
   publishDate: Time
@@ -12,10 +11,10 @@ type Monograph {
   updateAt: Time!
 }
 
-extend type Query{
+# extend type Query{
 
-}
+# }
 
-extend type Mutation{
+# extend type Mutation{
   
-}
+# }

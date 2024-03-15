@@ -1,0 +1,28 @@
+# 竞赛指导 Competition
+type CGuidance {
+  id: ID!
+  projectName: String!
+  students: [String]!
+  grade: String
+  guidanceDate: Time
+  awardStatus: String
+  createdAt: Time!
+  updateAt: Time!
+}
+
+input NewCGuidance {
+  projectName: String!
+  students: [String]!
+  grade: String
+  guidanceDate: Time
+  awardStatus: String
+}
+
+extend type Query {
+  cGuidance(id: ID!): CGuidance!
+  cGuidances(userId: ID!): [CGuidance]!
+}
+
+extend type Mutation {
+  createCGuidance(userId: ID!, input: NewCGuidance): CGuidance!
+}

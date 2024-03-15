@@ -10,11 +10,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type DB struct {
-	client *mongo.Client
+var DB *DataBase
+
+type DataBase struct {
+	Client *mongo.Client
 }
 
-func Connect(dbUrl string) *DB {
+func Connect(dbUrl string) *DataBase {
 	// Use the SetServerAPIOptions() method to set the Stable API version to 1
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI(dbUrl).SetServerAPIOptions(serverAPI)
@@ -33,14 +35,14 @@ func Connect(dbUrl string) *DB {
 
 	fmt.Println("Pinged your deployment. You successfully connected to MongoDB!")
 
-	return &DB{
-		client: client,
+	return &DataBase{
+		Client: client,
 	}
 }
 
-func (db *DB) DisConnect() {
+func (db *DataBase) DisConnect() {
 	fmt.Println("Close the connect with MongoDB!")
-	if err := db.client.Disconnect(context.TODO()); err != nil {
+	if err := db.Client.Disconnect(context.TODO()); err != nil {
 		log.Fatal(err)
 	}
 }

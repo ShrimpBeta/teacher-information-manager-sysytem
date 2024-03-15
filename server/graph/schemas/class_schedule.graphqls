@@ -1,40 +1,107 @@
 # 课程时间
-type Day{
-  id:ID!
-  weekday:Int
-  start:Int
-  end:Int
+type Workday {
+  weekday: Int!
+  section: String!
 }
 
 # 单个课程
 type Course {
   id: ID!
-  teachersIn: [User]!
-  teachersOut: [String]!
+  teachers: String!
   name: String!
   location: String
   type: String
-  startWeek: Int
-  endWeek: Int
-  schedule:[weekday]!
+  weeks: [String]!
+  schedule: [Workday]!
   studentNumber: Int
-  createdAt: Time!
-  updateAt: Time!
+  background: String
 }
 
 # 课程表学期
 type Term {
   id: ID!
-  Name: String
+  name: String!
   courses: [Course]!
   createdAt: Time!
   updateAt: Time!
 }
 
-extend type Query{
-
+# 课程表学期预览，OCR识别结果
+type WorkdayPreview {
+  weekday: Int
+  section: String
 }
 
-extend type Mutation{
-  
+type CoursePreview {
+  teachers: String
+  name: String
+  location: String
+  type: String
+  weeks: [String]
+  schedule: [Workday]
+  studentNumber: Int
+  background: String
+}
+
+type TermPreview {
+  name: String
+  courses: [CoursePreview]
+}
+
+input NewWorkday {
+  weekday: Int!
+  section: String!
+}
+
+input UpdateWorkday {
+  weekday: Int
+  section: String
+}
+
+input NewCourse {
+  teachers: String
+  name: String!
+  location: String
+  type: String
+  weeks: [String]!
+  schedule: [NewWorkday]!
+  studentNumber: Int
+  background: String
+}
+
+input UpdateCourse {
+  teachers: [String]
+  name: String
+  location: String
+  type: String
+  weeks: [String]
+  schedule: [NewWorkday]
+  studentNumber: Int
+  background: String
+}
+
+input NewTerm {
+  name: String
+  courses: [NewCourse]!
+}
+
+input UpdateTerm {
+  name: String!
+}
+
+extend type Query {
+  term(id: ID!): Term!
+  terms: [Term]!
+}
+
+extend type Mutation {
+  createCourse(termId: ID!, input: NewCourse!): Course!
+  updateCourse(courseId: ID!, input: UpdateCourse!): Course!
+  deleteCourse(termId: ID!, courseId: ID!): Course!
+
+  createTerm(input: NewTerm!): Term!
+  updateTerm(termId: ID!, input: UpdateTerm): Term!
+  deleteTerm(termId: ID!): Term!
+
+  uploadTerm(file: Upload!): TermPreview!
 }

@@ -1,0 +1,25 @@
+# 本科生研究生指导 Undergraduate Postgraduate
+type UPGuidance {
+  id: ID!
+  studentName: String!
+  thesisTopic: String!
+  openingCheckDate: Time
+  openingCheckResult: String
+  midtermCheckDate: Time
+  midtermCheckResult: String
+  defenseDate: Time
+  defenseResult: String
+  createdAt: Time!
+  updateAt: Time!
+}
+
+extend type Query {
+  UPGuidance(id: ID!): UPGuidance!
+  UPGuidances(teacherId: ID!): [UPGuidance]!
+}
+
+# extend type Mutation {
+#   createUPGuidance(): UPGuidance!
+#   updateUPGuidance(): UPGuidance!
+#   deleteUPGuidance(    id: ID!  ): UPGuidance!
+# }

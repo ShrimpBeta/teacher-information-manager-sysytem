@@ -1,7 +1,7 @@
 # 教改项目
 type EducationReform {
   id: ID!
-  teachersIn: [UserPart]!
+  teachersIn: [UserExport]!
   teachersOut: [String]!
   number: String!
   title: String!
@@ -15,10 +15,10 @@ type EducationReform {
   updateAt: Time!
 }
 
-extend type Query{
+# extend type Query{
 
-}
+# }
 
-extend type Mutation{
+# extend type Mutation{
   
-}
+# }

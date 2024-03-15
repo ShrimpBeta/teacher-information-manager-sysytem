@@ -10,7 +10,6 @@ type User struct {
 	ID          primitive.ObjectID `bson:"_id"`
 	Username    string             `bson:"username"`
 	Email       string             `bson:"email"`
-	Gender      string             `bson:"gender"`
 	Password    string             `bson:"password"`
 	Avatar      string             `bson:"avatar"`
 	Phone       string             `bson:"phone,omitempty"`

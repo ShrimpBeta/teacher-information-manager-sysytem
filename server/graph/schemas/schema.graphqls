@@ -2,11 +2,12 @@
 #
 # https://gqlgen.com/getting-started/
 scalar Time
+scalar Upload
 
-type Query{
+# type Query{
 
-}
+# }
 
-type Mutation{
+# type Mutation{
     
-}
+# }

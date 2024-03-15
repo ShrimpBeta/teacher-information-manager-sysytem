@@ -35,9 +35,9 @@ func playgroundHandler() gin.HandlerFunc {
 
 func main() {
 
-	// Database Init
-	db := database.Connect(defaultMongodbUrl)
-	defer db.DisConnect()
+	// Database Connect
+	database.DB = database.Connect(defaultMongodbUrl)
+	defer database.DB.DisConnect()
 
 	// Setting up Gin
 	r := gin.Default()
