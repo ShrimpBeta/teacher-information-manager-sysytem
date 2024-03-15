@@ -1,5 +1,5 @@
 # 教改项目
-type EducationReform {
+type EduReform {
   id: ID!
   teachersIn: [UserExport]!
   teachersOut: [String]
@@ -15,7 +15,7 @@ type EducationReform {
   updateAt: Time!
 }
 
-input NewEducationReform {
+input NewEduReform {
   teachersIn: [ID]!
   teachersOut: [String]
   number: String!
@@ -29,10 +29,10 @@ input NewEducationReform {
 }
 
 extend type Query {
-  educationReform(id: ID!): EducationReform
-  educationReforms(teacherid: ID!): [EducationReform]!
+  eduReform(id: ID!): EduReform
+  eduReforms(teacherid: ID!): [EduReform]!
 }
 
 extend type Mutation {
-  createEducationReform(input: NewEducationReform): EducationReform!
+  createEduReform(input: NewEduReform): EduReform!
 }

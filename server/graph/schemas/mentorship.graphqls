@@ -1,5 +1,5 @@
 # 导师制
-type MentorshipSystem {
+type Mentorship {
   id: ID!
   projectName: String!
   students: [String]!
@@ -10,8 +10,8 @@ type MentorshipSystem {
 }
 
 extend type Query {
-  mentorshipSystem(id: ID!): MentorshipSystem!
-  mentorshipSystems(teacherid: ID!): [MentorshipSystem]!
+  mentorship(id: ID!): Mentorship!
+  mentorships(teacherid: ID!): [Mentorship]!
 }
 
 # extend type Mutation{

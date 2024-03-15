@@ -1,5 +1,5 @@
 # 本科生研究生指导 Undergraduate Postgraduate
-type UPGuidance {
+type UGPGGuidance {
   id: ID!
   studentName: String!
   thesisTopic: String!
@@ -14,8 +14,8 @@ type UPGuidance {
 }
 
 extend type Query {
-  UPGuidance(id: ID!): UPGuidance!
-  UPGuidances(teacherId: ID!): [UPGuidance]!
+  uGPGGuidance(id: ID!): UGPGGuidance!
+  uGPGGuidances(teacherId: ID!): [UGPGGuidance]!
 }
 
 # extend type Mutation {

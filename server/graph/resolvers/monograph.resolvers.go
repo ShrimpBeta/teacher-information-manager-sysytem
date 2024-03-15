@@ -7,15 +7,15 @@ package resolvers
 import (
 	"context"
 	"fmt"
-	models "server/graph/model"
+	graphql_models "server/graph/model"
 )
 
 // Monograph is the resolver for the monograph field.
-func (r *queryResolver) Monograph(ctx context.Context, id string) (*models.Monograph, error) {
+func (r *queryResolver) Monograph(ctx context.Context, id string) (*graphql_models.Monograph, error) {
 	panic(fmt.Errorf("not implemented: Monograph - monograph"))
 }
 
 // Monographs is the resolver for the monographs field.
-func (r *queryResolver) Monographs(ctx context.Context, teacherid string) ([]*models.Monograph, error) {
+func (r *queryResolver) Monographs(ctx context.Context, teacherid string) ([]*graphql_models.Monograph, error) {
 	panic(fmt.Errorf("not implemented: Monographs - monographs"))
 }

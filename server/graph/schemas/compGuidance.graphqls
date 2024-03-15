@@ -1,0 +1,28 @@
+# 竞赛指导 Competition
+type CompGuidance {
+  id: ID!
+  projectName: String!
+  studentNames: [String]!
+  competitionScore: String
+  guidanceDate: Time
+  awardStatus: String
+  createdAt: Time!
+  updateAt: Time!
+}
+
+input NewCompGuidance {
+  projectName: String!
+  studentNames: [String]!
+  competitionScore: String
+  guidanceDate: Time
+  awardStatus: String
+}
+
+extend type Query {
+  compGuidance(id: ID!): CompGuidance!
+  compGuidancesForUser(userId: ID!): [CompGuidance]!
+}
+
+extend type Mutation {
+  createCompGuidance(userId: ID!, newGuidanceData: NewCompGuidance): CompGuidance!
+}

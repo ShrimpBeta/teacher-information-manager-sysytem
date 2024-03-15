@@ -1,6 +1,6 @@
 # 科研项目管理
 
-type AwardScientificResearch {
+type AwardSciResearch {
   id: ID!
   awardName: String!
   awardDate: Time
@@ -10,7 +10,7 @@ type AwardScientificResearch {
   updateAt: Time!
 }
 
-type ScientificResearch {
+type SciResearch {
   id: ID!
   teachersIn: [UserExport]!
   teachersOut: [String]!
@@ -23,19 +23,19 @@ type ScientificResearch {
   achievement: String
   fund: String
   isAward: Boolean!
-  awards: [AwardScientificResearch]!
+  awards: [AwardSciResearch]!
   createdAt: Time!
   updateAt: Time!
 }
 
-input NewAwardScientificResearch {
+input NewAwardSciResearch {
   awardName: String!
   awardDate: Time
   awardlevel: String
   awardRank: String
 }
 
-input NewScientificResearch {
+input NewSciResearch {
   teachersIn: [ID]!
   teachersOut: [String]!
   number: String
@@ -47,16 +47,16 @@ input NewScientificResearch {
   achievement: String
   fund: String
   isAward: Boolean!
-  awards: [NewAwardScientificResearch]!
+  awards: [NewAwardSciResearch]!
 }
 
 extend type Query {
-  awardScientificResearch(id: ID!): AwardScientificResearch!
-  awardScientificResearchs(teacherId: ID!): [AwardScientificResearch]!
-  scientificResearch(id: ID!): ScientificResearch!
-  scientificResearchs(teacherId: ID!): [AwardScientificResearch]!
+  awardSciResearch(id: ID!): AwardSciResearch!
+  awardSciResearchs(teacherId: ID!): [AwardSciResearch]!
+  sciResearch(id: ID!): SciResearch!
+  sciResearchs(teacherId: ID!): [AwardSciResearch]!
 }
 
 extend type Mutation {
-  createScientificResearch(input: NewScientificResearch!): ScientificResearch
+  createSciResearch(input: NewSciResearch!): SciResearch
 }

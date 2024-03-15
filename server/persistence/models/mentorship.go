@@ -7,11 +7,11 @@ import (
 )
 
 // 导师制
-type MentorshipSystem struct {
+type Mentorship struct {
 	ID           primitive.ObjectID `bson:"_id"`
 	TeacherId    primitive.ObjectID `bson:"teacherId"`
 	ProjectName  string             `bson:"projectName"`
-	Students     []string           `bson:"students"`
+	StudentNames []string           `bson:"studentNames"`
 	Grade        string             `bson:"grade,omitempty"`
 	GuidanceDate time.Time          `bson:"guidanceDate,omitempty"`
 	CreateAt     time.Time          `bson:"createdAt"`

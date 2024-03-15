@@ -7,21 +7,21 @@ package resolvers
 import (
 	"context"
 	"fmt"
-	models "server/graph/model"
+	graphql_models "server/graph/model"
 	"time"
 )
 
 // CreatePaper is the resolver for the createPaper field.
-func (r *mutationResolver) CreatePaper(ctx context.Context, teachersIn []*string, teachersOut []*string, title *string, publishDate *time.Time, rank *string, journalName *string, journalLevel *string) (*models.Paper, error) {
+func (r *mutationResolver) CreatePaper(ctx context.Context, teachersIn []*string, teachersOut []*string, title *string, publishDate *time.Time, rank *string, journalName *string, journalLevel *string) (*graphql_models.Paper, error) {
 	panic(fmt.Errorf("not implemented: CreatePaper - createPaper"))
 }
 
 // Paper is the resolver for the paper field.
-func (r *queryResolver) Paper(ctx context.Context, id string) (*models.Paper, error) {
+func (r *queryResolver) Paper(ctx context.Context, id string) (*graphql_models.Paper, error) {
 	panic(fmt.Errorf("not implemented: Paper - paper"))
 }
 
 // Papers is the resolver for the papers field.
-func (r *queryResolver) Papers(ctx context.Context, teacherID string) ([]*models.Paper, error) {
+func (r *queryResolver) Papers(ctx context.Context, teacherID string) ([]*graphql_models.Paper, error) {
 	panic(fmt.Errorf("not implemented: Papers - papers"))
 }

@@ -7,7 +7,7 @@ import (
 )
 
 // 本科生、研究生指导
-type UndergraduatePostgraduateGuidance struct {
+type UGPGGuidance struct {
 	ID                 primitive.ObjectID `bson:"_id"`
 	TeacherId          primitive.ObjectID `bson:"teacherId"`
 	StudentName        string             `bson:"studentName"`

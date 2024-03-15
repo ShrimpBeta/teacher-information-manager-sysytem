@@ -7,31 +7,26 @@ package resolvers
 import (
 	"context"
 	"fmt"
-	models "server/graph/model"
+	graphql_models "server/graph/model"
 )
 
-// CreateAccount is the resolver for the createAccount field.
-func (r *mutationResolver) CreateAccount(ctx context.Context, input models.NewUser) (*models.UserCreate, error) {
-	panic(fmt.Errorf("not implemented: CreateAccount - createAccount"))
-}
-
 // DeleteAccount is the resolver for the deleteAccount field.
-func (r *mutationResolver) DeleteAccount(ctx context.Context, id string) (*models.User, error) {
+func (r *mutationResolver) DeleteAccount(ctx context.Context, id string) (*graphql_models.User, error) {
 	panic(fmt.Errorf("not implemented: DeleteAccount - deleteAccount"))
 }
 
 // UpdateAccountPassword is the resolver for the updateAccountPassword field.
-func (r *mutationResolver) UpdateAccountPassword(ctx context.Context, id string, input *models.ChangePassword) (*string, error) {
+func (r *mutationResolver) UpdateAccountPassword(ctx context.Context, id string, input *graphql_models.ChangePassword) (*string, error) {
 	panic(fmt.Errorf("not implemented: UpdateAccountPassword - updateAccountPassword"))
 }
 
 // ForgetAccountPassword is the resolver for the forgetAccountPassword field.
-func (r *mutationResolver) ForgetAccountPassword(ctx context.Context, input *models.ResetPassword) (*string, error) {
+func (r *mutationResolver) ForgetAccountPassword(ctx context.Context, input *graphql_models.ResetPassword) (*string, error) {
 	panic(fmt.Errorf("not implemented: ForgetAccountPassword - forgetAccountPassword"))
 }
 
 // UpdateUserInfo is the resolver for the updateUserInfo field.
-func (r *mutationResolver) UpdateUserInfo(ctx context.Context, id string, input models.UserInfo) (*models.User, error) {
+func (r *mutationResolver) UpdateUserInfo(ctx context.Context, id string, input graphql_models.UserInfo) (*graphql_models.User, error) {
 	panic(fmt.Errorf("not implemented: UpdateUserInfo - updateUserInfo"))
 }
 
@@ -46,21 +41,16 @@ func (r *mutationResolver) DeleteWechatToken(ctx context.Context, id string) (*b
 }
 
 // User is the resolver for the user field.
-func (r *queryResolver) User(ctx context.Context, id string) (*models.User, error) {
+func (r *queryResolver) User(ctx context.Context, id string) (*graphql_models.User, error) {
 	panic(fmt.Errorf("not implemented: User - user"))
 }
 
-// Users is the resolver for the users field.
-func (r *queryResolver) Users(ctx context.Context) ([]*models.User, error) {
-	panic(fmt.Errorf("not implemented: Users - users"))
-}
-
 // UserExports is the resolver for the userExports field.
-func (r *queryResolver) UserExports(ctx context.Context) ([]*models.UserExport, error) {
+func (r *queryResolver) UserExports(ctx context.Context) ([]*graphql_models.UserExport, error) {
 	panic(fmt.Errorf("not implemented: UserExports - userExports"))
 }
 
 // SignIn is the resolver for the signIn field.
-func (r *queryResolver) SignIn(ctx context.Context, email string, password string) (string, error) {
+func (r *queryResolver) SignIn(ctx context.Context, email string, password string) (*graphql_models.AuthPayload, error) {
 	panic(fmt.Errorf("not implemented: SignIn - signIn"))
 }

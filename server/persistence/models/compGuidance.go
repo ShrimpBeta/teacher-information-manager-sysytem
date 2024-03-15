@@ -7,11 +7,11 @@ import (
 )
 
 // 竞赛指导
-type CompetitionGuidance struct {
+type CompeGuidance struct {
 	ID           primitive.ObjectID `bson:"_id"`
 	TeacherId    primitive.ObjectID `bson:"teacherId"`
 	ProjectName  string             `bson:"projectName"`
-	Students     []string           `bson:"students"`
+	StudentNames []string           `bson:"studentNames"`
 	Grade        string             `bson:"grade,omitempty"`
 	GuidanceDate time.Time          `bson:"guidanceDate,omitempty"`
 	AwardStatus  string             `bson:"awardStatus,omitempty"`

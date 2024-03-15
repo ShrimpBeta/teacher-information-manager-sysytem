@@ -1,0 +1,107 @@
+# 课程时间
+type ClassTime {
+  dayOfWeek: Int!
+  timeSlot: String!
+}
+
+# 单个课程
+type Course {
+  courseId: ID!
+  teacherNames: String!
+  courseName: String!
+  courseLocation: String
+  courseType: String
+  courseWeeks: [String]!
+  classTimes: [ClassTime]!
+  studentCount: Int
+  color: String
+}
+
+# 课程表学期
+type AcademicTerm {
+  termId: ID!
+  termName: String!
+  courses: [Course]!
+  createdAt: Time!
+  updateAt: Time!
+}
+
+# 课程表学期预览，OCR识别结果
+type ClassTimePreview {
+  dayOfWeek: Int
+  timeSlot: String
+}
+
+type CoursePreview {
+  teacherNames: String
+  courseName: String
+  courseLocation: String
+  courseType: String
+  courseWeeks: [String]
+  classTimes: [ClassTime]
+  studentCount: Int
+  color: String
+}
+
+type AcademicTermPreview {
+  Term: String
+  courses: [CoursePreview]
+}
+
+input NewClassTime {
+  dayOfWeek: Int!
+  timeSlot: String!
+}
+
+input UpdateClassTime {
+  dayOfWeek: Int
+  timeSlot: String
+}
+
+input NewCourse {
+  teacherNames: String
+  courseName: String!
+  courseLocation: String
+  courseType: String
+  courseWeeks: [String]!
+  classTimes: [NewClassTime]!
+  studentCount: Int
+  color: String
+}
+
+input UpdateCourse {
+  teacherNames: [String]
+  courseName: String
+  courseLocation: String
+  courseType: String
+  courseWeeks: [String]
+  classTimes: [NewClassTime]
+  studentCount: Int
+  color: String
+}
+
+input NewAcademicTerm {
+  termName: String
+  courses: [NewCourse]!
+}
+
+input UpdateAcademicTerm {
+  name: String!
+}
+
+extend type Query {
+  academicTerm(id: ID!): AcademicTerm!
+  academicerms(userId: ID!): [AcademicTerm]!
+}
+
+extend type Mutation {
+  createCourse(termId: ID!, courseData: NewCourse!): Course!
+  updateCourse(courseId: ID!, courseData: UpdateCourse!): Course!
+  deleteCourse(termId: ID!, courseId: ID!): Course!
+
+  createacademicTerm(termData: NewAcademicTerm!): AcademicTerm!
+  updateacademicTerm(termId: ID!, termData: UpdateAcademicTerm): AcademicTerm!
+  deleteacademicTerm(termId: ID!): AcademicTerm!
+
+  uploadAcademicTerm(file: Upload!): AcademicTermPreview!
+}

@@ -7,7 +7,7 @@ import (
 )
 
 // 教改项目
-type EducationReform struct {
+type EduReform struct {
 	ID          primitive.ObjectID   `bson:"_id"`
 	TeacherIn   []primitive.ObjectID `bson:"teachersIn"`
 	TeacherOut  []string             `bson:"teachersOut,omitempty"`

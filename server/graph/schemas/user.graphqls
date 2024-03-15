@@ -19,16 +19,6 @@ type UserExport {
   avatar: String!
 }
 
-type UserCreate {
-  email: String!
-  password: String!
-}
-
-input NewUser {
-  email: String
-  password: String
-}
-
 input ResetPassword {
   email: String
   code: String
@@ -48,13 +38,11 @@ input UserInfo {
 
 extend type Query {
   user(id: String!): User!
-  users: [User]!
   userExports: [UserExport]!
-  signIn(email: String!, password: String!): String!
+  signIn(email: String!, password: String!): AuthPayload!
 }
 
 extend type Mutation {
-  createAccount(input: NewUser!): UserCreate!
   deleteAccount(id: ID!): User!
 
   updateAccountPassword(id: ID!, input: ChangePassword): String

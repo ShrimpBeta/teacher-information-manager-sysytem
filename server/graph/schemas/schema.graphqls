@@ -4,15 +4,29 @@
 scalar Time
 scalar Upload
 
-input AdminSignIn {
+type AuthPayload {
+  token: String!
+}
+
+type UserCreate {
+  email: String!
+  password: String!
+}
+
+input AdminSignInInput {
   account: String!
+  password: String!
+}
+
+input NewUser {
+  email: String
   password: String
 }
 
 type Query {
-  AdminSignIn()
+  adminSignIn(adminSignInInput: AdminSignInInput): AuthPayload!
 }
 
 type Mutation {
-  world(msg: String): String!
+  createAccount(input: NewUser!): UserCreate!
 }

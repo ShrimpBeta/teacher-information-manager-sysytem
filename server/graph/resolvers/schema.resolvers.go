@@ -8,16 +8,17 @@ import (
 	"context"
 	"fmt"
 	"server/graph"
+	graphql_models "server/graph/model"
 )
 
-// World is the resolver for the world field.
-func (r *mutationResolver) World(ctx context.Context, msg *string) (string, error) {
-	panic(fmt.Errorf("not implemented: World - world"))
+// CreateAccount is the resolver for the createAccount field.
+func (r *mutationResolver) CreateAccount(ctx context.Context, input graphql_models.NewUser) (*graphql_models.UserCreate, error) {
+	panic(fmt.Errorf("not implemented: CreateAccount - createAccount"))
 }
 
-// Hello is the resolver for the hello field.
-func (r *queryResolver) Hello(ctx context.Context, msg string) (string, error) {
-	panic(fmt.Errorf("not implemented: Hello - hello"))
+// AdminSignIn is the resolver for the adminSignIn field.
+func (r *queryResolver) AdminSignIn(ctx context.Context, adminSignInInput *graphql_models.AdminSignInInput) (*graphql_models.AuthPayload, error) {
+	panic(fmt.Errorf("not implemented: AdminSignIn - adminSignIn"))
 }
 
 // Mutation returns graph.MutationResolver implementation.
