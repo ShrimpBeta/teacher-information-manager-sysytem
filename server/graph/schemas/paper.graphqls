@@ -9,7 +9,7 @@ type Paper {
   journalName: String
   journalLevel: String
   createdAt: Time!
-  updateAt: Time!
+  updatedAt: Time!
 }
 
 type PaperPreview {

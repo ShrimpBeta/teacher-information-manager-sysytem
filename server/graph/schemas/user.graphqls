@@ -8,7 +8,7 @@ type User {
   wechatToken: String
   activate: Boolean!
   createdAt: Time!
-  updateAt: Time!
+  updatedAt: Time!
 }
 
 # 导出用户
@@ -19,15 +19,19 @@ type UserExport {
   avatar: String!
 }
 
+type AvatarPath {
+  avatarUrl: String!
+}
+
 input ResetPassword {
-  email: String
-  code: String
-  newPassword: String
+  email: String!
+  code: String!
+  newPassword: String!
 }
 
 input ChangePassword {
-  oldPassword: String
-  newPassword: String
+  oldPassword: String!
+  newPassword: String!
 }
 
 input UpdateUser {
@@ -43,14 +47,16 @@ extend type Query {
 }
 
 extend type Mutation {
-  deleteAccount(id: ID!): User!
+  deleteAccount(userId: ID!): User!
 
-  updateAccountPassword(id: ID!, passwordData: ChangePassword): String!
-  forgetAccountPassword(passwordCodeData: ResetPassword): String!
+  updateAccountPassword(userId: ID!, passwordData: ChangePassword): String!
+  forgetAccountPassword(userId: ID!, passwordCodeData: ResetPassword): String!
 
-  updateUser(id: ID!, userData: UpdateUser!): User!
+  updateUser(userId: ID!, userData: UpdateUser!): User!
 
-  createWechatToken(id: ID!, token: String!): Boolean!
-  updateWechatToken(id: ID!, token: String!): Boolean!
-  deleteWechatToken(id: ID!): Boolean!
+  createWechatToken(userId: ID!, token: String!): Boolean!
+  updateWechatToken(userId: ID!, token: String!): Boolean!
+  deleteWechatToken(userId: ID!): Boolean!
+
+  uploadAvatar(userId: ID!, avatar: Upload!): AvatarPath!
 }

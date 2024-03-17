@@ -1,23 +1,21 @@
 package models
 
 import (
-	"time"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // 本科生、研究生指导
 type UGPGGuidance struct {
 	ID                 primitive.ObjectID `bson:"_id"`
-	TeacherId          primitive.ObjectID `bson:"teacherId"`
+	UserId             primitive.ObjectID `bson:"userId"`
 	StudentName        string             `bson:"studentName"`
 	ThesisTopic        string             `bson:"thesisTopic"`
-	OpeningCheckDate   time.Time          `bson:"openingCheckDate,omitempty"`
+	OpeningCheckDate   primitive.DateTime `bson:"openingCheckDate,omitempty"`
 	OpeningCheckResult string             `bson:"openingCheckResult,omitempty"`
-	MidtermCheckDate   time.Time          `bson:"midtermCheckDate,omitempty"`
+	MidtermCheckDate   primitive.DateTime `bson:"midtermCheckDate,omitempty"`
 	MidtermCheckResult string             `bson:"midtermCheckResult,omitempty"`
-	DefenseDate        time.Time          `bson:"defenseDate,omitempty"`
+	DefenseDate        primitive.DateTime `bson:"defenseDate,omitempty"`
 	DefenseResult      string             `bson:"defenseResult,omitempty"`
-	CreatedAt          time.Time          `bson:"createdAt"`
-	UpdateAt           time.Time          `bson:"updateAt"`
+	CreatedAt          primitive.DateTime `bson:"createdAt"`
+	UpdatedAt          primitive.DateTime `bson:"updatedAt"`
 }

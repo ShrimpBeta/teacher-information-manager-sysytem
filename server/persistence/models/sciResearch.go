@@ -13,8 +13,8 @@ type AwarddRecord struct {
 	AwardDate  time.Time          `bson:"awardDate,omitempty"`
 	AwardLevel string             `bson:"awardLevel,omitempty"`
 	AwardRank  string             `bson:"awardRank,omitempty"`
-	CreatedAt  time.Time          `bson:"createdAt"`
-	UpdateAt   time.Time          `bson:"updateAt"`
+	CreatedAt  primitive.DateTime `bson:"createdAt"`
+	UpdatedAt  primitive.DateTime `bson:"updatedAt"`
 }
 
 // 科研项目
@@ -24,7 +24,7 @@ type SciResearch struct {
 	TeachersOut   []string             `bson:"teachersOut,omitempty"`
 	Number        string               `bson:"number"`
 	Title         string               `bson:"title"`
-	StartDate     time.Time            `bson:"startDate,omitempty"`
+	StartDate     primitive.DateTime   `bson:"startDate,omitempty"`
 	Duration      string               `bson:"duration,omitempty"`
 	Level         string               `bson:"level,omitempty"`
 	Rank          string               `bson:"rank,omitempty"`
@@ -32,6 +32,6 @@ type SciResearch struct {
 	Fund          string               `bson:"fund,omitempty"`
 	IsAward       bool                 `bson:"isAward"`
 	AwarddRecords []primitive.ObjectID `bson:"awarddRecords,omitempty"`
-	CreatedAt     time.Time            `bson:"createdAt"`
-	UpdateAt      time.Time            `bson:"updateAt"`
+	CreatedAt     primitive.DateTime   `bson:"createdAt"`
+	UpdatedAt     primitive.DateTime   `bson:"updatedAt"`
 }

@@ -51,7 +51,7 @@ type ComplexityRoot struct {
 	AcademicTerm struct {
 		Courses   func(childComplexity int) int
 		CreatedAt func(childComplexity int) int
-		TermID    func(childComplexity int) int
+		ID        func(childComplexity int) int
 		TermName  func(childComplexity int) int
 		UpdateAt  func(childComplexity int) int
 	}
@@ -63,6 +63,10 @@ type ComplexityRoot struct {
 
 	AuthPayload struct {
 		Token func(childComplexity int) int
+	}
+
+	AvatarPath struct {
+		AvatarURL func(childComplexity int) int
 	}
 
 	AwardRecord struct {
@@ -107,11 +111,11 @@ type ComplexityRoot struct {
 	Course struct {
 		ClassTimes     func(childComplexity int) int
 		Color          func(childComplexity int) int
-		CourseID       func(childComplexity int) int
 		CourseLocation func(childComplexity int) int
 		CourseName     func(childComplexity int) int
 		CourseType     func(childComplexity int) int
 		CourseWeeks    func(childComplexity int) int
+		ID             func(childComplexity int) int
 		StudentCount   func(childComplexity int) int
 		TeacherNames   func(childComplexity int) int
 	}
@@ -206,9 +210,9 @@ type ComplexityRoot struct {
 		CreatePaper            func(childComplexity int, newPaperData graphql_models.NewPaper) int
 		CreatePassword         func(childComplexity int, userid string, newPasswordData graphql_models.NewPassword) int
 		CreateSciResearch      func(childComplexity int, newSciResearchData graphql_models.NewSciResearch) int
-		CreateWechatToken      func(childComplexity int, id string, token string) int
+		CreateWechatToken      func(childComplexity int, userID string, token string) int
 		CreateacademicTerm     func(childComplexity int, newTermData graphql_models.NewAcademicTerm) int
-		DeleteAccount          func(childComplexity int, id string) int
+		DeleteAccount          func(childComplexity int, userID string) int
 		DeleteAwardRecord      func(childComplexity int, sciResearchID string, awardRecordID string) int
 		DeleteCompGuidance     func(childComplexity int, id string) int
 		DeleteCourse           func(childComplexity int, termID string, courseID string) int
@@ -218,10 +222,10 @@ type ComplexityRoot struct {
 		DeletePaper            func(childComplexity int, id string) int
 		DeletePassword         func(childComplexity int, id string) int
 		DeleteSciResearch      func(childComplexity int, sciResearchID string) int
-		DeleteWechatToken      func(childComplexity int, id string) int
+		DeleteWechatToken      func(childComplexity int, userID string) int
 		DeleteacademicTerm     func(childComplexity int, termID string) int
-		ForgetAccountPassword  func(childComplexity int, passwordCodeData *graphql_models.ResetPassword) int
-		UpdateAccountPassword  func(childComplexity int, id string, passwordData *graphql_models.ChangePassword) int
+		ForgetAccountPassword  func(childComplexity int, userID string, passwordCodeData *graphql_models.ResetPassword) int
+		UpdateAccountPassword  func(childComplexity int, userID string, passwordData *graphql_models.ChangePassword) int
 		UpdateAwardRecord      func(childComplexity int, awardRecordID string) int
 		UpdateCompGuidance     func(childComplexity int, id string, compGuidanceData graphql_models.UpdateCompGuidance) int
 		UpdateCourse           func(childComplexity int, courseID string, courseData graphql_models.UpdateCourse) int
@@ -231,10 +235,11 @@ type ComplexityRoot struct {
 		UpdatePaper            func(childComplexity int, id string, paperDataL graphql_models.UpdatePaper) int
 		UpdatePassword         func(childComplexity int, id string, passwordData graphql_models.UpdatePassword) int
 		UpdateSciResearch      func(childComplexity int, sciResearchID string, sciResearchData graphql_models.UpdateSciResearch) int
-		UpdateUser             func(childComplexity int, id string, userData graphql_models.UpdateUser) int
-		UpdateWechatToken      func(childComplexity int, id string, token string) int
+		UpdateUser             func(childComplexity int, userID string, userData graphql_models.UpdateUser) int
+		UpdateWechatToken      func(childComplexity int, userID string, token string) int
 		UpdateacademicTerm     func(childComplexity int, termID string, termData *graphql_models.UpdateAcademicTerm) int
 		UploadAcademicTerm     func(childComplexity int, file graphql.Upload) int
+		UploadAvatar           func(childComplexity int, userID string, avatar graphql.Upload) int
 		UploadCompGuidance     func(childComplexity int, file graphql.Upload) int
 		UploadCompGuidances    func(childComplexity int, file graphql.Upload) int
 		UploadEduReform        func(childComplexity int, file graphql.Upload) int
@@ -402,13 +407,14 @@ type MutationResolver interface {
 	AddAwardRecord(ctx context.Context, sciResearchID string, newAwardRecordData graphql_models.NewAwardRecord) (*graphql_models.SciResearch, error)
 	UpdateAwardRecord(ctx context.Context, awardRecordID string) (*graphql_models.AwardRecord, error)
 	DeleteAwardRecord(ctx context.Context, sciResearchID string, awardRecordID string) (*graphql_models.AwardRecord, error)
-	DeleteAccount(ctx context.Context, id string) (*graphql_models.User, error)
-	UpdateAccountPassword(ctx context.Context, id string, passwordData *graphql_models.ChangePassword) (string, error)
-	ForgetAccountPassword(ctx context.Context, passwordCodeData *graphql_models.ResetPassword) (string, error)
-	UpdateUser(ctx context.Context, id string, userData graphql_models.UpdateUser) (*graphql_models.User, error)
-	CreateWechatToken(ctx context.Context, id string, token string) (bool, error)
-	UpdateWechatToken(ctx context.Context, id string, token string) (bool, error)
-	DeleteWechatToken(ctx context.Context, id string) (bool, error)
+	DeleteAccount(ctx context.Context, userID string) (*graphql_models.User, error)
+	UpdateAccountPassword(ctx context.Context, userID string, passwordData *graphql_models.ChangePassword) (string, error)
+	ForgetAccountPassword(ctx context.Context, userID string, passwordCodeData *graphql_models.ResetPassword) (string, error)
+	UpdateUser(ctx context.Context, userID string, userData graphql_models.UpdateUser) (*graphql_models.User, error)
+	CreateWechatToken(ctx context.Context, userID string, token string) (bool, error)
+	UpdateWechatToken(ctx context.Context, userID string, token string) (bool, error)
+	DeleteWechatToken(ctx context.Context, userID string) (bool, error)
+	UploadAvatar(ctx context.Context, userID string, avatar graphql.Upload) (*graphql_models.AvatarPath, error)
 }
 type QueryResolver interface {
 	AdminSignIn(ctx context.Context, adminSignInInput *graphql_models.AdminSignInInput) (*graphql_models.AuthPayload, error)
@@ -477,12 +483,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AcademicTerm.CreatedAt(childComplexity), true
 
-	case "AcademicTerm.termId":
-		if e.complexity.AcademicTerm.TermID == nil {
+	case "AcademicTerm.id":
+		if e.complexity.AcademicTerm.ID == nil {
 			break
 		}
 
-		return e.complexity.AcademicTerm.TermID(childComplexity), true
+		return e.complexity.AcademicTerm.ID(childComplexity), true
 
 	case "AcademicTerm.termName":
 		if e.complexity.AcademicTerm.TermName == nil {
@@ -518,6 +524,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AuthPayload.Token(childComplexity), true
+
+	case "AvatarPath.avatarUrl":
+		if e.complexity.AvatarPath.AvatarURL == nil {
+			break
+		}
+
+		return e.complexity.AvatarPath.AvatarURL(childComplexity), true
 
 	case "AwardRecord.awardDate":
 		if e.complexity.AwardRecord.AwardDate == nil {
@@ -701,13 +714,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Course.Color(childComplexity), true
 
-	case "Course.courseId":
-		if e.complexity.Course.CourseID == nil {
-			break
-		}
-
-		return e.complexity.Course.CourseID(childComplexity), true
-
 	case "Course.courseLocation":
 		if e.complexity.Course.CourseLocation == nil {
 			break
@@ -735,6 +741,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Course.CourseWeeks(childComplexity), true
+
+	case "Course.id":
+		if e.complexity.Course.ID == nil {
+			break
+		}
+
+		return e.complexity.Course.ID(childComplexity), true
 
 	case "Course.studentCount":
 		if e.complexity.Course.StudentCount == nil {
@@ -1291,7 +1304,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateWechatToken(childComplexity, args["id"].(string), args["token"].(string)), true
+		return e.complexity.Mutation.CreateWechatToken(childComplexity, args["userId"].(string), args["token"].(string)), true
 
 	case "Mutation.createacademicTerm":
 		if e.complexity.Mutation.CreateacademicTerm == nil {
@@ -1315,7 +1328,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteAccount(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteAccount(childComplexity, args["userId"].(string)), true
 
 	case "Mutation.deleteAwardRecord":
 		if e.complexity.Mutation.DeleteAwardRecord == nil {
@@ -1435,7 +1448,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteWechatToken(childComplexity, args["id"].(string)), true
+		return e.complexity.Mutation.DeleteWechatToken(childComplexity, args["userId"].(string)), true
 
 	case "Mutation.deleteacademicTerm":
 		if e.complexity.Mutation.DeleteacademicTerm == nil {
@@ -1459,7 +1472,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ForgetAccountPassword(childComplexity, args["passwordCodeData"].(*graphql_models.ResetPassword)), true
+		return e.complexity.Mutation.ForgetAccountPassword(childComplexity, args["userId"].(string), args["passwordCodeData"].(*graphql_models.ResetPassword)), true
 
 	case "Mutation.updateAccountPassword":
 		if e.complexity.Mutation.UpdateAccountPassword == nil {
@@ -1471,7 +1484,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateAccountPassword(childComplexity, args["id"].(string), args["passwordData"].(*graphql_models.ChangePassword)), true
+		return e.complexity.Mutation.UpdateAccountPassword(childComplexity, args["userId"].(string), args["passwordData"].(*graphql_models.ChangePassword)), true
 
 	case "Mutation.updateAwardRecord":
 		if e.complexity.Mutation.UpdateAwardRecord == nil {
@@ -1591,7 +1604,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateUser(childComplexity, args["id"].(string), args["userData"].(graphql_models.UpdateUser)), true
+		return e.complexity.Mutation.UpdateUser(childComplexity, args["userId"].(string), args["userData"].(graphql_models.UpdateUser)), true
 
 	case "Mutation.updateWechatToken":
 		if e.complexity.Mutation.UpdateWechatToken == nil {
@@ -1603,7 +1616,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateWechatToken(childComplexity, args["id"].(string), args["token"].(string)), true
+		return e.complexity.Mutation.UpdateWechatToken(childComplexity, args["userId"].(string), args["token"].(string)), true
 
 	case "Mutation.updateacademicTerm":
 		if e.complexity.Mutation.UpdateacademicTerm == nil {
@@ -1628,6 +1641,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UploadAcademicTerm(childComplexity, args["file"].(graphql.Upload)), true
+
+	case "Mutation.uploadAvatar":
+		if e.complexity.Mutation.UploadAvatar == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadAvatar_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadAvatar(childComplexity, args["userId"].(string), args["avatar"].(graphql.Upload)), true
 
 	case "Mutation.uploadCompGuidance":
 		if e.complexity.Mutation.UploadCompGuidance == nil {
@@ -2876,14 +2901,14 @@ func (ec *executionContext) field_Mutation_createWechatToken_args(ctx context.Co
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["userId"] = arg0
 	var arg1 string
 	if tmp, ok := rawArgs["token"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
@@ -2915,14 +2940,14 @@ func (ec *executionContext) field_Mutation_deleteAccount_args(ctx context.Contex
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["userId"] = arg0
 	return args, nil
 }
 
@@ -3083,14 +3108,14 @@ func (ec *executionContext) field_Mutation_deleteWechatToken_args(ctx context.Co
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["userId"] = arg0
 	return args, nil
 }
 
@@ -3112,15 +3137,24 @@ func (ec *executionContext) field_Mutation_deleteacademicTerm_args(ctx context.C
 func (ec *executionContext) field_Mutation_forgetAccountPassword_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *graphql_models.ResetPassword
-	if tmp, ok := rawArgs["passwordCodeData"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("passwordCodeData"))
-		arg0, err = ec.unmarshalOResetPassword2ᚖserverᚋgraphᚋmodelᚐResetPassword(ctx, tmp)
+	var arg0 string
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["passwordCodeData"] = arg0
+	args["userId"] = arg0
+	var arg1 *graphql_models.ResetPassword
+	if tmp, ok := rawArgs["passwordCodeData"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("passwordCodeData"))
+		arg1, err = ec.unmarshalOResetPassword2ᚖserverᚋgraphᚋmodelᚐResetPassword(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["passwordCodeData"] = arg1
 	return args, nil
 }
 
@@ -3128,14 +3162,14 @@ func (ec *executionContext) field_Mutation_updateAccountPassword_args(ctx contex
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["userId"] = arg0
 	var arg1 *graphql_models.ChangePassword
 	if tmp, ok := rawArgs["passwordData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("passwordData"))
@@ -3359,14 +3393,14 @@ func (ec *executionContext) field_Mutation_updateUser_args(ctx context.Context, 
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["userId"] = arg0
 	var arg1 graphql_models.UpdateUser
 	if tmp, ok := rawArgs["userData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userData"))
@@ -3383,14 +3417,14 @@ func (ec *executionContext) field_Mutation_updateWechatToken_args(ctx context.Co
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["userId"] = arg0
 	var arg1 string
 	if tmp, ok := rawArgs["token"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
@@ -3439,6 +3473,30 @@ func (ec *executionContext) field_Mutation_uploadAcademicTerm_args(ctx context.C
 		}
 	}
 	args["file"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_uploadAvatar_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userId"] = arg0
+	var arg1 graphql.Upload
+	if tmp, ok := rawArgs["avatar"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("avatar"))
+		arg1, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["avatar"] = arg1
 	return args, nil
 }
 
@@ -4131,8 +4189,8 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _AcademicTerm_termId(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AcademicTerm) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AcademicTerm_termId(ctx, field)
+func (ec *executionContext) _AcademicTerm_id(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AcademicTerm) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicTerm_id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4145,7 +4203,7 @@ func (ec *executionContext) _AcademicTerm_termId(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.TermID, nil
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4162,7 +4220,7 @@ func (ec *executionContext) _AcademicTerm_termId(ctx context.Context, field grap
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_AcademicTerm_termId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AcademicTerm_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AcademicTerm",
 		Field:      field,
@@ -4258,8 +4316,8 @@ func (ec *executionContext) fieldContext_AcademicTerm_courses(ctx context.Contex
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "courseId":
-				return ec.fieldContext_Course_courseId(ctx, field)
+			case "id":
+				return ec.fieldContext_Course_id(ctx, field)
 			case "teacherNames":
 				return ec.fieldContext_Course_teacherNames(ctx, field)
 			case "courseName":
@@ -4505,6 +4563,50 @@ func (ec *executionContext) _AuthPayload_token(ctx context.Context, field graphq
 func (ec *executionContext) fieldContext_AuthPayload_token(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AuthPayload",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AvatarPath_avatarUrl(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AvatarPath) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AvatarPath_avatarUrl(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AvatarURL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AvatarPath_avatarUrl(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AvatarPath",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -5532,8 +5634,8 @@ func (ec *executionContext) fieldContext_CompGuidancePreview_awardStatus(ctx con
 	return fc, nil
 }
 
-func (ec *executionContext) _Course_courseId(ctx context.Context, field graphql.CollectedField, obj *graphql_models.Course) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Course_courseId(ctx, field)
+func (ec *executionContext) _Course_id(ctx context.Context, field graphql.CollectedField, obj *graphql_models.Course) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Course_id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -5546,7 +5648,7 @@ func (ec *executionContext) _Course_courseId(ctx context.Context, field graphql.
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.CourseID, nil
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5563,7 +5665,7 @@ func (ec *executionContext) _Course_courseId(ctx context.Context, field graphql.
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Course_courseId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Course_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Course",
 		Field:      field,
@@ -8453,8 +8555,8 @@ func (ec *executionContext) fieldContext_Mutation_createCourse(ctx context.Conte
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "courseId":
-				return ec.fieldContext_Course_courseId(ctx, field)
+			case "id":
+				return ec.fieldContext_Course_id(ctx, field)
 			case "teacherNames":
 				return ec.fieldContext_Course_teacherNames(ctx, field)
 			case "courseName":
@@ -8528,8 +8630,8 @@ func (ec *executionContext) fieldContext_Mutation_updateCourse(ctx context.Conte
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "courseId":
-				return ec.fieldContext_Course_courseId(ctx, field)
+			case "id":
+				return ec.fieldContext_Course_id(ctx, field)
 			case "teacherNames":
 				return ec.fieldContext_Course_teacherNames(ctx, field)
 			case "courseName":
@@ -8603,8 +8705,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteCourse(ctx context.Conte
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "courseId":
-				return ec.fieldContext_Course_courseId(ctx, field)
+			case "id":
+				return ec.fieldContext_Course_id(ctx, field)
 			case "teacherNames":
 				return ec.fieldContext_Course_teacherNames(ctx, field)
 			case "courseName":
@@ -8678,8 +8780,8 @@ func (ec *executionContext) fieldContext_Mutation_createacademicTerm(ctx context
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "termId":
-				return ec.fieldContext_AcademicTerm_termId(ctx, field)
+			case "id":
+				return ec.fieldContext_AcademicTerm_id(ctx, field)
 			case "termName":
 				return ec.fieldContext_AcademicTerm_termName(ctx, field)
 			case "courses":
@@ -8745,8 +8847,8 @@ func (ec *executionContext) fieldContext_Mutation_updateacademicTerm(ctx context
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "termId":
-				return ec.fieldContext_AcademicTerm_termId(ctx, field)
+			case "id":
+				return ec.fieldContext_AcademicTerm_id(ctx, field)
 			case "termName":
 				return ec.fieldContext_AcademicTerm_termName(ctx, field)
 			case "courses":
@@ -8812,8 +8914,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteacademicTerm(ctx context
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "termId":
-				return ec.fieldContext_AcademicTerm_termId(ctx, field)
+			case "id":
+				return ec.fieldContext_AcademicTerm_id(ctx, field)
 			case "termName":
 				return ec.fieldContext_AcademicTerm_termName(ctx, field)
 			case "courses":
@@ -11558,7 +11660,7 @@ func (ec *executionContext) _Mutation_deleteAccount(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteAccount(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Mutation().DeleteAccount(rctx, fc.Args["userId"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11633,7 +11735,7 @@ func (ec *executionContext) _Mutation_updateAccountPassword(ctx context.Context,
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateAccountPassword(rctx, fc.Args["id"].(string), fc.Args["passwordData"].(*graphql_models.ChangePassword))
+		return ec.resolvers.Mutation().UpdateAccountPassword(rctx, fc.Args["userId"].(string), fc.Args["passwordData"].(*graphql_models.ChangePassword))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11688,7 +11790,7 @@ func (ec *executionContext) _Mutation_forgetAccountPassword(ctx context.Context,
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ForgetAccountPassword(rctx, fc.Args["passwordCodeData"].(*graphql_models.ResetPassword))
+		return ec.resolvers.Mutation().ForgetAccountPassword(rctx, fc.Args["userId"].(string), fc.Args["passwordCodeData"].(*graphql_models.ResetPassword))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11743,7 +11845,7 @@ func (ec *executionContext) _Mutation_updateUser(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateUser(rctx, fc.Args["id"].(string), fc.Args["userData"].(graphql_models.UpdateUser))
+		return ec.resolvers.Mutation().UpdateUser(rctx, fc.Args["userId"].(string), fc.Args["userData"].(graphql_models.UpdateUser))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11818,7 +11920,7 @@ func (ec *executionContext) _Mutation_createWechatToken(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateWechatToken(rctx, fc.Args["id"].(string), fc.Args["token"].(string))
+		return ec.resolvers.Mutation().CreateWechatToken(rctx, fc.Args["userId"].(string), fc.Args["token"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11873,7 +11975,7 @@ func (ec *executionContext) _Mutation_updateWechatToken(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateWechatToken(rctx, fc.Args["id"].(string), fc.Args["token"].(string))
+		return ec.resolvers.Mutation().UpdateWechatToken(rctx, fc.Args["userId"].(string), fc.Args["token"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11928,7 +12030,7 @@ func (ec *executionContext) _Mutation_deleteWechatToken(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteWechatToken(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Mutation().DeleteWechatToken(rctx, fc.Args["userId"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11963,6 +12065,65 @@ func (ec *executionContext) fieldContext_Mutation_deleteWechatToken(ctx context.
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_deleteWechatToken_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_uploadAvatar(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_uploadAvatar(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UploadAvatar(rctx, fc.Args["userId"].(string), fc.Args["avatar"].(graphql.Upload))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*graphql_models.AvatarPath)
+	fc.Result = res
+	return ec.marshalNAvatarPath2ᚖserverᚋgraphᚋmodelᚐAvatarPath(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_uploadAvatar(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "avatarUrl":
+				return ec.fieldContext_AvatarPath_avatarUrl(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AvatarPath", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_uploadAvatar_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -13142,8 +13303,8 @@ func (ec *executionContext) fieldContext_Query_academicTerm(ctx context.Context,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "termId":
-				return ec.fieldContext_AcademicTerm_termId(ctx, field)
+			case "id":
+				return ec.fieldContext_AcademicTerm_id(ctx, field)
 			case "termName":
 				return ec.fieldContext_AcademicTerm_termName(ctx, field)
 			case "courses":
@@ -13209,8 +13370,8 @@ func (ec *executionContext) fieldContext_Query_academicerms(ctx context.Context,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "termId":
-				return ec.fieldContext_AcademicTerm_termId(ctx, field)
+			case "id":
+				return ec.fieldContext_AcademicTerm_id(ctx, field)
 			case "termName":
 				return ec.fieldContext_AcademicTerm_termName(ctx, field)
 			case "courses":
@@ -18647,14 +18808,14 @@ func (ec *executionContext) unmarshalInputChangePassword(ctx context.Context, ob
 		switch k {
 		case "oldPassword":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("oldPassword"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.OldPassword = data
 		case "newPassword":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("newPassword"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -19480,21 +19641,21 @@ func (ec *executionContext) unmarshalInputResetPassword(ctx context.Context, obj
 		switch k {
 		case "email":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Email = data
 		case "code":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("code"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
 			it.Code = data
 		case "newPassword":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("newPassword"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -20219,8 +20380,8 @@ func (ec *executionContext) _AcademicTerm(ctx context.Context, sel ast.Selection
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("AcademicTerm")
-		case "termId":
-			out.Values[i] = ec._AcademicTerm_termId(ctx, field, obj)
+		case "id":
+			out.Values[i] = ec._AcademicTerm_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -20318,6 +20479,45 @@ func (ec *executionContext) _AuthPayload(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = graphql.MarshalString("AuthPayload")
 		case "token":
 			out.Values[i] = ec._AuthPayload_token(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var avatarPathImplementors = []string{"AvatarPath"}
+
+func (ec *executionContext) _AvatarPath(ctx context.Context, sel ast.SelectionSet, obj *graphql_models.AvatarPath) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, avatarPathImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AvatarPath")
+		case "avatarUrl":
+			out.Values[i] = ec._AvatarPath_avatarUrl(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -20606,8 +20806,8 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Course")
-		case "courseId":
-			out.Values[i] = ec._Course_courseId(ctx, field, obj)
+		case "id":
+			out.Values[i] = ec._Course_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -21427,6 +21627,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "deleteWechatToken":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_deleteWechatToken(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "uploadAvatar":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_uploadAvatar(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -23025,6 +23232,20 @@ func (ec *executionContext) marshalNAuthPayload2ᚖserverᚋgraphᚋmodelᚐAuth
 		return graphql.Null
 	}
 	return ec._AuthPayload(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNAvatarPath2serverᚋgraphᚋmodelᚐAvatarPath(ctx context.Context, sel ast.SelectionSet, v graphql_models.AvatarPath) graphql.Marshaler {
+	return ec._AvatarPath(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNAvatarPath2ᚖserverᚋgraphᚋmodelᚐAvatarPath(ctx context.Context, sel ast.SelectionSet, v *graphql_models.AvatarPath) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._AvatarPath(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNAwardRecord2serverᚋgraphᚋmodelᚐAwardRecord(ctx context.Context, sel ast.SelectionSet, v graphql_models.AwardRecord) graphql.Marshaler {

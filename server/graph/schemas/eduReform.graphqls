@@ -12,7 +12,7 @@ type EduReform {
   achievement: String
   fund: String
   createdAt: Time!
-  updateAt: Time!
+  updatedAt: Time!
 }
 
 type EduReformPreview {

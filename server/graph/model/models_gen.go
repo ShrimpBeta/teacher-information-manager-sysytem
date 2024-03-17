@@ -7,7 +7,7 @@ import (
 )
 
 type AcademicTerm struct {
-	TermID    string    `json:"termId"`
+	ID        string    `json:"id"`
 	TermName  string    `json:"termName"`
 	Courses   []*Course `json:"courses"`
 	CreatedAt time.Time `json:"createdAt"`
@@ -28,6 +28,10 @@ type AuthPayload struct {
 	Token string `json:"token"`
 }
 
+type AvatarPath struct {
+	AvatarURL string `json:"avatarUrl"`
+}
+
 type AwardRecord struct {
 	ID         string     `json:"id"`
 	AwardName  string     `json:"awardName"`
@@ -39,8 +43,8 @@ type AwardRecord struct {
 }
 
 type ChangePassword struct {
-	OldPassword *string `json:"oldPassword,omitempty"`
-	NewPassword *string `json:"newPassword,omitempty"`
+	OldPassword string `json:"oldPassword"`
+	NewPassword string `json:"newPassword"`
 }
 
 type ClassTime struct {
@@ -73,7 +77,7 @@ type CompGuidancePreview struct {
 }
 
 type Course struct {
-	CourseID       string       `json:"courseId"`
+	ID             string       `json:"id"`
 	TeacherNames   string       `json:"teacherNames"`
 	CourseName     string       `json:"courseName"`
 	CourseLocation *string      `json:"courseLocation,omitempty"`
@@ -319,9 +323,9 @@ type Query struct {
 }
 
 type ResetPassword struct {
-	Email       *string `json:"email,omitempty"`
-	Code        *string `json:"code,omitempty"`
-	NewPassword *string `json:"newPassword,omitempty"`
+	Email       string `json:"email"`
+	Code        string `json:"code"`
+	NewPassword string `json:"newPassword"`
 }
 
 type SciResearch struct {

@@ -23,7 +23,7 @@ type AcademicTerm {
   termName: String!
   courses: [Course]!
   createdAt: Time!
-  updateAt: Time!
+  updatedAt: Time!
 }
 
 # 课程表学期预览，OCR识别结果
@@ -102,8 +102,8 @@ extend type Mutation {
   updateCourse(courseId: ID!, courseData: UpdateCourse!): Course!
   deleteCourse(termId: ID!, courseId: ID!): Course!
 
-  createacademicTerm(newTermData: NewAcademicTerm!): AcademicTerm!
-  updateacademicTerm(termId: ID!, termData: UpdateAcademicTerm): AcademicTerm!
+  createacademicTerm(userId: ID!, newTermData: NewAcademicTerm!): AcademicTerm!
+  updateacademicTerm(termId: ID!, termData: UpdateAcademicTerm!): AcademicTerm!
   deleteacademicTerm(termId: ID!): AcademicTerm!
 
   uploadAcademicTerm(file: Upload!): AcademicTermPreview!

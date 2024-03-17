@@ -23,16 +23,16 @@ type Course struct {
 	ClassTimes   []ClassTime        `bson:"classTimes"`
 	StudentCount uint16             `bson:"studentCount,omitempty"`
 	Color        string             `bson:"color,omitempty"`
-	CreateAt     time.Time          `bson:"createAt"`
-	UpdateAt     time.Time          `bson:"updateAt"`
+	CreatedAt    primitive.DateTime `bson:"createdAt"`
+	UpdatedAt    primitive.DateTime `bson:"updatedAt"`
 }
 
 // 学期
 type AcademicTerm struct {
 	ID        primitive.ObjectID   `bson:"_id"`
-	TeacherId primitive.ObjectID   `bson:"teacherId"`
+	UserId    primitive.ObjectID   `bson:"userId"`
 	Name      string               `bson:"name"`
 	Courses   []primitive.ObjectID `bson:"courses,omitempty"`
-	CreateAt  time.Time            `bson:"createAt"`
-	UpdateAt  time.Time            `bson:"updateAt"`
+	CreatedAt primitive.DateTime   `bson:"createdAt"`
+	UpdatedAt primitive.DateTime   `bson:"updatedAt"`
 }

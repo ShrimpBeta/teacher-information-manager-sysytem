@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -13,12 +11,12 @@ type EduReform struct {
 	TeacherOut  []string             `bson:"teachersOut,omitempty"`
 	Number      string               `bson:"number"`
 	Title       string               `bson:"title"`
-	StartDate   time.Time            `bson:"startDate,omitempty"`
+	StartDate   primitive.DateTime   `bson:"startDate,omitempty"`
 	Duration    string               `bson:"duration,omitempty"`
 	Level       string               `bson:"level,omitempty"`
 	Rank        string               `bson:"rank,omitempty"`
 	Achievement string               `bson:"achievement,omitempty"`
 	Fund        string               `bson:"fund,omitempty"`
-	CreatedAt   time.Time            `bson:"createAt"`
-	UpdateAt    time.Time            `bson:"updateAt"`
+	CreatedAt   primitive.DateTime   `bson:"createdAt"`
+	UpdatedAt   primitive.DateTime   `bson:"updatedAt"`
 }

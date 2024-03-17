@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -12,10 +10,10 @@ type Paper struct {
 	TeacherIn    []primitive.ObjectID `bson:"teacherIn"`
 	TeacherOut   []string             `bson:"teacherOut,omitempty"`
 	Title        string               `bson:"title"`
-	PublishDate  time.Time            `bson:"publishDate,omitempty"`
+	PublishDate  primitive.DateTime   `bson:"publishDate,omitempty"`
 	Rank         string               `bson:"rank,omitempty"`
 	JournalName  string               `bson:"journalName,omitempty"`
 	JournalLevel string               `bson:"journalLevel,omitempty"`
-	CreatedAt    time.Time            `bson:"createdAt"`
-	UpdateAt     time.Time            `bson:"updateAt"`
+	CreatedAt    primitive.DateTime   `bson:"createdAt"`
+	UpdatedAt    primitive.DateTime   `bson:"updatedAt"`
 }

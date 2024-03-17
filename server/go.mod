@@ -5,13 +5,13 @@ go 1.22.0
 require (
 	github.com/99designs/gqlgen v0.17.45
 	github.com/gin-gonic/gin v1.9.1
+	github.com/issue9/identicon/v2 v2.1.2
 	github.com/vektah/gqlparser/v2 v2.5.11
 	go.mongodb.org/mongo-driver v1.14.0
 )
 
 require (
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect
-	github.com/issue9/identicon/v2 v2.1.2 // indirect
 	github.com/kr/text v0.2.0 // indirect
 )
 

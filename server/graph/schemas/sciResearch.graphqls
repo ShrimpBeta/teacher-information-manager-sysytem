@@ -7,7 +7,7 @@ type AwardRecord {
   awardlevel: String
   awardRank: String
   createdAt: Time!
-  updateAt: Time!
+  updatedAt: Time!
 }
 
 type SciResearch {
@@ -25,7 +25,7 @@ type SciResearch {
   isAward: Boolean!
   awards: [AwardRecord]
   createdAt: Time!
-  updateAt: Time!
+  updatedAt: Time!
 }
 
 input NewAwardRecord {

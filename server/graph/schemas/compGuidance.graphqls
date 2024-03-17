@@ -7,7 +7,7 @@ type CompGuidance {
   guidanceDate: Time
   awardStatus: String
   createdAt: Time!
-  updateAt: Time!
+  updatedAt: Time!
 }
 
 type CompGuidancePreview {

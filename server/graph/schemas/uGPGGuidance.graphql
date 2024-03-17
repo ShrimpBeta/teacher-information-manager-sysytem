@@ -10,7 +10,7 @@ type UGPGGuidance {
   defenseDate: Time
   defenseResult: String
   createdAt: Time!
-  updateAt: Time!
+  updatedAt: Time!
 }
 
 input NewUGPGGuidance {

@@ -6,7 +6,7 @@ type Mentorship {
   grade: String
   guidanceDate: Time
   createdAt: Time!
-  updateAt: Time!
+  updatedAt: Time!
 }
 
 type MentorshipPreview {

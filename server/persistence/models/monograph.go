@@ -1,8 +1,6 @@
 package models
 
 import (
-	"time"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -12,9 +10,9 @@ type Monograph struct {
 	TeachersIn   []primitive.ObjectID `bson:"teachersIn"`
 	TeachersOut  []string             `bson:"teachersOut,omitempty"`
 	Title        string               `bson:"string"`
-	PublishDate  time.Time            `bson:"publishDate,omitempty"`
+	PublishDate  primitive.DateTime   `bson:"publishDate,omitempty"`
 	PublishLevel string               `bson:"publishLevel,omitempty"`
 	Rank         string               `bson:"rank,omitempty"`
-	CreatedAt    time.Time            `bson:"createdAt"`
-	UpdateAt     time.Time            `bson:"updateAt"`
+	CreatedAt    primitive.DateTime   `bson:"createdAt"`
+	UpdatedAt    primitive.DateTime   `bson:"updatedAt"`
 }

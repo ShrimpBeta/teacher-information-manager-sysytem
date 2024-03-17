@@ -8,7 +8,7 @@ type Monograph {
   publishLevel: String
   rank: String
   createdAt: Time!
-  updateAt: Time!
+  updatedAt: Time!
 }
 
 type MonographPreview {

@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"server/graph"
 	"server/graph/resolvers"
 	"server/middlewares"
@@ -43,6 +44,12 @@ func main() {
 
 	// Setting up Gin
 	r := gin.Default()
+
+	// if static folder not exist, create it
+	err := os.MkdirAll(filepath.Dir("static/avatar/avatar.png"), os.ModePerm)
+	if err != nil {
+		log.Fatal("Failed to create static folder")
+	}
 
 	// add Static FileServer
 	r.Static("/static", "./assets")

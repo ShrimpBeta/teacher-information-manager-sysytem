@@ -27,7 +27,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		user := models.User{Username: email}
+		user := models.User{Email: email}
 		id, err := user.GetUserIdByEmail(email)
 
 		// create user and check if user exists in db
