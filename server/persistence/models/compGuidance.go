@@ -5,7 +5,7 @@ import (
 )
 
 // 竞赛指导
-type CompeGuidance struct {
+type CompGuidance struct {
 	ID               primitive.ObjectID `bson:"_id"`
 	UserId           primitive.ObjectID `bson:"userId"`
 	ProjectName      string             `bson:"projectName"`

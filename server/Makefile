@@ -6,7 +6,7 @@ run:build
 	./${BINARY_NAME}-windows.exe
 
 build:
-	GOARCH=amd64 GOOS=windows go build -o ${BINARY_NAME}-windows.exe server.go
+	GOARCH=amd64 GOOS=windows go build -o ${BINARY_NAME}-windows.exe main.go
 
 init:
 	go run github.com/99designs/gqlgen init

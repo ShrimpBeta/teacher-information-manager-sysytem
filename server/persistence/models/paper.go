@@ -7,8 +7,8 @@ import (
 // 论文
 type Paper struct {
 	ID           primitive.ObjectID   `bson:"_id"`
-	TeacherIn    []primitive.ObjectID `bson:"teacherIn"`
-	TeacherOut   []string             `bson:"teacherOut,omitempty"`
+	TeachersIn   []primitive.ObjectID `bson:"teachersIn"`
+	TeachersOut  []string             `bson:"teachersOut,omitempty"`
 	Title        string               `bson:"title"`
 	PublishDate  primitive.DateTime   `bson:"publishDate,omitempty"`
 	Rank         string               `bson:"rank,omitempty"`

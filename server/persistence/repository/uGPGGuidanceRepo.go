@@ -13,13 +13,19 @@ type UGPGGuidanceRepo struct {
 	collection *mongo.Collection
 }
 
+type UGPGGuidanceQueryParams struct {
+	UserId      primitive.ObjectID
+	StudentName string
+	ThesisTopic string
+}
+
 func NewUGPGGuidanceRepo(db *mongo.Database) *UGPGGuidanceRepo {
 	return &UGPGGuidanceRepo{
-		collection: db.Collection("UGPGGuidances"),
+		collection: db.Collection("UGPGGuidance"),
 	}
 }
 
-func (r *UGPGGuidanceRepo) GetUGPGGuidanceById(id string) (*models.UGPGGuidance, error) {
+func (r *UGPGGuidanceRepo) GetUGPGGuidanceById(id primitive.ObjectID) (*models.UGPGGuidance, error) {
 	ugpgGuidance := models.UGPGGuidance{}
 	err := r.collection.FindOne(context.Background(), bson.M{"_id": id}).Decode(&ugpgGuidance)
 	if err != nil {
@@ -28,17 +34,28 @@ func (r *UGPGGuidanceRepo) GetUGPGGuidanceById(id string) (*models.UGPGGuidance,
 	return &ugpgGuidance, nil
 }
 
-func (r *UGPGGuidanceRepo) GetUGPGGuidancesByName(studentName string, userId primitive.ObjectID) ([]models.UGPGGuidance, error) {
+func (r *UGPGGuidanceRepo) GetUGPGGuidancesByParams(params UGPGGuidanceQueryParams) ([]models.UGPGGuidance, error) {
 	ugpgGuidances := []models.UGPGGuidance{}
-	cursor, err := r.collection.Find(context.Background(), bson.M{"name": studentName, "userId": userId})
+
+	// filter for userId
+	filter := bson.M{"userId": params.UserId}
+	// filter for studentName
+	if params.StudentName != "" {
+		filter["studentName"] = params.StudentName
+	}
+	// filter for thesisTopic
+	if params.ThesisTopic != "" {
+		filter["thesisTopic"] = params.ThesisTopic
+	}
+
+	cursor, err := r.collection.Find(context.Background(), filter)
 	if err != nil {
 		return nil, err
 	}
 	defer cursor.Close(context.Background())
 	for cursor.Next(context.Background()) {
-		ugpgGuidance := models.UGPGGuidance{}
-		err := cursor.Decode(&ugpgGuidance)
-		if err != nil {
+		var ugpgGuidance models.UGPGGuidance
+		if err := cursor.Decode(&ugpgGuidance); err != nil {
 			return nil, err
 		}
 		ugpgGuidances = append(ugpgGuidances, ugpgGuidance)
@@ -46,98 +63,21 @@ func (r *UGPGGuidanceRepo) GetUGPGGuidancesByName(studentName string, userId pri
 	return ugpgGuidances, nil
 }
 
-func (r *UGPGGuidanceRepo) GetUGPGGuidancesByThesisTopic(thesisTopic string, userId primitive.ObjectID) ([]models.UGPGGuidance, error) {
-	ugpgGuidances := []models.UGPGGuidance{}
-	cursor, err := r.collection.Find(context.Background(), bson.M{"thesisTopic": thesisTopic, "userId": userId})
+func (r *UGPGGuidanceRepo) CreateUGPGGuidance(ugpgGuidance *models.UGPGGuidance) (*primitive.ObjectID, error) {
+	result, err := r.collection.InsertOne(context.Background(), ugpgGuidance)
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.Background())
-	for cursor.Next(context.Background()) {
-		ugpgGuidance := models.UGPGGuidance{}
-		err := cursor.Decode(&ugpgGuidance)
-		if err != nil {
-			return nil, err
-		}
-		ugpgGuidances = append(ugpgGuidances, ugpgGuidance)
-	}
-	return ugpgGuidances, nil
-}
-
-func (r *UGPGGuidanceRepo) GetUGPGGuidancesByCreate(start, end primitive.DateTime, userId primitive.ObjectID) ([]models.UGPGGuidance, error) {
-	ugpgGuidances := []models.UGPGGuidance{}
-	cursor, err := r.collection.Find(context.Background(), bson.M{"createdAt": bson.M{"$gte": start, "$lte": end}, "userId": userId})
-	if err != nil {
-		return nil, err
-	}
-	defer cursor.Close(context.Background())
-	for cursor.Next(context.Background()) {
-		ugpgGuidance := models.UGPGGuidance{}
-		err := cursor.Decode(&ugpgGuidance)
-		if err != nil {
-			return nil, err
-		}
-		ugpgGuidances = append(ugpgGuidances, ugpgGuidance)
-	}
-	return ugpgGuidances, nil
-}
-
-func (r *UGPGGuidanceRepo) GetUGPGGuidancesByUpdate(start, end primitive.DateTime, userId primitive.ObjectID) ([]models.UGPGGuidance, error) {
-	ugpgGuidances := []models.UGPGGuidance{}
-	cursor, err := r.collection.Find(context.Background(), bson.M{"updatedAt": bson.M{"$gte": start, "$lte": end}, "userId": userId})
-	if err != nil {
-		return nil, err
-	}
-	defer cursor.Close(context.Background())
-	for cursor.Next(context.Background()) {
-		ugpgGuidance := models.UGPGGuidance{}
-		err := cursor.Decode(&ugpgGuidance)
-		if err != nil {
-			return nil, err
-		}
-		ugpgGuidances = append(ugpgGuidances, ugpgGuidance)
-	}
-	return ugpgGuidances, nil
-}
-
-func (r *UGPGGuidanceRepo) GetAllUGPGGuidances(userId primitive.ObjectID) ([]models.UGPGGuidance, error) {
-	ugpgGuidances := []models.UGPGGuidance{}
-	cursor, err := r.collection.Find(context.Background(), bson.M{"userId": userId})
-	if err != nil {
-		return nil, err
-	}
-	defer cursor.Close(context.Background())
-	for cursor.Next(context.Background()) {
-		ugpgGuidance := models.UGPGGuidance{}
-		err := cursor.Decode(&ugpgGuidance)
-		if err != nil {
-			return nil, err
-		}
-		ugpgGuidances = append(ugpgGuidances, ugpgGuidance)
-	}
-	return ugpgGuidances, nil
-}
-
-func (r *UGPGGuidanceRepo) CreateUGPGGuidance(ugpgGuidance *models.UGPGGuidance) error {
-	_, err := r.collection.InsertOne(context.Background(), ugpgGuidance)
-	if err != nil {
-		return err
-	}
-	return nil
+	newUGPGGuidanceId := result.InsertedID.(primitive.ObjectID)
+	return &newUGPGGuidanceId, nil
 }
 
 func (r *UGPGGuidanceRepo) UpdateUGPGGuidance(ugpgGuidance *models.UGPGGuidance) error {
-	_, err := r.collection.ReplaceOne(context.Background(), bson.M{"_id": ugpgGuidance.ID}, ugpgGuidance)
-	if err != nil {
-		return err
-	}
-	return nil
+	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": ugpgGuidance.ID}, bson.M{"$set": ugpgGuidance})
+	return err
 }
 
-func (r *UGPGGuidanceRepo) DeleteUGPGGuidance(id string) error {
+func (r *UGPGGuidanceRepo) DeleteUGPGGuidance(id primitive.ObjectID) error {
 	_, err := r.collection.DeleteOne(context.Background(), bson.M{"_id": id})
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }

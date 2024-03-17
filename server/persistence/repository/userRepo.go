@@ -15,7 +15,7 @@ type UserRepo struct {
 
 func NewUserRepo(db *mongo.Database) *UserRepo {
 	return &UserRepo{
-		collection: db.Collection("Users"),
+		collection: db.Collection("User"),
 	}
 }
 
@@ -55,26 +55,22 @@ func (r *UserRepo) GetAllUsers() ([]models.User, error) {
 	return users, nil
 }
 
-func (r *UserRepo) CreateUser(user *models.User) error {
-	_, err := r.collection.InsertOne(context.Background(), user)
+func (r *UserRepo) CreateUser(user *models.User) (*primitive.ObjectID, error) {
+	result, err := r.collection.InsertOne(context.Background(), user)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+	newUserId := result.InsertedID.(primitive.ObjectID)
+	return &newUserId, nil
+
 }
 
 func (r *UserRepo) UpdateUser(user *models.User) error {
 	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": user.ID}, bson.M{"$set": user})
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (r *UserRepo) DeleteUser(id primitive.ObjectID) error {
 	_, err := r.collection.DeleteOne(context.Background(), bson.M{"_id": id})
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
