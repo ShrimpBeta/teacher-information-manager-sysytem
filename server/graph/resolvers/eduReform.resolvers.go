@@ -8,11 +8,33 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
+
+	"github.com/99designs/gqlgen/graphql"
 )
 
 // CreateEduReform is the resolver for the createEduReform field.
-func (r *mutationResolver) CreateEduReform(ctx context.Context, input *graphql_models.NewEduReform) (*graphql_models.EduReform, error) {
+func (r *mutationResolver) CreateEduReform(ctx context.Context, newEduReformData graphql_models.NewEduReform) (*graphql_models.EduReform, error) {
 	panic(fmt.Errorf("not implemented: CreateEduReform - createEduReform"))
+}
+
+// UpdateEduReform is the resolver for the updateEduReform field.
+func (r *mutationResolver) UpdateEduReform(ctx context.Context, id string, eduReformData graphql_models.UpdateEduReform) (*graphql_models.EduReform, error) {
+	panic(fmt.Errorf("not implemented: UpdateEduReform - updateEduReform"))
+}
+
+// DeleteEduReform is the resolver for the deleteEduReform field.
+func (r *mutationResolver) DeleteEduReform(ctx context.Context, id string) (*graphql_models.EduReform, error) {
+	panic(fmt.Errorf("not implemented: DeleteEduReform - deleteEduReform"))
+}
+
+// UploadEduReform is the resolver for the uploadEduReform field.
+func (r *mutationResolver) UploadEduReform(ctx context.Context, file graphql.Upload) (*graphql_models.EduReformPreview, error) {
+	panic(fmt.Errorf("not implemented: UploadEduReform - uploadEduReform"))
+}
+
+// UploadEduReforms is the resolver for the uploadEduReforms field.
+func (r *mutationResolver) UploadEduReforms(ctx context.Context, file graphql.Upload) ([]*graphql_models.EduReformPreview, error) {
+	panic(fmt.Errorf("not implemented: UploadEduReforms - uploadEduReforms"))
 }
 
 // EduReform is the resolver for the eduReform field.
@@ -21,6 +43,16 @@ func (r *queryResolver) EduReform(ctx context.Context, id string) (*graphql_mode
 }
 
 // EduReforms is the resolver for the eduReforms field.
-func (r *queryResolver) EduReforms(ctx context.Context, teacherid string) ([]*graphql_models.EduReform, error) {
+func (r *queryResolver) EduReforms(ctx context.Context, userID string) ([]*graphql_models.EduReform, error) {
 	panic(fmt.Errorf("not implemented: EduReforms - eduReforms"))
+}
+
+// EduReformsByName is the resolver for the eduReformsByName field.
+func (r *queryResolver) EduReformsByName(ctx context.Context, name string) ([]*graphql_models.EduReform, error) {
+	panic(fmt.Errorf("not implemented: EduReformsByName - eduReformsByName"))
+}
+
+// EduReformsByAchievement is the resolver for the eduReformsByAchievement field.
+func (r *queryResolver) EduReformsByAchievement(ctx context.Context, achievement string) ([]*graphql_models.EduReform, error) {
+	panic(fmt.Errorf("not implemented: EduReformsByAchievement - eduReformsByAchievement"))
 }

@@ -11,18 +11,38 @@ import (
 )
 
 // CreateSciResearch is the resolver for the createSciResearch field.
-func (r *mutationResolver) CreateSciResearch(ctx context.Context, input graphql_models.NewSciResearch) (*graphql_models.SciResearch, error) {
+func (r *mutationResolver) CreateSciResearch(ctx context.Context, newSciResearchData graphql_models.NewSciResearch) (*graphql_models.SciResearch, error) {
 	panic(fmt.Errorf("not implemented: CreateSciResearch - createSciResearch"))
 }
 
-// AwardSciResearch is the resolver for the awardSciResearch field.
-func (r *queryResolver) AwardSciResearch(ctx context.Context, id string) (*graphql_models.AwardSciResearch, error) {
-	panic(fmt.Errorf("not implemented: AwardSciResearch - awardSciResearch"))
+// UpdateSciResearch is the resolver for the updateSciResearch field.
+func (r *mutationResolver) UpdateSciResearch(ctx context.Context, sciResearchID string, sciResearchData graphql_models.UpdateSciResearch) (*graphql_models.SciResearch, error) {
+	panic(fmt.Errorf("not implemented: UpdateSciResearch - updateSciResearch"))
 }
 
-// AwardSciResearchs is the resolver for the awardSciResearchs field.
-func (r *queryResolver) AwardSciResearchs(ctx context.Context, teacherID string) ([]*graphql_models.AwardSciResearch, error) {
-	panic(fmt.Errorf("not implemented: AwardSciResearchs - awardSciResearchs"))
+// DeleteSciResearch is the resolver for the deleteSciResearch field.
+func (r *mutationResolver) DeleteSciResearch(ctx context.Context, sciResearchID string) (*graphql_models.SciResearch, error) {
+	panic(fmt.Errorf("not implemented: DeleteSciResearch - deleteSciResearch"))
+}
+
+// CreareAwardSciResearch is the resolver for the creareAwardSciResearch field.
+func (r *mutationResolver) CreareAwardSciResearch(ctx context.Context, newAwardSciResearchData graphql_models.NewAwardSciResearch) (*graphql_models.SciResearch, error) {
+	panic(fmt.Errorf("not implemented: CreareAwardSciResearch - creareAwardSciResearch"))
+}
+
+// AddAwardRecord is the resolver for the addAwardRecord field.
+func (r *mutationResolver) AddAwardRecord(ctx context.Context, sciResearchID string, newAwardRecordData graphql_models.NewAwardRecord) (*graphql_models.SciResearch, error) {
+	panic(fmt.Errorf("not implemented: AddAwardRecord - addAwardRecord"))
+}
+
+// UpdateAwardRecord is the resolver for the updateAwardRecord field.
+func (r *mutationResolver) UpdateAwardRecord(ctx context.Context, awardRecordID string) (*graphql_models.AwardRecord, error) {
+	panic(fmt.Errorf("not implemented: UpdateAwardRecord - updateAwardRecord"))
+}
+
+// DeleteAwardRecord is the resolver for the deleteAwardRecord field.
+func (r *mutationResolver) DeleteAwardRecord(ctx context.Context, sciResearchID string, awardRecordID string) (*graphql_models.AwardRecord, error) {
+	panic(fmt.Errorf("not implemented: DeleteAwardRecord - deleteAwardRecord"))
 }
 
 // SciResearch is the resolver for the sciResearch field.
@@ -31,6 +51,26 @@ func (r *queryResolver) SciResearch(ctx context.Context, id string) (*graphql_mo
 }
 
 // SciResearchs is the resolver for the sciResearchs field.
-func (r *queryResolver) SciResearchs(ctx context.Context, teacherID string) ([]*graphql_models.AwardSciResearch, error) {
+func (r *queryResolver) SciResearchs(ctx context.Context, userID string) ([]*graphql_models.SciResearch, error) {
 	panic(fmt.Errorf("not implemented: SciResearchs - sciResearchs"))
+}
+
+// SciResearchsByName is the resolver for the sciResearchsByName field.
+func (r *queryResolver) SciResearchsByName(ctx context.Context, userID string, title string) ([]*graphql_models.SciResearch, error) {
+	panic(fmt.Errorf("not implemented: SciResearchsByName - sciResearchsByName"))
+}
+
+// AwardSciResearch is the resolver for the awardSciResearch field.
+func (r *queryResolver) AwardSciResearch(ctx context.Context, id string) (*graphql_models.SciResearch, error) {
+	panic(fmt.Errorf("not implemented: AwardSciResearch - awardSciResearch"))
+}
+
+// AwardSciResearchs is the resolver for the awardSciResearchs field.
+func (r *queryResolver) AwardSciResearchs(ctx context.Context, userID string) ([]*graphql_models.SciResearch, error) {
+	panic(fmt.Errorf("not implemented: AwardSciResearchs - awardSciResearchs"))
+}
+
+// AwardSciResearchsByName is the resolver for the awardSciResearchsByName field.
+func (r *queryResolver) AwardSciResearchsByName(ctx context.Context, userID string, title string) ([]*graphql_models.SciResearch, error) {
+	panic(fmt.Errorf("not implemented: AwardSciResearchsByName - awardSciResearchsByName"))
 }

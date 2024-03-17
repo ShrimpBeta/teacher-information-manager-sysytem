@@ -11,12 +11,12 @@ import (
 )
 
 // CreatePassword is the resolver for the createPassword field.
-func (r *mutationResolver) CreatePassword(ctx context.Context, userid string, url *string, appName *string, account string, password string, description *string) (*graphql_models.Password, error) {
+func (r *mutationResolver) CreatePassword(ctx context.Context, userid string, newPasswordData graphql_models.NewPassword) (*graphql_models.Password, error) {
 	panic(fmt.Errorf("not implemented: CreatePassword - createPassword"))
 }
 
 // UpdatePassword is the resolver for the updatePassword field.
-func (r *mutationResolver) UpdatePassword(ctx context.Context, id string, url *string, appName *string, account *string, password *string, description *string) (*graphql_models.Password, error) {
+func (r *mutationResolver) UpdatePassword(ctx context.Context, id string, passwordData graphql_models.UpdatePassword) (*graphql_models.Password, error) {
 	panic(fmt.Errorf("not implemented: UpdatePassword - updatePassword"))
 }
 
@@ -31,6 +31,6 @@ func (r *queryResolver) Password(ctx context.Context, id string, userid string) 
 }
 
 // Passwords is the resolver for the passwords field.
-func (r *queryResolver) Passwords(ctx context.Context, userid string) ([]*graphql_models.Password, error) {
+func (r *queryResolver) Passwords(ctx context.Context, userID string) ([]*graphql_models.Password, error) {
 	panic(fmt.Errorf("not implemented: Passwords - passwords"))
 }

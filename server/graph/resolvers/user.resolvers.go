@@ -16,27 +16,32 @@ func (r *mutationResolver) DeleteAccount(ctx context.Context, id string) (*graph
 }
 
 // UpdateAccountPassword is the resolver for the updateAccountPassword field.
-func (r *mutationResolver) UpdateAccountPassword(ctx context.Context, id string, input *graphql_models.ChangePassword) (*string, error) {
+func (r *mutationResolver) UpdateAccountPassword(ctx context.Context, id string, passwordData *graphql_models.ChangePassword) (string, error) {
 	panic(fmt.Errorf("not implemented: UpdateAccountPassword - updateAccountPassword"))
 }
 
 // ForgetAccountPassword is the resolver for the forgetAccountPassword field.
-func (r *mutationResolver) ForgetAccountPassword(ctx context.Context, input *graphql_models.ResetPassword) (*string, error) {
+func (r *mutationResolver) ForgetAccountPassword(ctx context.Context, passwordCodeData *graphql_models.ResetPassword) (string, error) {
 	panic(fmt.Errorf("not implemented: ForgetAccountPassword - forgetAccountPassword"))
 }
 
-// UpdateUserInfo is the resolver for the updateUserInfo field.
-func (r *mutationResolver) UpdateUserInfo(ctx context.Context, id string, input graphql_models.UserInfo) (*graphql_models.User, error) {
-	panic(fmt.Errorf("not implemented: UpdateUserInfo - updateUserInfo"))
+// UpdateUser is the resolver for the updateUser field.
+func (r *mutationResolver) UpdateUser(ctx context.Context, id string, userData graphql_models.UpdateUser) (*graphql_models.User, error) {
+	panic(fmt.Errorf("not implemented: UpdateUser - updateUser"))
+}
+
+// CreateWechatToken is the resolver for the createWechatToken field.
+func (r *mutationResolver) CreateWechatToken(ctx context.Context, id string, token string) (bool, error) {
+	panic(fmt.Errorf("not implemented: CreateWechatToken - createWechatToken"))
 }
 
 // UpdateWechatToken is the resolver for the updateWechatToken field.
-func (r *mutationResolver) UpdateWechatToken(ctx context.Context, id string, token *string) (*bool, error) {
+func (r *mutationResolver) UpdateWechatToken(ctx context.Context, id string, token string) (bool, error) {
 	panic(fmt.Errorf("not implemented: UpdateWechatToken - updateWechatToken"))
 }
 
 // DeleteWechatToken is the resolver for the deleteWechatToken field.
-func (r *mutationResolver) DeleteWechatToken(ctx context.Context, id string) (*bool, error) {
+func (r *mutationResolver) DeleteWechatToken(ctx context.Context, id string) (bool, error) {
 	panic(fmt.Errorf("not implemented: DeleteWechatToken - deleteWechatToken"))
 }
 

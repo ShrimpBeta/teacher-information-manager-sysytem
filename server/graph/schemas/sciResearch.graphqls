@@ -1,6 +1,6 @@
 # 科研项目管理
 
-type AwardSciResearch {
+type AwardRecord {
   id: ID!
   awardName: String!
   awardDate: Time
@@ -13,8 +13,8 @@ type AwardSciResearch {
 type SciResearch {
   id: ID!
   teachersIn: [UserExport]!
-  teachersOut: [String]!
-  number: String
+  teachersOut: [String]
+  number: String!
   title: String!
   startDate: Time
   duration: String
@@ -23,22 +23,29 @@ type SciResearch {
   achievement: String
   fund: String
   isAward: Boolean!
-  awards: [AwardSciResearch]!
+  awards: [AwardRecord]
   createdAt: Time!
   updateAt: Time!
 }
 
-input NewAwardSciResearch {
+input NewAwardRecord {
   awardName: String!
   awardDate: Time
   awardlevel: String
   awardRank: String
 }
 
-input NewSciResearch {
+input UpdateAwardRecord {
+  awardName: String
+  awardDate: Time
+  awardlevel: String
+  awardRank: String
+}
+
+input NewAwardSciResearch {
   teachersIn: [ID]!
-  teachersOut: [String]!
-  number: String
+  teachersOut: [String]
+  number: String!
   title: String!
   startDate: Time
   duration: String
@@ -47,16 +54,61 @@ input NewSciResearch {
   achievement: String
   fund: String
   isAward: Boolean!
-  awards: [NewAwardSciResearch]!
+  awards: [NewAwardRecord]!
+}
+
+input NewSciResearch {
+  teachersIn: [ID]!
+  teachersOut: [String]
+  number: String!
+  title: String!
+  startDate: Time
+  duration: String
+  level: String
+  rank: String
+  achievement: String
+  fund: String
+}
+
+input UpdateSciResearch {
+  teachersIn: [ID]
+  teachersOut: [String]
+  number: String
+  title: String
+  startDate: Time
+  duration: String
+  level: String
+  rank: String
+  achievement: String
+  fund: String
 }
 
 extend type Query {
-  awardSciResearch(id: ID!): AwardSciResearch!
-  awardSciResearchs(teacherId: ID!): [AwardSciResearch]!
   sciResearch(id: ID!): SciResearch!
-  sciResearchs(teacherId: ID!): [AwardSciResearch]!
+  sciResearchs(userId: ID!): [SciResearch]!
+  sciResearchsByName(userId: ID!, title: String!): [SciResearch]!
+
+  awardSciResearch(id: ID!): SciResearch!
+  awardSciResearchs(userId: ID!): [SciResearch]!
+  awardSciResearchsByName(userId: ID!, title: String!): [SciResearch]!
 }
 
 extend type Mutation {
-  createSciResearch(input: NewSciResearch!): SciResearch
+  createSciResearch(newSciResearchData: NewSciResearch!): SciResearch!
+  updateSciResearch(
+    sciResearchID: ID!
+    sciResearchData: UpdateSciResearch!
+  ): SciResearch!
+  deleteSciResearch(sciResearchID: ID!): SciResearch!
+
+  creareAwardSciResearch(
+    newAwardSciResearchData: NewAwardSciResearch!
+  ): SciResearch!
+
+  addAwardRecord(
+    sciResearchId: ID!
+    newAwardRecordData: NewAwardRecord!
+  ): SciResearch!
+  updateAwardRecord(awardRecordId: ID!): AwardRecord!
+  deleteAwardRecord(sciResearchId: ID!, awardRecordId: ID!): AwardRecord!
 }

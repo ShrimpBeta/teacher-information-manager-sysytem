@@ -12,7 +12,7 @@ import (
 )
 
 // CreateAccount is the resolver for the createAccount field.
-func (r *mutationResolver) CreateAccount(ctx context.Context, input graphql_models.NewUser) (*graphql_models.UserCreate, error) {
+func (r *mutationResolver) CreateAccount(ctx context.Context, newUserData graphql_models.NewUser) (*graphql_models.UserCreate, error) {
 	panic(fmt.Errorf("not implemented: CreateAccount - createAccount"))
 }
 

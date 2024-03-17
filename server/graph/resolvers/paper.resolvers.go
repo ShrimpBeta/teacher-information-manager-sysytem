@@ -8,12 +8,33 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
-	"time"
+
+	"github.com/99designs/gqlgen/graphql"
 )
 
 // CreatePaper is the resolver for the createPaper field.
-func (r *mutationResolver) CreatePaper(ctx context.Context, teachersIn []*string, teachersOut []*string, title *string, publishDate *time.Time, rank *string, journalName *string, journalLevel *string) (*graphql_models.Paper, error) {
+func (r *mutationResolver) CreatePaper(ctx context.Context, newPaperData graphql_models.NewPaper) (*graphql_models.Paper, error) {
 	panic(fmt.Errorf("not implemented: CreatePaper - createPaper"))
+}
+
+// UpdatePaper is the resolver for the updatePaper field.
+func (r *mutationResolver) UpdatePaper(ctx context.Context, id string, paperDataL graphql_models.UpdatePaper) (*graphql_models.Paper, error) {
+	panic(fmt.Errorf("not implemented: UpdatePaper - updatePaper"))
+}
+
+// DeletePaper is the resolver for the deletePaper field.
+func (r *mutationResolver) DeletePaper(ctx context.Context, id string) (*graphql_models.Paper, error) {
+	panic(fmt.Errorf("not implemented: DeletePaper - deletePaper"))
+}
+
+// UploadPaper is the resolver for the uploadPaper field.
+func (r *mutationResolver) UploadPaper(ctx context.Context, file graphql.Upload) (*graphql_models.Paper, error) {
+	panic(fmt.Errorf("not implemented: UploadPaper - uploadPaper"))
+}
+
+// UploadPapers is the resolver for the uploadPapers field.
+func (r *mutationResolver) UploadPapers(ctx context.Context, file graphql.Upload) ([]*graphql_models.Paper, error) {
+	panic(fmt.Errorf("not implemented: UploadPapers - uploadPapers"))
 }
 
 // Paper is the resolver for the paper field.
@@ -22,6 +43,11 @@ func (r *queryResolver) Paper(ctx context.Context, id string) (*graphql_models.P
 }
 
 // Papers is the resolver for the papers field.
-func (r *queryResolver) Papers(ctx context.Context, teacherID string) ([]*graphql_models.Paper, error) {
+func (r *queryResolver) Papers(ctx context.Context, userID string) ([]*graphql_models.Paper, error) {
 	panic(fmt.Errorf("not implemented: Papers - papers"))
+}
+
+// PapersByName is the resolver for the papersByName field.
+func (r *queryResolver) PapersByName(ctx context.Context, name string) ([]*graphql_models.Paper, error) {
+	panic(fmt.Errorf("not implemented: PapersByName - papersByName"))
 }

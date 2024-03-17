@@ -8,7 +8,34 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
+
+	"github.com/99designs/gqlgen/graphql"
 )
+
+// CreateMonograph is the resolver for the createMonograph field.
+func (r *mutationResolver) CreateMonograph(ctx context.Context, newMonographData graphql_models.NewMonograph) (*graphql_models.Monograph, error) {
+	panic(fmt.Errorf("not implemented: CreateMonograph - createMonograph"))
+}
+
+// UpdateMonograph is the resolver for the updateMonograph field.
+func (r *mutationResolver) UpdateMonograph(ctx context.Context, id string, monographData graphql_models.UpdateMonograph) (*graphql_models.Monograph, error) {
+	panic(fmt.Errorf("not implemented: UpdateMonograph - updateMonograph"))
+}
+
+// DeleteMonograph is the resolver for the deleteMonograph field.
+func (r *mutationResolver) DeleteMonograph(ctx context.Context, id string) (*graphql_models.Monograph, error) {
+	panic(fmt.Errorf("not implemented: DeleteMonograph - deleteMonograph"))
+}
+
+// UploadMonograph is the resolver for the uploadMonograph field.
+func (r *mutationResolver) UploadMonograph(ctx context.Context, file graphql.Upload) (*graphql_models.MonographPreview, error) {
+	panic(fmt.Errorf("not implemented: UploadMonograph - uploadMonograph"))
+}
+
+// UploadMonographs is the resolver for the uploadMonographs field.
+func (r *mutationResolver) UploadMonographs(ctx context.Context, file graphql.Upload) ([]*graphql_models.MonographPreview, error) {
+	panic(fmt.Errorf("not implemented: UploadMonographs - uploadMonographs"))
+}
 
 // Monograph is the resolver for the monograph field.
 func (r *queryResolver) Monograph(ctx context.Context, id string) (*graphql_models.Monograph, error) {
@@ -16,6 +43,11 @@ func (r *queryResolver) Monograph(ctx context.Context, id string) (*graphql_mode
 }
 
 // Monographs is the resolver for the monographs field.
-func (r *queryResolver) Monographs(ctx context.Context, teacherid string) ([]*graphql_models.Monograph, error) {
+func (r *queryResolver) Monographs(ctx context.Context, userID string) ([]*graphql_models.Monograph, error) {
 	panic(fmt.Errorf("not implemented: Monographs - monographs"))
+}
+
+// MonographsByName is the resolver for the monographsByName field.
+func (r *queryResolver) MonographsByName(ctx context.Context, name string) ([]*graphql_models.Mentorship, error) {
+	panic(fmt.Errorf("not implemented: MonographsByName - monographsByName"))
 }

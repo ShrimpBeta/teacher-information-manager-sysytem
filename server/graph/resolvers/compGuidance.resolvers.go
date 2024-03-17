@@ -8,11 +8,33 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
+
+	"github.com/99designs/gqlgen/graphql"
 )
 
 // CreateCompGuidance is the resolver for the createCompGuidance field.
-func (r *mutationResolver) CreateCompGuidance(ctx context.Context, userID string, newGuidanceData *graphql_models.NewCompGuidance) (*graphql_models.CompGuidance, error) {
+func (r *mutationResolver) CreateCompGuidance(ctx context.Context, userID string, newGuidanceData graphql_models.NewCompGuidance) (*graphql_models.CompGuidance, error) {
 	panic(fmt.Errorf("not implemented: CreateCompGuidance - createCompGuidance"))
+}
+
+// UpdateCompGuidance is the resolver for the updateCompGuidance field.
+func (r *mutationResolver) UpdateCompGuidance(ctx context.Context, id string, compGuidanceData graphql_models.UpdateCompGuidance) (*graphql_models.CompGuidance, error) {
+	panic(fmt.Errorf("not implemented: UpdateCompGuidance - updateCompGuidance"))
+}
+
+// DeleteCompGuidance is the resolver for the deleteCompGuidance field.
+func (r *mutationResolver) DeleteCompGuidance(ctx context.Context, id string) (*graphql_models.CompGuidance, error) {
+	panic(fmt.Errorf("not implemented: DeleteCompGuidance - deleteCompGuidance"))
+}
+
+// UploadCompGuidance is the resolver for the uploadCompGuidance field.
+func (r *mutationResolver) UploadCompGuidance(ctx context.Context, file graphql.Upload) (*graphql_models.CompGuidancePreview, error) {
+	panic(fmt.Errorf("not implemented: UploadCompGuidance - uploadCompGuidance"))
+}
+
+// UploadCompGuidances is the resolver for the uploadCompGuidances field.
+func (r *mutationResolver) UploadCompGuidances(ctx context.Context, file graphql.Upload) ([]*graphql_models.CompGuidancePreview, error) {
+	panic(fmt.Errorf("not implemented: UploadCompGuidances - uploadCompGuidances"))
 }
 
 // CompGuidance is the resolver for the compGuidance field.
@@ -23,4 +45,14 @@ func (r *queryResolver) CompGuidance(ctx context.Context, id string) (*graphql_m
 // CompGuidancesForUser is the resolver for the compGuidancesForUser field.
 func (r *queryResolver) CompGuidancesForUser(ctx context.Context, userID string) ([]*graphql_models.CompGuidance, error) {
 	panic(fmt.Errorf("not implemented: CompGuidancesForUser - compGuidancesForUser"))
+}
+
+// CompGuidancesByProjectName is the resolver for the compGuidancesByProjectName field.
+func (r *queryResolver) CompGuidancesByProjectName(ctx context.Context, name string) ([]*graphql_models.CompGuidance, error) {
+	panic(fmt.Errorf("not implemented: CompGuidancesByProjectName - compGuidancesByProjectName"))
+}
+
+// CompGuidancesByAwardStatus is the resolver for the compGuidancesByAwardStatus field.
+func (r *queryResolver) CompGuidancesByAwardStatus(ctx context.Context, award string) ([]*graphql_models.CompGuidance, error) {
+	panic(fmt.Errorf("not implemented: CompGuidancesByAwardStatus - compGuidancesByAwardStatus"))
 }

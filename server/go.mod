@@ -11,6 +11,7 @@ require (
 
 require (
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect
+	github.com/issue9/identicon/v2 v2.1.2 // indirect
 	github.com/kr/text v0.2.0 // indirect
 )
 

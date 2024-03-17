@@ -15,6 +15,19 @@ type EduReform {
   updateAt: Time!
 }
 
+type EduReformPreview {
+  teachersIn: [UserExport]
+  teachersOut: [String]
+  number: String
+  title: String
+  startDate: Time
+  duration: String
+  level: String
+  rank: String
+  achievement: String
+  fund: String
+}
+
 input NewEduReform {
   teachersIn: [ID]!
   teachersOut: [String]
@@ -28,11 +41,32 @@ input NewEduReform {
   fund: String
 }
 
+input UpdateEduReform {
+  teachersIn: [ID]
+  teachersOut: [String]
+  number: String
+  title: String
+  startDate: Time
+  duration: String
+  level: String
+  rank: String
+  achievement: String
+  fund: String
+}
+
 extend type Query {
   eduReform(id: ID!): EduReform
-  eduReforms(teacherid: ID!): [EduReform]!
+  eduReforms(userId: ID!): [EduReform]!
+
+  eduReformsByName(name: String!): [EduReform]!
+  eduReformsByAchievement(achievement: String!): [EduReform]!
 }
 
 extend type Mutation {
-  createEduReform(input: NewEduReform): EduReform!
+  createEduReform(newEduReformData: NewEduReform!): EduReform!
+  updateEduReform(id: ID!, eduReformData: UpdateEduReform!): EduReform!
+  deleteEduReform(id: ID!): EduReform!
+
+  uploadEduReform(file: Upload!): EduReformPreview!
+  uploadEduReforms(file: Upload!): [EduReformPreview]!
 }

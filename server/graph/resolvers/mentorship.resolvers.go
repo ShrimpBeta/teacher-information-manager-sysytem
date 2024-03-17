@@ -8,7 +8,34 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
+
+	"github.com/99designs/gqlgen/graphql"
 )
+
+// CreateMentorship is the resolver for the createMentorship field.
+func (r *mutationResolver) CreateMentorship(ctx context.Context, userID string, newMentorshipData graphql_models.NewMentorship) (*graphql_models.Mentorship, error) {
+	panic(fmt.Errorf("not implemented: CreateMentorship - createMentorship"))
+}
+
+// UpdateMentorship is the resolver for the updateMentorship field.
+func (r *mutationResolver) UpdateMentorship(ctx context.Context, id string, mentorshipData *graphql_models.UpdateMentorship) (*graphql_models.Mentorship, error) {
+	panic(fmt.Errorf("not implemented: UpdateMentorship - updateMentorship"))
+}
+
+// DeleteMentorship is the resolver for the deleteMentorship field.
+func (r *mutationResolver) DeleteMentorship(ctx context.Context, id string) (*graphql_models.Mentorship, error) {
+	panic(fmt.Errorf("not implemented: DeleteMentorship - deleteMentorship"))
+}
+
+// UploadMentorship is the resolver for the uploadMentorship field.
+func (r *mutationResolver) UploadMentorship(ctx context.Context, file graphql.Upload) (*graphql_models.MentorshipPreview, error) {
+	panic(fmt.Errorf("not implemented: UploadMentorship - uploadMentorship"))
+}
+
+// UploadMentorships is the resolver for the uploadMentorships field.
+func (r *mutationResolver) UploadMentorships(ctx context.Context, file graphql.Upload) ([]*graphql_models.MentorshipPreview, error) {
+	panic(fmt.Errorf("not implemented: UploadMentorships - uploadMentorships"))
+}
 
 // Mentorship is the resolver for the mentorship field.
 func (r *queryResolver) Mentorship(ctx context.Context, id string) (*graphql_models.Mentorship, error) {
@@ -18,4 +45,9 @@ func (r *queryResolver) Mentorship(ctx context.Context, id string) (*graphql_mod
 // Mentorships is the resolver for the mentorships field.
 func (r *queryResolver) Mentorships(ctx context.Context, teacherid string) ([]*graphql_models.Mentorship, error) {
 	panic(fmt.Errorf("not implemented: Mentorships - mentorships"))
+}
+
+// MentorshipsByName is the resolver for the mentorshipsByName field.
+func (r *queryResolver) MentorshipsByName(ctx context.Context, name string) ([]*graphql_models.Mentorship, error) {
+	panic(fmt.Errorf("not implemented: MentorshipsByName - mentorshipsByName"))
 }

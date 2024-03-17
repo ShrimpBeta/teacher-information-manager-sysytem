@@ -6,8 +6,8 @@ import (
 	"os/signal"
 	"server/graph"
 	"server/graph/resolvers"
+	"server/middlewares"
 	"server/persistence/database"
-	"server/services/auth"
 	"syscall"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -18,6 +18,7 @@ import (
 
 const defaultPort = "8080"
 const defaultMongodbUrl = "mongodb://localhost:27017"
+const ServeURL = "http://localhost:8080"
 
 func graphHandler() gin.HandlerFunc {
 	h := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolvers.Resolver{}}))
@@ -43,13 +44,19 @@ func main() {
 	// Setting up Gin
 	r := gin.Default()
 
+	// add Static FileServer
+	r.Static("/static", "./assets")
+
+	// add CORS Middleware
 	r.Use(cors.New(cors.Config{
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
 	}))
 
 	// add Auth Middleware
-	r.Use(auth.AuthMiddleware())
+	r.Use(middlewares.AuthMiddleware())
+	// add ginContext Middleware
+	r.Use(middlewares.GinContextToContextMiddleware())
 
 	r.POST("/query", graphHandler())
 	r.GET("/", playgroundHandler())

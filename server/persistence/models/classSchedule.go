@@ -22,7 +22,7 @@ type Course struct {
 	Weeks        []string           `bson:"weeks"`
 	ClassTimes   []ClassTime        `bson:"classTimes"`
 	StudentCount uint16             `bson:"studentCount,omitempty"`
-	Background   string             `bson:"background,omitempty"`
+	Color        string             `bson:"color,omitempty"`
 	CreateAt     time.Time          `bson:"createAt"`
 	UpdateAt     time.Time          `bson:"updateAt"`
 }
@@ -32,7 +32,7 @@ type AcademicTerm struct {
 	ID        primitive.ObjectID   `bson:"_id"`
 	TeacherId primitive.ObjectID   `bson:"teacherId"`
 	Name      string               `bson:"name"`
-	Courses   []primitive.ObjectID `bson:"courses"`
+	Courses   []primitive.ObjectID `bson:"courses,omitempty"`
 	CreateAt  time.Time            `bson:"createAt"`
 	UpdateAt  time.Time            `bson:"updateAt"`
 }

@@ -13,13 +13,40 @@ type UGPGGuidance {
   updateAt: Time!
 }
 
+input NewUGPGGuidance {
+  studentName: String!
+  thesisTopic: String!
+  openingCheckDate: Time
+  openingCheckResult: String
+  midtermCheckDate: Time
+  midtermCheckResult: String
+  defenseDate: Time
+  defenseResult: String
+}
+
+input UpdateUGPGGuidance {
+  studentName: String
+  thesisTopic: String
+  openingCheckDate: Time
+  openingCheckResult: String
+  midtermCheckDate: Time
+  midtermCheckResult: String
+  defenseDate: Time
+  defenseResult: String
+}
+
 extend type Query {
   uGPGGuidance(id: ID!): UGPGGuidance!
   uGPGGuidances(teacherId: ID!): [UGPGGuidance]!
+
+  uGPGGuidancesByTopicName(name: String!): [UGPGGuidance]!
 }
 
-# extend type Mutation {
-#   createUPGuidance(): UPGuidance!
-#   updateUPGuidance(): UPGuidance!
-#   deleteUPGuidance(    id: ID!  ): UPGuidance!
-# }
+extend type Mutation {
+  createUPGuidance(newUGPGGuidanceData: NewUGPGGuidance!): UPGuidance!
+  updateUPGuidance(
+    uGPGGuidanceId: ID!
+    uGPGGuidanceData: UpdateUGPGGuidance!
+  ): UPGuidance!
+  deleteUPGuidance(uGPGGuidanceId: ID!): UPGuidance!
+}

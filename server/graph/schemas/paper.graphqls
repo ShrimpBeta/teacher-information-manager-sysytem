@@ -2,8 +2,8 @@
 type Paper {
   id: ID!
   teachersIn: [UserExport]!
-  teachersOut: [String]!
-  title: String
+  teachersOut: [String]
+  title: String!
   publishDate: Time
   rank: String
   journalName: String
@@ -12,19 +12,48 @@ type Paper {
   updateAt: Time!
 }
 
+type PaperPreview {
+  teachersIn: [UserExport]
+  teachersOut: [String]
+  title: String
+  publishDate: Time
+  rank: String
+  journalName: String
+  journalLevel: String
+}
+
+input NewPaper {
+  teachersIn: [ID]!
+  teachersOut: [String]
+  title: String!
+  publishDate: Time
+  rank: String
+  journalName: String
+  journalLevel: String
+}
+
+input UpdatePaper {
+  teachersIn: [ID]
+  teachersOut: [String]
+  title: String
+  publishDate: Time
+  rank: String
+  journalName: String
+  journalLevel: String
+}
+
 extend type Query {
   paper(id: ID!): Paper!
-  papers(teacherId: ID!): [Paper]!
+  papers(userId: ID!): [Paper]!
+
+  papersByName(name: String!): [Paper]!
 }
 
 extend type Mutation {
-  createPaper(
-    teachersIn: [ID]!
-    teachersOut: [String]!
-    title: String
-    publishDate: Time
-    rank: String
-    journalName: String
-    journalLevel: String
-  ): Paper!
+  createPaper(newPaperData: NewPaper!): Paper!
+  updatePaper(id: ID!, paperDataL: UpdatePaper!): Paper!
+  deletePaper(id: ID!): Paper!
+
+  uploadPaper(file: Upload!): Paper!
+  uploadPapers(file: Upload!): [Paper]!
 }

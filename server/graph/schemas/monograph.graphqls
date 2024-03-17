@@ -3,7 +3,7 @@ type Monograph {
   id: ID!
   teachersIn: [UserExport]!
   teachersOut: [String]
-  title: String
+  title: String!
   publishDate: Time
   publishLevel: String
   rank: String
@@ -11,11 +11,45 @@ type Monograph {
   updateAt: Time!
 }
 
-extend type Query {
-  monograph(id: ID!): Monograph!
-  monographs(teacherid: ID!): [Monograph]!
+type MonographPreview {
+  teachersIn: [UserExport]
+  teachersOut: [String]
+  title: String
+  publishDate: Time
+  publishLevel: String
+  rank: String
 }
 
-# extend type Mutation{
+input NewMonograph {
+  teachersIn: [ID]!
+  teachersOut: [String]
+  title: String!
+  publishDate: Time
+  publishLevel: String
+  rank: String
+}
 
-# }
+input UpdateMonograph {
+  teachersIn: [ID]
+  teachersOut: [String]
+  title: String
+  publishDate: Time
+  publishLevel: String
+  rank: String
+}
+
+extend type Query {
+  monograph(id: ID!): Monograph!
+  monographs(userId: ID!): [Monograph]!
+
+  monographsByName(name: String!): [Mentorship]!
+}
+
+extend type Mutation {
+  createMonograph(newMonographData: NewMonograph!): Monograph!
+  updateMonograph(id: ID!, monographData: UpdateMonograph!): Monograph!
+  deleteMonograph(id: ID!): Monograph!
+
+  uploadMonograph(file: Upload!): MonographPreview!
+  uploadMonographs(file: Upload!): [MonographPreview]!
+}

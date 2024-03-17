@@ -9,11 +9,39 @@ type Mentorship {
   updateAt: Time!
 }
 
+type MentorshipPreview {
+  projectName: String
+  students: [String]
+  grade: String
+  guidanceDate: Time
+}
+
+input NewMentorship {
+  projectName: String!
+  students: [String]!
+  grade: String
+  guidanceDate: Time
+}
+
+input UpdateMentorship {
+  projectName: String
+  students: [String]
+  grade: String
+  guidanceDate: Time
+}
+
 extend type Query {
   mentorship(id: ID!): Mentorship!
   mentorships(teacherid: ID!): [Mentorship]!
+
+  mentorshipsByName(name: String!): [Mentorship]!
 }
 
-# extend type Mutation{
+extend type Mutation {
+  createMentorship(userId: ID!, newMentorshipData: NewMentorship!): Mentorship!
+  updateMentorship(id: ID!, MentorshipData: UpdateMentorship): Mentorship!
+  deleteMentorship(id: ID!): Mentorship!
 
-# }
+  uploadMentorship(file: Upload!): MentorshipPreview!
+  uploadMentorships(file: Upload!): [MentorshipPreview]!
+}

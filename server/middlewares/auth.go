@@ -1,6 +1,7 @@
-package auth
+package middlewares
 
 import (
+	"fmt"
 	"net/http"
 	"server/persistence/models"
 	"server/services/jwt"
@@ -42,12 +43,17 @@ func AuthMiddleware() gin.HandlerFunc {
 	}
 }
 
-func ForContext(ctx *gin.Context) models.User {
+func ForContext(ctx *gin.Context) (*models.User, error) {
 	// get user
 	raw, exist := ctx.Get("user")
 	if !exist {
-		return models.User{}
+		err := fmt.Errorf("could not retrieve user")
+		return nil, err
 	}
-	user, _ := raw.(*models.User)
-	return *user
+	user, ok := raw.(*models.User)
+	if !ok {
+		err := fmt.Errorf("user has wrong type")
+		return nil, err
+	}
+	return user, nil
 }

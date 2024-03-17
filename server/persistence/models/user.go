@@ -18,7 +18,3 @@ type User struct {
 	CreatedAt   time.Time          `bson:"createAt"`
 	UpdateAt    time.Time          `bson:"updateAT"`
 }
-
-func (user *User) GetUserIdByEmail(email string) (primitive.ObjectID, error) {
-	return primitive.NewObjectID(), nil
-}

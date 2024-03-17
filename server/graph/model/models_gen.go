@@ -28,7 +28,7 @@ type AuthPayload struct {
 	Token string `json:"token"`
 }
 
-type AwardSciResearch struct {
+type AwardRecord struct {
 	ID         string     `json:"id"`
 	AwardName  string     `json:"awardName"`
 	AwardDate  *time.Time `json:"awardDate,omitempty"`
@@ -62,6 +62,14 @@ type CompGuidance struct {
 	AwardStatus      *string    `json:"awardStatus,omitempty"`
 	CreatedAt        time.Time  `json:"createdAt"`
 	UpdateAt         time.Time  `json:"updateAt"`
+}
+
+type CompGuidancePreview struct {
+	ProjectName      *string    `json:"projectName,omitempty"`
+	StudentNames     []*string  `json:"studentNames,omitempty"`
+	CompetitionScore *string    `json:"competitionScore,omitempty"`
+	GuidanceDate     *time.Time `json:"guidanceDate,omitempty"`
+	AwardStatus      *string    `json:"awardStatus,omitempty"`
 }
 
 type Course struct {
@@ -103,6 +111,19 @@ type EduReform struct {
 	UpdateAt    time.Time     `json:"updateAt"`
 }
 
+type EduReformPreview struct {
+	TeachersIn  []*UserExport `json:"teachersIn,omitempty"`
+	TeachersOut []*string     `json:"teachersOut,omitempty"`
+	Number      *string       `json:"number,omitempty"`
+	Title       *string       `json:"title,omitempty"`
+	StartDate   *time.Time    `json:"startDate,omitempty"`
+	Duration    *string       `json:"duration,omitempty"`
+	Level       *string       `json:"level,omitempty"`
+	Rank        *string       `json:"rank,omitempty"`
+	Achievement *string       `json:"achievement,omitempty"`
+	Fund        *string       `json:"fund,omitempty"`
+}
+
 type Mentorship struct {
 	ID           string     `json:"id"`
 	ProjectName  string     `json:"projectName"`
@@ -113,16 +134,32 @@ type Mentorship struct {
 	UpdateAt     time.Time  `json:"updateAt"`
 }
 
+type MentorshipPreview struct {
+	ProjectName  *string    `json:"projectName,omitempty"`
+	Students     []*string  `json:"students,omitempty"`
+	Grade        *string    `json:"grade,omitempty"`
+	GuidanceDate *time.Time `json:"guidanceDate,omitempty"`
+}
+
 type Monograph struct {
 	ID           string        `json:"id"`
 	TeachersIn   []*UserExport `json:"teachersIn"`
 	TeachersOut  []*string     `json:"teachersOut,omitempty"`
-	Title        *string       `json:"title,omitempty"`
+	Title        string        `json:"title"`
 	PublishDate  *time.Time    `json:"publishDate,omitempty"`
 	PublishLevel *string       `json:"publishLevel,omitempty"`
 	Rank         *string       `json:"rank,omitempty"`
 	CreatedAt    time.Time     `json:"createdAt"`
 	UpdateAt     time.Time     `json:"updateAt"`
+}
+
+type MonographPreview struct {
+	TeachersIn   []*UserExport `json:"teachersIn,omitempty"`
+	TeachersOut  []*string     `json:"teachersOut,omitempty"`
+	Title        *string       `json:"title,omitempty"`
+	PublishDate  *time.Time    `json:"publishDate,omitempty"`
+	PublishLevel *string       `json:"publishLevel,omitempty"`
+	Rank         *string       `json:"rank,omitempty"`
 }
 
 type Mutation struct {
@@ -133,11 +170,26 @@ type NewAcademicTerm struct {
 	Courses  []*NewCourse `json:"courses"`
 }
 
-type NewAwardSciResearch struct {
+type NewAwardRecord struct {
 	AwardName  string     `json:"awardName"`
 	AwardDate  *time.Time `json:"awardDate,omitempty"`
 	Awardlevel *string    `json:"awardlevel,omitempty"`
 	AwardRank  *string    `json:"awardRank,omitempty"`
+}
+
+type NewAwardSciResearch struct {
+	TeachersIn  []*string         `json:"teachersIn"`
+	TeachersOut []*string         `json:"teachersOut,omitempty"`
+	Number      string            `json:"number"`
+	Title       string            `json:"title"`
+	StartDate   *time.Time        `json:"startDate,omitempty"`
+	Duration    *string           `json:"duration,omitempty"`
+	Level       *string           `json:"level,omitempty"`
+	Rank        *string           `json:"rank,omitempty"`
+	Achievement *string           `json:"achievement,omitempty"`
+	Fund        *string           `json:"fund,omitempty"`
+	IsAward     bool              `json:"isAward"`
+	Awards      []*NewAwardRecord `json:"awards"`
 }
 
 type NewClassTime struct {
@@ -177,37 +229,79 @@ type NewEduReform struct {
 	Fund        *string    `json:"fund,omitempty"`
 }
 
+type NewMentorship struct {
+	ProjectName  string     `json:"projectName"`
+	Students     []*string  `json:"students"`
+	Grade        *string    `json:"grade,omitempty"`
+	GuidanceDate *time.Time `json:"guidanceDate,omitempty"`
+}
+
+type NewMonograph struct {
+	TeachersIn   []*string  `json:"teachersIn"`
+	TeachersOut  []*string  `json:"teachersOut,omitempty"`
+	Title        string     `json:"title"`
+	PublishDate  *time.Time `json:"publishDate,omitempty"`
+	PublishLevel *string    `json:"publishLevel,omitempty"`
+	Rank         *string    `json:"rank,omitempty"`
+}
+
+type NewPaper struct {
+	TeachersIn   []*string  `json:"teachersIn"`
+	TeachersOut  []*string  `json:"teachersOut,omitempty"`
+	Title        string     `json:"title"`
+	PublishDate  *time.Time `json:"publishDate,omitempty"`
+	Rank         *string    `json:"rank,omitempty"`
+	JournalName  *string    `json:"journalName,omitempty"`
+	JournalLevel *string    `json:"journalLevel,omitempty"`
+}
+
+type NewPassword struct {
+	URL         *string `json:"url,omitempty"`
+	AppName     *string `json:"appName,omitempty"`
+	Account     string  `json:"account"`
+	Password    string  `json:"password"`
+	Description *string `json:"description,omitempty"`
+}
+
 type NewSciResearch struct {
-	TeachersIn  []*string              `json:"teachersIn"`
-	TeachersOut []*string              `json:"teachersOut"`
-	Number      *string                `json:"number,omitempty"`
-	Title       string                 `json:"title"`
-	StartDate   *time.Time             `json:"startDate,omitempty"`
-	Duration    *string                `json:"duration,omitempty"`
-	Level       *string                `json:"level,omitempty"`
-	Rank        *string                `json:"rank,omitempty"`
-	Achievement *string                `json:"achievement,omitempty"`
-	Fund        *string                `json:"fund,omitempty"`
-	IsAward     bool                   `json:"isAward"`
-	Awards      []*NewAwardSciResearch `json:"awards"`
+	TeachersIn  []*string  `json:"teachersIn"`
+	TeachersOut []*string  `json:"teachersOut,omitempty"`
+	Number      string     `json:"number"`
+	Title       string     `json:"title"`
+	StartDate   *time.Time `json:"startDate,omitempty"`
+	Duration    *string    `json:"duration,omitempty"`
+	Level       *string    `json:"level,omitempty"`
+	Rank        *string    `json:"rank,omitempty"`
+	Achievement *string    `json:"achievement,omitempty"`
+	Fund        *string    `json:"fund,omitempty"`
 }
 
 type NewUser struct {
-	Email    *string `json:"email,omitempty"`
-	Password *string `json:"password,omitempty"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type Paper struct {
 	ID           string        `json:"id"`
 	TeachersIn   []*UserExport `json:"teachersIn"`
-	TeachersOut  []*string     `json:"teachersOut"`
-	Title        *string       `json:"title,omitempty"`
+	TeachersOut  []*string     `json:"teachersOut,omitempty"`
+	Title        string        `json:"title"`
 	PublishDate  *time.Time    `json:"publishDate,omitempty"`
 	Rank         *string       `json:"rank,omitempty"`
 	JournalName  *string       `json:"journalName,omitempty"`
 	JournalLevel *string       `json:"journalLevel,omitempty"`
 	CreatedAt    time.Time     `json:"createdAt"`
 	UpdateAt     time.Time     `json:"updateAt"`
+}
+
+type PaperPreview struct {
+	TeachersIn   []*UserExport `json:"teachersIn,omitempty"`
+	TeachersOut  []*string     `json:"teachersOut,omitempty"`
+	Title        *string       `json:"title,omitempty"`
+	PublishDate  *time.Time    `json:"publishDate,omitempty"`
+	Rank         *string       `json:"rank,omitempty"`
+	JournalName  *string       `json:"journalName,omitempty"`
+	JournalLevel *string       `json:"journalLevel,omitempty"`
 }
 
 type Password struct {
@@ -231,30 +325,45 @@ type ResetPassword struct {
 }
 
 type SciResearch struct {
-	ID          string              `json:"id"`
-	TeachersIn  []*UserExport       `json:"teachersIn"`
-	TeachersOut []*string           `json:"teachersOut"`
-	Number      *string             `json:"number,omitempty"`
-	Title       string              `json:"title"`
-	StartDate   *time.Time          `json:"startDate,omitempty"`
-	Duration    *string             `json:"duration,omitempty"`
-	Level       *string             `json:"level,omitempty"`
-	Rank        *string             `json:"rank,omitempty"`
-	Achievement *string             `json:"achievement,omitempty"`
-	Fund        *string             `json:"fund,omitempty"`
-	IsAward     bool                `json:"isAward"`
-	Awards      []*AwardSciResearch `json:"awards"`
-	CreatedAt   time.Time           `json:"createdAt"`
-	UpdateAt    time.Time           `json:"updateAt"`
+	ID          string         `json:"id"`
+	TeachersIn  []*UserExport  `json:"teachersIn"`
+	TeachersOut []*string      `json:"teachersOut,omitempty"`
+	Number      string         `json:"number"`
+	Title       string         `json:"title"`
+	StartDate   *time.Time     `json:"startDate,omitempty"`
+	Duration    *string        `json:"duration,omitempty"`
+	Level       *string        `json:"level,omitempty"`
+	Rank        *string        `json:"rank,omitempty"`
+	Achievement *string        `json:"achievement,omitempty"`
+	Fund        *string        `json:"fund,omitempty"`
+	IsAward     bool           `json:"isAward"`
+	Awards      []*AwardRecord `json:"awards,omitempty"`
+	CreatedAt   time.Time      `json:"createdAt"`
+	UpdateAt    time.Time      `json:"updateAt"`
 }
 
 type UpdateAcademicTerm struct {
 	Name string `json:"name"`
 }
 
+type UpdateAwardRecord struct {
+	AwardName  *string    `json:"awardName,omitempty"`
+	AwardDate  *time.Time `json:"awardDate,omitempty"`
+	Awardlevel *string    `json:"awardlevel,omitempty"`
+	AwardRank  *string    `json:"awardRank,omitempty"`
+}
+
 type UpdateClassTime struct {
 	DayOfWeek *int    `json:"dayOfWeek,omitempty"`
 	TimeSlot  *string `json:"timeSlot,omitempty"`
+}
+
+type UpdateCompGuidance struct {
+	ProjectName      *string    `json:"projectName,omitempty"`
+	StudentNames     []*string  `json:"studentNames,omitempty"`
+	CompetitionScore *string    `json:"competitionScore,omitempty"`
+	GuidanceDate     *time.Time `json:"guidanceDate,omitempty"`
+	AwardStatus      *string    `json:"awardStatus,omitempty"`
 }
 
 type UpdateCourse struct {
@@ -266,6 +375,72 @@ type UpdateCourse struct {
 	ClassTimes     []*NewClassTime `json:"classTimes,omitempty"`
 	StudentCount   *int            `json:"studentCount,omitempty"`
 	Color          *string         `json:"color,omitempty"`
+}
+
+type UpdateEduReform struct {
+	TeachersIn  []*string  `json:"teachersIn,omitempty"`
+	TeachersOut []*string  `json:"teachersOut,omitempty"`
+	Number      *string    `json:"number,omitempty"`
+	Title       *string    `json:"title,omitempty"`
+	StartDate   *time.Time `json:"startDate,omitempty"`
+	Duration    *string    `json:"duration,omitempty"`
+	Level       *string    `json:"level,omitempty"`
+	Rank        *string    `json:"rank,omitempty"`
+	Achievement *string    `json:"achievement,omitempty"`
+	Fund        *string    `json:"fund,omitempty"`
+}
+
+type UpdateMentorship struct {
+	ProjectName  *string    `json:"projectName,omitempty"`
+	Students     []*string  `json:"students,omitempty"`
+	Grade        *string    `json:"grade,omitempty"`
+	GuidanceDate *time.Time `json:"guidanceDate,omitempty"`
+}
+
+type UpdateMonograph struct {
+	TeachersIn   []*string  `json:"teachersIn,omitempty"`
+	TeachersOut  []*string  `json:"teachersOut,omitempty"`
+	Title        *string    `json:"title,omitempty"`
+	PublishDate  *time.Time `json:"publishDate,omitempty"`
+	PublishLevel *string    `json:"publishLevel,omitempty"`
+	Rank         *string    `json:"rank,omitempty"`
+}
+
+type UpdatePaper struct {
+	TeachersIn   []*string  `json:"teachersIn,omitempty"`
+	TeachersOut  []*string  `json:"teachersOut,omitempty"`
+	Title        *string    `json:"title,omitempty"`
+	PublishDate  *time.Time `json:"publishDate,omitempty"`
+	Rank         *string    `json:"rank,omitempty"`
+	JournalName  *string    `json:"journalName,omitempty"`
+	JournalLevel *string    `json:"journalLevel,omitempty"`
+}
+
+type UpdatePassword struct {
+	URL         *string `json:"url,omitempty"`
+	AppName     *string `json:"appName,omitempty"`
+	Account     *string `json:"account,omitempty"`
+	Password    *string `json:"password,omitempty"`
+	Description *string `json:"description,omitempty"`
+}
+
+type UpdateSciResearch struct {
+	TeachersIn  []*string  `json:"teachersIn,omitempty"`
+	TeachersOut []*string  `json:"teachersOut,omitempty"`
+	Number      *string    `json:"number,omitempty"`
+	Title       *string    `json:"title,omitempty"`
+	StartDate   *time.Time `json:"startDate,omitempty"`
+	Duration    *string    `json:"duration,omitempty"`
+	Level       *string    `json:"level,omitempty"`
+	Rank        *string    `json:"rank,omitempty"`
+	Achievement *string    `json:"achievement,omitempty"`
+	Fund        *string    `json:"fund,omitempty"`
+}
+
+type UpdateUser struct {
+	Username    *string `json:"username,omitempty"`
+	Avatar      *string `json:"avatar,omitempty"`
+	PhoneNumber *string `json:"phoneNumber,omitempty"`
 }
 
 type User struct {
@@ -290,10 +465,4 @@ type UserExport struct {
 	Username string `json:"username"`
 	Email    string `json:"email"`
 	Avatar   string `json:"avatar"`
-}
-
-type UserInfo struct {
-	Username    *string `json:"username,omitempty"`
-	Avatar      *string `json:"avatar,omitempty"`
-	PhoneNumber *string `json:"phoneNumber,omitempty"`
 }

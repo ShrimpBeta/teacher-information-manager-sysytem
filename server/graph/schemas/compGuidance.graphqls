@@ -10,6 +10,14 @@ type CompGuidance {
   updateAt: Time!
 }
 
+type CompGuidancePreview {
+  projectName: String
+  studentNames: [String]
+  competitionScore: String
+  guidanceDate: Time
+  awardStatus: String
+}
+
 input NewCompGuidance {
   projectName: String!
   studentNames: [String]!
@@ -18,11 +26,33 @@ input NewCompGuidance {
   awardStatus: String
 }
 
+input UpdateCompGuidance {
+  projectName: String
+  studentNames: [String]
+  competitionScore: String
+  guidanceDate: Time
+  awardStatus: String
+}
+
 extend type Query {
   compGuidance(id: ID!): CompGuidance!
   compGuidancesForUser(userId: ID!): [CompGuidance]!
+
+  compGuidancesByProjectName(name: String!): [CompGuidance]!
+  compGuidancesByAwardStatus(award: String!): [CompGuidance]!
 }
 
 extend type Mutation {
-  createCompGuidance(userId: ID!, newGuidanceData: NewCompGuidance): CompGuidance!
+  createCompGuidance(
+    userId: ID!
+    newGuidanceData: NewCompGuidance!
+  ): CompGuidance!
+  updateCompGuidance(
+    id: ID!
+    compGuidanceData: UpdateCompGuidance!
+  ): CompGuidance!
+  deleteCompGuidance(id: ID!): CompGuidance!
+
+  uploadCompGuidance(file: Upload!): CompGuidancePreview!
+  uploadCompGuidances(file: Upload!): [CompGuidancePreview]!
 }

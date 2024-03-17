@@ -6,7 +6,7 @@ type ClassTime {
 
 # 单个课程
 type Course {
-  courseId: ID!
+  id: ID!
   teacherNames: String!
   courseName: String!
   courseLocation: String
@@ -19,7 +19,7 @@ type Course {
 
 # 课程表学期
 type AcademicTerm {
-  termId: ID!
+  id: ID!
   termName: String!
   courses: [Course]!
   createdAt: Time!
@@ -90,16 +90,19 @@ input UpdateAcademicTerm {
 }
 
 extend type Query {
+  # 查看一个学期
   academicTerm(id: ID!): AcademicTerm!
+
+  # 查看用户所有学期
   academicerms(userId: ID!): [AcademicTerm]!
 }
 
 extend type Mutation {
-  createCourse(termId: ID!, courseData: NewCourse!): Course!
+  createCourse(termId: ID!, newCourseData: NewCourse!): Course!
   updateCourse(courseId: ID!, courseData: UpdateCourse!): Course!
   deleteCourse(termId: ID!, courseId: ID!): Course!
 
-  createacademicTerm(termData: NewAcademicTerm!): AcademicTerm!
+  createacademicTerm(newTermData: NewAcademicTerm!): AcademicTerm!
   updateacademicTerm(termId: ID!, termData: UpdateAcademicTerm): AcademicTerm!
   deleteacademicTerm(termId: ID!): AcademicTerm!
 

@@ -30,7 +30,7 @@ input ChangePassword {
   newPassword: String
 }
 
-input UserInfo {
+input UpdateUser {
   username: String
   avatar: String
   phoneNumber: String
@@ -45,11 +45,12 @@ extend type Query {
 extend type Mutation {
   deleteAccount(id: ID!): User!
 
-  updateAccountPassword(id: ID!, input: ChangePassword): String
-  forgetAccountPassword(input: ResetPassword): String
+  updateAccountPassword(id: ID!, passwordData: ChangePassword): String!
+  forgetAccountPassword(passwordCodeData: ResetPassword): String!
 
-  updateUserInfo(id: ID!, input: UserInfo!): User
+  updateUser(id: ID!, userData: UpdateUser!): User!
 
-  updateWechatToken(id: ID!, token: String): Boolean
-  deleteWechatToken(id: ID!): Boolean
+  createWechatToken(id: ID!, token: String!): Boolean!
+  updateWechatToken(id: ID!, token: String!): Boolean!
+  deleteWechatToken(id: ID!): Boolean!
 }
