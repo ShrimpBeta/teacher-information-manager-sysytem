@@ -23,6 +23,11 @@ type AvatarPath {
   avatarUrl: String!
 }
 
+type SignInResponse {
+  token: String!
+  user: User!
+}
+
 input ResetPassword {
   email: String!
   code: String!
@@ -41,9 +46,8 @@ input UpdateUser {
 }
 
 extend type Query {
-  user(id: String!): User!
+  user(id: ID!): User!
   userExports: [UserExport]!
-  signIn(email: String!, password: String!): AuthPayload!
 }
 
 extend type Mutation {
@@ -52,6 +56,7 @@ extend type Mutation {
   updateAccountPassword(userId: ID!, passwordData: ChangePassword): String!
   forgetAccountPassword(userId: ID!, passwordCodeData: ResetPassword): String!
 
+  signIn(email: String!, password: String!): SignInResponse!
   updateUser(userId: ID!, userData: UpdateUser!): User!
 
   createWechatToken(userId: ID!, token: String!): Boolean!

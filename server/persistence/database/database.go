@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var DB *DataBase
+// var DB *DataBase
 
 type DataBase struct {
 	Client *mongo.Client

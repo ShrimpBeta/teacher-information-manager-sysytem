@@ -11,7 +11,7 @@ type AcademicTerm struct {
 	TermName  string    `json:"termName"`
 	Courses   []*Course `json:"courses"`
 	CreatedAt time.Time `json:"createdAt"`
-	UpdateAt  time.Time `json:"updateAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type AcademicTermPreview struct {
@@ -39,7 +39,7 @@ type AwardRecord struct {
 	Awardlevel *string    `json:"awardlevel,omitempty"`
 	AwardRank  *string    `json:"awardRank,omitempty"`
 	CreatedAt  time.Time  `json:"createdAt"`
-	UpdateAt   time.Time  `json:"updateAt"`
+	UpdatedAt  time.Time  `json:"updatedAt"`
 }
 
 type ChangePassword struct {
@@ -65,7 +65,7 @@ type CompGuidance struct {
 	GuidanceDate     *time.Time `json:"guidanceDate,omitempty"`
 	AwardStatus      *string    `json:"awardStatus,omitempty"`
 	CreatedAt        time.Time  `json:"createdAt"`
-	UpdateAt         time.Time  `json:"updateAt"`
+	UpdatedAt        time.Time  `json:"updatedAt"`
 }
 
 type CompGuidancePreview struct {
@@ -112,7 +112,7 @@ type EduReform struct {
 	Achievement *string       `json:"achievement,omitempty"`
 	Fund        *string       `json:"fund,omitempty"`
 	CreatedAt   time.Time     `json:"createdAt"`
-	UpdateAt    time.Time     `json:"updateAt"`
+	UpdatedAt   time.Time     `json:"updatedAt"`
 }
 
 type EduReformPreview struct {
@@ -135,7 +135,7 @@ type Mentorship struct {
 	Grade        *string    `json:"grade,omitempty"`
 	GuidanceDate *time.Time `json:"guidanceDate,omitempty"`
 	CreatedAt    time.Time  `json:"createdAt"`
-	UpdateAt     time.Time  `json:"updateAt"`
+	UpdatedAt    time.Time  `json:"updatedAt"`
 }
 
 type MentorshipPreview struct {
@@ -154,7 +154,7 @@ type Monograph struct {
 	PublishLevel *string       `json:"publishLevel,omitempty"`
 	Rank         *string       `json:"rank,omitempty"`
 	CreatedAt    time.Time     `json:"createdAt"`
-	UpdateAt     time.Time     `json:"updateAt"`
+	UpdatedAt    time.Time     `json:"updatedAt"`
 }
 
 type MonographPreview struct {
@@ -295,7 +295,7 @@ type Paper struct {
 	JournalName  *string       `json:"journalName,omitempty"`
 	JournalLevel *string       `json:"journalLevel,omitempty"`
 	CreatedAt    time.Time     `json:"createdAt"`
-	UpdateAt     time.Time     `json:"updateAt"`
+	UpdatedAt    time.Time     `json:"updatedAt"`
 }
 
 type PaperPreview struct {
@@ -316,7 +316,7 @@ type Password struct {
 	Password    string    `json:"password"`
 	Description *string   `json:"description,omitempty"`
 	CreatedAt   time.Time `json:"createdAt"`
-	UpdateAt    time.Time `json:"updateAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 type Query struct {
@@ -343,7 +343,12 @@ type SciResearch struct {
 	IsAward     bool           `json:"isAward"`
 	Awards      []*AwardRecord `json:"awards,omitempty"`
 	CreatedAt   time.Time      `json:"createdAt"`
-	UpdateAt    time.Time      `json:"updateAt"`
+	UpdatedAt   time.Time      `json:"updatedAt"`
+}
+
+type SignInResponse struct {
+	Token string `json:"token"`
+	User  *User  `json:"user"`
 }
 
 type UpdateAcademicTerm struct {
@@ -456,7 +461,7 @@ type User struct {
 	WechatToken *string   `json:"wechatToken,omitempty"`
 	Activate    bool      `json:"activate"`
 	CreatedAt   time.Time `json:"createdAt"`
-	UpdateAt    time.Time `json:"updateAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 type UserCreate struct {

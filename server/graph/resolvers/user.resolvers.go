@@ -8,13 +8,40 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
+	"server/persistence/repository"
+	"server/services/jwt"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // DeleteAccount is the resolver for the deleteAccount field.
 func (r *mutationResolver) DeleteAccount(ctx context.Context, userID string) (*graphql_models.User, error) {
-	panic(fmt.Errorf("not implemented: DeleteAccount - deleteAccount"))
+	objectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return nil, err
+	}
+	userData, err := repository.Repos.UserRepo.GetUserById(objectID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = repository.Repos.UserRepo.DeleteUser(objectID)
+	if err != nil {
+		return nil, err
+	}
+	return &graphql_models.User{
+		ID:          userData.ID.Hex(),
+		Email:       userData.Email,
+		Username:    userData.Username,
+		Avatar:      userData.Avatar,
+		PhoneNumber: &userData.Phone,
+		WechatToken: &userData.WechatToken,
+		Activate:    userData.Activate,
+		CreatedAt:   userData.CreatedAt.Time(),
+		UpdatedAt:   userData.UpdatedAt.Time(),
+	}, nil
 }
 
 // UpdateAccountPassword is the resolver for the updateAccountPassword field.
@@ -27,9 +54,79 @@ func (r *mutationResolver) ForgetAccountPassword(ctx context.Context, userID str
 	panic(fmt.Errorf("not implemented: ForgetAccountPassword - forgetAccountPassword"))
 }
 
+// SignIn is the resolver for the signIn field.
+func (r *mutationResolver) SignIn(ctx context.Context, email string, password string) (*graphql_models.SignInResponse, error) {
+	userData, err := repository.Repos.UserRepo.GetUserByEmailAndPassword(email, password)
+	if err != nil {
+		return nil, err
+	}
+	if userData == nil {
+		return nil, fmt.Errorf("user not found")
+	}
+	token, err := jwt.GenerateToken(userData.Email)
+	if err != nil {
+		return nil, err
+	}
+	return &graphql_models.SignInResponse{
+		Token: token,
+		User: &graphql_models.User{
+			ID:          userData.ID.Hex(),
+			Username:    userData.Username,
+			Email:       userData.Email,
+			PhoneNumber: &userData.Phone,
+			WechatToken: &userData.WechatToken,
+			Avatar:      userData.Avatar,
+			Activate:    userData.Activate,
+			CreatedAt:   userData.CreatedAt.Time(),
+			UpdatedAt:   userData.UpdatedAt.Time(),
+		},
+	}, nil
+}
+
 // UpdateUser is the resolver for the updateUser field.
 func (r *mutationResolver) UpdateUser(ctx context.Context, userID string, userData graphql_models.UpdateUser) (*graphql_models.User, error) {
-	panic(fmt.Errorf("not implemented: UpdateUser - updateUser"))
+	if userData.Username == nil && userData.Avatar == nil && userData.PhoneNumber == nil {
+		return nil, fmt.Errorf("no data to update")
+	}
+
+	objectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return nil, err
+	}
+	userUpdate, err := repository.Repos.UserRepo.GetUserById(objectID)
+	if err != nil {
+		return nil, err
+	}
+
+	if userData.Username != nil {
+		userUpdate.Username = *userData.Username
+	}
+	if userData.Avatar != nil {
+		userUpdate.Email = *userData.Avatar
+	}
+	if userData.PhoneNumber != nil {
+		userUpdate.Phone = *userData.PhoneNumber
+	}
+	userUpdate.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
+	err = repository.Repos.UserRepo.UpdateUser(userUpdate)
+	if err != nil {
+		return nil, err
+	}
+	userUpdate, err = repository.Repos.UserRepo.GetUserById(objectID)
+	if err != nil {
+		return nil, err
+	}
+	return &graphql_models.User{
+		ID:          userUpdate.ID.Hex(),
+		Email:       userUpdate.Email,
+		Username:    userUpdate.Username,
+		Avatar:      userUpdate.Avatar,
+		PhoneNumber: &userUpdate.Phone,
+		WechatToken: &userUpdate.WechatToken,
+		Activate:    userUpdate.Activate,
+		CreatedAt:   userUpdate.CreatedAt.Time(),
+		UpdatedAt:   userUpdate.UpdatedAt.Time(),
+	}, nil
 }
 
 // CreateWechatToken is the resolver for the createWechatToken field.
@@ -54,15 +151,41 @@ func (r *mutationResolver) UploadAvatar(ctx context.Context, userID string, avat
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id string) (*graphql_models.User, error) {
-	panic(fmt.Errorf("not implemented: User - user"))
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	userData, err := repository.Repos.UserRepo.GetUserById(objectID)
+	if err != nil {
+		return nil, err
+	}
+	return &graphql_models.User{
+		ID:          userData.ID.Hex(),
+		Email:       userData.Email,
+		Username:    userData.Username,
+		Avatar:      userData.Avatar,
+		PhoneNumber: &userData.Phone,
+		WechatToken: &userData.WechatToken,
+		Activate:    userData.Activate,
+		CreatedAt:   userData.CreatedAt.Time(),
+		UpdatedAt:   userData.UpdatedAt.Time(),
+	}, nil
 }
 
 // UserExports is the resolver for the userExports field.
 func (r *queryResolver) UserExports(ctx context.Context) ([]*graphql_models.UserExport, error) {
-	panic(fmt.Errorf("not implemented: UserExports - userExports"))
-}
-
-// SignIn is the resolver for the signIn field.
-func (r *queryResolver) SignIn(ctx context.Context, email string, password string) (*graphql_models.AuthPayload, error) {
-	panic(fmt.Errorf("not implemented: SignIn - signIn"))
+	userDatas, err := repository.Repos.UserRepo.GetAllUsers()
+	if err != nil {
+		return nil, err
+	}
+	var users []*graphql_models.UserExport
+	for _, userData := range userDatas {
+		users = append(users, &graphql_models.UserExport{
+			ID:       userData.ID.Hex(),
+			Email:    userData.Email,
+			Username: userData.Username,
+			Avatar:   userData.Avatar,
+		})
+	}
+	return users, nil
 }

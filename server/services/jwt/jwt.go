@@ -17,7 +17,7 @@ const TokenExpireDuration = time.Hour * 24
 
 // 生成Token
 func GenerateToken(email string) (string, error) {
-	token := jwt.New(jwt.SigningMethodES256)
+	token := jwt.New(jwt.SigningMethodHS256)
 	claim := token.Claims.(jwt.MapClaims)
 	claim["email"] = email
 	claim["exp"] = time.Now().Add(TokenExpireDuration).Unix()

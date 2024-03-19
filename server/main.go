@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"server/graph"
 	"server/graph/resolvers"
-	"server/middlewares"
 	"server/persistence/database"
+	"server/persistence/repository"
 	"syscall"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -20,6 +20,7 @@ import (
 const defaultPort = "8080"
 const defaultMongodbUrl = "mongodb://localhost:27017"
 const ServeURL = "http://localhost:8080"
+const DatabaseName = "TeacherInfoMS"
 
 func graphHandler() gin.HandlerFunc {
 	h := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolvers.Resolver{}}))
@@ -39,31 +40,40 @@ func playgroundHandler() gin.HandlerFunc {
 func main() {
 
 	// Database Connect
-	database.DB = database.Connect(defaultMongodbUrl)
-	defer database.DB.DisConnect()
+	DB := database.Connect(defaultMongodbUrl)
+	defer DB.DisConnect()
+
+	// init Repos
+	repository.Repos = repository.NewRepositorys(DB.Client.Database(DatabaseName))
+
+	// set gin mode to release
+	// gin.SetMode(gin.ReleaseMode)
 
 	// Setting up Gin
 	r := gin.Default()
 
 	// if static folder not exist, create it
-	err := os.MkdirAll(filepath.Dir("static/avatar/avatar.png"), os.ModePerm)
+	err := os.MkdirAll(filepath.Dir("assets/avatars/avatar.png"), os.ModePerm)
 	if err != nil {
 		log.Fatal("Failed to create static folder")
 	}
 
 	// add Static FileServer
-	r.Static("/static", "./assets")
+	r.Static("/avatars", "./assets/avatars")
 
 	// add CORS Middleware
 	r.Use(cors.New(cors.Config{
+		// AllowOrigins:     []string{"http://localhost:3000", "http://localhost:4200", "http://localhost:8080"},
+		AllowOrigins: []string{"*"},
+		// AllowAllOrigins:  true,
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
 	}))
 
 	// add Auth Middleware
-	r.Use(middlewares.AuthMiddleware())
+	// r.Use(middlewares.AuthMiddleware())
 	// add ginContext Middleware
-	r.Use(middlewares.GinContextToContextMiddleware())
+	// r.Use(middlewares.GinContextToContextMiddleware())
 
 	r.POST("/query", graphHandler())
 	r.GET("/", playgroundHandler())

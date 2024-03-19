@@ -66,6 +66,10 @@ func (r *CompGuidanceRepo) GetCompGuidancesByParams(params CompGuidanceQueryPara
 }
 
 func (r *CompGuidanceRepo) CratedCompGuidance(compGuidance *models.CompGuidance) (*primitive.ObjectID, error) {
+	objectId := primitive.NewObjectID()
+	compGuidance.ID = objectId
+	compGuidance.CreatedAt = primitive.NewDateTimeFromTime(compGuidance.CreatedAt.Time())
+	compGuidance.UpdatedAt = primitive.NewDateTimeFromTime(compGuidance.UpdatedAt.Time())
 	result, err := r.collection.InsertOne(context.Background(), compGuidance)
 	if err != nil {
 		return nil, err
@@ -75,6 +79,7 @@ func (r *CompGuidanceRepo) CratedCompGuidance(compGuidance *models.CompGuidance)
 }
 
 func (r *CompGuidanceRepo) UpdateCompGuidance(compGuidance *models.CompGuidance) error {
+	compGuidance.UpdatedAt = primitive.NewDateTimeFromTime(compGuidance.UpdatedAt.Time())
 	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": compGuidance.ID}, bson.M{"$set": compGuidance})
 	return err
 }

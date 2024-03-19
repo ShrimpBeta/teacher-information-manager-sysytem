@@ -64,6 +64,10 @@ func (r *MonographRepo) GetMonographsByParams(params MonoGraphParams) ([]models.
 }
 
 func (r *MonographRepo) CreateMonograph(monograph *models.Monograph) (*primitive.ObjectID, error) {
+	objectId := primitive.NewObjectID()
+	monograph.ID = objectId
+	monograph.CreatedAt = primitive.NewDateTimeFromTime(monograph.CreatedAt.Time())
+	monograph.UpdatedAt = primitive.NewDateTimeFromTime(monograph.UpdatedAt.Time())
 	result, err := r.collection.InsertOne(context.Background(), monograph)
 	if err != nil {
 		return nil, err
@@ -73,6 +77,7 @@ func (r *MonographRepo) CreateMonograph(monograph *models.Monograph) (*primitive
 }
 
 func (r *MonographRepo) UpdateMonograph(id primitive.ObjectID, monograph *models.Monograph) error {
+	monograph.UpdatedAt = primitive.NewDateTimeFromTime(monograph.UpdatedAt.Time())
 	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": id}, bson.M{"$set": monograph})
 	return err
 }

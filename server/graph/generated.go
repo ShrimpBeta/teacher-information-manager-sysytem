@@ -53,7 +53,7 @@ type ComplexityRoot struct {
 		CreatedAt func(childComplexity int) int
 		ID        func(childComplexity int) int
 		TermName  func(childComplexity int) int
-		UpdateAt  func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
 	}
 
 	AcademicTermPreview struct {
@@ -76,7 +76,7 @@ type ComplexityRoot struct {
 		Awardlevel func(childComplexity int) int
 		CreatedAt  func(childComplexity int) int
 		ID         func(childComplexity int) int
-		UpdateAt   func(childComplexity int) int
+		UpdatedAt  func(childComplexity int) int
 	}
 
 	ClassTime struct {
@@ -97,7 +97,7 @@ type ComplexityRoot struct {
 		ID               func(childComplexity int) int
 		ProjectName      func(childComplexity int) int
 		StudentNames     func(childComplexity int) int
-		UpdateAt         func(childComplexity int) int
+		UpdatedAt        func(childComplexity int) int
 	}
 
 	CompGuidancePreview struct {
@@ -144,7 +144,7 @@ type ComplexityRoot struct {
 		TeachersIn  func(childComplexity int) int
 		TeachersOut func(childComplexity int) int
 		Title       func(childComplexity int) int
-		UpdateAt    func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
 	}
 
 	EduReformPreview struct {
@@ -167,7 +167,7 @@ type ComplexityRoot struct {
 		ID           func(childComplexity int) int
 		ProjectName  func(childComplexity int) int
 		Students     func(childComplexity int) int
-		UpdateAt     func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
 	}
 
 	MentorshipPreview struct {
@@ -186,7 +186,7 @@ type ComplexityRoot struct {
 		TeachersIn   func(childComplexity int) int
 		TeachersOut  func(childComplexity int) int
 		Title        func(childComplexity int) int
-		UpdateAt     func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
 	}
 
 	MonographPreview struct {
@@ -211,7 +211,7 @@ type ComplexityRoot struct {
 		CreatePassword         func(childComplexity int, userid string, newPasswordData graphql_models.NewPassword) int
 		CreateSciResearch      func(childComplexity int, newSciResearchData graphql_models.NewSciResearch) int
 		CreateWechatToken      func(childComplexity int, userID string, token string) int
-		CreateacademicTerm     func(childComplexity int, newTermData graphql_models.NewAcademicTerm) int
+		CreateacademicTerm     func(childComplexity int, userID string, newTermData graphql_models.NewAcademicTerm) int
 		DeleteAccount          func(childComplexity int, userID string) int
 		DeleteAwardRecord      func(childComplexity int, sciResearchID string, awardRecordID string) int
 		DeleteCompGuidance     func(childComplexity int, id string) int
@@ -225,6 +225,7 @@ type ComplexityRoot struct {
 		DeleteWechatToken      func(childComplexity int, userID string) int
 		DeleteacademicTerm     func(childComplexity int, termID string) int
 		ForgetAccountPassword  func(childComplexity int, userID string, passwordCodeData *graphql_models.ResetPassword) int
+		SignIn                 func(childComplexity int, email string, password string) int
 		UpdateAccountPassword  func(childComplexity int, userID string, passwordData *graphql_models.ChangePassword) int
 		UpdateAwardRecord      func(childComplexity int, awardRecordID string) int
 		UpdateCompGuidance     func(childComplexity int, id string, compGuidanceData graphql_models.UpdateCompGuidance) int
@@ -237,7 +238,7 @@ type ComplexityRoot struct {
 		UpdateSciResearch      func(childComplexity int, sciResearchID string, sciResearchData graphql_models.UpdateSciResearch) int
 		UpdateUser             func(childComplexity int, userID string, userData graphql_models.UpdateUser) int
 		UpdateWechatToken      func(childComplexity int, userID string, token string) int
-		UpdateacademicTerm     func(childComplexity int, termID string, termData *graphql_models.UpdateAcademicTerm) int
+		UpdateacademicTerm     func(childComplexity int, termID string, termData graphql_models.UpdateAcademicTerm) int
 		UploadAcademicTerm     func(childComplexity int, file graphql.Upload) int
 		UploadAvatar           func(childComplexity int, userID string, avatar graphql.Upload) int
 		UploadCompGuidance     func(childComplexity int, file graphql.Upload) int
@@ -262,7 +263,7 @@ type ComplexityRoot struct {
 		TeachersIn   func(childComplexity int) int
 		TeachersOut  func(childComplexity int) int
 		Title        func(childComplexity int) int
-		UpdateAt     func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
 	}
 
 	PaperPreview struct {
@@ -283,7 +284,7 @@ type ComplexityRoot struct {
 		ID          func(childComplexity int) int
 		Password    func(childComplexity int) int
 		URL         func(childComplexity int) int
-		UpdateAt    func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
 	}
 
 	Query struct {
@@ -302,7 +303,7 @@ type ComplexityRoot struct {
 		EduReformsByAchievement    func(childComplexity int, achievement string) int
 		EduReformsByName           func(childComplexity int, name string) int
 		Mentorship                 func(childComplexity int, id string) int
-		Mentorships                func(childComplexity int, teacherid string) int
+		Mentorships                func(childComplexity int, userID string) int
 		MentorshipsByName          func(childComplexity int, name string) int
 		Monograph                  func(childComplexity int, id string) int
 		Monographs                 func(childComplexity int, userID string) int
@@ -315,7 +316,6 @@ type ComplexityRoot struct {
 		SciResearch                func(childComplexity int, id string) int
 		SciResearchs               func(childComplexity int, userID string) int
 		SciResearchsByName         func(childComplexity int, userID string, title string) int
-		SignIn                     func(childComplexity int, email string, password string) int
 		User                       func(childComplexity int, id string) int
 		UserExports                func(childComplexity int) int
 	}
@@ -335,7 +335,12 @@ type ComplexityRoot struct {
 		TeachersIn  func(childComplexity int) int
 		TeachersOut func(childComplexity int) int
 		Title       func(childComplexity int) int
-		UpdateAt    func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+	}
+
+	SignInResponse struct {
+		Token func(childComplexity int) int
+		User  func(childComplexity int) int
 	}
 
 	User struct {
@@ -345,7 +350,7 @@ type ComplexityRoot struct {
 		Email       func(childComplexity int) int
 		ID          func(childComplexity int) int
 		PhoneNumber func(childComplexity int) int
-		UpdateAt    func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
 		Username    func(childComplexity int) int
 		WechatToken func(childComplexity int) int
 	}
@@ -368,8 +373,8 @@ type MutationResolver interface {
 	CreateCourse(ctx context.Context, termID string, newCourseData graphql_models.NewCourse) (*graphql_models.Course, error)
 	UpdateCourse(ctx context.Context, courseID string, courseData graphql_models.UpdateCourse) (*graphql_models.Course, error)
 	DeleteCourse(ctx context.Context, termID string, courseID string) (*graphql_models.Course, error)
-	CreateacademicTerm(ctx context.Context, newTermData graphql_models.NewAcademicTerm) (*graphql_models.AcademicTerm, error)
-	UpdateacademicTerm(ctx context.Context, termID string, termData *graphql_models.UpdateAcademicTerm) (*graphql_models.AcademicTerm, error)
+	CreateacademicTerm(ctx context.Context, userID string, newTermData graphql_models.NewAcademicTerm) (*graphql_models.AcademicTerm, error)
+	UpdateacademicTerm(ctx context.Context, termID string, termData graphql_models.UpdateAcademicTerm) (*graphql_models.AcademicTerm, error)
 	DeleteacademicTerm(ctx context.Context, termID string) (*graphql_models.AcademicTerm, error)
 	UploadAcademicTerm(ctx context.Context, file graphql.Upload) (*graphql_models.AcademicTermPreview, error)
 	CreateCompGuidance(ctx context.Context, userID string, newGuidanceData graphql_models.NewCompGuidance) (*graphql_models.CompGuidance, error)
@@ -410,6 +415,7 @@ type MutationResolver interface {
 	DeleteAccount(ctx context.Context, userID string) (*graphql_models.User, error)
 	UpdateAccountPassword(ctx context.Context, userID string, passwordData *graphql_models.ChangePassword) (string, error)
 	ForgetAccountPassword(ctx context.Context, userID string, passwordCodeData *graphql_models.ResetPassword) (string, error)
+	SignIn(ctx context.Context, email string, password string) (*graphql_models.SignInResponse, error)
 	UpdateUser(ctx context.Context, userID string, userData graphql_models.UpdateUser) (*graphql_models.User, error)
 	CreateWechatToken(ctx context.Context, userID string, token string) (bool, error)
 	UpdateWechatToken(ctx context.Context, userID string, token string) (bool, error)
@@ -429,7 +435,7 @@ type QueryResolver interface {
 	EduReformsByName(ctx context.Context, name string) ([]*graphql_models.EduReform, error)
 	EduReformsByAchievement(ctx context.Context, achievement string) ([]*graphql_models.EduReform, error)
 	Mentorship(ctx context.Context, id string) (*graphql_models.Mentorship, error)
-	Mentorships(ctx context.Context, teacherid string) ([]*graphql_models.Mentorship, error)
+	Mentorships(ctx context.Context, userID string) ([]*graphql_models.Mentorship, error)
 	MentorshipsByName(ctx context.Context, name string) ([]*graphql_models.Mentorship, error)
 	Monograph(ctx context.Context, id string) (*graphql_models.Monograph, error)
 	Monographs(ctx context.Context, userID string) ([]*graphql_models.Monograph, error)
@@ -447,7 +453,6 @@ type QueryResolver interface {
 	AwardSciResearchsByName(ctx context.Context, userID string, title string) ([]*graphql_models.SciResearch, error)
 	User(ctx context.Context, id string) (*graphql_models.User, error)
 	UserExports(ctx context.Context) ([]*graphql_models.UserExport, error)
-	SignIn(ctx context.Context, email string, password string) (*graphql_models.AuthPayload, error)
 }
 
 type executableSchema struct {
@@ -497,12 +502,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AcademicTerm.TermName(childComplexity), true
 
-	case "AcademicTerm.updateAt":
-		if e.complexity.AcademicTerm.UpdateAt == nil {
+	case "AcademicTerm.updatedAt":
+		if e.complexity.AcademicTerm.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.AcademicTerm.UpdateAt(childComplexity), true
+		return e.complexity.AcademicTerm.UpdatedAt(childComplexity), true
 
 	case "AcademicTermPreview.courses":
 		if e.complexity.AcademicTermPreview.Courses == nil {
@@ -574,12 +579,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AwardRecord.ID(childComplexity), true
 
-	case "AwardRecord.updateAt":
-		if e.complexity.AwardRecord.UpdateAt == nil {
+	case "AwardRecord.updatedAt":
+		if e.complexity.AwardRecord.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.AwardRecord.UpdateAt(childComplexity), true
+		return e.complexity.AwardRecord.UpdatedAt(childComplexity), true
 
 	case "ClassTime.dayOfWeek":
 		if e.complexity.ClassTime.DayOfWeek == nil {
@@ -658,12 +663,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.CompGuidance.StudentNames(childComplexity), true
 
-	case "CompGuidance.updateAt":
-		if e.complexity.CompGuidance.UpdateAt == nil {
+	case "CompGuidance.updatedAt":
+		if e.complexity.CompGuidance.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.CompGuidance.UpdateAt(childComplexity), true
+		return e.complexity.CompGuidance.UpdatedAt(childComplexity), true
 
 	case "CompGuidancePreview.awardStatus":
 		if e.complexity.CompGuidancePreview.AwardStatus == nil {
@@ -903,12 +908,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.EduReform.Title(childComplexity), true
 
-	case "EduReform.updateAt":
-		if e.complexity.EduReform.UpdateAt == nil {
+	case "EduReform.updatedAt":
+		if e.complexity.EduReform.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.EduReform.UpdateAt(childComplexity), true
+		return e.complexity.EduReform.UpdatedAt(childComplexity), true
 
 	case "EduReformPreview.achievement":
 		if e.complexity.EduReformPreview.Achievement == nil {
@@ -1022,12 +1027,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mentorship.Students(childComplexity), true
 
-	case "Mentorship.updateAt":
-		if e.complexity.Mentorship.UpdateAt == nil {
+	case "Mentorship.updatedAt":
+		if e.complexity.Mentorship.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.Mentorship.UpdateAt(childComplexity), true
+		return e.complexity.Mentorship.UpdatedAt(childComplexity), true
 
 	case "MentorshipPreview.grade":
 		if e.complexity.MentorshipPreview.Grade == nil {
@@ -1113,12 +1118,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Monograph.Title(childComplexity), true
 
-	case "Monograph.updateAt":
-		if e.complexity.Monograph.UpdateAt == nil {
+	case "Monograph.updatedAt":
+		if e.complexity.Monograph.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.Monograph.UpdateAt(childComplexity), true
+		return e.complexity.Monograph.UpdatedAt(childComplexity), true
 
 	case "MonographPreview.publishDate":
 		if e.complexity.MonographPreview.PublishDate == nil {
@@ -1316,7 +1321,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateacademicTerm(childComplexity, args["newTermData"].(graphql_models.NewAcademicTerm)), true
+		return e.complexity.Mutation.CreateacademicTerm(childComplexity, args["userId"].(string), args["newTermData"].(graphql_models.NewAcademicTerm)), true
 
 	case "Mutation.deleteAccount":
 		if e.complexity.Mutation.DeleteAccount == nil {
@@ -1474,6 +1479,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.ForgetAccountPassword(childComplexity, args["userId"].(string), args["passwordCodeData"].(*graphql_models.ResetPassword)), true
 
+	case "Mutation.signIn":
+		if e.complexity.Mutation.SignIn == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_signIn_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SignIn(childComplexity, args["email"].(string), args["password"].(string)), true
+
 	case "Mutation.updateAccountPassword":
 		if e.complexity.Mutation.UpdateAccountPassword == nil {
 			break
@@ -1628,7 +1645,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateacademicTerm(childComplexity, args["termId"].(string), args["termData"].(*graphql_models.UpdateAcademicTerm)), true
+		return e.complexity.Mutation.UpdateacademicTerm(childComplexity, args["termId"].(string), args["termData"].(graphql_models.UpdateAcademicTerm)), true
 
 	case "Mutation.uploadAcademicTerm":
 		if e.complexity.Mutation.UploadAcademicTerm == nil {
@@ -1837,12 +1854,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Paper.Title(childComplexity), true
 
-	case "Paper.updateAt":
-		if e.complexity.Paper.UpdateAt == nil {
+	case "Paper.updatedAt":
+		if e.complexity.Paper.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.Paper.UpdateAt(childComplexity), true
+		return e.complexity.Paper.UpdatedAt(childComplexity), true
 
 	case "PaperPreview.journalLevel":
 		if e.complexity.PaperPreview.JournalLevel == nil {
@@ -1942,12 +1959,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Password.URL(childComplexity), true
 
-	case "Password.updateAt":
-		if e.complexity.Password.UpdateAt == nil {
+	case "Password.updatedAt":
+		if e.complexity.Password.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.Password.UpdateAt(childComplexity), true
+		return e.complexity.Password.UpdatedAt(childComplexity), true
 
 	case "Query.academicTerm":
 		if e.complexity.Query.AcademicTerm == nil {
@@ -2139,7 +2156,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Mentorships(childComplexity, args["teacherid"].(string)), true
+		return e.complexity.Query.Mentorships(childComplexity, args["userId"].(string)), true
 
 	case "Query.mentorshipsByName":
 		if e.complexity.Query.MentorshipsByName == nil {
@@ -2285,18 +2302,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.SciResearchsByName(childComplexity, args["userId"].(string), args["title"].(string)), true
 
-	case "Query.signIn":
-		if e.complexity.Query.SignIn == nil {
-			break
-		}
-
-		args, err := ec.field_Query_signIn_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.SignIn(childComplexity, args["email"].(string), args["password"].(string)), true
-
 	case "Query.user":
 		if e.complexity.Query.User == nil {
 			break
@@ -2414,12 +2419,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.SciResearch.Title(childComplexity), true
 
-	case "SciResearch.updateAt":
-		if e.complexity.SciResearch.UpdateAt == nil {
+	case "SciResearch.updatedAt":
+		if e.complexity.SciResearch.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.SciResearch.UpdateAt(childComplexity), true
+		return e.complexity.SciResearch.UpdatedAt(childComplexity), true
+
+	case "SignInResponse.token":
+		if e.complexity.SignInResponse.Token == nil {
+			break
+		}
+
+		return e.complexity.SignInResponse.Token(childComplexity), true
+
+	case "SignInResponse.user":
+		if e.complexity.SignInResponse.User == nil {
+			break
+		}
+
+		return e.complexity.SignInResponse.User(childComplexity), true
 
 	case "User.activate":
 		if e.complexity.User.Activate == nil {
@@ -2463,12 +2482,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.PhoneNumber(childComplexity), true
 
-	case "User.updateAt":
-		if e.complexity.User.UpdateAt == nil {
+	case "User.updatedAt":
+		if e.complexity.User.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.User.UpdateAt(childComplexity), true
+		return e.complexity.User.UpdatedAt(childComplexity), true
 
 	case "User.username":
 		if e.complexity.User.Username == nil {
@@ -2924,15 +2943,24 @@ func (ec *executionContext) field_Mutation_createWechatToken_args(ctx context.Co
 func (ec *executionContext) field_Mutation_createacademicTerm_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 graphql_models.NewAcademicTerm
-	if tmp, ok := rawArgs["newTermData"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("newTermData"))
-		arg0, err = ec.unmarshalNNewAcademicTerm2serverᚋgraphᚋmodelᚐNewAcademicTerm(ctx, tmp)
+	var arg0 string
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["newTermData"] = arg0
+	args["userId"] = arg0
+	var arg1 graphql_models.NewAcademicTerm
+	if tmp, ok := rawArgs["newTermData"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("newTermData"))
+		arg1, err = ec.unmarshalNNewAcademicTerm2serverᚋgraphᚋmodelᚐNewAcademicTerm(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["newTermData"] = arg1
 	return args, nil
 }
 
@@ -3155,6 +3183,30 @@ func (ec *executionContext) field_Mutation_forgetAccountPassword_args(ctx contex
 		}
 	}
 	args["passwordCodeData"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_signIn_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["email"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["email"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["password"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["password"] = arg1
 	return args, nil
 }
 
@@ -3449,10 +3501,10 @@ func (ec *executionContext) field_Mutation_updateacademicTerm_args(ctx context.C
 		}
 	}
 	args["termId"] = arg0
-	var arg1 *graphql_models.UpdateAcademicTerm
+	var arg1 graphql_models.UpdateAcademicTerm
 	if tmp, ok := rawArgs["termData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("termData"))
-		arg1, err = ec.unmarshalOUpdateAcademicTerm2ᚖserverᚋgraphᚋmodelᚐUpdateAcademicTerm(ctx, tmp)
+		arg1, err = ec.unmarshalNUpdateAcademicTerm2serverᚋgraphᚋmodelᚐUpdateAcademicTerm(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -3918,14 +3970,14 @@ func (ec *executionContext) field_Query_mentorships_args(ctx context.Context, ra
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["teacherid"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("teacherid"))
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["teacherid"] = arg0
+	args["userId"] = arg0
 	return args, nil
 }
 
@@ -4112,37 +4164,13 @@ func (ec *executionContext) field_Query_sciResearchs_args(ctx context.Context, r
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_signIn_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["email"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["email"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["password"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["password"] = arg1
-	return args, nil
-}
-
 func (ec *executionContext) field_Query_user_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4385,8 +4413,8 @@ func (ec *executionContext) fieldContext_AcademicTerm_createdAt(ctx context.Cont
 	return fc, nil
 }
 
-func (ec *executionContext) _AcademicTerm_updateAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AcademicTerm) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AcademicTerm_updateAt(ctx, field)
+func (ec *executionContext) _AcademicTerm_updatedAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AcademicTerm) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicTerm_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4399,7 +4427,7 @@ func (ec *executionContext) _AcademicTerm_updateAt(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UpdateAt, nil
+		return obj.UpdatedAt, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4416,7 +4444,7 @@ func (ec *executionContext) _AcademicTerm_updateAt(ctx context.Context, field gr
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_AcademicTerm_updateAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AcademicTerm_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AcademicTerm",
 		Field:      field,
@@ -4872,8 +4900,8 @@ func (ec *executionContext) fieldContext_AwardRecord_createdAt(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _AwardRecord_updateAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AwardRecord) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AwardRecord_updateAt(ctx, field)
+func (ec *executionContext) _AwardRecord_updatedAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AwardRecord) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AwardRecord_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4886,7 +4914,7 @@ func (ec *executionContext) _AwardRecord_updateAt(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UpdateAt, nil
+		return obj.UpdatedAt, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4903,7 +4931,7 @@ func (ec *executionContext) _AwardRecord_updateAt(ctx context.Context, field gra
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_AwardRecord_updateAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AwardRecord_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AwardRecord",
 		Field:      field,
@@ -5385,8 +5413,8 @@ func (ec *executionContext) fieldContext_CompGuidance_createdAt(ctx context.Cont
 	return fc, nil
 }
 
-func (ec *executionContext) _CompGuidance_updateAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.CompGuidance) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_CompGuidance_updateAt(ctx, field)
+func (ec *executionContext) _CompGuidance_updatedAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.CompGuidance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CompGuidance_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -5399,7 +5427,7 @@ func (ec *executionContext) _CompGuidance_updateAt(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UpdateAt, nil
+		return obj.UpdatedAt, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5416,7 +5444,7 @@ func (ec *executionContext) _CompGuidance_updateAt(ctx context.Context, field gr
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_CompGuidance_updateAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_CompGuidance_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "CompGuidance",
 		Field:      field,
@@ -6875,8 +6903,8 @@ func (ec *executionContext) fieldContext_EduReform_createdAt(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _EduReform_updateAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.EduReform) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_EduReform_updateAt(ctx, field)
+func (ec *executionContext) _EduReform_updatedAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.EduReform) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_EduReform_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -6889,7 +6917,7 @@ func (ec *executionContext) _EduReform_updateAt(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UpdateAt, nil
+		return obj.UpdatedAt, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -6906,7 +6934,7 @@ func (ec *executionContext) _EduReform_updateAt(ctx context.Context, field graph
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_EduReform_updateAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_EduReform_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "EduReform",
 		Field:      field,
@@ -7597,8 +7625,8 @@ func (ec *executionContext) fieldContext_Mentorship_createdAt(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _Mentorship_updateAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.Mentorship) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mentorship_updateAt(ctx, field)
+func (ec *executionContext) _Mentorship_updatedAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.Mentorship) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mentorship_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7611,7 +7639,7 @@ func (ec *executionContext) _Mentorship_updateAt(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UpdateAt, nil
+		return obj.UpdatedAt, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7628,7 +7656,7 @@ func (ec *executionContext) _Mentorship_updateAt(ctx context.Context, field grap
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mentorship_updateAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mentorship_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mentorship",
 		Field:      field,
@@ -8155,8 +8183,8 @@ func (ec *executionContext) fieldContext_Monograph_createdAt(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Monograph_updateAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.Monograph) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Monograph_updateAt(ctx, field)
+func (ec *executionContext) _Monograph_updatedAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.Monograph) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Monograph_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -8169,7 +8197,7 @@ func (ec *executionContext) _Monograph_updateAt(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UpdateAt, nil
+		return obj.UpdatedAt, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8186,7 +8214,7 @@ func (ec *executionContext) _Monograph_updateAt(ctx context.Context, field graph
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Monograph_updateAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Monograph_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Monograph",
 		Field:      field,
@@ -8755,7 +8783,7 @@ func (ec *executionContext) _Mutation_createacademicTerm(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateacademicTerm(rctx, fc.Args["newTermData"].(graphql_models.NewAcademicTerm))
+		return ec.resolvers.Mutation().CreateacademicTerm(rctx, fc.Args["userId"].(string), fc.Args["newTermData"].(graphql_models.NewAcademicTerm))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8788,8 +8816,8 @@ func (ec *executionContext) fieldContext_Mutation_createacademicTerm(ctx context
 				return ec.fieldContext_AcademicTerm_courses(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_AcademicTerm_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_AcademicTerm_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AcademicTerm_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AcademicTerm", field.Name)
 		},
@@ -8822,7 +8850,7 @@ func (ec *executionContext) _Mutation_updateacademicTerm(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateacademicTerm(rctx, fc.Args["termId"].(string), fc.Args["termData"].(*graphql_models.UpdateAcademicTerm))
+		return ec.resolvers.Mutation().UpdateacademicTerm(rctx, fc.Args["termId"].(string), fc.Args["termData"].(graphql_models.UpdateAcademicTerm))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -8855,8 +8883,8 @@ func (ec *executionContext) fieldContext_Mutation_updateacademicTerm(ctx context
 				return ec.fieldContext_AcademicTerm_courses(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_AcademicTerm_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_AcademicTerm_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AcademicTerm_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AcademicTerm", field.Name)
 		},
@@ -8922,8 +8950,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteacademicTerm(ctx context
 				return ec.fieldContext_AcademicTerm_courses(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_AcademicTerm_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_AcademicTerm_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AcademicTerm_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AcademicTerm", field.Name)
 		},
@@ -9056,8 +9084,8 @@ func (ec *executionContext) fieldContext_Mutation_createCompGuidance(ctx context
 				return ec.fieldContext_CompGuidance_awardStatus(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_CompGuidance_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_CompGuidance_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_CompGuidance_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type CompGuidance", field.Name)
 		},
@@ -9129,8 +9157,8 @@ func (ec *executionContext) fieldContext_Mutation_updateCompGuidance(ctx context
 				return ec.fieldContext_CompGuidance_awardStatus(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_CompGuidance_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_CompGuidance_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_CompGuidance_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type CompGuidance", field.Name)
 		},
@@ -9202,8 +9230,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteCompGuidance(ctx context
 				return ec.fieldContext_CompGuidance_awardStatus(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_CompGuidance_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_CompGuidance_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_CompGuidance_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type CompGuidance", field.Name)
 		},
@@ -9419,8 +9447,8 @@ func (ec *executionContext) fieldContext_Mutation_createEduReform(ctx context.Co
 				return ec.fieldContext_EduReform_fund(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_EduReform_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_EduReform_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_EduReform_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type EduReform", field.Name)
 		},
@@ -9502,8 +9530,8 @@ func (ec *executionContext) fieldContext_Mutation_updateEduReform(ctx context.Co
 				return ec.fieldContext_EduReform_fund(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_EduReform_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_EduReform_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_EduReform_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type EduReform", field.Name)
 		},
@@ -9585,8 +9613,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteEduReform(ctx context.Co
 				return ec.fieldContext_EduReform_fund(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_EduReform_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_EduReform_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_EduReform_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type EduReform", field.Name)
 		},
@@ -9810,8 +9838,8 @@ func (ec *executionContext) fieldContext_Mutation_createMentorship(ctx context.C
 				return ec.fieldContext_Mentorship_guidanceDate(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Mentorship_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Mentorship_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Mentorship_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Mentorship", field.Name)
 		},
@@ -9881,8 +9909,8 @@ func (ec *executionContext) fieldContext_Mutation_updateMentorship(ctx context.C
 				return ec.fieldContext_Mentorship_guidanceDate(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Mentorship_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Mentorship_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Mentorship_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Mentorship", field.Name)
 		},
@@ -9952,8 +9980,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteMentorship(ctx context.C
 				return ec.fieldContext_Mentorship_guidanceDate(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Mentorship_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Mentorship_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Mentorship_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Mentorship", field.Name)
 		},
@@ -10157,8 +10185,8 @@ func (ec *executionContext) fieldContext_Mutation_createMonograph(ctx context.Co
 				return ec.fieldContext_Monograph_rank(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Monograph_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Monograph_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Monograph_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Monograph", field.Name)
 		},
@@ -10232,8 +10260,8 @@ func (ec *executionContext) fieldContext_Mutation_updateMonograph(ctx context.Co
 				return ec.fieldContext_Monograph_rank(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Monograph_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Monograph_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Monograph_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Monograph", field.Name)
 		},
@@ -10307,8 +10335,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteMonograph(ctx context.Co
 				return ec.fieldContext_Monograph_rank(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Monograph_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Monograph_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Monograph_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Monograph", field.Name)
 		},
@@ -10522,8 +10550,8 @@ func (ec *executionContext) fieldContext_Mutation_createPaper(ctx context.Contex
 				return ec.fieldContext_Paper_journalLevel(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Paper_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Paper_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Paper_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Paper", field.Name)
 		},
@@ -10599,8 +10627,8 @@ func (ec *executionContext) fieldContext_Mutation_updatePaper(ctx context.Contex
 				return ec.fieldContext_Paper_journalLevel(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Paper_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Paper_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Paper_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Paper", field.Name)
 		},
@@ -10676,8 +10704,8 @@ func (ec *executionContext) fieldContext_Mutation_deletePaper(ctx context.Contex
 				return ec.fieldContext_Paper_journalLevel(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Paper_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Paper_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Paper_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Paper", field.Name)
 		},
@@ -10753,8 +10781,8 @@ func (ec *executionContext) fieldContext_Mutation_uploadPaper(ctx context.Contex
 				return ec.fieldContext_Paper_journalLevel(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Paper_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Paper_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Paper_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Paper", field.Name)
 		},
@@ -10830,8 +10858,8 @@ func (ec *executionContext) fieldContext_Mutation_uploadPapers(ctx context.Conte
 				return ec.fieldContext_Paper_journalLevel(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Paper_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Paper_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Paper_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Paper", field.Name)
 		},
@@ -10903,8 +10931,8 @@ func (ec *executionContext) fieldContext_Mutation_createPassword(ctx context.Con
 				return ec.fieldContext_Password_description(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Password_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Password_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Password_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Password", field.Name)
 		},
@@ -10976,8 +11004,8 @@ func (ec *executionContext) fieldContext_Mutation_updatePassword(ctx context.Con
 				return ec.fieldContext_Password_description(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Password_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Password_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Password_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Password", field.Name)
 		},
@@ -11049,8 +11077,8 @@ func (ec *executionContext) fieldContext_Mutation_deletePassword(ctx context.Con
 				return ec.fieldContext_Password_description(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Password_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Password_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Password_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Password", field.Name)
 		},
@@ -11136,8 +11164,8 @@ func (ec *executionContext) fieldContext_Mutation_createSciResearch(ctx context.
 				return ec.fieldContext_SciResearch_awards(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_SciResearch_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_SciResearch_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_SciResearch_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SciResearch", field.Name)
 		},
@@ -11223,8 +11251,8 @@ func (ec *executionContext) fieldContext_Mutation_updateSciResearch(ctx context.
 				return ec.fieldContext_SciResearch_awards(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_SciResearch_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_SciResearch_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_SciResearch_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SciResearch", field.Name)
 		},
@@ -11310,8 +11338,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteSciResearch(ctx context.
 				return ec.fieldContext_SciResearch_awards(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_SciResearch_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_SciResearch_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_SciResearch_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SciResearch", field.Name)
 		},
@@ -11397,8 +11425,8 @@ func (ec *executionContext) fieldContext_Mutation_creareAwardSciResearch(ctx con
 				return ec.fieldContext_SciResearch_awards(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_SciResearch_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_SciResearch_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_SciResearch_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SciResearch", field.Name)
 		},
@@ -11484,8 +11512,8 @@ func (ec *executionContext) fieldContext_Mutation_addAwardRecord(ctx context.Con
 				return ec.fieldContext_SciResearch_awards(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_SciResearch_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_SciResearch_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_SciResearch_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SciResearch", field.Name)
 		},
@@ -11555,8 +11583,8 @@ func (ec *executionContext) fieldContext_Mutation_updateAwardRecord(ctx context.
 				return ec.fieldContext_AwardRecord_awardRank(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_AwardRecord_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_AwardRecord_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AwardRecord_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AwardRecord", field.Name)
 		},
@@ -11626,8 +11654,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteAwardRecord(ctx context.
 				return ec.fieldContext_AwardRecord_awardRank(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_AwardRecord_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_AwardRecord_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AwardRecord_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AwardRecord", field.Name)
 		},
@@ -11701,8 +11729,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteAccount(ctx context.Cont
 				return ec.fieldContext_User_activate(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_User_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_User_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_User_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -11831,6 +11859,67 @@ func (ec *executionContext) fieldContext_Mutation_forgetAccountPassword(ctx cont
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_signIn(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_signIn(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().SignIn(rctx, fc.Args["email"].(string), fc.Args["password"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*graphql_models.SignInResponse)
+	fc.Result = res
+	return ec.marshalNSignInResponse2ᚖserverᚋgraphᚋmodelᚐSignInResponse(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_signIn(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "token":
+				return ec.fieldContext_SignInResponse_token(ctx, field)
+			case "user":
+				return ec.fieldContext_SignInResponse_user(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type SignInResponse", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_signIn_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_updateUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_updateUser(ctx, field)
 	if err != nil {
@@ -11886,8 +11975,8 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_activate(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_User_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_User_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_User_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -12521,8 +12610,8 @@ func (ec *executionContext) fieldContext_Paper_createdAt(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Paper_updateAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.Paper) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Paper_updateAt(ctx, field)
+func (ec *executionContext) _Paper_updatedAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.Paper) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Paper_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -12535,7 +12624,7 @@ func (ec *executionContext) _Paper_updateAt(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UpdateAt, nil
+		return obj.UpdatedAt, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -12552,7 +12641,7 @@ func (ec *executionContext) _Paper_updateAt(ctx context.Context, field graphql.C
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Paper_updateAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Paper_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Paper",
 		Field:      field,
@@ -13161,8 +13250,8 @@ func (ec *executionContext) fieldContext_Password_createdAt(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_updateAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_updateAt(ctx, field)
+func (ec *executionContext) _Password_updatedAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.Password) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Password_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -13175,7 +13264,7 @@ func (ec *executionContext) _Password_updateAt(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UpdateAt, nil
+		return obj.UpdatedAt, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -13192,7 +13281,7 @@ func (ec *executionContext) _Password_updateAt(ctx context.Context, field graphq
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_updateAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Password_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Password",
 		Field:      field,
@@ -13311,8 +13400,8 @@ func (ec *executionContext) fieldContext_Query_academicTerm(ctx context.Context,
 				return ec.fieldContext_AcademicTerm_courses(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_AcademicTerm_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_AcademicTerm_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AcademicTerm_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AcademicTerm", field.Name)
 		},
@@ -13378,8 +13467,8 @@ func (ec *executionContext) fieldContext_Query_academicerms(ctx context.Context,
 				return ec.fieldContext_AcademicTerm_courses(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_AcademicTerm_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_AcademicTerm_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AcademicTerm_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AcademicTerm", field.Name)
 		},
@@ -13451,8 +13540,8 @@ func (ec *executionContext) fieldContext_Query_compGuidance(ctx context.Context,
 				return ec.fieldContext_CompGuidance_awardStatus(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_CompGuidance_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_CompGuidance_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_CompGuidance_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type CompGuidance", field.Name)
 		},
@@ -13524,8 +13613,8 @@ func (ec *executionContext) fieldContext_Query_compGuidancesForUser(ctx context.
 				return ec.fieldContext_CompGuidance_awardStatus(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_CompGuidance_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_CompGuidance_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_CompGuidance_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type CompGuidance", field.Name)
 		},
@@ -13597,8 +13686,8 @@ func (ec *executionContext) fieldContext_Query_compGuidancesByProjectName(ctx co
 				return ec.fieldContext_CompGuidance_awardStatus(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_CompGuidance_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_CompGuidance_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_CompGuidance_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type CompGuidance", field.Name)
 		},
@@ -13670,8 +13759,8 @@ func (ec *executionContext) fieldContext_Query_compGuidancesByAwardStatus(ctx co
 				return ec.fieldContext_CompGuidance_awardStatus(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_CompGuidance_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_CompGuidance_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_CompGuidance_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type CompGuidance", field.Name)
 		},
@@ -13750,8 +13839,8 @@ func (ec *executionContext) fieldContext_Query_eduReform(ctx context.Context, fi
 				return ec.fieldContext_EduReform_fund(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_EduReform_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_EduReform_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_EduReform_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type EduReform", field.Name)
 		},
@@ -13833,8 +13922,8 @@ func (ec *executionContext) fieldContext_Query_eduReforms(ctx context.Context, f
 				return ec.fieldContext_EduReform_fund(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_EduReform_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_EduReform_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_EduReform_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type EduReform", field.Name)
 		},
@@ -13916,8 +14005,8 @@ func (ec *executionContext) fieldContext_Query_eduReformsByName(ctx context.Cont
 				return ec.fieldContext_EduReform_fund(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_EduReform_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_EduReform_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_EduReform_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type EduReform", field.Name)
 		},
@@ -13999,8 +14088,8 @@ func (ec *executionContext) fieldContext_Query_eduReformsByAchievement(ctx conte
 				return ec.fieldContext_EduReform_fund(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_EduReform_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_EduReform_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_EduReform_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type EduReform", field.Name)
 		},
@@ -14070,8 +14159,8 @@ func (ec *executionContext) fieldContext_Query_mentorship(ctx context.Context, f
 				return ec.fieldContext_Mentorship_guidanceDate(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Mentorship_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Mentorship_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Mentorship_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Mentorship", field.Name)
 		},
@@ -14104,7 +14193,7 @@ func (ec *executionContext) _Query_mentorships(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Mentorships(rctx, fc.Args["teacherid"].(string))
+		return ec.resolvers.Query().Mentorships(rctx, fc.Args["userId"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -14141,8 +14230,8 @@ func (ec *executionContext) fieldContext_Query_mentorships(ctx context.Context, 
 				return ec.fieldContext_Mentorship_guidanceDate(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Mentorship_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Mentorship_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Mentorship_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Mentorship", field.Name)
 		},
@@ -14212,8 +14301,8 @@ func (ec *executionContext) fieldContext_Query_mentorshipsByName(ctx context.Con
 				return ec.fieldContext_Mentorship_guidanceDate(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Mentorship_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Mentorship_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Mentorship_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Mentorship", field.Name)
 		},
@@ -14287,8 +14376,8 @@ func (ec *executionContext) fieldContext_Query_monograph(ctx context.Context, fi
 				return ec.fieldContext_Monograph_rank(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Monograph_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Monograph_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Monograph_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Monograph", field.Name)
 		},
@@ -14362,8 +14451,8 @@ func (ec *executionContext) fieldContext_Query_monographs(ctx context.Context, f
 				return ec.fieldContext_Monograph_rank(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Monograph_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Monograph_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Monograph_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Monograph", field.Name)
 		},
@@ -14433,8 +14522,8 @@ func (ec *executionContext) fieldContext_Query_monographsByName(ctx context.Cont
 				return ec.fieldContext_Mentorship_guidanceDate(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Mentorship_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Mentorship_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Mentorship_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Mentorship", field.Name)
 		},
@@ -14510,8 +14599,8 @@ func (ec *executionContext) fieldContext_Query_paper(ctx context.Context, field 
 				return ec.fieldContext_Paper_journalLevel(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Paper_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Paper_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Paper_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Paper", field.Name)
 		},
@@ -14587,8 +14676,8 @@ func (ec *executionContext) fieldContext_Query_papers(ctx context.Context, field
 				return ec.fieldContext_Paper_journalLevel(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Paper_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Paper_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Paper_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Paper", field.Name)
 		},
@@ -14664,8 +14753,8 @@ func (ec *executionContext) fieldContext_Query_papersByName(ctx context.Context,
 				return ec.fieldContext_Paper_journalLevel(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Paper_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Paper_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Paper_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Paper", field.Name)
 		},
@@ -14737,8 +14826,8 @@ func (ec *executionContext) fieldContext_Query_password(ctx context.Context, fie
 				return ec.fieldContext_Password_description(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Password_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Password_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Password_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Password", field.Name)
 		},
@@ -14810,8 +14899,8 @@ func (ec *executionContext) fieldContext_Query_passwords(ctx context.Context, fi
 				return ec.fieldContext_Password_description(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_Password_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_Password_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_Password_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Password", field.Name)
 		},
@@ -14897,8 +14986,8 @@ func (ec *executionContext) fieldContext_Query_sciResearch(ctx context.Context, 
 				return ec.fieldContext_SciResearch_awards(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_SciResearch_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_SciResearch_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_SciResearch_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SciResearch", field.Name)
 		},
@@ -14984,8 +15073,8 @@ func (ec *executionContext) fieldContext_Query_sciResearchs(ctx context.Context,
 				return ec.fieldContext_SciResearch_awards(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_SciResearch_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_SciResearch_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_SciResearch_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SciResearch", field.Name)
 		},
@@ -15071,8 +15160,8 @@ func (ec *executionContext) fieldContext_Query_sciResearchsByName(ctx context.Co
 				return ec.fieldContext_SciResearch_awards(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_SciResearch_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_SciResearch_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_SciResearch_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SciResearch", field.Name)
 		},
@@ -15158,8 +15247,8 @@ func (ec *executionContext) fieldContext_Query_awardSciResearch(ctx context.Cont
 				return ec.fieldContext_SciResearch_awards(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_SciResearch_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_SciResearch_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_SciResearch_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SciResearch", field.Name)
 		},
@@ -15245,8 +15334,8 @@ func (ec *executionContext) fieldContext_Query_awardSciResearchs(ctx context.Con
 				return ec.fieldContext_SciResearch_awards(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_SciResearch_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_SciResearch_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_SciResearch_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SciResearch", field.Name)
 		},
@@ -15332,8 +15421,8 @@ func (ec *executionContext) fieldContext_Query_awardSciResearchsByName(ctx conte
 				return ec.fieldContext_SciResearch_awards(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_SciResearch_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_SciResearch_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_SciResearch_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SciResearch", field.Name)
 		},
@@ -15407,8 +15496,8 @@ func (ec *executionContext) fieldContext_Query_user(ctx context.Context, field g
 				return ec.fieldContext_User_activate(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_User_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_User_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_User_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -15477,65 +15566,6 @@ func (ec *executionContext) fieldContext_Query_userExports(ctx context.Context, 
 			}
 			return nil, fmt.Errorf("no field named %q was found under type UserExport", field.Name)
 		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_signIn(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_signIn(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().SignIn(rctx, fc.Args["email"].(string), fc.Args["password"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*graphql_models.AuthPayload)
-	fc.Result = res
-	return ec.marshalNAuthPayload2ᚖserverᚋgraphᚋmodelᚐAuthPayload(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_signIn(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "token":
-				return ec.fieldContext_AuthPayload_token(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type AuthPayload", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_signIn_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
 	}
 	return fc, nil
 }
@@ -16234,8 +16264,8 @@ func (ec *executionContext) fieldContext_SciResearch_awards(ctx context.Context,
 				return ec.fieldContext_AwardRecord_awardRank(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_AwardRecord_createdAt(ctx, field)
-			case "updateAt":
-				return ec.fieldContext_AwardRecord_updateAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_AwardRecord_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AwardRecord", field.Name)
 		},
@@ -16287,8 +16317,8 @@ func (ec *executionContext) fieldContext_SciResearch_createdAt(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _SciResearch_updateAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.SciResearch) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_SciResearch_updateAt(ctx, field)
+func (ec *executionContext) _SciResearch_updatedAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.SciResearch) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SciResearch_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -16301,7 +16331,7 @@ func (ec *executionContext) _SciResearch_updateAt(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UpdateAt, nil
+		return obj.UpdatedAt, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -16318,7 +16348,7 @@ func (ec *executionContext) _SciResearch_updateAt(ctx context.Context, field gra
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_SciResearch_updateAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_SciResearch_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "SciResearch",
 		Field:      field,
@@ -16326,6 +16356,114 @@ func (ec *executionContext) fieldContext_SciResearch_updateAt(ctx context.Contex
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SignInResponse_token(ctx context.Context, field graphql.CollectedField, obj *graphql_models.SignInResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SignInResponse_token(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Token, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SignInResponse_token(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SignInResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SignInResponse_user(ctx context.Context, field graphql.CollectedField, obj *graphql_models.SignInResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SignInResponse_user(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.User, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*graphql_models.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖserverᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SignInResponse_user(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SignInResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_User_id(ctx, field)
+			case "username":
+				return ec.fieldContext_User_username(ctx, field)
+			case "email":
+				return ec.fieldContext_User_email(ctx, field)
+			case "avatar":
+				return ec.fieldContext_User_avatar(ctx, field)
+			case "phoneNumber":
+				return ec.fieldContext_User_phoneNumber(ctx, field)
+			case "wechatToken":
+				return ec.fieldContext_User_wechatToken(ctx, field)
+			case "activate":
+				return ec.fieldContext_User_activate(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_User_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_User_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
 	}
 	return fc, nil
@@ -16677,8 +16815,8 @@ func (ec *executionContext) fieldContext_User_createdAt(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _User_updateAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.User) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_User_updateAt(ctx, field)
+func (ec *executionContext) _User_updatedAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_updatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -16691,7 +16829,7 @@ func (ec *executionContext) _User_updateAt(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UpdateAt, nil
+		return obj.UpdatedAt, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -16708,7 +16846,7 @@ func (ec *executionContext) _User_updateAt(ctx context.Context, field graphql.Co
 	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_User_updateAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_User_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "User",
 		Field:      field,
@@ -20400,8 +20538,8 @@ func (ec *executionContext) _AcademicTerm(ctx context.Context, sel ast.Selection
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "updateAt":
-			out.Values[i] = ec._AcademicTerm_updateAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._AcademicTerm_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -20576,8 +20714,8 @@ func (ec *executionContext) _AwardRecord(ctx context.Context, sel ast.SelectionS
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "updateAt":
-			out.Values[i] = ec._AwardRecord_updateAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._AwardRecord_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -20723,8 +20861,8 @@ func (ec *executionContext) _CompGuidance(ctx context.Context, sel ast.Selection
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "updateAt":
-			out.Values[i] = ec._CompGuidance_updateAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._CompGuidance_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -20962,8 +21100,8 @@ func (ec *executionContext) _EduReform(ctx context.Context, sel ast.SelectionSet
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "updateAt":
-			out.Values[i] = ec._EduReform_updateAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._EduReform_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -21079,8 +21217,8 @@ func (ec *executionContext) _Mentorship(ctx context.Context, sel ast.SelectionSe
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "updateAt":
-			out.Values[i] = ec._Mentorship_updateAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._Mentorship_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -21188,8 +21326,8 @@ func (ec *executionContext) _Monograph(ctx context.Context, sel ast.SelectionSet
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "updateAt":
-			out.Values[i] = ec._Monograph_updateAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._Monograph_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -21603,6 +21741,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "signIn":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_signIn(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "updateUser":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_updateUser(ctx, field)
@@ -21702,8 +21847,8 @@ func (ec *executionContext) _Paper(ctx context.Context, sel ast.SelectionSet, ob
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "updateAt":
-			out.Values[i] = ec._Paper_updateAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._Paper_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -21815,8 +21960,8 @@ func (ec *executionContext) _Password(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "updateAt":
-			out.Values[i] = ec._Password_updateAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._Password_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -22519,28 +22664,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "signIn":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_signIn(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "__type":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Query___type(ctx, field)
@@ -22629,8 +22752,52 @@ func (ec *executionContext) _SciResearch(ctx context.Context, sel ast.SelectionS
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "updateAt":
-			out.Values[i] = ec._SciResearch_updateAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._SciResearch_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var signInResponseImplementors = []string{"SignInResponse"}
+
+func (ec *executionContext) _SignInResponse(ctx context.Context, sel ast.SelectionSet, obj *graphql_models.SignInResponse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, signInResponseImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("SignInResponse")
+		case "token":
+			out.Values[i] = ec._SignInResponse_token(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "user":
+			out.Values[i] = ec._SignInResponse_user(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -22702,8 +22869,8 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "updateAt":
-			out.Values[i] = ec._User_updateAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._User_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -24106,6 +24273,20 @@ func (ec *executionContext) marshalNSciResearch2ᚖserverᚋgraphᚋmodelᚐSciR
 	return ec._SciResearch(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNSignInResponse2serverᚋgraphᚋmodelᚐSignInResponse(ctx context.Context, sel ast.SelectionSet, v graphql_models.SignInResponse) graphql.Marshaler {
+	return ec._SignInResponse(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNSignInResponse2ᚖserverᚋgraphᚋmodelᚐSignInResponse(ctx context.Context, sel ast.SelectionSet, v *graphql_models.SignInResponse) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._SignInResponse(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -24160,6 +24341,11 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNUpdateAcademicTerm2serverᚋgraphᚋmodelᚐUpdateAcademicTerm(ctx context.Context, v interface{}) (graphql_models.UpdateAcademicTerm, error) {
+	res, err := ec.unmarshalInputUpdateAcademicTerm(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalNUpdateCompGuidance2serverᚋgraphᚋmodelᚐUpdateCompGuidance(ctx context.Context, v interface{}) (graphql_models.UpdateCompGuidance, error) {
@@ -24991,14 +25177,6 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 	}
 	res := graphql.MarshalTime(*v)
 	return res
-}
-
-func (ec *executionContext) unmarshalOUpdateAcademicTerm2ᚖserverᚋgraphᚋmodelᚐUpdateAcademicTerm(ctx context.Context, v interface{}) (*graphql_models.UpdateAcademicTerm, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputUpdateAcademicTerm(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) unmarshalOUpdateMentorship2ᚖserverᚋgraphᚋmodelᚐUpdateMentorship(ctx context.Context, v interface{}) (*graphql_models.UpdateMentorship, error) {

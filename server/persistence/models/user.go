@@ -13,6 +13,8 @@ type User struct {
 	Phone       string             `bson:"phone,omitempty"`
 	WechatToken string             `bson:"wechatToken,omitempty"`
 	Activate    bool               `bson:"activate"`
+	MasterKey   string             `bson:"masterKey"`
+	Salt        string             `bson:"salt"`
 	CreatedAt   primitive.DateTime `bson:"createdAt"`
-	UpdatedAt   primitive.DateTime `bson:"updatedAT"`
+	UpdatedAt   primitive.DateTime `bson:"updatedAt"`
 }

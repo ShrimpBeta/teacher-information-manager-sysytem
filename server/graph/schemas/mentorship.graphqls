@@ -32,7 +32,7 @@ input UpdateMentorship {
 
 extend type Query {
   mentorship(id: ID!): Mentorship!
-  mentorships(teacherid: ID!): [Mentorship]!
+  mentorships(userId: ID!): [Mentorship]!
 
   mentorshipsByName(name: String!): [Mentorship]!
 }

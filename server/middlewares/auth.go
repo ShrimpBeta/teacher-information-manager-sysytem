@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"server/persistence/models"
+	"server/persistence/repository"
 	"server/services/jwt"
 
 	"github.com/gin-gonic/gin"
@@ -28,14 +29,14 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		user := models.User{Email: email}
-		id, err := user.GetUserIdByEmail(email)
+		id, err := repository.Repos.UserRepo.GetUserIdByEmail(email)
 
 		// create user and check if user exists in db
 		if err != nil {
 			ctx.Next()
 			return
 		}
-		user.ID = id
+		user.ID = *id
 
 		// put it in context
 		ctx.Set("user", &user)

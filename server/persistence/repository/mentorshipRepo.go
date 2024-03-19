@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"server/persistence/models"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -18,7 +19,7 @@ type MentorshipQueryParams struct {
 	ProjectName string
 }
 
-func MewMentorshipRepo(db *mongo.Database) *MentorshipRepo {
+func NewMentorshipRepo(db *mongo.Database) *MentorshipRepo {
 	return &MentorshipRepo{
 		collection: db.Collection("Mentorship"),
 	}
@@ -60,6 +61,10 @@ func (r *MentorshipRepo) GetMentorshipsByParams(params MentorshipQueryParams) ([
 }
 
 func (r *MentorshipRepo) CreateMentorship(mentorship *models.Mentorship) (*primitive.ObjectID, error) {
+	objectId := primitive.NewObjectID()
+	mentorship.ID = objectId
+	mentorship.CreatedAt = primitive.NewDateTimeFromTime(time.Now())
+	mentorship.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
 	result, err := r.collection.InsertOne(context.Background(), mentorship)
 	if err != nil {
 		return nil, err
@@ -69,6 +74,7 @@ func (r *MentorshipRepo) CreateMentorship(mentorship *models.Mentorship) (*primi
 }
 
 func (r *MentorshipRepo) UpdateMentorship(mentorship *models.Mentorship) error {
+	mentorship.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
 	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": mentorship.ID}, bson.M{"$set": mentorship})
 	return err
 }

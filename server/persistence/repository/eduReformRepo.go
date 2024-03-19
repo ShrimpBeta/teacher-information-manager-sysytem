@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type eduReformRepo struct {
+type EduReformRepo struct {
 	collection *mongo.Collection
 }
 
@@ -21,13 +21,13 @@ type EduReformQueryParams struct {
 	Achievement string
 }
 
-func NewEduReformRepo(db *mongo.Database) *eduReformRepo {
-	return &eduReformRepo{
+func NewEduReformRepo(db *mongo.Database) *EduReformRepo {
+	return &EduReformRepo{
 		collection: db.Collection("EduReform"),
 	}
 }
 
-func (r *eduReformRepo) GetEduReformById(id primitive.ObjectID) (*models.EduReform, error) {
+func (r *EduReformRepo) GetEduReformById(id primitive.ObjectID) (*models.EduReform, error) {
 	eduReform := models.EduReform{}
 	err := r.collection.FindOne(context.Background(), bson.M{"_id": id}).Decode(&eduReform)
 	if err != nil {
@@ -36,7 +36,7 @@ func (r *eduReformRepo) GetEduReformById(id primitive.ObjectID) (*models.EduRefo
 	return &eduReform, nil
 }
 
-func (r *eduReformRepo) GetEduReformsByParams(params EduReformQueryParams) ([]models.EduReform, error) {
+func (r *EduReformRepo) GetEduReformsByParams(params EduReformQueryParams) ([]models.EduReform, error) {
 	eduReforms := []models.EduReform{}
 
 	//  filter for teachersIn,can not be empty
@@ -73,7 +73,11 @@ func (r *eduReformRepo) GetEduReformsByParams(params EduReformQueryParams) ([]mo
 	return eduReforms, nil
 }
 
-func (r *eduReformRepo) CreateEduReform(eduReform *models.EduReform) (*primitive.ObjectID, error) {
+func (r *EduReformRepo) CreateEduReform(eduReform *models.EduReform) (*primitive.ObjectID, error) {
+	objectId := primitive.NewObjectID()
+	eduReform.ID = objectId
+	eduReform.CreatedAt = primitive.NewDateTimeFromTime(eduReform.CreatedAt.Time())
+	eduReform.UpdatedAt = primitive.NewDateTimeFromTime(eduReform.UpdatedAt.Time())
 	result, err := r.collection.InsertOne(context.Background(), eduReform)
 	if err != nil {
 		return nil, err
@@ -82,12 +86,13 @@ func (r *eduReformRepo) CreateEduReform(eduReform *models.EduReform) (*primitive
 	return &newEduReform, nil
 }
 
-func (r *eduReformRepo) UpdateEduReform(eduReform *models.EduReform) error {
+func (r *EduReformRepo) UpdateEduReform(eduReform *models.EduReform) error {
+	eduReform.UpdatedAt = primitive.NewDateTimeFromTime(eduReform.UpdatedAt.Time())
 	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": eduReform.ID}, bson.M{"$set": eduReform})
 	return err
 }
 
-func (r *eduReformRepo) DeleteEduReform(id primitive.ObjectID) error {
+func (r *EduReformRepo) DeleteEduReform(id primitive.ObjectID) error {
 	_, err := r.collection.DeleteOne(context.Background(), bson.M{"_id": id})
 	return err
 }

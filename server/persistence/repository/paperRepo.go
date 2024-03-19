@@ -69,6 +69,10 @@ func (r *PaperRepo) GetPapersByParams(params PaperQueryParams) ([]models.Paper, 
 }
 
 func (r *PaperRepo) CreatePaper(paper *models.Paper) (*primitive.ObjectID, error) {
+	objectId := primitive.NewObjectID()
+	paper.ID = objectId
+	paper.CreatedAt = primitive.NewDateTimeFromTime(paper.CreatedAt.Time())
+	paper.UpdatedAt = primitive.NewDateTimeFromTime(paper.UpdatedAt.Time())
 	result, err := r.collection.InsertOne(context.Background(), paper)
 	if err != nil {
 		return nil, err
@@ -78,6 +82,7 @@ func (r *PaperRepo) CreatePaper(paper *models.Paper) (*primitive.ObjectID, error
 }
 
 func (r *PaperRepo) UpdatePaper(paper *models.Paper) error {
+	paper.UpdatedAt = primitive.NewDateTimeFromTime(paper.UpdatedAt.Time())
 	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": paper.ID}, bson.M{"$set": paper})
 	return err
 }

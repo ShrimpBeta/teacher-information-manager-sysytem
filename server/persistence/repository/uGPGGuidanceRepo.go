@@ -64,6 +64,10 @@ func (r *UGPGGuidanceRepo) GetUGPGGuidancesByParams(params UGPGGuidanceQueryPara
 }
 
 func (r *UGPGGuidanceRepo) CreateUGPGGuidance(ugpgGuidance *models.UGPGGuidance) (*primitive.ObjectID, error) {
+	objectId := primitive.NewObjectID()
+	ugpgGuidance.ID = objectId
+	ugpgGuidance.CreatedAt = primitive.NewDateTimeFromTime(ugpgGuidance.CreatedAt.Time())
+	ugpgGuidance.UpdatedAt = primitive.NewDateTimeFromTime(ugpgGuidance.UpdatedAt.Time())
 	result, err := r.collection.InsertOne(context.Background(), ugpgGuidance)
 	if err != nil {
 		return nil, err
@@ -73,6 +77,7 @@ func (r *UGPGGuidanceRepo) CreateUGPGGuidance(ugpgGuidance *models.UGPGGuidance)
 }
 
 func (r *UGPGGuidanceRepo) UpdateUGPGGuidance(ugpgGuidance *models.UGPGGuidance) error {
+	ugpgGuidance.UpdatedAt = primitive.NewDateTimeFromTime(ugpgGuidance.UpdatedAt.Time())
 	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": ugpgGuidance.ID}, bson.M{"$set": ugpgGuidance})
 	return err
 }

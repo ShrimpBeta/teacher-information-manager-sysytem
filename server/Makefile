@@ -3,10 +3,14 @@
 BINARY_NAME=server
 
 run:build
-	./${BINARY_NAME}-windows.exe
+	cd build && ./${BINARY_NAME}-debug.exe
+
+run_direct:
+	cd build && ./${BINARY_NAME}-debug.exe
 
 build:
-	GOARCH=amd64 GOOS=windows go build -o ${BINARY_NAME}-windows.exe main.go
+	if [ ! -d "build" ]; then mkdir build; fi
+	GOARCH=amd64 GOOS=windows go build -o build/${BINARY_NAME}-debug.exe main.go
 
 init:
 	go run github.com/99designs/gqlgen init

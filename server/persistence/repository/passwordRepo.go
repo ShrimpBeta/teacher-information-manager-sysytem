@@ -69,6 +69,10 @@ func (r *PasswordRepo) GetPasswordsByParams(params PasswordQueryParams) ([]model
 }
 
 func (r *PasswordRepo) CreatePassword(password *models.Password) (*primitive.ObjectID, error) {
+	objectId := primitive.NewObjectID()
+	password.ID = objectId
+	password.CreatedAt = primitive.NewDateTimeFromTime(password.CreatedAt.Time())
+	password.UpdatedAt = primitive.NewDateTimeFromTime(password.UpdatedAt.Time())
 	result, err := r.collection.InsertOne(context.Background(), password)
 	if err != nil {
 		return nil, err
@@ -78,6 +82,7 @@ func (r *PasswordRepo) CreatePassword(password *models.Password) (*primitive.Obj
 }
 
 func (r *PasswordRepo) UpdatePassword(password *models.Password) error {
+	password.UpdatedAt = primitive.NewDateTimeFromTime(password.UpdatedAt.Time())
 	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": password.ID}, bson.M{"$set": password})
 	return err
 }
