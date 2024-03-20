@@ -43,10 +43,10 @@ extend type Query {
 }
 
 extend type Mutation {
-  createUPGuidance(newUGPGGuidanceData: NewUGPGGuidance!): UPGuidance!
+  createUPGuidance(newUGPGGuidanceData: NewUGPGGuidance!): UGPGGuidance!
   updateUPGuidance(
     uGPGGuidanceId: ID!
     uGPGGuidanceData: UpdateUGPGGuidance!
-  ): UPGuidance!
-  deleteUPGuidance(uGPGGuidanceId: ID!): UPGuidance!
+  ): UGPGGuidance!
+  deleteUPGuidance(uGPGGuidanceId: ID!): UGPGGuidance!
 }

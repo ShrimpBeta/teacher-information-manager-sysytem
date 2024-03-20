@@ -210,6 +210,7 @@ type ComplexityRoot struct {
 		CreatePaper            func(childComplexity int, newPaperData graphql_models.NewPaper) int
 		CreatePassword         func(childComplexity int, userid string, newPasswordData graphql_models.NewPassword) int
 		CreateSciResearch      func(childComplexity int, newSciResearchData graphql_models.NewSciResearch) int
+		CreateUPGuidance       func(childComplexity int, newUGPGGuidanceData graphql_models.NewUGPGGuidance) int
 		CreateWechatToken      func(childComplexity int, userID string, token string) int
 		CreateacademicTerm     func(childComplexity int, userID string, newTermData graphql_models.NewAcademicTerm) int
 		DeleteAccount          func(childComplexity int, userID string) int
@@ -222,6 +223,7 @@ type ComplexityRoot struct {
 		DeletePaper            func(childComplexity int, id string) int
 		DeletePassword         func(childComplexity int, id string) int
 		DeleteSciResearch      func(childComplexity int, sciResearchID string) int
+		DeleteUPGuidance       func(childComplexity int, uGPGGuidanceID string) int
 		DeleteWechatToken      func(childComplexity int, userID string) int
 		DeleteacademicTerm     func(childComplexity int, termID string) int
 		ForgetAccountPassword  func(childComplexity int, userID string, passwordCodeData *graphql_models.ResetPassword) int
@@ -236,6 +238,7 @@ type ComplexityRoot struct {
 		UpdatePaper            func(childComplexity int, id string, paperDataL graphql_models.UpdatePaper) int
 		UpdatePassword         func(childComplexity int, id string, passwordData graphql_models.UpdatePassword) int
 		UpdateSciResearch      func(childComplexity int, sciResearchID string, sciResearchData graphql_models.UpdateSciResearch) int
+		UpdateUPGuidance       func(childComplexity int, uGPGGuidanceID string, uGPGGuidanceData graphql_models.UpdateUGPGGuidance) int
 		UpdateUser             func(childComplexity int, userID string, userData graphql_models.UpdateUser) int
 		UpdateWechatToken      func(childComplexity int, userID string, token string) int
 		UpdateacademicTerm     func(childComplexity int, termID string, termData graphql_models.UpdateAcademicTerm) int
@@ -316,6 +319,9 @@ type ComplexityRoot struct {
 		SciResearch                func(childComplexity int, id string) int
 		SciResearchs               func(childComplexity int, userID string) int
 		SciResearchsByName         func(childComplexity int, userID string, title string) int
+		UGPGGuidance               func(childComplexity int, id string) int
+		UGPGGuidances              func(childComplexity int, teacherID string) int
+		UGPGGuidancesByTopicName   func(childComplexity int, name string) int
 		User                       func(childComplexity int, id string) int
 		UserExports                func(childComplexity int) int
 	}
@@ -341,6 +347,20 @@ type ComplexityRoot struct {
 	SignInResponse struct {
 		Token func(childComplexity int) int
 		User  func(childComplexity int) int
+	}
+
+	UGPGGuidance struct {
+		CreatedAt          func(childComplexity int) int
+		DefenseDate        func(childComplexity int) int
+		DefenseResult      func(childComplexity int) int
+		ID                 func(childComplexity int) int
+		MidtermCheckDate   func(childComplexity int) int
+		MidtermCheckResult func(childComplexity int) int
+		OpeningCheckDate   func(childComplexity int) int
+		OpeningCheckResult func(childComplexity int) int
+		StudentName        func(childComplexity int) int
+		ThesisTopic        func(childComplexity int) int
+		UpdatedAt          func(childComplexity int) int
 	}
 
 	User struct {
@@ -412,6 +432,9 @@ type MutationResolver interface {
 	AddAwardRecord(ctx context.Context, sciResearchID string, newAwardRecordData graphql_models.NewAwardRecord) (*graphql_models.SciResearch, error)
 	UpdateAwardRecord(ctx context.Context, awardRecordID string) (*graphql_models.AwardRecord, error)
 	DeleteAwardRecord(ctx context.Context, sciResearchID string, awardRecordID string) (*graphql_models.AwardRecord, error)
+	CreateUPGuidance(ctx context.Context, newUGPGGuidanceData graphql_models.NewUGPGGuidance) (*graphql_models.UGPGGuidance, error)
+	UpdateUPGuidance(ctx context.Context, uGPGGuidanceID string, uGPGGuidanceData graphql_models.UpdateUGPGGuidance) (*graphql_models.UGPGGuidance, error)
+	DeleteUPGuidance(ctx context.Context, uGPGGuidanceID string) (*graphql_models.UGPGGuidance, error)
 	DeleteAccount(ctx context.Context, userID string) (*graphql_models.User, error)
 	UpdateAccountPassword(ctx context.Context, userID string, passwordData *graphql_models.ChangePassword) (string, error)
 	ForgetAccountPassword(ctx context.Context, userID string, passwordCodeData *graphql_models.ResetPassword) (string, error)
@@ -451,6 +474,9 @@ type QueryResolver interface {
 	AwardSciResearch(ctx context.Context, id string) (*graphql_models.SciResearch, error)
 	AwardSciResearchs(ctx context.Context, userID string) ([]*graphql_models.SciResearch, error)
 	AwardSciResearchsByName(ctx context.Context, userID string, title string) ([]*graphql_models.SciResearch, error)
+	UGPGGuidance(ctx context.Context, id string) (*graphql_models.UGPGGuidance, error)
+	UGPGGuidances(ctx context.Context, teacherID string) ([]*graphql_models.UGPGGuidance, error)
+	UGPGGuidancesByTopicName(ctx context.Context, name string) ([]*graphql_models.UGPGGuidance, error)
 	User(ctx context.Context, id string) (*graphql_models.User, error)
 	UserExports(ctx context.Context) ([]*graphql_models.UserExport, error)
 }
@@ -1299,6 +1325,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateSciResearch(childComplexity, args["newSciResearchData"].(graphql_models.NewSciResearch)), true
 
+	case "Mutation.createUPGuidance":
+		if e.complexity.Mutation.CreateUPGuidance == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createUPGuidance_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateUPGuidance(childComplexity, args["newUGPGGuidanceData"].(graphql_models.NewUGPGGuidance)), true
+
 	case "Mutation.createWechatToken":
 		if e.complexity.Mutation.CreateWechatToken == nil {
 			break
@@ -1442,6 +1480,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.DeleteSciResearch(childComplexity, args["sciResearchID"].(string)), true
+
+	case "Mutation.deleteUPGuidance":
+		if e.complexity.Mutation.DeleteUPGuidance == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteUPGuidance_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteUPGuidance(childComplexity, args["uGPGGuidanceId"].(string)), true
 
 	case "Mutation.deleteWechatToken":
 		if e.complexity.Mutation.DeleteWechatToken == nil {
@@ -1610,6 +1660,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateSciResearch(childComplexity, args["sciResearchID"].(string), args["sciResearchData"].(graphql_models.UpdateSciResearch)), true
+
+	case "Mutation.updateUPGuidance":
+		if e.complexity.Mutation.UpdateUPGuidance == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateUPGuidance_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateUPGuidance(childComplexity, args["uGPGGuidanceId"].(string), args["uGPGGuidanceData"].(graphql_models.UpdateUGPGGuidance)), true
 
 	case "Mutation.updateUser":
 		if e.complexity.Mutation.UpdateUser == nil {
@@ -2302,6 +2364,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.SciResearchsByName(childComplexity, args["userId"].(string), args["title"].(string)), true
 
+	case "Query.uGPGGuidance":
+		if e.complexity.Query.UGPGGuidance == nil {
+			break
+		}
+
+		args, err := ec.field_Query_uGPGGuidance_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UGPGGuidance(childComplexity, args["id"].(string)), true
+
+	case "Query.uGPGGuidances":
+		if e.complexity.Query.UGPGGuidances == nil {
+			break
+		}
+
+		args, err := ec.field_Query_uGPGGuidances_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UGPGGuidances(childComplexity, args["teacherId"].(string)), true
+
+	case "Query.uGPGGuidancesByTopicName":
+		if e.complexity.Query.UGPGGuidancesByTopicName == nil {
+			break
+		}
+
+		args, err := ec.field_Query_uGPGGuidancesByTopicName_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UGPGGuidancesByTopicName(childComplexity, args["name"].(string)), true
+
 	case "Query.user":
 		if e.complexity.Query.User == nil {
 			break
@@ -2440,6 +2538,83 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.SignInResponse.User(childComplexity), true
 
+	case "UGPGGuidance.createdAt":
+		if e.complexity.UGPGGuidance.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UGPGGuidance.CreatedAt(childComplexity), true
+
+	case "UGPGGuidance.defenseDate":
+		if e.complexity.UGPGGuidance.DefenseDate == nil {
+			break
+		}
+
+		return e.complexity.UGPGGuidance.DefenseDate(childComplexity), true
+
+	case "UGPGGuidance.defenseResult":
+		if e.complexity.UGPGGuidance.DefenseResult == nil {
+			break
+		}
+
+		return e.complexity.UGPGGuidance.DefenseResult(childComplexity), true
+
+	case "UGPGGuidance.id":
+		if e.complexity.UGPGGuidance.ID == nil {
+			break
+		}
+
+		return e.complexity.UGPGGuidance.ID(childComplexity), true
+
+	case "UGPGGuidance.midtermCheckDate":
+		if e.complexity.UGPGGuidance.MidtermCheckDate == nil {
+			break
+		}
+
+		return e.complexity.UGPGGuidance.MidtermCheckDate(childComplexity), true
+
+	case "UGPGGuidance.midtermCheckResult":
+		if e.complexity.UGPGGuidance.MidtermCheckResult == nil {
+			break
+		}
+
+		return e.complexity.UGPGGuidance.MidtermCheckResult(childComplexity), true
+
+	case "UGPGGuidance.openingCheckDate":
+		if e.complexity.UGPGGuidance.OpeningCheckDate == nil {
+			break
+		}
+
+		return e.complexity.UGPGGuidance.OpeningCheckDate(childComplexity), true
+
+	case "UGPGGuidance.openingCheckResult":
+		if e.complexity.UGPGGuidance.OpeningCheckResult == nil {
+			break
+		}
+
+		return e.complexity.UGPGGuidance.OpeningCheckResult(childComplexity), true
+
+	case "UGPGGuidance.studentName":
+		if e.complexity.UGPGGuidance.StudentName == nil {
+			break
+		}
+
+		return e.complexity.UGPGGuidance.StudentName(childComplexity), true
+
+	case "UGPGGuidance.thesisTopic":
+		if e.complexity.UGPGGuidance.ThesisTopic == nil {
+			break
+		}
+
+		return e.complexity.UGPGGuidance.ThesisTopic(childComplexity), true
+
+	case "UGPGGuidance.updatedAt":
+		if e.complexity.UGPGGuidance.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UGPGGuidance.UpdatedAt(childComplexity), true
+
 	case "User.activate":
 		if e.complexity.User.Activate == nil {
 			break
@@ -2567,6 +2742,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputNewPaper,
 		ec.unmarshalInputNewPassword,
 		ec.unmarshalInputNewSciResearch,
+		ec.unmarshalInputNewUGPGGuidance,
 		ec.unmarshalInputNewUser,
 		ec.unmarshalInputResetPassword,
 		ec.unmarshalInputUpdateAcademicTerm,
@@ -2580,6 +2756,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputUpdatePaper,
 		ec.unmarshalInputUpdatePassword,
 		ec.unmarshalInputUpdateSciResearch,
+		ec.unmarshalInputUpdateUGPGGuidance,
 		ec.unmarshalInputUpdateUser,
 	)
 	first := true
@@ -2677,7 +2854,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schemas/classSchedule.graphqls" "schemas/compGuidance.graphqls" "schemas/eduReform.graphqls" "schemas/mentorship.graphqls" "schemas/monograph.graphqls" "schemas/paper.graphqls" "schemas/password.graphqls" "schemas/schema.graphqls" "schemas/sciResearch.graphqls" "schemas/user.graphqls"
+//go:embed "schemas/classSchedule.graphqls" "schemas/compGuidance.graphqls" "schemas/eduReform.graphqls" "schemas/mentorship.graphqls" "schemas/monograph.graphqls" "schemas/paper.graphqls" "schemas/password.graphqls" "schemas/schema.graphqls" "schemas/sciResearch.graphqls" "schemas/uGPGGuidance.graphqls" "schemas/user.graphqls"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -2698,6 +2875,7 @@ var sources = []*ast.Source{
 	{Name: "schemas/password.graphqls", Input: sourceData("schemas/password.graphqls"), BuiltIn: false},
 	{Name: "schemas/schema.graphqls", Input: sourceData("schemas/schema.graphqls"), BuiltIn: false},
 	{Name: "schemas/sciResearch.graphqls", Input: sourceData("schemas/sciResearch.graphqls"), BuiltIn: false},
+	{Name: "schemas/uGPGGuidance.graphqls", Input: sourceData("schemas/uGPGGuidance.graphqls"), BuiltIn: false},
 	{Name: "schemas/user.graphqls", Input: sourceData("schemas/user.graphqls"), BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)
@@ -2916,6 +3094,21 @@ func (ec *executionContext) field_Mutation_createSciResearch_args(ctx context.Co
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_createUPGuidance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 graphql_models.NewUGPGGuidance
+	if tmp, ok := rawArgs["newUGPGGuidanceData"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("newUGPGGuidanceData"))
+		arg0, err = ec.unmarshalNNewUGPGGuidance2serverᚋgraphᚋmodelᚐNewUGPGGuidance(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["newUGPGGuidanceData"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_createWechatToken_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -3129,6 +3322,21 @@ func (ec *executionContext) field_Mutation_deleteSciResearch_args(ctx context.Co
 		}
 	}
 	args["sciResearchID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteUPGuidance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["uGPGGuidanceId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("uGPGGuidanceId"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["uGPGGuidanceId"] = arg0
 	return args, nil
 }
 
@@ -3438,6 +3646,30 @@ func (ec *executionContext) field_Mutation_updateSciResearch_args(ctx context.Co
 		}
 	}
 	args["sciResearchData"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateUPGuidance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["uGPGGuidanceId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("uGPGGuidanceId"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["uGPGGuidanceId"] = arg0
+	var arg1 graphql_models.UpdateUGPGGuidance
+	if tmp, ok := rawArgs["uGPGGuidanceData"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("uGPGGuidanceData"))
+		arg1, err = ec.unmarshalNUpdateUGPGGuidance2serverᚋgraphᚋmodelᚐUpdateUGPGGuidance(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["uGPGGuidanceData"] = arg1
 	return args, nil
 }
 
@@ -4161,6 +4393,51 @@ func (ec *executionContext) field_Query_sciResearchs_args(ctx context.Context, r
 		}
 	}
 	args["userId"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_uGPGGuidance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_uGPGGuidancesByTopicName_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["name"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_uGPGGuidances_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["teacherId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("teacherId"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["teacherId"] = arg0
 	return args, nil
 }
 
@@ -11674,6 +11951,243 @@ func (ec *executionContext) fieldContext_Mutation_deleteAwardRecord(ctx context.
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_createUPGuidance(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createUPGuidance(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateUPGuidance(rctx, fc.Args["newUGPGGuidanceData"].(graphql_models.NewUGPGGuidance))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*graphql_models.UGPGGuidance)
+	fc.Result = res
+	return ec.marshalNUGPGGuidance2ᚖserverᚋgraphᚋmodelᚐUGPGGuidance(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createUPGuidance(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_UGPGGuidance_id(ctx, field)
+			case "studentName":
+				return ec.fieldContext_UGPGGuidance_studentName(ctx, field)
+			case "thesisTopic":
+				return ec.fieldContext_UGPGGuidance_thesisTopic(ctx, field)
+			case "openingCheckDate":
+				return ec.fieldContext_UGPGGuidance_openingCheckDate(ctx, field)
+			case "openingCheckResult":
+				return ec.fieldContext_UGPGGuidance_openingCheckResult(ctx, field)
+			case "midtermCheckDate":
+				return ec.fieldContext_UGPGGuidance_midtermCheckDate(ctx, field)
+			case "midtermCheckResult":
+				return ec.fieldContext_UGPGGuidance_midtermCheckResult(ctx, field)
+			case "defenseDate":
+				return ec.fieldContext_UGPGGuidance_defenseDate(ctx, field)
+			case "defenseResult":
+				return ec.fieldContext_UGPGGuidance_defenseResult(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_UGPGGuidance_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_UGPGGuidance_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UGPGGuidance", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createUPGuidance_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateUPGuidance(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateUPGuidance(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateUPGuidance(rctx, fc.Args["uGPGGuidanceId"].(string), fc.Args["uGPGGuidanceData"].(graphql_models.UpdateUGPGGuidance))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*graphql_models.UGPGGuidance)
+	fc.Result = res
+	return ec.marshalNUGPGGuidance2ᚖserverᚋgraphᚋmodelᚐUGPGGuidance(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateUPGuidance(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_UGPGGuidance_id(ctx, field)
+			case "studentName":
+				return ec.fieldContext_UGPGGuidance_studentName(ctx, field)
+			case "thesisTopic":
+				return ec.fieldContext_UGPGGuidance_thesisTopic(ctx, field)
+			case "openingCheckDate":
+				return ec.fieldContext_UGPGGuidance_openingCheckDate(ctx, field)
+			case "openingCheckResult":
+				return ec.fieldContext_UGPGGuidance_openingCheckResult(ctx, field)
+			case "midtermCheckDate":
+				return ec.fieldContext_UGPGGuidance_midtermCheckDate(ctx, field)
+			case "midtermCheckResult":
+				return ec.fieldContext_UGPGGuidance_midtermCheckResult(ctx, field)
+			case "defenseDate":
+				return ec.fieldContext_UGPGGuidance_defenseDate(ctx, field)
+			case "defenseResult":
+				return ec.fieldContext_UGPGGuidance_defenseResult(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_UGPGGuidance_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_UGPGGuidance_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UGPGGuidance", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateUPGuidance_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_deleteUPGuidance(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_deleteUPGuidance(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteUPGuidance(rctx, fc.Args["uGPGGuidanceId"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*graphql_models.UGPGGuidance)
+	fc.Result = res
+	return ec.marshalNUGPGGuidance2ᚖserverᚋgraphᚋmodelᚐUGPGGuidance(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_deleteUPGuidance(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_UGPGGuidance_id(ctx, field)
+			case "studentName":
+				return ec.fieldContext_UGPGGuidance_studentName(ctx, field)
+			case "thesisTopic":
+				return ec.fieldContext_UGPGGuidance_thesisTopic(ctx, field)
+			case "openingCheckDate":
+				return ec.fieldContext_UGPGGuidance_openingCheckDate(ctx, field)
+			case "openingCheckResult":
+				return ec.fieldContext_UGPGGuidance_openingCheckResult(ctx, field)
+			case "midtermCheckDate":
+				return ec.fieldContext_UGPGGuidance_midtermCheckDate(ctx, field)
+			case "midtermCheckResult":
+				return ec.fieldContext_UGPGGuidance_midtermCheckResult(ctx, field)
+			case "defenseDate":
+				return ec.fieldContext_UGPGGuidance_defenseDate(ctx, field)
+			case "defenseResult":
+				return ec.fieldContext_UGPGGuidance_defenseResult(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_UGPGGuidance_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_UGPGGuidance_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UGPGGuidance", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_deleteUPGuidance_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_deleteAccount(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_deleteAccount(ctx, field)
 	if err != nil {
@@ -15441,6 +15955,243 @@ func (ec *executionContext) fieldContext_Query_awardSciResearchsByName(ctx conte
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_uGPGGuidance(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_uGPGGuidance(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UGPGGuidance(rctx, fc.Args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*graphql_models.UGPGGuidance)
+	fc.Result = res
+	return ec.marshalNUGPGGuidance2ᚖserverᚋgraphᚋmodelᚐUGPGGuidance(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_uGPGGuidance(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_UGPGGuidance_id(ctx, field)
+			case "studentName":
+				return ec.fieldContext_UGPGGuidance_studentName(ctx, field)
+			case "thesisTopic":
+				return ec.fieldContext_UGPGGuidance_thesisTopic(ctx, field)
+			case "openingCheckDate":
+				return ec.fieldContext_UGPGGuidance_openingCheckDate(ctx, field)
+			case "openingCheckResult":
+				return ec.fieldContext_UGPGGuidance_openingCheckResult(ctx, field)
+			case "midtermCheckDate":
+				return ec.fieldContext_UGPGGuidance_midtermCheckDate(ctx, field)
+			case "midtermCheckResult":
+				return ec.fieldContext_UGPGGuidance_midtermCheckResult(ctx, field)
+			case "defenseDate":
+				return ec.fieldContext_UGPGGuidance_defenseDate(ctx, field)
+			case "defenseResult":
+				return ec.fieldContext_UGPGGuidance_defenseResult(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_UGPGGuidance_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_UGPGGuidance_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UGPGGuidance", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_uGPGGuidance_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_uGPGGuidances(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_uGPGGuidances(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UGPGGuidances(rctx, fc.Args["teacherId"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*graphql_models.UGPGGuidance)
+	fc.Result = res
+	return ec.marshalNUGPGGuidance2ᚕᚖserverᚋgraphᚋmodelᚐUGPGGuidance(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_uGPGGuidances(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_UGPGGuidance_id(ctx, field)
+			case "studentName":
+				return ec.fieldContext_UGPGGuidance_studentName(ctx, field)
+			case "thesisTopic":
+				return ec.fieldContext_UGPGGuidance_thesisTopic(ctx, field)
+			case "openingCheckDate":
+				return ec.fieldContext_UGPGGuidance_openingCheckDate(ctx, field)
+			case "openingCheckResult":
+				return ec.fieldContext_UGPGGuidance_openingCheckResult(ctx, field)
+			case "midtermCheckDate":
+				return ec.fieldContext_UGPGGuidance_midtermCheckDate(ctx, field)
+			case "midtermCheckResult":
+				return ec.fieldContext_UGPGGuidance_midtermCheckResult(ctx, field)
+			case "defenseDate":
+				return ec.fieldContext_UGPGGuidance_defenseDate(ctx, field)
+			case "defenseResult":
+				return ec.fieldContext_UGPGGuidance_defenseResult(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_UGPGGuidance_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_UGPGGuidance_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UGPGGuidance", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_uGPGGuidances_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_uGPGGuidancesByTopicName(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_uGPGGuidancesByTopicName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UGPGGuidancesByTopicName(rctx, fc.Args["name"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*graphql_models.UGPGGuidance)
+	fc.Result = res
+	return ec.marshalNUGPGGuidance2ᚕᚖserverᚋgraphᚋmodelᚐUGPGGuidance(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_uGPGGuidancesByTopicName(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_UGPGGuidance_id(ctx, field)
+			case "studentName":
+				return ec.fieldContext_UGPGGuidance_studentName(ctx, field)
+			case "thesisTopic":
+				return ec.fieldContext_UGPGGuidance_thesisTopic(ctx, field)
+			case "openingCheckDate":
+				return ec.fieldContext_UGPGGuidance_openingCheckDate(ctx, field)
+			case "openingCheckResult":
+				return ec.fieldContext_UGPGGuidance_openingCheckResult(ctx, field)
+			case "midtermCheckDate":
+				return ec.fieldContext_UGPGGuidance_midtermCheckDate(ctx, field)
+			case "midtermCheckResult":
+				return ec.fieldContext_UGPGGuidance_midtermCheckResult(ctx, field)
+			case "defenseDate":
+				return ec.fieldContext_UGPGGuidance_defenseDate(ctx, field)
+			case "defenseResult":
+				return ec.fieldContext_UGPGGuidance_defenseResult(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_UGPGGuidance_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_UGPGGuidance_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UGPGGuidance", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_uGPGGuidancesByTopicName_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_user(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_user(ctx, field)
 	if err != nil {
@@ -16464,6 +17215,472 @@ func (ec *executionContext) fieldContext_SignInResponse_user(ctx context.Context
 				return ec.fieldContext_User_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UGPGGuidance_id(ctx context.Context, field graphql.CollectedField, obj *graphql_models.UGPGGuidance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UGPGGuidance_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UGPGGuidance_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UGPGGuidance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UGPGGuidance_studentName(ctx context.Context, field graphql.CollectedField, obj *graphql_models.UGPGGuidance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UGPGGuidance_studentName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StudentName, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UGPGGuidance_studentName(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UGPGGuidance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UGPGGuidance_thesisTopic(ctx context.Context, field graphql.CollectedField, obj *graphql_models.UGPGGuidance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UGPGGuidance_thesisTopic(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ThesisTopic, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UGPGGuidance_thesisTopic(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UGPGGuidance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UGPGGuidance_openingCheckDate(ctx context.Context, field graphql.CollectedField, obj *graphql_models.UGPGGuidance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UGPGGuidance_openingCheckDate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OpeningCheckDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UGPGGuidance_openingCheckDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UGPGGuidance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UGPGGuidance_openingCheckResult(ctx context.Context, field graphql.CollectedField, obj *graphql_models.UGPGGuidance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UGPGGuidance_openingCheckResult(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OpeningCheckResult, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UGPGGuidance_openingCheckResult(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UGPGGuidance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UGPGGuidance_midtermCheckDate(ctx context.Context, field graphql.CollectedField, obj *graphql_models.UGPGGuidance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UGPGGuidance_midtermCheckDate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MidtermCheckDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UGPGGuidance_midtermCheckDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UGPGGuidance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UGPGGuidance_midtermCheckResult(ctx context.Context, field graphql.CollectedField, obj *graphql_models.UGPGGuidance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UGPGGuidance_midtermCheckResult(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MidtermCheckResult, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UGPGGuidance_midtermCheckResult(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UGPGGuidance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UGPGGuidance_defenseDate(ctx context.Context, field graphql.CollectedField, obj *graphql_models.UGPGGuidance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UGPGGuidance_defenseDate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DefenseDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UGPGGuidance_defenseDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UGPGGuidance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UGPGGuidance_defenseResult(ctx context.Context, field graphql.CollectedField, obj *graphql_models.UGPGGuidance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UGPGGuidance_defenseResult(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DefenseResult, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UGPGGuidance_defenseResult(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UGPGGuidance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UGPGGuidance_createdAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.UGPGGuidance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UGPGGuidance_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UGPGGuidance_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UGPGGuidance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UGPGGuidance_updatedAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.UGPGGuidance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UGPGGuidance_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UGPGGuidance_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UGPGGuidance",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
 		},
 	}
 	return fc, nil
@@ -19729,6 +20946,82 @@ func (ec *executionContext) unmarshalInputNewSciResearch(ctx context.Context, ob
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputNewUGPGGuidance(ctx context.Context, obj interface{}) (graphql_models.NewUGPGGuidance, error) {
+	var it graphql_models.NewUGPGGuidance
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"studentName", "thesisTopic", "openingCheckDate", "openingCheckResult", "midtermCheckDate", "midtermCheckResult", "defenseDate", "defenseResult"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "studentName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("studentName"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StudentName = data
+		case "thesisTopic":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("thesisTopic"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ThesisTopic = data
+		case "openingCheckDate":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("openingCheckDate"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OpeningCheckDate = data
+		case "openingCheckResult":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("openingCheckResult"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OpeningCheckResult = data
+		case "midtermCheckDate":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("midtermCheckDate"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MidtermCheckDate = data
+		case "midtermCheckResult":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("midtermCheckResult"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MidtermCheckResult = data
+		case "defenseDate":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defenseDate"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefenseDate = data
+		case "defenseResult":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defenseResult"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefenseResult = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj interface{}) (graphql_models.NewUser, error) {
 	var it graphql_models.NewUser
 	asMap := map[string]interface{}{}
@@ -20452,6 +21745,82 @@ func (ec *executionContext) unmarshalInputUpdateSciResearch(ctx context.Context,
 				return it, err
 			}
 			it.Fund = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputUpdateUGPGGuidance(ctx context.Context, obj interface{}) (graphql_models.UpdateUGPGGuidance, error) {
+	var it graphql_models.UpdateUGPGGuidance
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"studentName", "thesisTopic", "openingCheckDate", "openingCheckResult", "midtermCheckDate", "midtermCheckResult", "defenseDate", "defenseResult"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "studentName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("studentName"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StudentName = data
+		case "thesisTopic":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("thesisTopic"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ThesisTopic = data
+		case "openingCheckDate":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("openingCheckDate"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OpeningCheckDate = data
+		case "openingCheckResult":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("openingCheckResult"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.OpeningCheckResult = data
+		case "midtermCheckDate":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("midtermCheckDate"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MidtermCheckDate = data
+		case "midtermCheckResult":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("midtermCheckResult"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.MidtermCheckResult = data
+		case "defenseDate":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defenseDate"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefenseDate = data
+		case "defenseResult":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("defenseResult"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.DefenseResult = data
 		}
 	}
 
@@ -21720,6 +23089,27 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "createUPGuidance":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createUPGuidance(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updateUPGuidance":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateUPGuidance(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "deleteUPGuidance":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_deleteUPGuidance(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "deleteAccount":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_deleteAccount(ctx, field)
@@ -22620,6 +24010,72 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "uGPGGuidance":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_uGPGGuidance(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "uGPGGuidances":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_uGPGGuidances(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "uGPGGuidancesByTopicName":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_uGPGGuidancesByTopicName(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "user":
 			field := field
 
@@ -22798,6 +24254,77 @@ func (ec *executionContext) _SignInResponse(ctx context.Context, sel ast.Selecti
 			}
 		case "user":
 			out.Values[i] = ec._SignInResponse_user(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var uGPGGuidanceImplementors = []string{"UGPGGuidance"}
+
+func (ec *executionContext) _UGPGGuidance(ctx context.Context, sel ast.SelectionSet, obj *graphql_models.UGPGGuidance) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, uGPGGuidanceImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("UGPGGuidance")
+		case "id":
+			out.Values[i] = ec._UGPGGuidance_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "studentName":
+			out.Values[i] = ec._UGPGGuidance_studentName(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "thesisTopic":
+			out.Values[i] = ec._UGPGGuidance_thesisTopic(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "openingCheckDate":
+			out.Values[i] = ec._UGPGGuidance_openingCheckDate(ctx, field, obj)
+		case "openingCheckResult":
+			out.Values[i] = ec._UGPGGuidance_openingCheckResult(ctx, field, obj)
+		case "midtermCheckDate":
+			out.Values[i] = ec._UGPGGuidance_midtermCheckDate(ctx, field, obj)
+		case "midtermCheckResult":
+			out.Values[i] = ec._UGPGGuidance_midtermCheckResult(ctx, field, obj)
+		case "defenseDate":
+			out.Values[i] = ec._UGPGGuidance_defenseDate(ctx, field, obj)
+		case "defenseResult":
+			out.Values[i] = ec._UGPGGuidance_defenseResult(ctx, field, obj)
+		case "createdAt":
+			out.Values[i] = ec._UGPGGuidance_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updatedAt":
+			out.Values[i] = ec._UGPGGuidance_updatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -24112,6 +25639,11 @@ func (ec *executionContext) unmarshalNNewSciResearch2serverᚋgraphᚋmodelᚐNe
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNNewUGPGGuidance2serverᚋgraphᚋmodelᚐNewUGPGGuidance(ctx context.Context, v interface{}) (graphql_models.NewUGPGGuidance, error) {
+	res, err := ec.unmarshalInputNewUGPGGuidance(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNNewUser2serverᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (graphql_models.NewUser, error) {
 	res, err := ec.unmarshalInputNewUser(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -24343,6 +25875,58 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
+func (ec *executionContext) marshalNUGPGGuidance2serverᚋgraphᚋmodelᚐUGPGGuidance(ctx context.Context, sel ast.SelectionSet, v graphql_models.UGPGGuidance) graphql.Marshaler {
+	return ec._UGPGGuidance(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNUGPGGuidance2ᚕᚖserverᚋgraphᚋmodelᚐUGPGGuidance(ctx context.Context, sel ast.SelectionSet, v []*graphql_models.UGPGGuidance) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOUGPGGuidance2ᚖserverᚋgraphᚋmodelᚐUGPGGuidance(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
+func (ec *executionContext) marshalNUGPGGuidance2ᚖserverᚋgraphᚋmodelᚐUGPGGuidance(ctx context.Context, sel ast.SelectionSet, v *graphql_models.UGPGGuidance) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._UGPGGuidance(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNUpdateAcademicTerm2serverᚋgraphᚋmodelᚐUpdateAcademicTerm(ctx context.Context, v interface{}) (graphql_models.UpdateAcademicTerm, error) {
 	res, err := ec.unmarshalInputUpdateAcademicTerm(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -24380,6 +25964,11 @@ func (ec *executionContext) unmarshalNUpdatePassword2serverᚋgraphᚋmodelᚐUp
 
 func (ec *executionContext) unmarshalNUpdateSciResearch2serverᚋgraphᚋmodelᚐUpdateSciResearch(ctx context.Context, v interface{}) (graphql_models.UpdateSciResearch, error) {
 	res, err := ec.unmarshalInputUpdateSciResearch(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNUpdateUGPGGuidance2serverᚋgraphᚋmodelᚐUpdateUGPGGuidance(ctx context.Context, v interface{}) (graphql_models.UpdateUGPGGuidance, error) {
+	res, err := ec.unmarshalInputUpdateUGPGGuidance(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -25177,6 +26766,13 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 	}
 	res := graphql.MarshalTime(*v)
 	return res
+}
+
+func (ec *executionContext) marshalOUGPGGuidance2ᚖserverᚋgraphᚋmodelᚐUGPGGuidance(ctx context.Context, sel ast.SelectionSet, v *graphql_models.UGPGGuidance) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._UGPGGuidance(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOUpdateMentorship2ᚖserverᚋgraphᚋmodelᚐUpdateMentorship(ctx context.Context, v interface{}) (*graphql_models.UpdateMentorship, error) {

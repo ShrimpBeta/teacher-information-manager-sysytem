@@ -5,6 +5,7 @@ import { Observable, map } from "rxjs";
 import { signInMutation } from "../../models/graphql/mutation/user.mutation.graphql";
 import { SignInResponse } from "../../models/models/user.model";
 
+// 用户登录服务
 @Injectable({
     providedIn: 'root'
 })
@@ -14,11 +15,13 @@ export class AuthService {
         private authRepository: AuthRepository
     ) { }
 
+    // 保存用户登录信息
     private saveUserData(userData: AuthUserData) {
         this.authRepository.updateToken(userData.token);
         this.authRepository.setUser(userData.user);
     }
 
+    // 用户登录
     signIn(email: string, password: string): Observable<AuthUserData | null> {
         return this.apollo.mutate({
             mutation: signInMutation,
@@ -37,5 +40,10 @@ export class AuthService {
                     return null
                 })
             )
+    }
+
+    // 用户登出
+    signOut() {
+        this.authRepository.clear();
     }
 }

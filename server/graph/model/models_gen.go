@@ -280,6 +280,17 @@ type NewSciResearch struct {
 	Fund        *string    `json:"fund,omitempty"`
 }
 
+type NewUGPGGuidance struct {
+	StudentName        string     `json:"studentName"`
+	ThesisTopic        string     `json:"thesisTopic"`
+	OpeningCheckDate   *time.Time `json:"openingCheckDate,omitempty"`
+	OpeningCheckResult *string    `json:"openingCheckResult,omitempty"`
+	MidtermCheckDate   *time.Time `json:"midtermCheckDate,omitempty"`
+	MidtermCheckResult *string    `json:"midtermCheckResult,omitempty"`
+	DefenseDate        *time.Time `json:"defenseDate,omitempty"`
+	DefenseResult      *string    `json:"defenseResult,omitempty"`
+}
+
 type NewUser struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -349,6 +360,20 @@ type SciResearch struct {
 type SignInResponse struct {
 	Token string `json:"token"`
 	User  *User  `json:"user"`
+}
+
+type UGPGGuidance struct {
+	ID                 string     `json:"id"`
+	StudentName        string     `json:"studentName"`
+	ThesisTopic        string     `json:"thesisTopic"`
+	OpeningCheckDate   *time.Time `json:"openingCheckDate,omitempty"`
+	OpeningCheckResult *string    `json:"openingCheckResult,omitempty"`
+	MidtermCheckDate   *time.Time `json:"midtermCheckDate,omitempty"`
+	MidtermCheckResult *string    `json:"midtermCheckResult,omitempty"`
+	DefenseDate        *time.Time `json:"defenseDate,omitempty"`
+	DefenseResult      *string    `json:"defenseResult,omitempty"`
+	CreatedAt          time.Time  `json:"createdAt"`
+	UpdatedAt          time.Time  `json:"updatedAt"`
 }
 
 type UpdateAcademicTerm struct {
@@ -444,6 +469,17 @@ type UpdateSciResearch struct {
 	Rank        *string    `json:"rank,omitempty"`
 	Achievement *string    `json:"achievement,omitempty"`
 	Fund        *string    `json:"fund,omitempty"`
+}
+
+type UpdateUGPGGuidance struct {
+	StudentName        *string    `json:"studentName,omitempty"`
+	ThesisTopic        *string    `json:"thesisTopic,omitempty"`
+	OpeningCheckDate   *time.Time `json:"openingCheckDate,omitempty"`
+	OpeningCheckResult *string    `json:"openingCheckResult,omitempty"`
+	MidtermCheckDate   *time.Time `json:"midtermCheckDate,omitempty"`
+	MidtermCheckResult *string    `json:"midtermCheckResult,omitempty"`
+	DefenseDate        *time.Time `json:"defenseDate,omitempty"`
+	DefenseResult      *string    `json:"defenseResult,omitempty"`
 }
 
 type UpdateUser struct {

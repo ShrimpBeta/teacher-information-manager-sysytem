@@ -1,1 +1,25 @@
-<p>loginform works!</p>
+<form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+  <h1>登录</h1>
+  <mat-form-field>
+    <mat-label>Email</mat-label>
+    <input type="email" matInput formControlName="email" placeholder="Input your email Here">
+    <!-- 邮箱错误 -->
+    @if(signInForm.get('email')!.touched && signInForm.get('email')!.errors){
+    <mat-error>邮箱错误</mat-error>
+    }
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Password</mat-label>
+    <input [type]="hide ? 'password' : 'text'" matInput formControlName="password" placeholder="密码至少8位包含字母和数字">
+    <button type="button" mat-icon-button matSuffix (click)="hide=!hide" [attr.aria-label]="'Hide password'"
+      [attr.aria-pressed]="hide">
+      <mat-icon>{{hide? 'visibility_off' : 'visibility'}}</mat-icon>
+    </button>
+    <!-- 密码需要至少8位字母和数字组合 -->
+    @if(signInForm.get('password')!.touched && signInForm.get('password')!.errors){
+    <mat-error>密码需要至少8位字母和数字组合</mat-error>
+    }
+  </mat-form-field>
+  <button type="submit" class="sign-in-button" mat-raised-button color="primary"
+    [disabled]="!signInForm.valid || isSignin">登录</button>
+</form>

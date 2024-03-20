@@ -3,20 +3,20 @@ import { User } from "../../models/models/user.model";
 import { Observable, debounceTime } from "rxjs";
 import { createStore, select, setProps, withProps } from "@ngneat/elf";
 import { localStorageStrategy, persistState } from "@ngneat/elf-persist-state";
-import { JWT } from "./jwt";
 
-
+// 用户登录信息
 export interface AuthUserData {
     token: string,
     user: User
 }
+
 
 interface AuthProps {
     token: string | null;
     user: User | null;
 }
 
-
+// 用户登录信息持久化存储于浏览器端
 @Injectable({
     providedIn: 'root'
 })
@@ -46,11 +46,12 @@ export class AuthRepository {
         this.$user = this.authStore.pipe(select(state => state.user));
     }
 
-    // update info when signIn
+    // 用户登录更新token
     updateToken(token: string) {
         this.authStore.update(setProps({ token: token }));
     }
 
+    // 用户登录更新用户信息
     setUser(user: User) {
         this.authStore.update(state => ({
             ...state,
@@ -58,27 +59,11 @@ export class AuthRepository {
         }));
     }
 
-    
     getTokenVaule() {
         return this.authStore.getValue().token;
     }
 
-    isLoggedInValue() {
-        return this.authStore.pipe(select(state => !!state.token));
-    }
-
-    isLoggedIn(): boolean {
-        try {
-            const token = this.getTokenVaule();
-            if (token) {
-                return !!JWT.decodeToken(token);
-            }
-            return false
-        } catch (error) {
-            return false;
-        }
-    }
-
+    // 用户退出登录
     clear() {
         this.authStore.update(setProps({ user: null, token: null }));
     }

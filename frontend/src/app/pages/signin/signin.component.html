@@ -1,5 +1,6 @@
-<div [ngClass]="'w-full h-full flex'">
-  <div>
-
+<div class="container">
+  <div class="signin-form">
+    <app-loginform (signIn)="handleSignIn($event)" [isSignin]="isSignin"></app-loginform>
+    <a class="forget-password" href="/resetpassword">Forget Password?</a>
   </div>
 </div>

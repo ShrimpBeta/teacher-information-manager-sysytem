@@ -8,4 +8,10 @@ export class JWT {
             return null
         }
     }
+
+    static getTokenExpiration(token: string) {
+        const tokenValue = this.decodeToken(token)
+        const isTokenExpired = Date.now() >= (tokenValue?.exp ?? 0) * 1000
+        return isTokenExpired
+    }
 }

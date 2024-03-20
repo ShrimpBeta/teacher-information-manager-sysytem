@@ -1,0 +1,12 @@
+.pannel{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar {
+  width: 45px;
+  height: auto;
+  border-radius: 50%;
+}

@@ -22,7 +22,7 @@ export class TokenInterceptor implements HttpInterceptor {
         const headers = { Authorization: '' };
         const token = this.authRespository.getTokenVaule();
         if (token) {
-            const isTokenExpired = this.getTokenExpiration(token);
+            const isTokenExpired = JWT.getTokenExpiration(token);
 
             if (isTokenExpired) {
                 this.navigateToLogout();
@@ -33,12 +33,6 @@ export class TokenInterceptor implements HttpInterceptor {
         }
         return this.sendRequest(req, next, headers)
 
-    }
-
-    getTokenExpiration(token: string) {
-        const tokenValue = JWT.decodeToken(token)
-        const isTokenExpired = Date.now() >= (tokenValue?.exp ?? 0) * 1000
-        return isTokenExpired
     }
 
     // send request with Authorization

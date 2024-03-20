@@ -67,6 +67,7 @@ func (r *mutationResolver) SignIn(ctx context.Context, email string, password st
 	if err != nil {
 		return nil, err
 	}
+	ServeURL := "http://localhost:8080"
 	return &graphql_models.SignInResponse{
 		Token: token,
 		User: &graphql_models.User{
@@ -75,7 +76,7 @@ func (r *mutationResolver) SignIn(ctx context.Context, email string, password st
 			Email:       userData.Email,
 			PhoneNumber: &userData.Phone,
 			WechatToken: &userData.WechatToken,
-			Avatar:      userData.Avatar,
+			Avatar:      ServeURL + userData.Avatar,
 			Activate:    userData.Activate,
 			CreatedAt:   userData.CreatedAt.Time(),
 			UpdatedAt:   userData.UpdatedAt.Time(),
