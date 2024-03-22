@@ -80,6 +80,11 @@ export class SigninComponent {
       this.snackBar.open('登录失败，请检查邮箱和密码是否正确', '关闭', {
         duration: 3000,
       });
+    }else{
+      // 提示用户
+      this.snackBar.open('网络错误或API错误', '关闭', {
+        duration: 3000,
+      });
     }
     this.isSignin = false;
     this.changeDetectorRef.detectChanges();

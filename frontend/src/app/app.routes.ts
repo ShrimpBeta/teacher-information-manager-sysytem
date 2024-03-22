@@ -9,13 +9,13 @@ import { AccountComponent } from './pages/account/account.component';
 import { PasswordComponent } from './pages/password/password.component';
 import { ClassscheduleComponent } from './pages/classschedule/classschedule.component';
 import { CompguidanceComponent } from './pages/compguidance/compguidance.component';
-import { EduReform } from './models/models/eduReform.model';
 import { MentorshipComponent } from './pages/mentorship/mentorship.component';
 import { MonographComponent } from './pages/monograph/monograph.component';
 import { PaperComponent } from './pages/paper/paper.component';
 import { SciresearchComponent } from './pages/sciresearch/sciresearch.component';
 import { WorkreportComponent } from './pages/workreport/workreport.component';
 import { UgpgguidanceComponent } from './pages/ugpgguidance/ugpgguidance.component';
+import { EdureformComponent } from './pages/edureform/edureform.component';
 
 export const routes: Routes = [
   {
@@ -26,7 +26,7 @@ export const routes: Routes = [
       { path: 'account', component: AccountComponent, title: 'Account' },
       { path: 'password', component: PasswordComponent, title: 'Password' },
       { path: 'classschedule', component: ClassscheduleComponent, title: 'Class Schedule' },
-      { path: 'educationreform', component: EduReform, title: 'Education Reform' },
+      { path: 'educationreform', component: EdureformComponent, title: 'Education Reform' },
       { path: 'competitionguidance', component: CompguidanceComponent, title: 'Competition Guidance' },
       { path: 'ugpgguidance', component: UgpgguidanceComponent, title: 'UG/PG Guidance' },
       { path: 'mentorship', component: MentorshipComponent, title: 'Mentorship' },

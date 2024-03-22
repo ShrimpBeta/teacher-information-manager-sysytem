@@ -1,12 +1,68 @@
-.pannel{
+.panel-container {
+  margin-right: 0.5rem;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  height: 100%;
+  position: relative;
+}
+
+.avatar-button {
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid;
+  border-color: #3f51b5;
+  &:hover {
+    border-color: #ea7d10;
+  }
 }
 
 .avatar {
-  width: 45px;
+  width: 43px;
   height: auto;
   border-radius: 50%;
+}
+
+.popup-panel {
+  position: absolute;
+  top: calc(100% + 20px);
+  right: 0;
+  z-index: 100;
+  width: 250px;
+  border-radius: 10px;
+  color: #000;
+  font-size: medium;
+  background-color: #fff;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-panel-header {
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.width-full {
+  width: 100%;
+}
+
+.user-info {
+  margin-left: 20px;
+  font-size: small;
+}
+
+.user-name + .user-email {
+  margin-top: -15px;
 }

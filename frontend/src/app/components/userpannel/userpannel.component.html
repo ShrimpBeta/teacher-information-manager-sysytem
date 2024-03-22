@@ -1,3 +1,21 @@
-<div class="pannel">
-  <img class="avatar" [src]="user?.avatar" alt="头像">
+<div class="panel-container">
+  <button class="avatar-button" matRipple (click)="togglePanel();$event.stopPropagation()">
+    <img class="avatar" [src]="user?.avatar" alt="头像">
+  </button>
+  <div #popupPanel class="popup-panel" [style.display]="showPanel ? 'block' : 'none'"
+    [@openClose]="showPanel ? 'open' :'closed' ">
+    <div class="popup-panel-header">
+      <img class="avatar" [src]="user?.avatar" alt="头像">
+      <div class="user-info">
+        <div class="user-name width-full">{{user?.username}}</div>
+        <div class="user-email width-full">{{user?.email}}</div>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="popup-panel-body">
+      <button mat-button color="primary" class="width-full" (click)="account()">账号管理</button>
+      <mat-divider></mat-divider>
+      <button mat-button color="primary" class="width-full" (click)="logout()">退出</button>
+    </div>
+  </div>
 </div>

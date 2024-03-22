@@ -1,6 +1,6 @@
 <div class="container">
   <mat-toolbar color="primary">
-    <button mat-icon-button [style.display]="isDrawerOpen ? 'none': 'block' ">
+    <button mat-icon-button [style.display]="isSmallMode ? 'block' : 'none' " (click)="toggleDrawer()">
       <mat-icon>menu</mat-icon>
     </button>
     <span style="margin-left:0.5rem;">教研管理系统</span>
@@ -8,34 +8,17 @@
     <app-userpannel></app-userpannel>
   </mat-toolbar>
   <mat-drawer-container class="drawer-container">
-    <mat-drawer mode="side" [opened]="isDrawerOpen">
+    <mat-drawer [mode]="isSmallMode ? 'over' : 'side' " [opened]="isDrawerOpen"
+      [style.width]="isSmallMode? '100%' : '25%' ">
+      @for (menus of menuItems; track $index) {
       <mat-nav-list>
-        <h3 mat-subheader style="user-select: none;">教学工作管理</h3>
-        <a mat-list-item routerLink='/main/password' routerLinkActive="active" (mousedown)="$event.preventDefault()"
-          style="user-select: none;">密码管理</a>
-        <a mat-list-item routerLink='/main/classschedule' routerLinkActive="active"
-          (mousedown)="$event.preventDefault()" style="user-select: none;">课程表</a>
-        <a mat-list-item routerLink='/main/educationreform' routerLinkActive="active"
-          (mousedown)="$event.preventDefault()" style="user-select: none;">教改项目</a>
-        <a mat-list-item routerLink='/main/mentorship' routerLinkActive="active" (mousedown)="$event.preventDefault()"
-          style="user-select: none;">导师制</a>
-        <a mat-list-item routerLink='/main/competitionguidance' routerLinkActive="active"
-          (mousedown)="$event.preventDefault()" style="user-select: none;">竞赛指导</a>
+        <h3 mat-subheader color="primary" style="user-select: none;">{{menus.title}}</h3>
+        @for (item of menus.links; track $index) {
+        <a mat-list-item routerLink="{{item.path}}" routerLinkActive="active" (mousedown)="$event.preventDefault()"
+          style="user-select: none;" (click)="closeDrawer()">{{item.name}}</a>
+        }
       </mat-nav-list>
-      <mat-nav-list>
-        <h3 mat-subheader style="user-select: none;">科研工作管理</h3>
-        <a mat-list-item routerLink='/main/monograph' routerLinkActive="active" (mousedown)="$event.preventDefault()"
-          style="user-select: none;">专著</a>
-        <a mat-list-item routerLink='/main/paper' routerLinkActive="active" (mousedown)="$event.preventDefault()"
-          style="user-select: none;">论文</a>
-        <a mat-list-item routerLink='/main/scientificresearch' routerLinkActive="active"
-          (mousedown)="$event.preventDefault()" style="user-select: none;">科研项目</a>
-      </mat-nav-list>
-      <mat-nav-list>
-        <h3 mat-subheader style="user-select: none;">报告</h3>
-        <a mat-list-item routerLink='/main/workreport' routerLinkActive="active" (mousedown)="$event.preventDefault()"
-          style="user-select: none;">工作报告</a>
-      </mat-nav-list>
+      }
     </mat-drawer>
     <mat-drawer-content>
       <router-outlet />
