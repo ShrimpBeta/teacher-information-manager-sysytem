@@ -19,7 +19,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     trigger('openClose', [
       state('open', style({ opacity: 1 })),
       state('closed', style({ opacity: 0 })),
-      transition('open <=> closed', [animate('1s')])
+      transition('open <=> closed', [animate('0.5s')])
     ])
   ],
 })

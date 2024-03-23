@@ -7,7 +7,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { UserpannelComponent } from '../../components/userpannel/userpannel.component';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 
 @Component({
   selector: 'app-main',
@@ -22,33 +22,33 @@ export class MainComponent implements OnInit {
   isSmallMode!: boolean;
   menuItems = [
     {
-      title:'教学工作管理',
-      links:[
-        {path:'/main/password',name:'密码管理'},
-        {path:'/main/classschedule',name:'课程表'},
-        {path:'/main/educationreform',name:'教改项目'},
-        {path:'/main/mentorship',name:'导师制'},
-        {path:'/main/competitionguidance',name:'竞赛指导'},
+      title: '教学工作管理',
+      links: [
+        { path: '/main/password', name: '密码管理' },
+        { path: '/main/classschedule', name: '课程表' },
+        { path: '/main/educationreform', name: '教改项目' },
+        { path: '/main/mentorship', name: '导师制' },
+        { path: '/main/competitionguidance', name: '竞赛指导' },
       ]
     },
     {
-      title:'科研工作管理',
-      links:[
-        {path:'/main/monograph',name:'专著'},
-        {path:'/main/paper',name:'论文'},
-        {path:'/main/scientificresearch',name:'科研项目'},
+      title: '科研工作管理',
+      links: [
+        { path: '/main/monograph', name: '专著' },
+        { path: '/main/paper', name: '论文' },
+        { path: '/main/scientificresearch', name: '科研项目' },
       ]
     },
     {
-      title:'工作总结',
-      links:[
-        {path:'/main/workreport',name:'工作报告'},
+      title: '工作总结',
+      links: [
+        { path: '/main/workreport', name: '工作报告' },
       ]
     }
   ];
 
 
-  constructor(private meta: Meta, private responsive: BreakpointObserver) {
+  constructor(private meta: Meta, private responsive: BreakpointObserver, private router: Router) {
 
   }
 
@@ -74,6 +74,10 @@ export class MainComponent implements OnInit {
 
   toggleDrawer() {
     this.isDrawerOpen = !this.isDrawerOpen;
+  }
+
+  isActive(path: string): boolean {
+    return this.router.url === path;
   }
 
   // 关闭小屏模式抽屉

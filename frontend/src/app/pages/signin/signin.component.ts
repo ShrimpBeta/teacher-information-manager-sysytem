@@ -61,10 +61,18 @@ export class SigninComponent {
       if (origin) {
         this.window.location.href = decodeURIComponent(origin);
       } else {
+        // 账号未激活，前往用户管理页面
+        if (user.activate === false) {
+          return this.router.navigate(['/main/account']).then(() => {
+            // 取消订阅
+            this.destroy$.next(true);
+            return this.destroy$.unsubscribe();
+          });
+        }
         return this.router.navigate(['/main']).then(() => {
           // 取消订阅
-          // this.destroy$.next(true);
-          // return this.destroy$.unsubscribe();
+          this.destroy$.next(true);
+          return this.destroy$.unsubscribe();
         });
       }
     }
@@ -80,7 +88,7 @@ export class SigninComponent {
       this.snackBar.open('登录失败，请检查邮箱和密码是否正确', '关闭', {
         duration: 3000,
       });
-    }else{
+    } else {
       // 提示用户
       this.snackBar.open('网络错误或API错误', '关闭', {
         duration: 3000,

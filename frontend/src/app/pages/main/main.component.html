@@ -9,13 +9,13 @@
   </mat-toolbar>
   <mat-drawer-container class="drawer-container">
     <mat-drawer [mode]="isSmallMode ? 'over' : 'side' " [opened]="isDrawerOpen"
-      [style.width]="isSmallMode? '100%' : '25%' ">
+      [style.width]="isSmallMode? '60%' : '15%' ">
       @for (menus of menuItems; track $index) {
       <mat-nav-list>
-        <h3 mat-subheader color="primary" style="user-select: none;">{{menus.title}}</h3>
+        <h3 mat-subheader style="user-select: none;">{{menus.title}}</h3>
         @for (item of menus.links; track $index) {
-        <a mat-list-item routerLink="{{item.path}}" routerLinkActive="active" (mousedown)="$event.preventDefault()"
-          style="user-select: none;" (click)="closeDrawer()">{{item.name}}</a>
+        <a mat-list-item routerLink="{{item.path}}" [activated]="isActive(item.path)"
+          (mousedown)="$event.preventDefault()" class="custom-list-item" (click)="closeDrawer()">{{item.name}}</a>
         }
       </mat-nav-list>
       }

@@ -18,13 +18,15 @@ mat-drawer {
   flex: 0 0 auto;
 }
 
-.active {
-  background-color: #cccccc;
-}
-
 h3[mat-subheader] {
-  font-size: 1.2em; /* 改变字体大小 */
-  color: #348177; /* 改变字体颜色 */
-  margin-bottom: 10px; /* 添加间距 */
+  font-size: 1.2em;
+  color: #348177;
+  margin-bottom: 10px;
 }
 
+.custom-list-item {
+  -webkit-user-select: none;
+  user-select: none;
+  line-height: 0.5;
+  padding-left: 30px;
+}
