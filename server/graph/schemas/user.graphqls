@@ -5,7 +5,7 @@ type User {
   email: String!
   avatar: String!
   phoneNumber: String
-  wechatToken: String
+  wechatAuth: Boolean!
   activate: Boolean!
   createdAt: Time!
   updatedAt: Time!
@@ -17,10 +17,6 @@ type UserExport {
   username: String!
   email: String!
   avatar: String!
-}
-
-type AvatarPath {
-  avatarUrl: String!
 }
 
 type SignInResponse {
@@ -41,7 +37,14 @@ input ChangePassword {
 
 input UpdateUser {
   username: String
-  avatar: String
+  avatar: Upload
+  phoneNumber: String
+}
+
+input ActivateUser {
+  username: String!
+  password: String!
+  avatar: Upload
   phoneNumber: String
 }
 
@@ -58,10 +61,8 @@ extend type Mutation {
 
   signIn(email: String!, password: String!): SignInResponse!
   updateUser(userId: ID!, userData: UpdateUser!): User!
+  activateUser(userId: ID!, userData: ActivateUser!): User!
 
-  createWechatToken(userId: ID!, token: String!): Boolean!
-  updateWechatToken(userId: ID!, token: String!): Boolean!
-  deleteWechatToken(userId: ID!): Boolean!
-
-  uploadAvatar(userId: ID!, avatar: Upload!): AvatarPath!
+  addWechatAuth(userId: ID!, token: String!): Boolean!
+  removeWechatAuth(userId: ID!): Boolean!
 }

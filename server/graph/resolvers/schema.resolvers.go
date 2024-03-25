@@ -21,11 +21,17 @@ func (r *mutationResolver) CreateAccount(ctx context.Context, newUserData graphq
 	if err != nil {
 		return nil, err
 	}
+
+	avatar, err := avatar.GenerateAvatar(newUserData.Email)
+	if err != nil {
+		return nil, err
+	}
+
 	newUser := models.User{
 		Username:  "Unknown",
 		Email:     newUserData.Email,
 		Password:  newUserData.Password,
-		Avatar:    avatar.GenerateAvatar(newUserData.Email),
+		Avatar:    avatar,
 		Activate:  false,
 		MasterKey: masterKey,
 		Salt:      passwordencrypt.GenerateSalt(),

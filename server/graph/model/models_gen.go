@@ -4,6 +4,8 @@ package graphql_models
 
 import (
 	"time"
+
+	"github.com/99designs/gqlgen/graphql"
 )
 
 type AcademicTerm struct {
@@ -19,6 +21,13 @@ type AcademicTermPreview struct {
 	Courses []*CoursePreview `json:"courses,omitempty"`
 }
 
+type ActivateUser struct {
+	Username    string          `json:"username"`
+	Password    string          `json:"password"`
+	Avatar      *graphql.Upload `json:"avatar,omitempty"`
+	PhoneNumber *string         `json:"phoneNumber,omitempty"`
+}
+
 type AdminSignInInput struct {
 	Account  string `json:"account"`
 	Password string `json:"password"`
@@ -26,10 +35,6 @@ type AdminSignInInput struct {
 
 type AuthPayload struct {
 	Token string `json:"token"`
-}
-
-type AvatarPath struct {
-	AvatarURL string `json:"avatarUrl"`
 }
 
 type AwardRecord struct {
@@ -483,9 +488,9 @@ type UpdateUGPGGuidance struct {
 }
 
 type UpdateUser struct {
-	Username    *string `json:"username,omitempty"`
-	Avatar      *string `json:"avatar,omitempty"`
-	PhoneNumber *string `json:"phoneNumber,omitempty"`
+	Username    *string         `json:"username,omitempty"`
+	Avatar      *graphql.Upload `json:"avatar,omitempty"`
+	PhoneNumber *string         `json:"phoneNumber,omitempty"`
 }
 
 type User struct {
@@ -494,7 +499,7 @@ type User struct {
 	Email       string    `json:"email"`
 	Avatar      string    `json:"avatar"`
 	PhoneNumber *string   `json:"phoneNumber,omitempty"`
-	WechatToken *string   `json:"wechatToken,omitempty"`
+	WechatAuth  bool      `json:"wechatAuth"`
 	Activate    bool      `json:"activate"`
 	CreatedAt   time.Time `json:"createdAt"`
 	UpdatedAt   time.Time `json:"updatedAt"`

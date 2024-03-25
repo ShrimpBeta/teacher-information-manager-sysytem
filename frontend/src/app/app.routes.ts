@@ -4,7 +4,6 @@ import { MainComponent } from './pages/main/main.component';
 import { PagenotfoundComponent } from './pages/pagenotfound/pagenotfound.component';
 import { SigninComponent } from './pages/signin/signin.component';
 import { ResetpasswordComponent } from './pages/resetpassword/resetpassword.component';
-import { loggedGuard } from './core/guard/logged.guard';
 import { AccountComponent } from './pages/account/account.component';
 import { PasswordComponent } from './pages/password/password.component';
 import { ClassscheduleComponent } from './pages/classschedule/classschedule.component';

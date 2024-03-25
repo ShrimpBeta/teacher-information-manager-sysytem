@@ -7,14 +7,17 @@ package resolvers
 import (
 	"context"
 	"fmt"
+	"io"
 	graphql_models "server/graph/model"
 	"server/persistence/repository"
+	"server/services/avatar"
 	"server/services/jwt"
 	"time"
 
-	"github.com/99designs/gqlgen/graphql"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
+
+const ServeURL = "http://localhost:8080"
 
 // DeleteAccount is the resolver for the deleteAccount field.
 func (r *mutationResolver) DeleteAccount(ctx context.Context, userID string) (*graphql_models.User, error) {
@@ -31,13 +34,19 @@ func (r *mutationResolver) DeleteAccount(ctx context.Context, userID string) (*g
 	if err != nil {
 		return nil, err
 	}
+
+	wechatAuth := false
+	if userData.WechatToken != "" {
+		wechatAuth = true
+	}
+
 	return &graphql_models.User{
 		ID:          userData.ID.Hex(),
 		Email:       userData.Email,
 		Username:    userData.Username,
-		Avatar:      userData.Avatar,
+		Avatar:      ServeURL + "/avatars/" + userData.Avatar,
 		PhoneNumber: &userData.Phone,
-		WechatToken: &userData.WechatToken,
+		WechatAuth:  wechatAuth,
 		Activate:    userData.Activate,
 		CreatedAt:   userData.CreatedAt.Time(),
 		UpdatedAt:   userData.UpdatedAt.Time(),
@@ -67,7 +76,12 @@ func (r *mutationResolver) SignIn(ctx context.Context, email string, password st
 	if err != nil {
 		return nil, err
 	}
-	ServeURL := "http://localhost:8080"
+
+	wechatAuth := false
+	if userData.WechatToken != "" {
+		wechatAuth = true
+	}
+
 	return &graphql_models.SignInResponse{
 		Token: token,
 		User: &graphql_models.User{
@@ -75,8 +89,8 @@ func (r *mutationResolver) SignIn(ctx context.Context, email string, password st
 			Username:    userData.Username,
 			Email:       userData.Email,
 			PhoneNumber: &userData.Phone,
-			WechatToken: &userData.WechatToken,
-			Avatar:      ServeURL + userData.Avatar,
+			WechatAuth:  wechatAuth,
+			Avatar:      ServeURL + "/avatars/" + userData.Avatar,
 			Activate:    userData.Activate,
 			CreatedAt:   userData.CreatedAt.Time(),
 			UpdatedAt:   userData.UpdatedAt.Time(),
@@ -102,9 +116,32 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, userID string, userDa
 	if userData.Username != nil {
 		userUpdate.Username = *userData.Username
 	}
+
 	if userData.Avatar != nil {
-		userUpdate.Email = *userData.Avatar
+		file := userData.Avatar.File
+
+		// check file type
+		if userData.Avatar.ContentType != "image/png" &&
+			userData.Avatar.ContentType != "image/jpeg" &&
+			userData.Avatar.ContentType != "image/jpg" &&
+			userData.Avatar.ContentType != "image/webp" {
+			return nil, fmt.Errorf("only png,jpeg,jpg,webp file is allowed")
+		}
+
+		// Read the contents of the file
+		data, err := io.ReadAll(file)
+		if err != nil {
+			return nil, err
+		}
+
+		// Pass the data as []byte to the SaveAvatar function
+		avatar, err := avatar.SaveAvatar(data)
+		if err != nil {
+			return nil, err
+		}
+		userUpdate.Avatar = avatar
 	}
+
 	if userData.PhoneNumber != nil {
 		userUpdate.Phone = *userData.PhoneNumber
 	}
@@ -117,37 +154,103 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, userID string, userDa
 	if err != nil {
 		return nil, err
 	}
+
+	wechatAuth := false
+	if userUpdate.WechatToken != "" {
+		wechatAuth = true
+	}
 	return &graphql_models.User{
 		ID:          userUpdate.ID.Hex(),
 		Email:       userUpdate.Email,
 		Username:    userUpdate.Username,
-		Avatar:      userUpdate.Avatar,
+		Avatar:      ServeURL + "/avatars/" + userUpdate.Avatar,
 		PhoneNumber: &userUpdate.Phone,
-		WechatToken: &userUpdate.WechatToken,
+		WechatAuth:  wechatAuth,
 		Activate:    userUpdate.Activate,
 		CreatedAt:   userUpdate.CreatedAt.Time(),
 		UpdatedAt:   userUpdate.UpdatedAt.Time(),
 	}, nil
 }
 
-// CreateWechatToken is the resolver for the createWechatToken field.
-func (r *mutationResolver) CreateWechatToken(ctx context.Context, userID string, token string) (bool, error) {
-	panic(fmt.Errorf("not implemented: CreateWechatToken - createWechatToken"))
+// ActivateUser is the resolver for the activateUser field.
+func (r *mutationResolver) ActivateUser(ctx context.Context, userID string, userData graphql_models.ActivateUser) (*graphql_models.User, error) {
+	objectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return nil, err
+	}
+	userUpdate, err := repository.Repos.UserRepo.GetUserById(objectID)
+	if err != nil {
+		return nil, err
+	}
+
+	userUpdate.Activate = true
+	userUpdate.Username = userData.Username
+	userUpdate.Password = userData.Password
+	if userData.Avatar != nil {
+		file := userData.Avatar.File
+
+		// check file type
+		if userData.Avatar.ContentType != "image/png" &&
+			userData.Avatar.ContentType != "image/jpeg" &&
+			userData.Avatar.ContentType != "image/jpg" &&
+			userData.Avatar.ContentType != "image/webp" {
+			return nil, fmt.Errorf("only png,jpeg,jpg,webp file is allowed")
+		}
+
+		// Read the contents of the file
+		data, err := io.ReadAll(file)
+		if err != nil {
+			return nil, err
+		}
+
+		// Pass the data as []byte to the SaveAvatar function
+		avatar, err := avatar.SaveAvatar(data)
+		if err != nil {
+			return nil, err
+		}
+		userUpdate.Avatar = avatar
+
+	}
+
+	if userData.PhoneNumber != nil {
+		userUpdate.Phone = *userData.PhoneNumber
+	}
+
+	err = repository.Repos.UserRepo.UpdateUser(userUpdate)
+	if err != nil {
+		return nil, err
+	}
+	userUpdate, err = repository.Repos.UserRepo.GetUserById(objectID)
+	if err != nil {
+		return nil, err
+	}
+
+	wechatAuth := false
+	if userUpdate.WechatToken != "" {
+		wechatAuth = true
+	}
+
+	return &graphql_models.User{
+		ID:          userUpdate.ID.Hex(),
+		Email:       userUpdate.Email,
+		Username:    userUpdate.Username,
+		Avatar:      ServeURL + "/avatars/" + userUpdate.Avatar,
+		PhoneNumber: &userUpdate.Phone,
+		WechatAuth:  wechatAuth,
+		Activate:    userUpdate.Activate,
+		CreatedAt:   userUpdate.CreatedAt.Time(),
+		UpdatedAt:   userUpdate.UpdatedAt.Time(),
+	}, nil
 }
 
-// UpdateWechatToken is the resolver for the updateWechatToken field.
-func (r *mutationResolver) UpdateWechatToken(ctx context.Context, userID string, token string) (bool, error) {
-	panic(fmt.Errorf("not implemented: UpdateWechatToken - updateWechatToken"))
+// AddWechatAuth is the resolver for the addWechatAuth field.
+func (r *mutationResolver) AddWechatAuth(ctx context.Context, userID string, token string) (bool, error) {
+	panic(fmt.Errorf("not implemented: AddWechatAuth - addWechatAuth"))
 }
 
-// DeleteWechatToken is the resolver for the deleteWechatToken field.
-func (r *mutationResolver) DeleteWechatToken(ctx context.Context, userID string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteWechatToken - deleteWechatToken"))
-}
-
-// UploadAvatar is the resolver for the uploadAvatar field.
-func (r *mutationResolver) UploadAvatar(ctx context.Context, userID string, avatar graphql.Upload) (*graphql_models.AvatarPath, error) {
-	panic(fmt.Errorf("not implemented: UploadAvatar - uploadAvatar"))
+// RemoveWechatAuth is the resolver for the removeWechatAuth field.
+func (r *mutationResolver) RemoveWechatAuth(ctx context.Context, userID string) (bool, error) {
+	panic(fmt.Errorf("not implemented: RemoveWechatAuth - removeWechatAuth"))
 }
 
 // User is the resolver for the user field.
@@ -160,13 +263,19 @@ func (r *queryResolver) User(ctx context.Context, id string) (*graphql_models.Us
 	if err != nil {
 		return nil, err
 	}
+
+	wechatAuth := false
+	if userData.WechatToken != "" {
+		wechatAuth = true
+	}
+
 	return &graphql_models.User{
 		ID:          userData.ID.Hex(),
 		Email:       userData.Email,
 		Username:    userData.Username,
-		Avatar:      userData.Avatar,
+		Avatar:      "/avatars/" + userData.Avatar,
 		PhoneNumber: &userData.Phone,
-		WechatToken: &userData.WechatToken,
+		WechatAuth:  wechatAuth,
 		Activate:    userData.Activate,
 		CreatedAt:   userData.CreatedAt.Time(),
 		UpdatedAt:   userData.UpdatedAt.Time(),
@@ -185,7 +294,7 @@ func (r *queryResolver) UserExports(ctx context.Context) ([]*graphql_models.User
 			ID:       userData.ID.Hex(),
 			Email:    userData.Email,
 			Username: userData.Username,
-			Avatar:   userData.Avatar,
+			Avatar:   "/avatars/" + userData.Avatar,
 		})
 	}
 	return users, nil

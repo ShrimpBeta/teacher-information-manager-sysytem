@@ -8,15 +8,6 @@
   box-sizing: border-box;
   padding: 20px;
   gap: 20px;
-
-  form {
-    width: 100%;
-    padding: 40px;
-    box-sizing: border-box;
-    border-radius: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-    background-color: #fff;
-  }
 }
 
 .title {
@@ -32,6 +23,25 @@
   padding: 5px 30px;
 }
 
+.user-form {
+  width: 100%;
+  padding: 30px 50px 20px 50px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  background-color: #fff;
+}
+
+.user-secure {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 30px 10px 30px 10px;
+  box-sizing: border-box;
+  justify-content:space-around;
+}
+
 mat-divider {
   margin: 20px 0;
   border-top-width: 2px;
@@ -41,15 +51,6 @@ mat-divider {
   display: flex;
   flex-direction: column;
   align-items: start;
-}
-
-.password-edit {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 30px;
-  margin: 0 0 -20px;
 }
 
 img {
@@ -65,6 +66,15 @@ img {
   gap: 20px;
 }
 
+.password-edit {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 30px;
+  margin: 0 0 -20px;
+}
+
 .password-edit-mobile {
   display: flex;
   flex-direction: column;
@@ -73,15 +83,41 @@ img {
   gap: 10px;
 }
 
-.wechat-edit {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 20px;
-}
-
 .edit-save {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.update-password {
+  width: 100%;
+  max-width: 450px;
+  padding: 40px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  background-color: #fff;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.wechat-edit {
+  width: 100%;
+  max-width: 450px;
+  padding: 40px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  background-color: #fff;
+
+  .wechat-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 }

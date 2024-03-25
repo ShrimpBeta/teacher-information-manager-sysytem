@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { LoginformComponent } from '../../components/loginform/loginform.component';
 import { AuthService } from '../../core/auth/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -15,7 +15,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   templateUrl: './signin.component.html',
   styleUrl: './signin.component.scss'
 })
-export class SigninComponent {
+export class SigninComponent implements OnDestroy {
   email!: string;
   password!: string;
   // 是否登录中，避免重复提交登录请求
@@ -96,5 +96,12 @@ export class SigninComponent {
     }
     this.isSignin = false;
     this.changeDetectorRef.detectChanges();
+  }
+
+  ngOnDestroy(): void {
+    // 取消订阅
+    // this.destroy$.next(true);
+    // this.destroy$.complete();
+
   }
 }

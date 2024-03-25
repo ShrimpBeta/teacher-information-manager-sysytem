@@ -65,10 +65,6 @@ type ComplexityRoot struct {
 		Token func(childComplexity int) int
 	}
 
-	AvatarPath struct {
-		AvatarURL func(childComplexity int) int
-	}
-
 	AwardRecord struct {
 		AwardDate  func(childComplexity int) int
 		AwardName  func(childComplexity int) int
@@ -199,7 +195,9 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		ActivateUser           func(childComplexity int, userID string, userData graphql_models.ActivateUser) int
 		AddAwardRecord         func(childComplexity int, sciResearchID string, newAwardRecordData graphql_models.NewAwardRecord) int
+		AddWechatAuth          func(childComplexity int, userID string, token string) int
 		CreareAwardSciResearch func(childComplexity int, newAwardSciResearchData graphql_models.NewAwardSciResearch) int
 		CreateAccount          func(childComplexity int, newUserData graphql_models.NewUser) int
 		CreateCompGuidance     func(childComplexity int, userID string, newGuidanceData graphql_models.NewCompGuidance) int
@@ -211,7 +209,6 @@ type ComplexityRoot struct {
 		CreatePassword         func(childComplexity int, userid string, newPasswordData graphql_models.NewPassword) int
 		CreateSciResearch      func(childComplexity int, newSciResearchData graphql_models.NewSciResearch) int
 		CreateUPGuidance       func(childComplexity int, newUGPGGuidanceData graphql_models.NewUGPGGuidance) int
-		CreateWechatToken      func(childComplexity int, userID string, token string) int
 		CreateacademicTerm     func(childComplexity int, userID string, newTermData graphql_models.NewAcademicTerm) int
 		DeleteAccount          func(childComplexity int, userID string) int
 		DeleteAwardRecord      func(childComplexity int, sciResearchID string, awardRecordID string) int
@@ -224,9 +221,9 @@ type ComplexityRoot struct {
 		DeletePassword         func(childComplexity int, id string) int
 		DeleteSciResearch      func(childComplexity int, sciResearchID string) int
 		DeleteUPGuidance       func(childComplexity int, uGPGGuidanceID string) int
-		DeleteWechatToken      func(childComplexity int, userID string) int
 		DeleteacademicTerm     func(childComplexity int, termID string) int
 		ForgetAccountPassword  func(childComplexity int, userID string, passwordCodeData *graphql_models.ResetPassword) int
+		RemoveWechatAuth       func(childComplexity int, userID string) int
 		SignIn                 func(childComplexity int, email string, password string) int
 		UpdateAccountPassword  func(childComplexity int, userID string, passwordData *graphql_models.ChangePassword) int
 		UpdateAwardRecord      func(childComplexity int, awardRecordID string) int
@@ -240,10 +237,8 @@ type ComplexityRoot struct {
 		UpdateSciResearch      func(childComplexity int, sciResearchID string, sciResearchData graphql_models.UpdateSciResearch) int
 		UpdateUPGuidance       func(childComplexity int, uGPGGuidanceID string, uGPGGuidanceData graphql_models.UpdateUGPGGuidance) int
 		UpdateUser             func(childComplexity int, userID string, userData graphql_models.UpdateUser) int
-		UpdateWechatToken      func(childComplexity int, userID string, token string) int
 		UpdateacademicTerm     func(childComplexity int, termID string, termData graphql_models.UpdateAcademicTerm) int
 		UploadAcademicTerm     func(childComplexity int, file graphql.Upload) int
-		UploadAvatar           func(childComplexity int, userID string, avatar graphql.Upload) int
 		UploadCompGuidance     func(childComplexity int, file graphql.Upload) int
 		UploadCompGuidances    func(childComplexity int, file graphql.Upload) int
 		UploadEduReform        func(childComplexity int, file graphql.Upload) int
@@ -372,7 +367,7 @@ type ComplexityRoot struct {
 		PhoneNumber func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		Username    func(childComplexity int) int
-		WechatToken func(childComplexity int) int
+		WechatAuth  func(childComplexity int) int
 	}
 
 	UserCreate struct {
@@ -440,10 +435,9 @@ type MutationResolver interface {
 	ForgetAccountPassword(ctx context.Context, userID string, passwordCodeData *graphql_models.ResetPassword) (string, error)
 	SignIn(ctx context.Context, email string, password string) (*graphql_models.SignInResponse, error)
 	UpdateUser(ctx context.Context, userID string, userData graphql_models.UpdateUser) (*graphql_models.User, error)
-	CreateWechatToken(ctx context.Context, userID string, token string) (bool, error)
-	UpdateWechatToken(ctx context.Context, userID string, token string) (bool, error)
-	DeleteWechatToken(ctx context.Context, userID string) (bool, error)
-	UploadAvatar(ctx context.Context, userID string, avatar graphql.Upload) (*graphql_models.AvatarPath, error)
+	ActivateUser(ctx context.Context, userID string, userData graphql_models.ActivateUser) (*graphql_models.User, error)
+	AddWechatAuth(ctx context.Context, userID string, token string) (bool, error)
+	RemoveWechatAuth(ctx context.Context, userID string) (bool, error)
 }
 type QueryResolver interface {
 	AdminSignIn(ctx context.Context, adminSignInInput *graphql_models.AdminSignInInput) (*graphql_models.AuthPayload, error)
@@ -555,13 +549,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AuthPayload.Token(childComplexity), true
-
-	case "AvatarPath.avatarUrl":
-		if e.complexity.AvatarPath.AvatarURL == nil {
-			break
-		}
-
-		return e.complexity.AvatarPath.AvatarURL(childComplexity), true
 
 	case "AwardRecord.awardDate":
 		if e.complexity.AwardRecord.AwardDate == nil {
@@ -1193,6 +1180,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.MonographPreview.Title(childComplexity), true
 
+	case "Mutation.activateUser":
+		if e.complexity.Mutation.ActivateUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_activateUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ActivateUser(childComplexity, args["userId"].(string), args["userData"].(graphql_models.ActivateUser)), true
+
 	case "Mutation.addAwardRecord":
 		if e.complexity.Mutation.AddAwardRecord == nil {
 			break
@@ -1204,6 +1203,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.AddAwardRecord(childComplexity, args["sciResearchId"].(string), args["newAwardRecordData"].(graphql_models.NewAwardRecord)), true
+
+	case "Mutation.addWechatAuth":
+		if e.complexity.Mutation.AddWechatAuth == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addWechatAuth_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddWechatAuth(childComplexity, args["userId"].(string), args["token"].(string)), true
 
 	case "Mutation.creareAwardSciResearch":
 		if e.complexity.Mutation.CreareAwardSciResearch == nil {
@@ -1336,18 +1347,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateUPGuidance(childComplexity, args["newUGPGGuidanceData"].(graphql_models.NewUGPGGuidance)), true
-
-	case "Mutation.createWechatToken":
-		if e.complexity.Mutation.CreateWechatToken == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_createWechatToken_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.CreateWechatToken(childComplexity, args["userId"].(string), args["token"].(string)), true
 
 	case "Mutation.createacademicTerm":
 		if e.complexity.Mutation.CreateacademicTerm == nil {
@@ -1493,18 +1492,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteUPGuidance(childComplexity, args["uGPGGuidanceId"].(string)), true
 
-	case "Mutation.deleteWechatToken":
-		if e.complexity.Mutation.DeleteWechatToken == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_deleteWechatToken_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.DeleteWechatToken(childComplexity, args["userId"].(string)), true
-
 	case "Mutation.deleteacademicTerm":
 		if e.complexity.Mutation.DeleteacademicTerm == nil {
 			break
@@ -1528,6 +1515,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.ForgetAccountPassword(childComplexity, args["userId"].(string), args["passwordCodeData"].(*graphql_models.ResetPassword)), true
+
+	case "Mutation.removeWechatAuth":
+		if e.complexity.Mutation.RemoveWechatAuth == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeWechatAuth_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveWechatAuth(childComplexity, args["userId"].(string)), true
 
 	case "Mutation.signIn":
 		if e.complexity.Mutation.SignIn == nil {
@@ -1685,18 +1684,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateUser(childComplexity, args["userId"].(string), args["userData"].(graphql_models.UpdateUser)), true
 
-	case "Mutation.updateWechatToken":
-		if e.complexity.Mutation.UpdateWechatToken == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_updateWechatToken_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UpdateWechatToken(childComplexity, args["userId"].(string), args["token"].(string)), true
-
 	case "Mutation.updateacademicTerm":
 		if e.complexity.Mutation.UpdateacademicTerm == nil {
 			break
@@ -1720,18 +1707,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UploadAcademicTerm(childComplexity, args["file"].(graphql.Upload)), true
-
-	case "Mutation.uploadAvatar":
-		if e.complexity.Mutation.UploadAvatar == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_uploadAvatar_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UploadAvatar(childComplexity, args["userId"].(string), args["avatar"].(graphql.Upload)), true
 
 	case "Mutation.uploadCompGuidance":
 		if e.complexity.Mutation.UploadCompGuidance == nil {
@@ -2671,12 +2646,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.Username(childComplexity), true
 
-	case "User.wechatToken":
-		if e.complexity.User.WechatToken == nil {
+	case "User.wechatAuth":
+		if e.complexity.User.WechatAuth == nil {
 			break
 		}
 
-		return e.complexity.User.WechatToken(childComplexity), true
+		return e.complexity.User.WechatAuth(childComplexity), true
 
 	case "UserCreate.email":
 		if e.complexity.UserCreate.Email == nil {
@@ -2728,6 +2703,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputActivateUser,
 		ec.unmarshalInputAdminSignInInput,
 		ec.unmarshalInputChangePassword,
 		ec.unmarshalInputNewAcademicTerm,
@@ -2884,6 +2860,30 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 
 // region    ***************************** args.gotpl *****************************
 
+func (ec *executionContext) field_Mutation_activateUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userId"] = arg0
+	var arg1 graphql_models.ActivateUser
+	if tmp, ok := rawArgs["userData"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userData"))
+		arg1, err = ec.unmarshalNActivateUser2serverᚋgraphᚋmodelᚐActivateUser(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userData"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_addAwardRecord_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -2905,6 +2905,30 @@ func (ec *executionContext) field_Mutation_addAwardRecord_args(ctx context.Conte
 		}
 	}
 	args["newAwardRecordData"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_addWechatAuth_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userId"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["token"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["token"] = arg1
 	return args, nil
 }
 
@@ -3106,30 +3130,6 @@ func (ec *executionContext) field_Mutation_createUPGuidance_args(ctx context.Con
 		}
 	}
 	args["newUGPGGuidanceData"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_createWechatToken_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["token"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["token"] = arg1
 	return args, nil
 }
 
@@ -3340,21 +3340,6 @@ func (ec *executionContext) field_Mutation_deleteUPGuidance_args(ctx context.Con
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_deleteWechatToken_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	return args, nil
-}
-
 func (ec *executionContext) field_Mutation_deleteacademicTerm_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -3391,6 +3376,21 @@ func (ec *executionContext) field_Mutation_forgetAccountPassword_args(ctx contex
 		}
 	}
 	args["passwordCodeData"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_removeWechatAuth_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userId"] = arg0
 	return args, nil
 }
 
@@ -3697,30 +3697,6 @@ func (ec *executionContext) field_Mutation_updateUser_args(ctx context.Context, 
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_updateWechatToken_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["token"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("token"))
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["token"] = arg1
-	return args, nil
-}
-
 func (ec *executionContext) field_Mutation_updateacademicTerm_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -3757,30 +3733,6 @@ func (ec *executionContext) field_Mutation_uploadAcademicTerm_args(ctx context.C
 		}
 	}
 	args["file"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_uploadAvatar_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	var arg1 graphql.Upload
-	if tmp, ok := rawArgs["avatar"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("avatar"))
-		arg1, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["avatar"] = arg1
 	return args, nil
 }
 
@@ -4868,50 +4820,6 @@ func (ec *executionContext) _AuthPayload_token(ctx context.Context, field graphq
 func (ec *executionContext) fieldContext_AuthPayload_token(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AuthPayload",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _AvatarPath_avatarUrl(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AvatarPath) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AvatarPath_avatarUrl(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.AvatarURL, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AvatarPath_avatarUrl(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AvatarPath",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -12237,8 +12145,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteAccount(ctx context.Cont
 				return ec.fieldContext_User_avatar(ctx, field)
 			case "phoneNumber":
 				return ec.fieldContext_User_phoneNumber(ctx, field)
-			case "wechatToken":
-				return ec.fieldContext_User_wechatToken(ctx, field)
+			case "wechatAuth":
+				return ec.fieldContext_User_wechatAuth(ctx, field)
 			case "activate":
 				return ec.fieldContext_User_activate(ctx, field)
 			case "createdAt":
@@ -12483,8 +12391,8 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_User_avatar(ctx, field)
 			case "phoneNumber":
 				return ec.fieldContext_User_phoneNumber(ctx, field)
-			case "wechatToken":
-				return ec.fieldContext_User_wechatToken(ctx, field)
+			case "wechatAuth":
+				return ec.fieldContext_User_wechatAuth(ctx, field)
 			case "activate":
 				return ec.fieldContext_User_activate(ctx, field)
 			case "createdAt":
@@ -12509,8 +12417,8 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_createWechatToken(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createWechatToken(ctx, field)
+func (ec *executionContext) _Mutation_activateUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_activateUser(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -12523,7 +12431,7 @@ func (ec *executionContext) _Mutation_createWechatToken(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateWechatToken(rctx, fc.Args["userId"].(string), fc.Args["token"].(string))
+		return ec.resolvers.Mutation().ActivateUser(rctx, fc.Args["userId"].(string), fc.Args["userData"].(graphql_models.ActivateUser))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -12535,177 +12443,12 @@ func (ec *executionContext) _Mutation_createWechatToken(ctx context.Context, fie
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*graphql_models.User)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖserverᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_createWechatToken(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createWechatToken_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Mutation_updateWechatToken(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_updateWechatToken(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateWechatToken(rctx, fc.Args["userId"].(string), fc.Args["token"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_updateWechatToken(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_updateWechatToken_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Mutation_deleteWechatToken(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_deleteWechatToken(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteWechatToken(rctx, fc.Args["userId"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_deleteWechatToken(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_deleteWechatToken_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Mutation_uploadAvatar(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_uploadAvatar(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UploadAvatar(rctx, fc.Args["userId"].(string), fc.Args["avatar"].(graphql.Upload))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*graphql_models.AvatarPath)
-	fc.Result = res
-	return ec.marshalNAvatarPath2ᚖserverᚋgraphᚋmodelᚐAvatarPath(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_uploadAvatar(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_activateUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -12713,10 +12456,26 @@ func (ec *executionContext) fieldContext_Mutation_uploadAvatar(ctx context.Conte
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "avatarUrl":
-				return ec.fieldContext_AvatarPath_avatarUrl(ctx, field)
+			case "id":
+				return ec.fieldContext_User_id(ctx, field)
+			case "username":
+				return ec.fieldContext_User_username(ctx, field)
+			case "email":
+				return ec.fieldContext_User_email(ctx, field)
+			case "avatar":
+				return ec.fieldContext_User_avatar(ctx, field)
+			case "phoneNumber":
+				return ec.fieldContext_User_phoneNumber(ctx, field)
+			case "wechatAuth":
+				return ec.fieldContext_User_wechatAuth(ctx, field)
+			case "activate":
+				return ec.fieldContext_User_activate(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_User_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_User_updatedAt(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type AvatarPath", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
 	}
 	defer func() {
@@ -12726,7 +12485,117 @@ func (ec *executionContext) fieldContext_Mutation_uploadAvatar(ctx context.Conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_uploadAvatar_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_activateUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_addWechatAuth(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_addWechatAuth(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddWechatAuth(rctx, fc.Args["userId"].(string), fc.Args["token"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_addWechatAuth(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_addWechatAuth_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_removeWechatAuth(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_removeWechatAuth(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RemoveWechatAuth(rctx, fc.Args["userId"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_removeWechatAuth(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_removeWechatAuth_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -16241,8 +16110,8 @@ func (ec *executionContext) fieldContext_Query_user(ctx context.Context, field g
 				return ec.fieldContext_User_avatar(ctx, field)
 			case "phoneNumber":
 				return ec.fieldContext_User_phoneNumber(ctx, field)
-			case "wechatToken":
-				return ec.fieldContext_User_wechatToken(ctx, field)
+			case "wechatAuth":
+				return ec.fieldContext_User_wechatAuth(ctx, field)
 			case "activate":
 				return ec.fieldContext_User_activate(ctx, field)
 			case "createdAt":
@@ -17205,8 +17074,8 @@ func (ec *executionContext) fieldContext_SignInResponse_user(ctx context.Context
 				return ec.fieldContext_User_avatar(ctx, field)
 			case "phoneNumber":
 				return ec.fieldContext_User_phoneNumber(ctx, field)
-			case "wechatToken":
-				return ec.fieldContext_User_wechatToken(ctx, field)
+			case "wechatAuth":
+				return ec.fieldContext_User_wechatAuth(ctx, field)
 			case "activate":
 				return ec.fieldContext_User_activate(ctx, field)
 			case "createdAt":
@@ -17903,8 +17772,8 @@ func (ec *executionContext) fieldContext_User_phoneNumber(ctx context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _User_wechatToken(ctx context.Context, field graphql.CollectedField, obj *graphql_models.User) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_User_wechatToken(ctx, field)
+func (ec *executionContext) _User_wechatAuth(ctx context.Context, field graphql.CollectedField, obj *graphql_models.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_wechatAuth(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -17917,28 +17786,31 @@ func (ec *executionContext) _User_wechatToken(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.WechatToken, nil
+		return obj.WechatAuth, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_User_wechatToken(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_User_wechatAuth(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "User",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -20113,6 +19985,54 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputActivateUser(ctx context.Context, obj interface{}) (graphql_models.ActivateUser, error) {
+	var it graphql_models.ActivateUser
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"username", "password", "avatar", "phoneNumber"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "username":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("username"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Username = data
+		case "password":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Password = data
+		case "avatar":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("avatar"))
+			data, err := ec.unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Avatar = data
+		case "phoneNumber":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("phoneNumber"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PhoneNumber = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputAdminSignInInput(ctx context.Context, obj interface{}) (graphql_models.AdminSignInInput, error) {
 	var it graphql_models.AdminSignInInput
 	asMap := map[string]interface{}{}
@@ -21850,7 +21770,7 @@ func (ec *executionContext) unmarshalInputUpdateUser(ctx context.Context, obj in
 			it.Username = data
 		case "avatar":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("avatar"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -21986,45 +21906,6 @@ func (ec *executionContext) _AuthPayload(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = graphql.MarshalString("AuthPayload")
 		case "token":
 			out.Values[i] = ec._AuthPayload_token(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
-var avatarPathImplementors = []string{"AvatarPath"}
-
-func (ec *executionContext) _AvatarPath(ctx context.Context, sel ast.SelectionSet, obj *graphql_models.AvatarPath) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, avatarPathImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("AvatarPath")
-		case "avatarUrl":
-			out.Values[i] = ec._AvatarPath_avatarUrl(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -23145,30 +23026,23 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "createWechatToken":
+		case "activateUser":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createWechatToken(ctx, field)
+				return ec._Mutation_activateUser(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "updateWechatToken":
+		case "addWechatAuth":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_updateWechatToken(ctx, field)
+				return ec._Mutation_addWechatAuth(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deleteWechatToken":
+		case "removeWechatAuth":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_deleteWechatToken(ctx, field)
-			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "uploadAvatar":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_uploadAvatar(ctx, field)
+				return ec._Mutation_removeWechatAuth(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -24384,8 +24258,11 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "phoneNumber":
 			out.Values[i] = ec._User_phoneNumber(ctx, field, obj)
-		case "wechatToken":
-			out.Values[i] = ec._User_wechatToken(ctx, field, obj)
+		case "wechatAuth":
+			out.Values[i] = ec._User_wechatAuth(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "activate":
 			out.Values[i] = ec._User_activate(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -24914,6 +24791,11 @@ func (ec *executionContext) marshalNAcademicTermPreview2ᚖserverᚋgraphᚋmode
 	return ec._AcademicTermPreview(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNActivateUser2serverᚋgraphᚋmodelᚐActivateUser(ctx context.Context, v interface{}) (graphql_models.ActivateUser, error) {
+	res, err := ec.unmarshalInputActivateUser(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNAuthPayload2serverᚋgraphᚋmodelᚐAuthPayload(ctx context.Context, sel ast.SelectionSet, v graphql_models.AuthPayload) graphql.Marshaler {
 	return ec._AuthPayload(ctx, sel, &v)
 }
@@ -24926,20 +24808,6 @@ func (ec *executionContext) marshalNAuthPayload2ᚖserverᚋgraphᚋmodelᚐAuth
 		return graphql.Null
 	}
 	return ec._AuthPayload(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNAvatarPath2serverᚋgraphᚋmodelᚐAvatarPath(ctx context.Context, sel ast.SelectionSet, v graphql_models.AvatarPath) graphql.Marshaler {
-	return ec._AvatarPath(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNAvatarPath2ᚖserverᚋgraphᚋmodelᚐAvatarPath(ctx context.Context, sel ast.SelectionSet, v *graphql_models.AvatarPath) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._AvatarPath(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalNAwardRecord2serverᚋgraphᚋmodelᚐAwardRecord(ctx context.Context, sel ast.SelectionSet, v graphql_models.AwardRecord) graphql.Marshaler {
@@ -26781,6 +26649,22 @@ func (ec *executionContext) unmarshalOUpdateMentorship2ᚖserverᚋgraphᚋmodel
 	}
 	res, err := ec.unmarshalInputUpdateMentorship(ctx, v)
 	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, v interface{}) (*graphql.Upload, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalUpload(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, sel ast.SelectionSet, v *graphql.Upload) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalUpload(*v)
+	return res
 }
 
 func (ec *executionContext) marshalOUserExport2ᚕᚖserverᚋgraphᚋmodelᚐUserExport(ctx context.Context, sel ast.SelectionSet, v []*graphql_models.UserExport) graphql.Marshaler {

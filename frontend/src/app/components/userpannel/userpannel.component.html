@@ -5,7 +5,7 @@
   <div #popupPanel class="popup-panel" [style.display]="showPanel ? 'block' : 'none'"
     [@openClose]="showPanel ? 'open' :'closed' ">
     <div class="popup-panel-header">
-      <img class="avatar" [src]="user?.avatar" alt="头像">
+      <img class="avatar-big" [src]="user?.avatar" alt="头像">
       <div class="user-info">
         <div class="user-name width-full">{{user?.username}}</div>
         <div class="user-email width-full">{{user?.email}}</div>
