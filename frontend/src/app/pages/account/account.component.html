@@ -111,7 +111,6 @@
       </form>
     </div>
 
-    @if(user?.wechatAuth){
     <div class="wechat-edit">
       <div class="wechat-title">
         <h2>微信认证</h2>
@@ -119,9 +118,10 @@
           alt="微信图标">
       </div>
       <mat-divider></mat-divider>
-      <button type="button" mat-raised-button color="warn" (click)="removeWechatAuth()">解除微信登录授权</button>
+      <button type="button" mat-raised-button color="warn" (click)="removeWechatAuth()"
+        [disabled]="user?.wechatAuth ? false : true">解除微信登录授权</button>
     </div>
-    }
+
   </div>
   }
 </div>

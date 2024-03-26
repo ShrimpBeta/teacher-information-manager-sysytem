@@ -9,7 +9,7 @@
   </mat-toolbar>
   <mat-drawer-container class="drawer-container">
     <mat-drawer [mode]="isSmallMode ? 'over' : 'side' " [opened]="isDrawerOpen"
-      [style.width]="isSmallMode? '60%' : '15%' ">
+      [style.width]="isSmallMode? '60%' : '18%' ">
       @for (menus of menuItems; track $index) {
       <mat-nav-list>
         <h3 mat-subheader style="user-select: none;">{{menus.title}}</h3>
