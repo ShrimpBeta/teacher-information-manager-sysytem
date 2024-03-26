@@ -206,7 +206,7 @@ type ComplexityRoot struct {
 		CreateMentorship       func(childComplexity int, userID string, newMentorshipData graphql_models.NewMentorship) int
 		CreateMonograph        func(childComplexity int, newMonographData graphql_models.NewMonograph) int
 		CreatePaper            func(childComplexity int, newPaperData graphql_models.NewPaper) int
-		CreatePassword         func(childComplexity int, userid string, newPasswordData graphql_models.NewPassword) int
+		CreatePassword         func(childComplexity int, userID string, newPasswordData graphql_models.NewPassword) int
 		CreateSciResearch      func(childComplexity int, newSciResearchData graphql_models.NewSciResearch) int
 		CreateUPGuidance       func(childComplexity int, newUGPGGuidanceData graphql_models.NewUGPGGuidance) int
 		CreateacademicTerm     func(childComplexity int, userID string, newTermData graphql_models.NewAcademicTerm) int
@@ -309,7 +309,7 @@ type ComplexityRoot struct {
 		Paper                      func(childComplexity int, id string) int
 		Papers                     func(childComplexity int, userID string) int
 		PapersByName               func(childComplexity int, name string) int
-		Password                   func(childComplexity int, id string, userid string) int
+		Password                   func(childComplexity int, id string) int
 		Passwords                  func(childComplexity int, userID string) int
 		SciResearch                func(childComplexity int, id string) int
 		SciResearchs               func(childComplexity int, userID string) int
@@ -417,7 +417,7 @@ type MutationResolver interface {
 	DeletePaper(ctx context.Context, id string) (*graphql_models.Paper, error)
 	UploadPaper(ctx context.Context, file graphql.Upload) (*graphql_models.Paper, error)
 	UploadPapers(ctx context.Context, file graphql.Upload) ([]*graphql_models.Paper, error)
-	CreatePassword(ctx context.Context, userid string, newPasswordData graphql_models.NewPassword) (*graphql_models.Password, error)
+	CreatePassword(ctx context.Context, userID string, newPasswordData graphql_models.NewPassword) (*graphql_models.Password, error)
 	UpdatePassword(ctx context.Context, id string, passwordData graphql_models.UpdatePassword) (*graphql_models.Password, error)
 	DeletePassword(ctx context.Context, id string) (*graphql_models.Password, error)
 	CreateSciResearch(ctx context.Context, newSciResearchData graphql_models.NewSciResearch) (*graphql_models.SciResearch, error)
@@ -460,7 +460,7 @@ type QueryResolver interface {
 	Paper(ctx context.Context, id string) (*graphql_models.Paper, error)
 	Papers(ctx context.Context, userID string) ([]*graphql_models.Paper, error)
 	PapersByName(ctx context.Context, name string) ([]*graphql_models.Paper, error)
-	Password(ctx context.Context, id string, userid string) (*graphql_models.Password, error)
+	Password(ctx context.Context, id string) (*graphql_models.Password, error)
 	Passwords(ctx context.Context, userID string) ([]*graphql_models.Password, error)
 	SciResearch(ctx context.Context, id string) (*graphql_models.SciResearch, error)
 	SciResearchs(ctx context.Context, userID string) ([]*graphql_models.SciResearch, error)
@@ -1322,7 +1322,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreatePassword(childComplexity, args["userid"].(string), args["newPasswordData"].(graphql_models.NewPassword)), true
+		return e.complexity.Mutation.CreatePassword(childComplexity, args["userId"].(string), args["newPasswordData"].(graphql_models.NewPassword)), true
 
 	case "Mutation.createSciResearch":
 		if e.complexity.Mutation.CreateSciResearch == nil {
@@ -2289,7 +2289,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Password(childComplexity, args["id"].(string), args["userid"].(string)), true
+		return e.complexity.Query.Password(childComplexity, args["id"].(string)), true
 
 	case "Query.passwords":
 		if e.complexity.Query.Passwords == nil {
@@ -3083,14 +3083,14 @@ func (ec *executionContext) field_Mutation_createPassword_args(ctx context.Conte
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["userid"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userid"))
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["userid"] = arg0
+	args["userId"] = arg0
 	var arg1 graphql_models.NewPassword
 	if tmp, ok := rawArgs["newPasswordData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("newPasswordData"))
@@ -4267,15 +4267,6 @@ func (ec *executionContext) field_Query_password_args(ctx context.Context, rawAr
 		}
 	}
 	args["id"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["userid"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userid"))
-		arg1, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userid"] = arg1
 	return args, nil
 }
 
@@ -11077,7 +11068,7 @@ func (ec *executionContext) _Mutation_createPassword(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreatePassword(rctx, fc.Args["userid"].(string), fc.Args["newPasswordData"].(graphql_models.NewPassword))
+		return ec.resolvers.Mutation().CreatePassword(rctx, fc.Args["userId"].(string), fc.Args["newPasswordData"].(graphql_models.NewPassword))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15170,7 +15161,7 @@ func (ec *executionContext) _Query_password(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Password(rctx, fc.Args["id"].(string), fc.Args["userid"].(string))
+		return ec.resolvers.Query().Password(rctx, fc.Args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

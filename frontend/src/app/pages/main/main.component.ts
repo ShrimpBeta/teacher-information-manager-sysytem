@@ -8,12 +8,13 @@ import { MatListModule } from '@angular/material/list';
 import { UserpannelComponent } from '../../components/userpannel/userpannel.component';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-main',
   standalone: true,
   imports: [MatSidenavModule, MatToolbarModule, MatButtonModule, MatIconModule,
-    UserpannelComponent, RouterOutlet, RouterLink, RouterLinkActive, MatListModule],
+    UserpannelComponent, RouterOutlet, RouterLink, RouterLinkActive, MatListModule, MatDividerModule],
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss'
 })

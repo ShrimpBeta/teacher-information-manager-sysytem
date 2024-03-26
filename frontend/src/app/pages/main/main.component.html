@@ -12,10 +12,14 @@
       [style.width]="isSmallMode? '60%' : '18%' ">
       @for (menus of menuItems; track $index) {
       <mat-nav-list>
+        @if($index > 0){
+        <mat-divider></mat-divider>
+        }
         <h3 mat-subheader style="user-select: none;">{{menus.title}}</h3>
         @for (item of menus.links; track $index) {
         <a mat-list-item routerLink="{{item.path}}" [activated]="isActive(item.path)"
           (mousedown)="$event.preventDefault()" class="custom-list-item" (click)="closeDrawer()">{{item.name}}</a>
+
         }
       </mat-nav-list>
       }

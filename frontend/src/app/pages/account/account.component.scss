@@ -41,6 +41,14 @@
   justify-content: space-around;
 }
 
+.sub-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: -20px;
+}
+
 mat-divider {
   margin: 20px 0;
   border-top-width: 2px;
@@ -114,12 +122,4 @@ img {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   background-color: #fff;
   margin-bottom: 20px;
-
-  .wechat-title {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: -20px;
-  }
 }

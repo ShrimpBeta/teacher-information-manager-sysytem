@@ -5,80 +5,82 @@
   </div>
 
   <form [formGroup]="userForm" class="user-form">
-    <div class="user-info">
+    <div class="sub-title">
       <h2>用户信息</h2>
-      <mat-divider></mat-divider>
+    </div>
+    <mat-divider></mat-divider>
+
+    <mat-form-field appearance="outline" [style.width]="formFieldWidth">
+      <mat-label>邮箱</mat-label>
+      <input matInput formControlName="email" aria-label="Email">
+      <mat-hint>用户邮箱，无法变更</mat-hint>
+    </mat-form-field>
+    <mat-divider></mat-divider>
+
+    <div class="user-info-edit">
+      <mat-form-field appearance="outline" [style.width]="formFieldWidth">
+        <mat-label>用户名</mat-label>
+        <input matInput formControlName="username" aria-label="Username">
+      </mat-form-field>
 
       <mat-form-field appearance="outline" [style.width]="formFieldWidth">
-        <mat-label>邮箱</mat-label>
-        <input matInput formControlName="email" aria-label="Email">
-        <mat-hint>用户邮箱，无法变更</mat-hint>
+        <mat-label>电话号码</mat-label>
+        <input matInput formControlName="phoneNumber" aria-label="Phone Number">
+        <mat-hint></mat-hint>
       </mat-form-field>
-      <mat-divider></mat-divider>
 
-      <div class="user-info-edit">
-        <mat-form-field appearance="outline" [style.width]="formFieldWidth">
-          <mat-label>用户名</mat-label>
-          <input matInput formControlName="username" aria-label="Username">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" [style.width]="formFieldWidth">
-          <mat-label>电话号码</mat-label>
-          <input matInput formControlName="phoneNumber" aria-label="Phone Number">
-          <mat-hint></mat-hint>
-        </mat-form-field>
-
-        <div class="avatar-edit">
-          <input type="file" accept="image/*" (change)="onFileSelected($event)" aria-label="picture selector"
-            style="display: none;" #fileInput>
-          <button mat-raised-button color="primary" type="button" (click)="fileInput.click()">选择头像</button>
-          @if (previewUrl) {
-          <img [src]="previewUrl" alt="preview avatar">
-          }@else {
-          <img [src]="user?.avatar" alt="avatar">
-          }
-        </div>
-      </div>
-      <mat-divider></mat-divider>
-
-      @if(!user?.activate){
-      <div [class]="isSmallMode ? 'password-edit-mobile' : 'password-edit' ">
-        <label>设置密码</label>
-        <mat-form-field appearance="outline" [style.width]="formFieldWidth">
-          <mat-label>新密码</mat-label>
-          <input matInput [type]="passwordHide ? 'password' : 'text'" formControlName="password" aria-label="Password">
-          <button type="button" mat-icon-button matSuffix (click)="passwordHide=!passwordHide"
-            [attr.aria-label]="'Hide password'" [attr.aria-pressed]="passwordHide">
-            <mat-icon>{{passwordHide? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button>
-        </mat-form-field>
-        <mat-form-field appearance="outline" [style.width]="formFieldWidth">
-          <mat-label>确认新密码</mat-label>
-          <input matInput [type]="confirmPasswordHide ? 'password' : 'text'" formControlName="confirmPassword"
-            aria-label="Confirm Password">
-          <button type="button" mat-icon-button matSuffix (click)="confirmPasswordHide=!confirmPasswordHide"
-            [attr.aria-label]="'Hide confirmPassword'" [attr.aria-pressed]="confirmPasswordHide">
-            <mat-icon>{{confirmPasswordHide? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button>
-        </mat-form-field>
-      </div>
-      <mat-divider></mat-divider>
-      }
-
-      <div class="edit-save">
-        @if(user?.activate){
-        <button type="submit" mat-raised-button color="primary" (click)="updateUser()">保存</button>
+      <div class="avatar-edit">
+        <input type="file" accept="image/*" (change)="onFileSelected($event)" aria-label="picture selector"
+          style="display: none;" #fileInput>
+        <button mat-raised-button color="primary" type="button" (click)="fileInput.click()">选择头像</button>
+        @if (previewUrl) {
+        <img [src]="previewUrl" alt="preview avatar">
         }@else {
-        <button type="submit" mat-raised-button color="primary" (click)="activateUser()">激活</button>
+        <img [src]="user?.avatar" alt="avatar">
         }
       </div>
+    </div>
+    <mat-divider></mat-divider>
+
+    @if(!user?.activate){
+    <div [class]="isSmallMode ? 'password-edit-mobile' : 'password-edit' ">
+      <label>设置密码</label>
+      <mat-form-field appearance="outline" [style.width]="formFieldWidth">
+        <mat-label>新密码</mat-label>
+        <input matInput [type]="passwordHide ? 'password' : 'text'" formControlName="password" aria-label="Password">
+        <button type="button" mat-icon-button matSuffix (click)="passwordHide=!passwordHide"
+          [attr.aria-label]="'Hide password'" [attr.aria-pressed]="passwordHide">
+          <mat-icon>{{passwordHide? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+      <mat-form-field appearance="outline" [style.width]="formFieldWidth">
+        <mat-label>确认新密码</mat-label>
+        <input matInput [type]="confirmPasswordHide ? 'password' : 'text'" formControlName="confirmPassword"
+          aria-label="Confirm Password">
+        <button type="button" mat-icon-button matSuffix (click)="confirmPasswordHide=!confirmPasswordHide"
+          [attr.aria-label]="'Hide confirmPassword'" [attr.aria-pressed]="confirmPasswordHide">
+          <mat-icon>{{confirmPasswordHide? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+    <mat-divider></mat-divider>
+    }
+
+    <div class="edit-save">
+      @if(user?.activate){
+      <button type="submit" mat-raised-button color="primary" (click)="updateUser()">保存</button>
+      }@else {
+      <button type="submit" mat-raised-button color="primary" (click)="activateUser()">激活</button>
+      }
     </div>
   </form>
 
   @if(user?.activate){
   <div class="user-secure">
     <div class="update-password">
-      <h2>修改密码</h2>
+      <div class="sub-title">
+        <h2>修改密码</h2>
+      </div>
       <mat-divider></mat-divider>
       <form [formGroup]="passwordForm">
         <mat-form-field appearance="outline" [style.width]="formFieldWidth">
@@ -112,7 +114,7 @@
     </div>
 
     <div class="wechat-edit">
-      <div class="wechat-title">
+      <div class="sub-title">
         <h2>微信认证</h2>
         <img src="https://open.weixin.qq.com/zh_CN/htmledition/res/assets/res-design-download/icon64_appwx_logo.png"
           alt="微信图标">

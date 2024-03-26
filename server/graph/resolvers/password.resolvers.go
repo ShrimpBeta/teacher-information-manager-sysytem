@@ -15,8 +15,8 @@ import (
 )
 
 // CreatePassword is the resolver for the createPassword field.
-func (r *mutationResolver) CreatePassword(ctx context.Context, userid string, newPasswordData graphql_models.NewPassword) (*graphql_models.Password, error) {
-	userObjectId, err := primitive.ObjectIDFromHex(userid)
+func (r *mutationResolver) CreatePassword(ctx context.Context, userID string, newPasswordData graphql_models.NewPassword) (*graphql_models.Password, error) {
+	userObjectId, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +124,7 @@ func (r *mutationResolver) DeletePassword(ctx context.Context, id string) (*grap
 }
 
 // Password is the resolver for the password field.
-func (r *queryResolver) Password(ctx context.Context, id string, userid string) (*graphql_models.Password, error) {
+func (r *queryResolver) Password(ctx context.Context, id string) (*graphql_models.Password, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
