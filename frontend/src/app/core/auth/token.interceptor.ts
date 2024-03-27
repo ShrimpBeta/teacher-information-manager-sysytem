@@ -19,6 +19,10 @@ export class TokenInterceptor implements HttpInterceptor {
 
   // add header Authorization
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    if (this.window.location.href.includes('signin') || this.window.location.href.includes('resetpassword')) {
+      return next.handle(req);
+    }
+
     const headers = { Authorization: '' };
     const token = this.authRespository.getTokenVaule();
     if (token) {
@@ -32,7 +36,6 @@ export class TokenInterceptor implements HttpInterceptor {
       }
     }
     return this.sendRequest(req, next, headers);
-
   }
 
   // send request with Authorization

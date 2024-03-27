@@ -21,6 +21,7 @@ import { MatDividerModule } from '@angular/material/divider';
 export class MainComponent implements OnInit {
   isDrawerOpen!: boolean;
   isSmallMode!: boolean;
+  drawerWidth!: string;
   menuItems = [
     {
       title: '教学工作管理',
@@ -60,15 +61,23 @@ export class MainComponent implements OnInit {
 
     // 响应大小小变化
     this.responsive.observe([
-      Breakpoints.Medium,
-      Breakpoints.Tablet,
+      Breakpoints.HandsetLandscape,
+      Breakpoints.TabletLandscape,
       Breakpoints.Web,
     ]).subscribe(result => {
       this.isDrawerOpen = false;
       this.isSmallMode = true;
+      this.drawerWidth = '60%';
       if (result.matches) {
         this.isDrawerOpen = true;
         this.isSmallMode = false;
+        this.drawerWidth = '20%'
+        if (result.breakpoints[Breakpoints.TabletLandscape]) {
+          this.drawerWidth = '25%';
+        }
+        if (result.breakpoints[Breakpoints.HandsetLandscape]) {
+          this.drawerWidth = '30%';
+        }
       }
     })
   }

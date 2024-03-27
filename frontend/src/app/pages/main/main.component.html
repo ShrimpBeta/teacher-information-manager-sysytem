@@ -8,8 +8,7 @@
     <app-userpannel></app-userpannel>
   </mat-toolbar>
   <mat-drawer-container class="drawer-container">
-    <mat-drawer [mode]="isSmallMode ? 'over' : 'side' " [opened]="isDrawerOpen"
-      [style.width]="isSmallMode? '60%' : '18%' ">
+    <mat-drawer [mode]="isSmallMode ? 'over' : 'side' " [opened]="isDrawerOpen" [style.width]="drawerWidth ">
       @for (menus of menuItems; track $index) {
       <mat-nav-list>
         @if($index > 0){

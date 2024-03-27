@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"server/persistence/models"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -76,8 +77,8 @@ func (r *EduReformRepo) GetEduReformsByParams(params EduReformQueryParams) ([]mo
 func (r *EduReformRepo) CreateEduReform(eduReform *models.EduReform) (*primitive.ObjectID, error) {
 	objectId := primitive.NewObjectID()
 	eduReform.ID = objectId
-	eduReform.CreatedAt = primitive.NewDateTimeFromTime(eduReform.CreatedAt.Time())
-	eduReform.UpdatedAt = primitive.NewDateTimeFromTime(eduReform.UpdatedAt.Time())
+	eduReform.CreatedAt = primitive.NewDateTimeFromTime(time.Now())
+	eduReform.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
 	result, err := r.collection.InsertOne(context.Background(), eduReform)
 	if err != nil {
 		return nil, err
@@ -87,7 +88,7 @@ func (r *EduReformRepo) CreateEduReform(eduReform *models.EduReform) (*primitive
 }
 
 func (r *EduReformRepo) UpdateEduReform(eduReform *models.EduReform) error {
-	eduReform.UpdatedAt = primitive.NewDateTimeFromTime(eduReform.UpdatedAt.Time())
+	eduReform.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
 	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": eduReform.ID}, bson.M{"$set": eduReform})
 	return err
 }

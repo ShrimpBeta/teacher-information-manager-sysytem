@@ -7,7 +7,6 @@ import extractFiles from 'extract-files/extractFiles.mjs';
 // @ts-ignore
 import isExtractableFile from 'extract-files/isExtractableFile.mjs';
 import { setContext } from '@apollo/client/link/context';
-import { AuthRepository } from './core/auth/auth.repository';
 
 const uri = 'http://127.0.0.1:8080/query'; // <-- add the URL of the GraphQL server here
 export function apolloOptionsFactory(): ApolloClientOptions<any> {

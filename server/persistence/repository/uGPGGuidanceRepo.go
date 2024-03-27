@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"server/persistence/models"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -66,8 +67,8 @@ func (r *UGPGGuidanceRepo) GetUGPGGuidancesByParams(params UGPGGuidanceQueryPara
 func (r *UGPGGuidanceRepo) CreateUGPGGuidance(ugpgGuidance *models.UGPGGuidance) (*primitive.ObjectID, error) {
 	objectId := primitive.NewObjectID()
 	ugpgGuidance.ID = objectId
-	ugpgGuidance.CreatedAt = primitive.NewDateTimeFromTime(ugpgGuidance.CreatedAt.Time())
-	ugpgGuidance.UpdatedAt = primitive.NewDateTimeFromTime(ugpgGuidance.UpdatedAt.Time())
+	ugpgGuidance.CreatedAt = primitive.NewDateTimeFromTime(time.Now())
+	ugpgGuidance.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
 	result, err := r.collection.InsertOne(context.Background(), ugpgGuidance)
 	if err != nil {
 		return nil, err
@@ -77,7 +78,7 @@ func (r *UGPGGuidanceRepo) CreateUGPGGuidance(ugpgGuidance *models.UGPGGuidance)
 }
 
 func (r *UGPGGuidanceRepo) UpdateUGPGGuidance(ugpgGuidance *models.UGPGGuidance) error {
-	ugpgGuidance.UpdatedAt = primitive.NewDateTimeFromTime(ugpgGuidance.UpdatedAt.Time())
+	ugpgGuidance.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
 	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": ugpgGuidance.ID}, bson.M{"$set": ugpgGuidance})
 	return err
 }

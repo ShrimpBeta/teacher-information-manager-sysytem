@@ -34,7 +34,6 @@ export class AccountComponent implements OnInit, OnDestroy {
   passwordForm!: FormGroup;
   isSmallMode!: boolean;
   previewUrl: any = null;
-  formFieldWidth!: string;
   oldPasswordHide = true;
   passwordHide = true;
   confirmPasswordHide = true;
@@ -59,15 +58,13 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     // 响应大小小变化
     this.responsive.observe([
-      Breakpoints.Medium,
-      Breakpoints.Tablet,
+      Breakpoints.HandsetLandscape,
+      Breakpoints.TabletLandscape,
       Breakpoints.Web,
     ]).subscribe(result => {
       this.isSmallMode = true;
-      this.formFieldWidth = '100%';
       if (result.matches) {
         this.isSmallMode = false;
-        this.formFieldWidth = '350px';
       }
     })
 
@@ -150,22 +147,30 @@ export class AccountComponent implements OnInit, OnDestroy {
       updateUser.phoneNumber = this.userForm.get('phoneNumber')?.value;
     }
 
-    this.userService.updateUser(updateUser).pipe(takeUntil(this.destroy$)).subscribe(user => {
-      if (user) {
-        this.snackBar.open('用户信息已更新', '关闭', {
-          duration: 3000,
-        });
-        // 清空avatar，避免重复上传
-        if (fileInput && fileInput.files && fileInput.files.length > 0) {
-          this.previewUrl = null;
-          fileInput.value = '';
+    this.userService.updateUser(updateUser).pipe(takeUntil(this.destroy$)).subscribe(
+      {
+        next: (user) => {
+          if (user) {
+            this.snackBar.open('用户信息已更新', '关闭', {
+              duration: 3000,
+            });
+            // 清空avatar，避免重复上传
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+              this.previewUrl = null;
+              fileInput.value = '';
+            }
+          } else {
+            this.snackBar.open('用户信息更新失败', '关闭', {
+              duration: 3000,
+            });
+          }
+        },
+        error: (error) => {
+          this.snackBar.open('用户信息更新失败', '关闭', {
+            duration: 3000,
+          });
         }
-      } else {
-        this.snackBar.open('用户信息更新失败', '关闭', {
-          duration: 3000,
-        });
       }
-    }
     )
   }
 
@@ -201,26 +206,33 @@ export class AccountComponent implements OnInit, OnDestroy {
       activateUser.avatar = fileInput.files[0];
     }
 
-    this.userService.activateUser(activateUser).pipe(takeUntil(this.destroy$)).subscribe(user => {
-      if (user) {
-        this.snackBar.open('用户信息已激活', '关闭', {
-          duration: 3000,
-        });
-        this.userForm = new FormGroup({
-          email: new FormControl({ value: this.user?.email, disabled: true }),
-          username: new FormControl(this.user?.username, [Validators.required]),
-          phoneNumber: new FormControl(this.user?.phoneNumber, [PhoneNumberValidator()]),
-        });
+    this.userService.activateUser(activateUser).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (user) => {
+        if (user) {
+          this.snackBar.open('用户信息已激活', '关闭', {
+            duration: 3000,
+          });
+          this.userForm = new FormGroup({
+            email: new FormControl({ value: this.user?.email, disabled: true }),
+            username: new FormControl(this.user?.username, [Validators.required]),
+            phoneNumber: new FormControl(this.user?.phoneNumber, [PhoneNumberValidator()]),
+          });
 
-        this.passwordForm = new FormGroup({
-          oldPassword: new FormControl('', [PasswordFormatValidator()]),
-          password: new FormControl('', [PasswordFormatValidator()]),
-          confirmPassword: new FormControl('', [PasswordFormatValidator()]),
-        });
+          this.passwordForm = new FormGroup({
+            oldPassword: new FormControl('', [PasswordFormatValidator()]),
+            password: new FormControl('', [PasswordFormatValidator()]),
+            confirmPassword: new FormControl('', [PasswordFormatValidator()]),
+          });
 
-        this.passwordForm.setValidators(PasswordMatchValidator);
-        this.changeDetectorRef.detectChanges();
-      } else {
+          this.passwordForm.setValidators(PasswordMatchValidator);
+          this.changeDetectorRef.detectChanges();
+        } else {
+          this.snackBar.open('用户信息激活失败', '关闭', {
+            duration: 3000,
+          });
+        }
+      },
+      error: (error) => {
         this.snackBar.open('用户信息激活失败', '关闭', {
           duration: 3000,
         });
@@ -250,17 +262,24 @@ export class AccountComponent implements OnInit, OnDestroy {
       oldPassword: this.passwordForm.get('oldPassword')?.value,
       newPassword: this.passwordForm.get('password')?.value,
     }
-    this.userService.updateUserPassword(updateUserPassword).pipe(takeUntil(this.destroy$)).subscribe((user: any) => {
-      if (user) {
-        this.snackBar.open('用户密码已更新', '关闭', {
-          duration: 3000,
-        });
-        this.passwordForm = new FormGroup({
-          oldPassword: new FormControl('', [PasswordFormatValidator()]),
-          password: new FormControl('', [PasswordFormatValidator()]),
-          confirmPassword: new FormControl('', [PasswordFormatValidator()]),
-        });
-      } else {
+    this.userService.updateUserPassword(updateUserPassword).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (user) => {
+        if (user) {
+          this.snackBar.open('用户密码已更新', '关闭', {
+            duration: 3000,
+          });
+          this.passwordForm = new FormGroup({
+            oldPassword: new FormControl('', [PasswordFormatValidator()]),
+            password: new FormControl('', [PasswordFormatValidator()]),
+            confirmPassword: new FormControl('', [PasswordFormatValidator()]),
+          });
+        } else {
+          this.snackBar.open('用户密码更新失败', '关闭', {
+            duration: 3000,
+          });
+        }
+      },
+      error: (error) => {
         this.snackBar.open('用户密码更新失败', '关闭', {
           duration: 3000,
         });

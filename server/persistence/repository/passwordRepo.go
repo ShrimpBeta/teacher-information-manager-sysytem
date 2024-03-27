@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"server/persistence/models"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -71,8 +72,8 @@ func (r *PasswordRepo) GetPasswordsByParams(params PasswordQueryParams) ([]model
 func (r *PasswordRepo) CreatePassword(password *models.Password) (*primitive.ObjectID, error) {
 	objectId := primitive.NewObjectID()
 	password.ID = objectId
-	password.CreatedAt = primitive.NewDateTimeFromTime(password.CreatedAt.Time())
-	password.UpdatedAt = primitive.NewDateTimeFromTime(password.UpdatedAt.Time())
+	password.CreatedAt = primitive.NewDateTimeFromTime(time.Now())
+	password.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
 	result, err := r.collection.InsertOne(context.Background(), password)
 	if err != nil {
 		return nil, err
@@ -82,7 +83,7 @@ func (r *PasswordRepo) CreatePassword(password *models.Password) (*primitive.Obj
 }
 
 func (r *PasswordRepo) UpdatePassword(password *models.Password) error {
-	password.UpdatedAt = primitive.NewDateTimeFromTime(password.UpdatedAt.Time())
+	password.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
 	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": password.ID}, bson.M{"$set": password})
 	return err
 }

@@ -6,6 +6,7 @@ export const passwordsQuery = gql`
       id
       url
       appName
+      account
       password
       description
       updatedAt
@@ -15,11 +16,12 @@ export const passwordsQuery = gql`
 `
 
 export const passwordQuery = gql`
-  query password($Id: ID!) {
-    password(id: $Id) {
+  query password($id: ID!) {
+    password(id: $id) {
       id
       url
       appName
+      account
       password
       description
       updatedAt

@@ -54,7 +54,7 @@ export const routes: Routes = [
         path: 'password', component: PasswordComponent, title: 'Password', children: [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewpasswordComponent, title: 'Overview Password' },
-          { path: 'edit', component: EditpasswordComponent, title: 'Edit Password' },
+          { path: 'edit/:id', component: EditpasswordComponent, title: 'Edit Password' },
           { path: 'new', component: NewpasswordComponent, title: 'New Password' }
         ]
       },

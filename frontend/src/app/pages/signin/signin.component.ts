@@ -7,11 +7,12 @@ import { Subject, takeUntil } from 'rxjs';
 import { ApolloError } from '@apollo/client';
 import { AuthUserData } from '../../core/auth/auth.repository';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-signin',
   standalone: true,
-  imports: [NgClass, LoginformComponent, MatSnackBarModule],
+  imports: [NgClass, LoginformComponent, MatSnackBarModule,MatButtonModule],
   templateUrl: './signin.component.html',
   styleUrl: './signin.component.scss'
 })
