@@ -1,5 +1,6 @@
 import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from "@apollo/client"
 import { onError } from "@apollo/client/link/error";
+import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import Taro from "@tarojs/taro";
 import qs from "qs";
 
@@ -32,9 +33,28 @@ const httpLink = new HttpLink({
       method,
       headers
     }).then(res => {
-      let { data, statusCode } = res;
+      let { data, statusCode, header } = res;
       res.text = () => Promise.resolve(JSON.stringify(data));
       res.statusCode = statusCode;
+      res.header = header;
+      return res;
+    });
+  }
+});
+
+const uploadLink = createUploadLink({
+  uri: httpUrl,
+  fetch: (url, options) => {
+    const { method = "POST", headers, body } = options;
+    return request(url, body, {
+      method,
+      headers
+    }).then(res => {
+      console.log('res', res);
+      let { data, statusCode, header } = res;
+      res.text = () => Promise.resolve(JSON.stringify(data));
+      res.statusCode = statusCode;
+      res.header = header
       return res;
     });
   }
@@ -59,17 +79,17 @@ export const createClient = (store) => {
   const link = ApolloLink.from([
     onError(({ graphQLErrors, networkError }) => {
       if (graphQLErrors) {
-        graphQLErrors.map(({ message, locations, path }) =>
-          console.log(
-            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-          )
-        );
+        graphQLErrors.map(({ message, locations, path }) => {
+          console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`);
+        });
       }
-      if (networkError)
+      if (networkError) {
         console.log(`[Network error]: ${networkError}`);
+      }
     }),
     authMiddleware,
-    httpLink
+    // httpLink
+    uploadLink
   ]);
 
   const client = new ApolloClient({
