@@ -1,5 +1,5 @@
 import { PropsWithChildren, useEffect, useState } from 'react'
-import { View, Button, Input } from '@tarojs/components'
+import { View, Button, Input, Form } from '@tarojs/components'
 import Taro, { useDidHide, useDidShow } from '@tarojs/taro';
 import { useDispatch } from 'react-redux'
 import { useMutation } from '@apollo/client'
@@ -66,13 +66,16 @@ const Signin = (props: PropsWithChildren) => {
   }
 
   return (
-    <View className='signin'>
-      <Input type='email' value={email} onInput={(e) => setEmail(e.detail.value)} placeholder='Email' />
-      <Input type='password' value={password} onInput={(e) => setPassword(e.detail.value)} placeholder='Password' />
-      <Button onClick={() => handleSignIn()}>Sign In</Button>
+    <View className='w-full h-screen flex justify-center items-center'>
+      <View className='w-full px-5 py-2'>
+        <Form>
+          <Input type='email' value={email} onInput={(e) => setEmail(e.detail.value)} placeholder='Email' />
+          <Input type='password' password value={password} onInput={(e) => setPassword(e.detail.value)} placeholder='Password' />
+          <Button type='submit' onClick={() => handleSignIn()}>Sign In</Button>
+        </Form>
+      </View>
     </View>
-  )
-
+  );
 }
 
 export default Signin;
