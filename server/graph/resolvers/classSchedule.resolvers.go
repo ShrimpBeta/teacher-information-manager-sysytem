@@ -13,12 +13,12 @@ import (
 )
 
 // CreateCourse is the resolver for the createCourse field.
-func (r *mutationResolver) CreateCourse(ctx context.Context, termID string, newCourseData graphql_models.NewCourse) (*graphql_models.Course, error) {
+func (r *mutationResolver) CreateCourse(ctx context.Context, termID string, newCourseData graphql_models.CourseData) (*graphql_models.Course, error) {
 	panic(fmt.Errorf("not implemented: CreateCourse - createCourse"))
 }
 
 // UpdateCourse is the resolver for the updateCourse field.
-func (r *mutationResolver) UpdateCourse(ctx context.Context, courseID string, courseData graphql_models.UpdateCourse) (*graphql_models.Course, error) {
+func (r *mutationResolver) UpdateCourse(ctx context.Context, courseID string, courseData graphql_models.CourseData) (*graphql_models.Course, error) {
 	panic(fmt.Errorf("not implemented: UpdateCourse - updateCourse"))
 }
 

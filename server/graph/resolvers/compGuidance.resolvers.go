@@ -8,147 +8,23 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
-	"server/persistence/models"
-	"server/persistence/repository"
 
 	"github.com/99designs/gqlgen/graphql"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // CreateCompGuidance is the resolver for the createCompGuidance field.
-func (r *mutationResolver) CreateCompGuidance(ctx context.Context, userID string, newGuidanceData graphql_models.NewCompGuidance) (*graphql_models.CompGuidance, error) {
-	userObjectId, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
-	studentNames := make([]string, len(newGuidanceData.StudentNames))
-	for i, name := range newGuidanceData.StudentNames {
-		studentNames[i] = *name
-	}
-	newCompGuidance := models.CompGuidance{
-		UserId:           userObjectId,
-		ProjectName:      newGuidanceData.ProjectName,
-		StudentNames:     studentNames,
-		CompetitionScore: *newGuidanceData.CompetitionScore,
-		GuidanceDate:     primitive.NewDateTimeFromTime(*newGuidanceData.GuidanceDate),
-		AwardStatus:      *newGuidanceData.AwardStatus,
-	}
-	objectId, err := repository.Repos.CompGuidanceRepo.CratedCompGuidance(&newCompGuidance)
-	if err != nil {
-		return nil, err
-	}
-	comGuidanceData, err := repository.Repos.CompGuidanceRepo.GetCompGuidanceById(*objectId)
-	if err != nil {
-		return nil, err
-	}
-	students := make([]*string, len(comGuidanceData.StudentNames))
-	for i, student := range comGuidanceData.StudentNames {
-		students[i] = &student
-	}
-	guidanceDate := comGuidanceData.GuidanceDate.Time()
-	return &graphql_models.CompGuidance{
-		ID:               comGuidanceData.ID.Hex(),
-		ProjectName:      comGuidanceData.ProjectName,
-		StudentNames:     students,
-		CompetitionScore: &comGuidanceData.CompetitionScore,
-		GuidanceDate:     &guidanceDate,
-		AwardStatus:      &comGuidanceData.AwardStatus,
-		CreatedAt:        comGuidanceData.CreatedAt.Time(),
-		UpdatedAt:        comGuidanceData.UpdatedAt.Time(),
-	}, nil
+func (r *mutationResolver) CreateCompGuidance(ctx context.Context, userID string, newGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
+	return r.CompGuidanceService.CreateCompGuidance(userID, newGuidanceData)
 }
 
 // UpdateCompGuidance is the resolver for the updateCompGuidance field.
-func (r *mutationResolver) UpdateCompGuidance(ctx context.Context, id string, compGuidanceData graphql_models.UpdateCompGuidance) (*graphql_models.CompGuidance, error) {
-	if compGuidanceData.ProjectName == nil && compGuidanceData.StudentNames == nil && compGuidanceData.CompetitionScore == nil && compGuidanceData.GuidanceDate == nil && compGuidanceData.AwardStatus == nil {
-		return nil, fmt.Errorf("no data to update")
-	}
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-	compGuidanceUpdate, err := repository.Repos.CompGuidanceRepo.GetCompGuidanceById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	if compGuidanceData.ProjectName != nil {
-		compGuidanceUpdate.ProjectName = *compGuidanceData.ProjectName
-	}
-	if compGuidanceData.StudentNames != nil {
-		studentNames := make([]string, len(compGuidanceData.StudentNames))
-		for i, name := range compGuidanceData.StudentNames {
-			studentNames[i] = *name
-		}
-		compGuidanceUpdate.StudentNames = studentNames
-	}
-	if compGuidanceData.CompetitionScore != nil {
-		compGuidanceUpdate.CompetitionScore = *compGuidanceData.CompetitionScore
-	}
-	if compGuidanceData.GuidanceDate != nil {
-		compGuidanceUpdate.GuidanceDate = primitive.NewDateTimeFromTime(*compGuidanceData.GuidanceDate)
-	}
-	if compGuidanceData.AwardStatus != nil {
-		compGuidanceUpdate.AwardStatus = *compGuidanceData.AwardStatus
-	}
-	err = repository.Repos.CompGuidanceRepo.UpdateCompGuidance(compGuidanceUpdate)
-	if err != nil {
-		return nil, err
-	}
-	compGuidanceUpdate, err = repository.Repos.CompGuidanceRepo.GetCompGuidanceById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	students := make([]*string, len(compGuidanceUpdate.StudentNames))
-	for i, student := range compGuidanceUpdate.StudentNames {
-		students[i] = &student
-	}
-	guidanceDate := compGuidanceUpdate.GuidanceDate.Time()
-	return &graphql_models.CompGuidance{
-		ID:               compGuidanceUpdate.ID.Hex(),
-		ProjectName:      compGuidanceUpdate.ProjectName,
-		StudentNames:     students,
-		CompetitionScore: &compGuidanceUpdate.CompetitionScore,
-		GuidanceDate:     &guidanceDate,
-		AwardStatus:      &compGuidanceUpdate.AwardStatus,
-		CreatedAt:        compGuidanceUpdate.CreatedAt.Time(),
-		UpdatedAt:        compGuidanceUpdate.UpdatedAt.Time(),
-	}, nil
+func (r *mutationResolver) UpdateCompGuidance(ctx context.Context, id string, compGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
+	return r.CompGuidanceService.UpdateCompGuidance(id, compGuidanceData)
 }
 
 // DeleteCompGuidance is the resolver for the deleteCompGuidance field.
 func (r *mutationResolver) DeleteCompGuidance(ctx context.Context, id string) (*graphql_models.CompGuidance, error) {
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-	compGuidanceData, err := repository.Repos.CompGuidanceRepo.GetCompGuidanceById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	err = repository.Repos.CompGuidanceRepo.DeleteCompGuidance(objectId)
-	if err != nil {
-		return nil, err
-	}
-	students := make([]*string, len(compGuidanceData.StudentNames))
-	for i, student := range compGuidanceData.StudentNames {
-		students[i] = &student
-	}
-	guidanceDate := compGuidanceData.GuidanceDate.Time()
-	return &graphql_models.CompGuidance{
-		ID:               compGuidanceData.ID.Hex(),
-		ProjectName:      compGuidanceData.ProjectName,
-		StudentNames:     students,
-		CompetitionScore: &compGuidanceData.CompetitionScore,
-		GuidanceDate:     &guidanceDate,
-		AwardStatus:      &compGuidanceData.AwardStatus,
-		CreatedAt:        compGuidanceData.CreatedAt.Time(),
-		UpdatedAt:        compGuidanceData.UpdatedAt.Time(),
-	}, nil
-}
-
-// UploadCompGuidance is the resolver for the uploadCompGuidance field.
-func (r *mutationResolver) UploadCompGuidance(ctx context.Context, file graphql.Upload) (*graphql_models.CompGuidancePreview, error) {
-	panic(fmt.Errorf("not implemented: UploadCompGuidance - uploadCompGuidance"))
+	return r.CompGuidanceService.DeleteCompGuidance(id)
 }
 
 // UploadCompGuidances is the resolver for the uploadCompGuidances field.
@@ -156,114 +32,17 @@ func (r *mutationResolver) UploadCompGuidances(ctx context.Context, file graphql
 	panic(fmt.Errorf("not implemented: UploadCompGuidances - uploadCompGuidances"))
 }
 
+// CreateCompGuidances is the resolver for the createCompGuidances field.
+func (r *mutationResolver) CreateCompGuidances(ctx context.Context, userID string, newGuidancesData []*graphql_models.CompGuidanceData) ([]*graphql_models.CompGuidance, error) {
+	panic(fmt.Errorf("not implemented: CreateCompGuidances - createCompGuidances"))
+}
+
 // CompGuidance is the resolver for the compGuidance field.
 func (r *queryResolver) CompGuidance(ctx context.Context, id string) (*graphql_models.CompGuidance, error) {
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-	compGuidanceData, err := repository.Repos.CompGuidanceRepo.GetCompGuidanceById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	students := make([]*string, len(compGuidanceData.StudentNames))
-	for i, student := range compGuidanceData.StudentNames {
-		students[i] = &student
-	}
-	guidanceDate := compGuidanceData.GuidanceDate.Time()
-	return &graphql_models.CompGuidance{
-		ID:               compGuidanceData.ID.Hex(),
-		ProjectName:      compGuidanceData.ProjectName,
-		StudentNames:     students,
-		CompetitionScore: &compGuidanceData.CompetitionScore,
-		GuidanceDate:     &guidanceDate,
-		AwardStatus:      &compGuidanceData.AwardStatus,
-		CreatedAt:        compGuidanceData.CreatedAt.Time(),
-		UpdatedAt:        compGuidanceData.UpdatedAt.Time(),
-	}, nil
+	return r.CompGuidanceService.GetCompGuidanceById(id)
 }
 
-// CompGuidancesForUser is the resolver for the compGuidancesForUser field.
-func (r *queryResolver) CompGuidancesForUser(ctx context.Context, userID string) ([]*graphql_models.CompGuidance, error) {
-	userObjectId, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
-	compGuidancesData, err := repository.Repos.CompGuidanceRepo.GetCompGuidancesByParams(repository.CompGuidanceQueryParams{UserId: userObjectId})
-	if err != nil {
-		return nil, err
-	}
-	compGuidances := make([]*graphql_models.CompGuidance, len(compGuidancesData))
-	for i, compGuidanceData := range compGuidancesData {
-		students := make([]*string, len(compGuidanceData.StudentNames))
-		for i, student := range compGuidanceData.StudentNames {
-			students[i] = &student
-		}
-		guidanceDate := compGuidanceData.GuidanceDate.Time()
-		compGuidances[i] = &graphql_models.CompGuidance{
-			ID:               compGuidanceData.ID.Hex(),
-			ProjectName:      compGuidanceData.ProjectName,
-			StudentNames:     students,
-			CompetitionScore: &compGuidanceData.CompetitionScore,
-			GuidanceDate:     &guidanceDate,
-			AwardStatus:      &compGuidanceData.AwardStatus,
-			CreatedAt:        compGuidanceData.CreatedAt.Time(),
-			UpdatedAt:        compGuidanceData.UpdatedAt.Time(),
-		}
-	}
-	return compGuidances, nil
-}
-
-// CompGuidancesByProjectName is the resolver for the compGuidancesByProjectName field.
-func (r *queryResolver) CompGuidancesByProjectName(ctx context.Context, name string) ([]*graphql_models.CompGuidance, error) {
-	compGuidancesData, err := repository.Repos.CompGuidanceRepo.GetCompGuidancesByParams(repository.CompGuidanceQueryParams{ProjectName: name})
-	if err != nil {
-		return nil, err
-	}
-	compGuidances := make([]*graphql_models.CompGuidance, len(compGuidancesData))
-	for i, compGuidanceData := range compGuidancesData {
-		students := make([]*string, len(compGuidanceData.StudentNames))
-		for i, student := range compGuidanceData.StudentNames {
-			students[i] = &student
-		}
-		guidanceDate := compGuidanceData.GuidanceDate.Time()
-		compGuidances[i] = &graphql_models.CompGuidance{
-			ID:               compGuidanceData.ID.Hex(),
-			ProjectName:      compGuidanceData.ProjectName,
-			StudentNames:     students,
-			CompetitionScore: &compGuidanceData.CompetitionScore,
-			GuidanceDate:     &guidanceDate,
-			AwardStatus:      &compGuidanceData.AwardStatus,
-			CreatedAt:        compGuidanceData.CreatedAt.Time(),
-			UpdatedAt:        compGuidanceData.UpdatedAt.Time(),
-		}
-	}
-	return compGuidances, nil
-}
-
-// CompGuidancesByAwardStatus is the resolver for the compGuidancesByAwardStatus field.
-func (r *queryResolver) CompGuidancesByAwardStatus(ctx context.Context, award string) ([]*graphql_models.CompGuidance, error) {
-	compGuidancesData, err := repository.Repos.CompGuidanceRepo.GetCompGuidancesByParams(repository.CompGuidanceQueryParams{AwardStatus: award})
-	if err != nil {
-		return nil, err
-	}
-	compGuidances := make([]*graphql_models.CompGuidance, len(compGuidancesData))
-	for i, compGuidanceData := range compGuidancesData {
-		students := make([]*string, len(compGuidanceData.StudentNames))
-		for i, student := range compGuidanceData.StudentNames {
-			students[i] = &student
-		}
-		guidanceDate := compGuidanceData.GuidanceDate.Time()
-		compGuidances[i] = &graphql_models.CompGuidance{
-			ID:               compGuidanceData.ID.Hex(),
-			ProjectName:      compGuidanceData.ProjectName,
-			StudentNames:     students,
-			CompetitionScore: &compGuidanceData.CompetitionScore,
-			GuidanceDate:     &guidanceDate,
-			AwardStatus:      &compGuidanceData.AwardStatus,
-			CreatedAt:        compGuidanceData.CreatedAt.Time(),
-			UpdatedAt:        compGuidanceData.UpdatedAt.Time(),
-		}
-	}
-	return compGuidances, nil
+// CompGuidancesByFilter is the resolver for the compGuidancesByFilter field.
+func (r *queryResolver) CompGuidancesByFilter(ctx context.Context, filter graphql_models.CompGuidanceFilter) ([]*graphql_models.CompGuidance, error) {
+	panic(fmt.Errorf("not implemented: CompGuidancesByFilter - compGuidancesByFilter"))
 }

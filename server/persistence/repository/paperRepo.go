@@ -15,10 +15,18 @@ type PaperRepo struct {
 }
 
 type PaperQueryParams struct {
-	TeachersIn  []primitive.ObjectID
-	TeachersOut []string
-	Title       string
-	JournalName string
+	TeachersIn       []primitive.ObjectID
+	TeachersOut      []*string
+	Title            *string
+	PublishDateStart *primitive.DateTime
+	PublishDateEnd   *primitive.DateTime
+	Rank             *string
+	JournalName      *string
+	JournalLevel     *string
+	CreatedAtStart   *primitive.DateTime
+	CreatedAtEnd     *primitive.DateTime
+	UpdatedAtStart   *primitive.DateTime
+	UpdatedAtEnd     *primitive.DateTime
 }
 
 func NewPaperRepo(db *mongo.Database) *PaperRepo {
@@ -46,13 +54,52 @@ func (r *PaperRepo) GetPapersByParams(params PaperQueryParams) ([]models.Paper, 
 		filter["teachersOut"] = bson.M{"$in": params.TeachersOut}
 	}
 	// filter for title
-	if params.Title != "" {
-		filter["title"] = params.Title
+	if params.Title != nil {
+		filter["title"] = bson.M{"$regex": primitive.Regex{Pattern: *params.Title, Options: "i"}}
+	}
+	// filter for publishDate
+	if params.PublishDateStart != nil || params.PublishDateEnd != nil {
+		filter["publishDate"] = bson.M{}
+		if params.PublishDateStart != nil {
+			filter["publishDate"].(bson.M)["$gte"] = params.PublishDateStart
+		}
+		if params.PublishDateEnd != nil {
+			filter["publishDate"].(bson.M)["$lte"] = params.PublishDateEnd
+		}
+	}
+	// filter for rank
+	if params.Rank != nil {
+		filter["rank"] = bson.M{"$regex": primitive.Regex{Pattern: *params.Rank, Options: "i"}}
 	}
 	// filter for journalName
-	if params.JournalName != "" {
-		filter["journalName"] = params.JournalName
+	if params.JournalName != nil {
+		filter["journalName"] = bson.M{"$regex": primitive.Regex{Pattern: *params.JournalName, Options: "i"}}
 	}
+	// filter for journalLevel
+	if params.JournalLevel != nil {
+		filter["journalLevel"] = bson.M{"$regex": primitive.Regex{Pattern: *params.JournalLevel, Options: "i"}}
+	}
+	// filter for createdAt
+	if params.CreatedAtStart != nil || params.CreatedAtEnd != nil {
+		filter["createdAt"] = bson.M{}
+		if params.CreatedAtStart != nil {
+			filter["createdAt"].(bson.M)["$gte"] = params.CreatedAtStart
+		}
+		if params.CreatedAtEnd != nil {
+			filter["createdAt"].(bson.M)["$lte"] = params.CreatedAtEnd
+		}
+	}
+	// filter for updatedAt
+	if params.UpdatedAtStart != nil || params.UpdatedAtEnd != nil {
+		filter["updatedAt"] = bson.M{}
+		if params.UpdatedAtStart != nil {
+			filter["updatedAt"].(bson.M)["$gte"] = params.UpdatedAtStart
+		}
+		if params.UpdatedAtEnd != nil {
+			filter["updatedAt"].(bson.M)["$lte"] = params.UpdatedAtEnd
+		}
+	}
+
 	cursor, err := r.collection.Find(context.Background(), filter)
 	if err != nil {
 		return nil, err
@@ -70,10 +117,10 @@ func (r *PaperRepo) GetPapersByParams(params PaperQueryParams) ([]models.Paper, 
 }
 
 func (r *PaperRepo) CreatePaper(paper *models.Paper) (*primitive.ObjectID, error) {
-	objectId := primitive.NewObjectID()
-	paper.ID = objectId
-	paper.CreatedAt = primitive.NewDateTimeFromTime(time.Now())
-	paper.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
+	paper.ID = primitive.NewObjectID()
+	createdTime := primitive.NewDateTimeFromTime(time.Now())
+	paper.CreatedAt = createdTime
+	paper.UpdatedAt = createdTime
 	result, err := r.collection.InsertOne(context.Background(), paper)
 	if err != nil {
 		return nil, err
@@ -84,7 +131,11 @@ func (r *PaperRepo) CreatePaper(paper *models.Paper) (*primitive.ObjectID, error
 
 func (r *PaperRepo) UpdatePaper(paper *models.Paper) error {
 	paper.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
-	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": paper.ID}, bson.M{"$set": paper})
+	_, err := r.collection.UpdateOne(
+		context.Background(),
+		bson.M{"_id": paper.ID},
+		bson.M{"$set": paper},
+	)
 	return err
 }
 

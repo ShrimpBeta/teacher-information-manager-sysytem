@@ -9,41 +9,11 @@ import (
 	"fmt"
 	"server/graph"
 	graphql_models "server/graph/model"
-	"server/persistence/models"
-	"server/persistence/repository"
-	"server/services/avatar"
-	passwordencrypt "server/services/passwordEncrypt"
 )
 
 // CreateAccount is the resolver for the createAccount field.
 func (r *mutationResolver) CreateAccount(ctx context.Context, newUserData graphql_models.NewUser) (*graphql_models.UserCreate, error) {
-	masterKey, err := passwordencrypt.GenerateMasterKey()
-	if err != nil {
-		return nil, err
-	}
-
-	avatar, err := avatar.GenerateAvatar(newUserData.Email)
-	if err != nil {
-		return nil, err
-	}
-
-	newUser := models.User{
-		Username:  "Unknown",
-		Email:     newUserData.Email,
-		Password:  newUserData.Password,
-		Avatar:    avatar,
-		Activate:  false,
-		MasterKey: masterKey,
-		Salt:      passwordencrypt.GenerateSalt(),
-	}
-	_, err = repository.Repos.UserRepo.CreateUser(&newUser)
-	if err != nil {
-		return nil, err
-	}
-	return &graphql_models.UserCreate{
-		Email:    newUser.Email,
-		Password: newUser.Password,
-	}, nil
+	panic(fmt.Errorf("not implemented: CreateAccount - createAccount"))
 }
 
 // AdminSignIn is the resolver for the adminSignIn field.

@@ -2,7 +2,7 @@
 type Mentorship {
   id: ID!
   projectName: String!
-  students: [String]!
+  studentNames: [String]!
   grade: String
   guidanceDate: Time
   createdAt: Time!
@@ -11,37 +11,44 @@ type Mentorship {
 
 type MentorshipPreview {
   projectName: String
-  students: [String]
+  studentNames: [String]
   grade: String
   guidanceDate: Time
 }
 
-input NewMentorship {
+input MentorshipData {
   projectName: String!
-  students: [String]!
+  studentNames: [String]!
   grade: String
   guidanceDate: Time
 }
 
-input UpdateMentorship {
+input MentorshipFilter {
+  userId: ID!
   projectName: String
-  students: [String]
+  studentNames: [String]
   grade: String
-  guidanceDate: Time
+  guidanceDateStart: Time
+  guidanceDateEnd: Time
+  createdStart: Time
+  createdEnd: Time
+  updatedStart: Time
+  updatedEnd: Time
 }
 
 extend type Query {
   mentorship(id: ID!): Mentorship!
-  mentorships(userId: ID!): [Mentorship]!
-
-  mentorshipsByName(name: String!): [Mentorship]!
+  mentorshipsByFilter(filter: MentorshipFilter): [Mentorship]!
 }
 
 extend type Mutation {
-  createMentorship(userId: ID!, newMentorshipData: NewMentorship!): Mentorship!
-  updateMentorship(id: ID!, MentorshipData: UpdateMentorship): Mentorship!
+  createMentorship(userId: ID!, newMentorshipData: MentorshipData!): Mentorship!
+  updateMentorship(id: ID!, MentorshipData: MentorshipData!): Mentorship!
   deleteMentorship(id: ID!): Mentorship!
 
-  uploadMentorship(file: Upload!): MentorshipPreview!
   uploadMentorships(file: Upload!): [MentorshipPreview]!
+  createdMentorships(
+    userId: ID!
+    newMentorshipDatas: [MentorshipData]!
+  ): [Mentorship]!
 }

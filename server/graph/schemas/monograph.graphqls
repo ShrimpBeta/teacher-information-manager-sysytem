@@ -20,19 +20,10 @@ type MonographPreview {
   rank: String
 }
 
-input NewMonograph {
+input MonographData {
   teachersIn: [ID]!
   teachersOut: [String]
   title: String!
-  publishDate: Time
-  publishLevel: String
-  rank: String
-}
-
-input UpdateMonograph {
-  teachersIn: [ID]
-  teachersOut: [String]
-  title: String
   publishDate: Time
   publishLevel: String
   rank: String
@@ -46,10 +37,10 @@ extend type Query {
 }
 
 extend type Mutation {
-  createMonograph(newMonographData: NewMonograph!): Monograph!
-  updateMonograph(id: ID!, monographData: UpdateMonograph!): Monograph!
+  createMonograph(newMonographData: MonographData!): Monograph!
+  updateMonograph(id: ID!, monographData: MonographData!): Monograph!
   deleteMonograph(id: ID!): Monograph!
 
-  uploadMonograph(file: Upload!): MonographPreview!
   uploadMonographs(file: Upload!): [MonographPreview]!
+  createdMonographs(newMonographDatas: [MonographData]!): [Monograph]!
 }

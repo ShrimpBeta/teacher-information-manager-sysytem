@@ -8,165 +8,46 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
-	"server/persistence/models"
-	"server/persistence/repository"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/99designs/gqlgen/graphql"
 )
 
 // CreatePassword is the resolver for the createPassword field.
-func (r *mutationResolver) CreatePassword(ctx context.Context, userID string, newPasswordData graphql_models.NewPassword) (*graphql_models.Password, error) {
-	userObjectId, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
-	newPassword := models.Password{
-		Url:         *newPasswordData.URL,
-		UserId:      userObjectId,
-		Account:     newPasswordData.Account,
-		AppName:     *newPasswordData.AppName,
-		Password:    newPasswordData.Password,
-		Description: *newPasswordData.Description,
-	}
-	objectId, err := repository.Repos.PasswordRepo.CreatePassword(&newPassword)
-	if err != nil {
-		return nil, err
-	}
-	passwordData, err := repository.Repos.PasswordRepo.GetPasswordById(*objectId)
-	if err != nil {
-		return nil, err
-	}
-	return &graphql_models.Password{
-		ID:          passwordData.ID.Hex(),
-		URL:         &passwordData.Url,
-		Account:     passwordData.Account,
-		AppName:     &passwordData.AppName,
-		Password:    passwordData.Password,
-		Description: &passwordData.Description,
-		CreatedAt:   passwordData.CreatedAt.Time(),
-		UpdatedAt:   passwordData.UpdatedAt.Time(),
-	}, nil
+func (r *mutationResolver) CreatePassword(ctx context.Context, userID string, newPasswordData graphql_models.PasswordData) (*graphql_models.Password, error) {
+	return r.PasswordService.CreatePassword(userID, newPasswordData)
 }
 
 // UpdatePassword is the resolver for the updatePassword field.
-func (r *mutationResolver) UpdatePassword(ctx context.Context, id string, passwordData graphql_models.UpdatePassword) (*graphql_models.Password, error) {
-	if passwordData.URL == nil && passwordData.Account == nil && passwordData.AppName == nil && passwordData.Password == nil && passwordData.Description == nil {
-		return nil, fmt.Errorf("no data to update")
-	}
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-	passwordUpdate, err := repository.Repos.PasswordRepo.GetPasswordById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	if passwordData.URL != nil {
-		passwordUpdate.Url = *passwordData.URL
-	}
-	if passwordData.Account != nil {
-		passwordUpdate.Account = *passwordData.Account
-	}
-	if passwordData.AppName != nil {
-		passwordUpdate.AppName = *passwordData.AppName
-	}
-	if passwordData.Password != nil {
-		passwordUpdate.Password = *passwordData.Password
-	}
-	if passwordData.Description != nil {
-		passwordUpdate.Description = *passwordData.Description
-	}
-	err = repository.Repos.PasswordRepo.UpdatePassword(passwordUpdate)
-	if err != nil {
-		return nil, err
-	}
-
-	passwordUpdate, err = repository.Repos.PasswordRepo.GetPasswordById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	return &graphql_models.Password{
-		ID:          passwordUpdate.ID.Hex(),
-		URL:         &passwordUpdate.Url,
-		Account:     passwordUpdate.Account,
-		AppName:     &passwordUpdate.AppName,
-		Password:    passwordUpdate.Password,
-		Description: &passwordUpdate.Description,
-		CreatedAt:   passwordUpdate.CreatedAt.Time(),
-		UpdatedAt:   passwordUpdate.UpdatedAt.Time(),
-	}, nil
+func (r *mutationResolver) UpdatePassword(ctx context.Context, id string, passwordData graphql_models.PasswordData) (*graphql_models.Password, error) {
+	return r.PasswordService.UpdatePassword(id, passwordData)
 }
 
 // DeletePassword is the resolver for the deletePassword field.
 func (r *mutationResolver) DeletePassword(ctx context.Context, id string) (*graphql_models.Password, error) {
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-	passwordData, err := repository.Repos.PasswordRepo.GetPasswordById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	err = repository.Repos.PasswordRepo.DeletePassword(objectId)
-	if err != nil {
-		return nil, err
-	}
-	return &graphql_models.Password{
-		ID:          passwordData.ID.Hex(),
-		URL:         &passwordData.Url,
-		Account:     passwordData.Account,
-		AppName:     &passwordData.AppName,
-		Password:    passwordData.Password,
-		Description: &passwordData.Description,
-		CreatedAt:   passwordData.CreatedAt.Time(),
-		UpdatedAt:   passwordData.UpdatedAt.Time(),
-	}, nil
+	return r.PasswordService.DeletePassword(id)
+}
+
+// UploadPasswords is the resolver for the uploadPasswords field.
+func (r *mutationResolver) UploadPasswords(ctx context.Context, file graphql.Upload) ([]*graphql_models.Password, error) {
+	panic(fmt.Errorf("not implemented: UploadPasswords - uploadPasswords"))
+}
+
+// CreatedPasswords is the resolver for the createdPasswords field.
+func (r *mutationResolver) CreatedPasswords(ctx context.Context, userID string, newPasswordDatas []*graphql_models.PasswordData) ([]*graphql_models.Password, error) {
+	panic(fmt.Errorf("not implemented: CreatedPasswords - createdPasswords"))
 }
 
 // Password is the resolver for the password field.
 func (r *queryResolver) Password(ctx context.Context, id string) (*graphql_models.Password, error) {
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-	passwordData, err := repository.Repos.PasswordRepo.GetPasswordById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	return &graphql_models.Password{
-		ID:          passwordData.ID.Hex(),
-		URL:         &passwordData.Url,
-		Account:     passwordData.Account,
-		AppName:     &passwordData.AppName,
-		Password:    passwordData.Password,
-		Description: &passwordData.Description,
-		CreatedAt:   passwordData.CreatedAt.Time(),
-		UpdatedAt:   passwordData.UpdatedAt.Time(),
-	}, nil
+	return r.PasswordService.GetPasswordById(id)
 }
 
-// Passwords is the resolver for the passwords field.
-func (r *queryResolver) Passwords(ctx context.Context, userID string) ([]*graphql_models.Password, error) {
-	userObjectId, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
-	passwordsData, err := repository.Repos.PasswordRepo.GetPasswordsByParams(repository.PasswordQueryParams{UserId: userObjectId})
-	if err != nil {
-		return nil, err
-	}
-	passwords := make([]*graphql_models.Password, len(passwordsData))
-	for i, passwordData := range passwordsData {
-		passwords[i] = &graphql_models.Password{
-			ID:          passwordData.ID.Hex(),
-			URL:         &passwordData.Url,
-			Account:     passwordData.Account,
-			AppName:     &passwordData.AppName,
-			Password:    passwordData.Password,
-			Description: &passwordData.Description,
-			CreatedAt:   passwordData.CreatedAt.Time(),
-			UpdatedAt:   passwordData.UpdatedAt.Time(),
-		}
-	}
-	return passwords, nil
+// PasswordTrue is the resolver for the passwordTrue field.
+func (r *queryResolver) PasswordTrue(ctx context.Context, id string) (*graphql_models.Password, error) {
+	panic(fmt.Errorf("not implemented: PasswordTrue - passwordTrue"))
+}
+
+// PasswordsByFilter is the resolver for the passwordsByFilter field.
+func (r *queryResolver) PasswordsByFilter(ctx context.Context, filter graphql_models.PasswordFilter) ([]*graphql_models.Password, error) {
+	panic(fmt.Errorf("not implemented: PasswordsByFilter - passwordsByFilter"))
 }

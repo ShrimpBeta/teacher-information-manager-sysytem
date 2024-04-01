@@ -18,7 +18,7 @@ type CompGuidancePreview {
   awardStatus: String
 }
 
-input NewCompGuidance {
+input CompGuidanceData {
   projectName: String!
   studentNames: [String]!
   competitionScore: String
@@ -26,33 +26,38 @@ input NewCompGuidance {
   awardStatus: String
 }
 
-input UpdateCompGuidance {
+input CompGuidanceFilter {
+  userId: ID!
   projectName: String
   studentNames: [String]
-  competitionScore: String
-  guidanceDate: Time
+  guidanceDateStart: Time
+  guidanceDateEnd: Time
   awardStatus: String
+  createdStart: Time
+  createdEnd: Time
+  updatedStart: Time
+  updatedEnd: Time
 }
 
 extend type Query {
   compGuidance(id: ID!): CompGuidance!
-  compGuidancesForUser(userId: ID!): [CompGuidance]!
-
-  compGuidancesByProjectName(name: String!): [CompGuidance]!
-  compGuidancesByAwardStatus(award: String!): [CompGuidance]!
+  compGuidancesByFilter(filter: CompGuidanceFilter!): [CompGuidance]!
 }
 
 extend type Mutation {
   createCompGuidance(
     userId: ID!
-    newGuidanceData: NewCompGuidance!
+    newGuidanceData: CompGuidanceData!
   ): CompGuidance!
   updateCompGuidance(
     id: ID!
-    compGuidanceData: UpdateCompGuidance!
+    compGuidanceData: CompGuidanceData!
   ): CompGuidance!
   deleteCompGuidance(id: ID!): CompGuidance!
 
-  uploadCompGuidance(file: Upload!): CompGuidancePreview!
   uploadCompGuidances(file: Upload!): [CompGuidancePreview]!
+  createCompGuidances(
+    userId: ID!
+    newGuidancesData: [CompGuidanceData]!
+  ): [CompGuidance]!
 }

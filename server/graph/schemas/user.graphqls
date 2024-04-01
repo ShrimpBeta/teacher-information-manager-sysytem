@@ -17,6 +17,12 @@ type UserExport {
   username: String!
   email: String!
   avatar: String!
+  createdAt: Time!
+}
+
+input SigIn {
+  email: String!
+  password: String!
 }
 
 type SignInResponse {
@@ -30,15 +36,20 @@ input ResetPassword {
   newPassword: String!
 }
 
-input ChangePassword {
+input UpdatePassword {
   oldPassword: String!
   newPassword: String!
 }
 
 input UpdateUser {
-  username: String
+  username: String!
   avatar: Upload
   phoneNumber: String
+}
+
+input WechatAuth {
+  openId: String!
+  sessionKey: String!
 }
 
 input ActivateUser {
@@ -54,15 +65,18 @@ extend type Query {
 }
 
 extend type Mutation {
-  deleteAccount(userId: ID!): User!
+  deleteAccount(userId: ID!): Boolean!
 
-  updateAccountPassword(userId: ID!, passwordData: ChangePassword): String!
-  forgetAccountPassword(userId: ID!, passwordCodeData: ResetPassword): String!
+  updateAccountPassword(
+    userId: ID!
+    updatePasswordData: UpdatePassword!
+  ): Boolean!
+  resetAccountPassword(userId: ID!, resetPasswordData: ResetPassword!): Boolean!
 
-  signIn(email: String!, password: String!): SignInResponse!
+  signIn(signInData: SigIn!): SignInResponse!
   updateUser(userId: ID!, userData: UpdateUser!): User!
   activateUser(userId: ID!, userData: ActivateUser!): User!
 
-  addWechatAuth(userId: ID!, token: String!): Boolean!
+  addWechatAuth(userId: ID!, wechatAuthData: WechatAuth!): Boolean!
   removeWechatAuth(userId: ID!): Boolean!
 }

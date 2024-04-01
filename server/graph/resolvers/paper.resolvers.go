@@ -8,326 +8,41 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
-	"server/persistence/models"
-	"server/persistence/repository"
 
 	"github.com/99designs/gqlgen/graphql"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // CreatePaper is the resolver for the createPaper field.
-func (r *mutationResolver) CreatePaper(ctx context.Context, newPaperData graphql_models.NewPaper) (*graphql_models.Paper, error) {
-	teachersIn := make([]primitive.ObjectID, len(newPaperData.TeachersIn))
-	for i, teacher := range newPaperData.TeachersIn {
-		objectId, err := primitive.ObjectIDFromHex(*teacher)
-		if err != nil {
-			return nil, err
-		}
-		teachersIn[i] = objectId
-	}
-
-	teachersOut := make([]string, len(newPaperData.TeachersOut))
-	for i, teacher := range newPaperData.TeachersOut {
-		teachersOut[i] = *teacher
-	}
-
-	newPaper := models.Paper{
-		TeachersIn:   teachersIn,
-		TeachersOut:  teachersOut,
-		Title:        newPaperData.Title,
-		PublishDate:  primitive.NewDateTimeFromTime(*newPaperData.PublishDate),
-		Rank:         *newPaperData.Rank,
-		JournalName:  *newPaperData.JournalName,
-		JournalLevel: *newPaperData.JournalLevel,
-	}
-
-	objectId, err := repository.Repos.PaperRepo.CreatePaper(&newPaper)
-	if err != nil {
-		return nil, err
-	}
-
-	paperData, err := repository.Repos.PaperRepo.GetPaperById(*objectId)
-	if err != nil {
-		return nil, err
-	}
-	publishDate := paperData.PublishDate.Time()
-
-	usersIn, err := repository.Repos.UserRepo.GetUsersByIds(teachersIn)
-	if err != nil {
-		return nil, err
-	}
-	userseExport := make([]*graphql_models.UserExport, len(usersIn))
-
-	for i, user := range usersIn {
-		userseExport[i] = &graphql_models.UserExport{
-			ID:       user.ID.Hex(),
-			Username: user.Username,
-			Email:    user.Email,
-			Avatar:   user.Avatar,
-		}
-	}
-
-	return &graphql_models.Paper{
-		ID:           paperData.ID.Hex(),
-		TeachersIn:   userseExport,
-		TeachersOut:  newPaperData.TeachersOut,
-		Title:        paperData.Title,
-		PublishDate:  &publishDate,
-		Rank:         &paperData.Rank,
-		JournalName:  &paperData.JournalName,
-		JournalLevel: &paperData.JournalLevel,
-		CreatedAt:    paperData.CreatedAt.Time(),
-		UpdatedAt:    paperData.UpdatedAt.Time(),
-	}, nil
+func (r *mutationResolver) CreatePaper(ctx context.Context, newPaperData graphql_models.PaperData) (*graphql_models.Paper, error) {
+	return r.PaperService.CreatePaper(newPaperData, r.UserService.Repo)
 }
 
 // UpdatePaper is the resolver for the updatePaper field.
-func (r *mutationResolver) UpdatePaper(ctx context.Context, id string, paperDataL graphql_models.UpdatePaper) (*graphql_models.Paper, error) {
-	if paperDataL.JournalLevel == nil || paperDataL.JournalName == nil || paperDataL.PublishDate == nil || paperDataL.Rank == nil || paperDataL.TeachersIn == nil || paperDataL.Title == nil || paperDataL.TeachersOut == nil {
-		return nil, fmt.Errorf("no data to update")
-	}
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-	paperUpdate, err := repository.Repos.PaperRepo.GetPaperById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	if paperDataL.JournalLevel != nil {
-		paperUpdate.JournalLevel = *paperDataL.JournalLevel
-	}
-	if paperDataL.JournalName != nil {
-		paperUpdate.JournalName = *paperDataL.JournalName
-
-	}
-	if paperDataL.PublishDate != nil {
-		paperUpdate.PublishDate = primitive.NewDateTimeFromTime(*paperDataL.PublishDate)
-	}
-	if paperDataL.Rank != nil {
-		paperUpdate.Rank = *paperDataL.Rank
-	}
-	if paperDataL.TeachersIn != nil {
-		teachersIn := make([]primitive.ObjectID, len(paperDataL.TeachersIn))
-		for i, teacher := range paperDataL.TeachersIn {
-			objectId, err := primitive.ObjectIDFromHex(*teacher)
-			if err != nil {
-				return nil, err
-			}
-			teachersIn[i] = objectId
-		}
-		paperUpdate.TeachersIn = teachersIn
-	}
-	if paperDataL.Title != nil {
-		paperUpdate.Title = *paperDataL.Title
-	}
-	if paperDataL.TeachersOut != nil {
-		teachersOut := make([]string, len(paperDataL.TeachersOut))
-		for i, teacher := range paperDataL.TeachersOut {
-			teachersOut[i] = *teacher
-		}
-		paperUpdate.TeachersOut = teachersOut
-	}
-	err = repository.Repos.PaperRepo.UpdatePaper(paperUpdate)
-	if err != nil {
-		return nil, err
-	}
-	paperUpdate, err = repository.Repos.PaperRepo.GetPaperById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	publishDate := paperUpdate.PublishDate.Time()
-
-	usersIn, err := repository.Repos.UserRepo.GetUsersByIds(paperUpdate.TeachersIn)
-	if err != nil {
-		return nil, err
-	}
-	userseExport := make([]*graphql_models.UserExport, len(usersIn))
-
-	for i, user := range usersIn {
-		userseExport[i] = &graphql_models.UserExport{
-			ID:       user.ID.Hex(),
-			Username: user.Username,
-			Email:    user.Email,
-			Avatar:   user.Avatar,
-		}
-	}
-
-	TeachersOut := make([]*string, len(paperUpdate.TeachersOut))
-	for i, teacher := range paperUpdate.TeachersOut {
-		TeachersOut[i] = &teacher
-	}
-
-	return &graphql_models.Paper{
-		ID:           paperUpdate.ID.Hex(),
-		TeachersIn:   userseExport,
-		TeachersOut:  TeachersOut,
-		Title:        paperUpdate.Title,
-		PublishDate:  &publishDate,
-		Rank:         &paperUpdate.Rank,
-		JournalName:  &paperUpdate.JournalName,
-		JournalLevel: &paperUpdate.JournalLevel,
-		CreatedAt:    paperUpdate.CreatedAt.Time(),
-		UpdatedAt:    paperUpdate.UpdatedAt.Time(),
-	}, nil
+func (r *mutationResolver) UpdatePaper(ctx context.Context, id string, paperData graphql_models.PaperData) (*graphql_models.Paper, error) {
+	return r.PaperService.UpdatePaper(id, paperData, r.UserService.Repo)
 }
 
 // DeletePaper is the resolver for the deletePaper field.
 func (r *mutationResolver) DeletePaper(ctx context.Context, id string) (*graphql_models.Paper, error) {
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-	PaperData, err := repository.Repos.PaperRepo.GetPaperById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	err = repository.Repos.PaperRepo.DeletePaper(objectId)
-	if err != nil {
-		return nil, err
-	}
-	publishDate := PaperData.PublishDate.Time()
-
-	usersIn, err := repository.Repos.UserRepo.GetUsersByIds(PaperData.TeachersIn)
-	if err != nil {
-		return nil, err
-	}
-	userseExport := make([]*graphql_models.UserExport, len(usersIn))
-
-	for i, user := range usersIn {
-		userseExport[i] = &graphql_models.UserExport{
-			ID:       user.ID.Hex(),
-			Username: user.Username,
-			Email:    user.Email,
-			Avatar:   user.Avatar,
-		}
-	}
-
-	TeachersOut := make([]*string, len(PaperData.TeachersOut))
-	for i, teacher := range PaperData.TeachersOut {
-		TeachersOut[i] = &teacher
-	}
-
-	return &graphql_models.Paper{
-		ID:           PaperData.ID.Hex(),
-		TeachersIn:   userseExport,
-		TeachersOut:  TeachersOut,
-		Title:        PaperData.Title,
-		PublishDate:  &publishDate,
-		Rank:         &PaperData.Rank,
-		JournalName:  &PaperData.JournalName,
-		JournalLevel: &PaperData.JournalLevel,
-		CreatedAt:    PaperData.CreatedAt.Time(),
-		UpdatedAt:    PaperData.UpdatedAt.Time(),
-	}, nil
-}
-
-// UploadPaper is the resolver for the uploadPaper field.
-func (r *mutationResolver) UploadPaper(ctx context.Context, file graphql.Upload) (*graphql_models.Paper, error) {
-	panic(fmt.Errorf("not implemented: UploadPaper - uploadPaper"))
+	return r.PaperService.DeletePaper(id, r.UserService.Repo)
 }
 
 // UploadPapers is the resolver for the uploadPapers field.
-func (r *mutationResolver) UploadPapers(ctx context.Context, file graphql.Upload) ([]*graphql_models.Paper, error) {
+func (r *mutationResolver) UploadPapers(ctx context.Context, file graphql.Upload) ([]*graphql_models.PaperPreview, error) {
 	panic(fmt.Errorf("not implemented: UploadPapers - uploadPapers"))
+}
+
+// CreatePapers is the resolver for the createPapers field.
+func (r *mutationResolver) CreatePapers(ctx context.Context, newPapersDatas []*graphql_models.PaperData) ([]*graphql_models.Paper, error) {
+	panic(fmt.Errorf("not implemented: CreatePapers - createPapers"))
 }
 
 // Paper is the resolver for the paper field.
 func (r *queryResolver) Paper(ctx context.Context, id string) (*graphql_models.Paper, error) {
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-	PaperData, err := repository.Repos.PaperRepo.GetPaperById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	publishDate := PaperData.PublishDate.Time()
-
-	usersIn, err := repository.Repos.UserRepo.GetUsersByIds(PaperData.TeachersIn)
-	if err != nil {
-		return nil, err
-	}
-	userseExport := make([]*graphql_models.UserExport, len(usersIn))
-
-	for i, user := range usersIn {
-		userseExport[i] = &graphql_models.UserExport{
-			ID:       user.ID.Hex(),
-			Username: user.Username,
-			Email:    user.Email,
-			Avatar:   user.Avatar,
-		}
-	}
-
-	TeachersOut := make([]*string, len(PaperData.TeachersOut))
-	for i, teacher := range PaperData.TeachersOut {
-		TeachersOut[i] = &teacher
-	}
-
-	return &graphql_models.Paper{
-		ID:           PaperData.ID.Hex(),
-		TeachersIn:   userseExport,
-		TeachersOut:  TeachersOut,
-		Title:        PaperData.Title,
-		PublishDate:  &publishDate,
-		Rank:         &PaperData.Rank,
-		JournalName:  &PaperData.JournalName,
-		JournalLevel: &PaperData.JournalLevel,
-		CreatedAt:    PaperData.CreatedAt.Time(),
-		UpdatedAt:    PaperData.UpdatedAt.Time(),
-	}, nil
+	return r.PaperService.GetPaperById(id, r.UserService.Repo)
 }
 
-// Papers is the resolver for the papers field.
-func (r *queryResolver) Papers(ctx context.Context, userID string) ([]*graphql_models.Paper, error) {
-	userObjectId, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
-	papersData, err := repository.Repos.PaperRepo.GetPapersByParams(repository.PaperQueryParams{TeachersIn: []primitive.ObjectID{userObjectId}})
-	if err != nil {
-		return nil, err
-	}
-	papers := make([]*graphql_models.Paper, len(papersData))
-	for i, paperData := range papersData {
-		publishDate := paperData.PublishDate.Time()
-		usersIn, err := repository.Repos.UserRepo.GetUsersByIds(paperData.TeachersIn)
-		if err != nil {
-			return nil, err
-		}
-		userseExport := make([]*graphql_models.UserExport, len(usersIn))
-
-		for i, user := range usersIn {
-			userseExport[i] = &graphql_models.UserExport{
-				ID:       user.ID.Hex(),
-				Username: user.Username,
-				Email:    user.Email,
-				Avatar:   user.Avatar,
-			}
-		}
-
-		TeachersOut := make([]*string, len(paperData.TeachersOut))
-		for i, teacher := range paperData.TeachersOut {
-			TeachersOut[i] = &teacher
-		}
-
-		papers[i] = &graphql_models.Paper{
-			ID:           paperData.ID.Hex(),
-			TeachersIn:   userseExport,
-			TeachersOut:  TeachersOut,
-			Title:        paperData.Title,
-			PublishDate:  &publishDate,
-			Rank:         &paperData.Rank,
-			JournalName:  &paperData.JournalName,
-			JournalLevel: &paperData.JournalLevel,
-			CreatedAt:    paperData.CreatedAt.Time(),
-			UpdatedAt:    paperData.UpdatedAt.Time(),
-		}
-	}
-	return papers, nil
-}
-
-// PapersByName is the resolver for the papersByName field.
-func (r *queryResolver) PapersByName(ctx context.Context, name string) ([]*graphql_models.Paper, error) {
-	panic(fmt.Errorf("not implemented: PapersByName - papersByName"))
+// PapersByFilter is the resolver for the papersByFilter field.
+func (r *queryResolver) PapersByFilter(ctx context.Context, filter *graphql_models.PaperFilter) ([]*graphql_models.Paper, error) {
+	panic(fmt.Errorf("not implemented: PapersByFilter - papersByFilter"))
 }

@@ -28,7 +28,7 @@ type EduReformPreview {
   fund: String
 }
 
-input NewEduReform {
+input EduReformData {
   teachersIn: [ID]!
   teachersOut: [String]
   number: String!
@@ -41,32 +41,33 @@ input NewEduReform {
   fund: String
 }
 
-input UpdateEduReform {
-  teachersIn: [ID]
+input EduReformFilter {
+  teachersIn: [ID]!
   teachersOut: [String]
   number: String
   title: String
-  startDate: Time
-  duration: String
+  startDateStart: Time
+  startDateEnd: Time
   level: String
   rank: String
   achievement: String
   fund: String
+  createdStart: Time
+  createdEnd: Time
+  updatedStart: Time
+  updatedEnd: Time
 }
 
 extend type Query {
-  eduReform(id: ID!): EduReform
-  eduReforms(userId: ID!): [EduReform]!
-
-  eduReformsByName(name: String!): [EduReform]!
-  eduReformsByAchievement(achievement: String!): [EduReform]!
+  eduReform(id: ID!): EduReform!
+  eduReformsByFilter(filter: EduReformFilter!): [EduReform]!
 }
 
 extend type Mutation {
-  createEduReform(newEduReformData: NewEduReform!): EduReform!
-  updateEduReform(id: ID!, eduReformData: UpdateEduReform!): EduReform!
+  createEduReform(newEduReformData: EduReformData!): EduReform!
+  updateEduReform(id: ID!, eduReformData: EduReformData!): EduReform!
   deleteEduReform(id: ID!): EduReform!
 
-  uploadEduReform(file: Upload!): EduReformPreview!
   uploadEduReforms(file: Upload!): [EduReformPreview]!
+  createdEduReforms(newEduReformDatas: [EduReformData]!): [EduReform]!
 }

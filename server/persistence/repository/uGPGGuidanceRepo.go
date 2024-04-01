@@ -15,9 +15,15 @@ type UGPGGuidanceRepo struct {
 }
 
 type UGPGGuidanceQueryParams struct {
-	UserId      primitive.ObjectID
-	StudentName string
-	ThesisTopic string
+	UserId           primitive.ObjectID
+	StudentName      *string
+	ThesisTopic      *string
+	DefenseDateStart *primitive.DateTime
+	DefenseDateEnd   *primitive.DateTime
+	CreatedStart     *primitive.DateTime
+	CreatedEnd       *primitive.DateTime
+	UpdatedStart     *primitive.DateTime
+	UpdatedEnd       *primitive.DateTime
 }
 
 func NewUGPGGuidanceRepo(db *mongo.Database) *UGPGGuidanceRepo {
@@ -41,12 +47,42 @@ func (r *UGPGGuidanceRepo) GetUGPGGuidancesByParams(params UGPGGuidanceQueryPara
 	// filter for userId
 	filter := bson.M{"userId": params.UserId}
 	// filter for studentName
-	if params.StudentName != "" {
-		filter["studentName"] = params.StudentName
+	if params.StudentName != nil {
+		filter["studentName"] = bson.M{"$regex": primitive.Regex{Pattern: *params.StudentName, Options: "i"}}
 	}
 	// filter for thesisTopic
-	if params.ThesisTopic != "" {
-		filter["thesisTopic"] = params.ThesisTopic
+	if params.ThesisTopic != nil {
+		filter["thesisTopic"] = bson.M{"$regex": primitive.Regex{Pattern: *params.ThesisTopic, Options: "i"}}
+	}
+	// filter for defenseDate
+	if params.DefenseDateStart != nil || params.DefenseDateEnd != nil {
+		filter["defenseDate"] = bson.M{}
+		if params.DefenseDateStart != nil {
+			filter["defenseDate"].(bson.M)["$gte"] = params.DefenseDateStart
+		}
+		if params.DefenseDateEnd != nil {
+			filter["defenseDate"].(bson.M)["$lte"] = params.DefenseDateEnd
+		}
+	}
+	// filter for created time
+	if params.CreatedStart != nil || params.CreatedEnd != nil {
+		filter["createdAt"] = bson.M{}
+		if params.CreatedStart != nil {
+			filter["createdAt"].(bson.M)["$gte"] = params.CreatedStart
+		}
+		if params.CreatedEnd != nil {
+			filter["createdAt"].(bson.M)["$lte"] = params.CreatedEnd
+		}
+	}
+	// filter for updated time
+	if params.UpdatedStart != nil || params.UpdatedEnd != nil {
+		filter["updatedAt"] = bson.M{}
+		if params.UpdatedStart != nil {
+			filter["updatedAt"].(bson.M)["$gte"] = params.UpdatedStart
+		}
+		if params.UpdatedEnd != nil {
+			filter["updatedAt"].(bson.M)["$lte"] = params.UpdatedEnd
+		}
 	}
 
 	cursor, err := r.collection.Find(context.Background(), filter)
@@ -65,10 +101,10 @@ func (r *UGPGGuidanceRepo) GetUGPGGuidancesByParams(params UGPGGuidanceQueryPara
 }
 
 func (r *UGPGGuidanceRepo) CreateUGPGGuidance(ugpgGuidance *models.UGPGGuidance) (*primitive.ObjectID, error) {
-	objectId := primitive.NewObjectID()
-	ugpgGuidance.ID = objectId
-	ugpgGuidance.CreatedAt = primitive.NewDateTimeFromTime(time.Now())
-	ugpgGuidance.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
+	ugpgGuidance.ID = primitive.NewObjectID()
+	createdTime := primitive.NewDateTimeFromTime(time.Now())
+	ugpgGuidance.CreatedAt = createdTime
+	ugpgGuidance.UpdatedAt = createdTime
 	result, err := r.collection.InsertOne(context.Background(), ugpgGuidance)
 	if err != nil {
 		return nil, err
@@ -79,7 +115,11 @@ func (r *UGPGGuidanceRepo) CreateUGPGGuidance(ugpgGuidance *models.UGPGGuidance)
 
 func (r *UGPGGuidanceRepo) UpdateUGPGGuidance(ugpgGuidance *models.UGPGGuidance) error {
 	ugpgGuidance.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
-	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": ugpgGuidance.ID}, bson.M{"$set": ugpgGuidance})
+	_, err := r.collection.UpdateOne(
+		context.Background(),
+		bson.M{"_id": ugpgGuidance.ID},
+		bson.M{"$set": ugpgGuidance},
+	)
 	return err
 }
 

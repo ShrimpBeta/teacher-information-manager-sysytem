@@ -2,8 +2,6 @@ package repository
 
 import "go.mongodb.org/mongo-driver/mongo"
 
-var Repos *Repositorys
-
 type Repositorys struct {
 	ClassScheduleRepo *ClassScheduleRepo
 	CompGuidanceRepo  *CompGuidanceRepo

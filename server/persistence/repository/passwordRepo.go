@@ -16,9 +16,9 @@ type PasswordRepo struct {
 
 type PasswordQueryParams struct {
 	UserId  primitive.ObjectID
-	Url     string
-	AppName string
-	Account string
+	Url     *string
+	AppName *string
+	Account *string
 }
 
 func NewPasswordRepo(db *mongo.Database) *PasswordRepo {
@@ -42,16 +42,16 @@ func (r *PasswordRepo) GetPasswordsByParams(params PasswordQueryParams) ([]model
 	// filter for userId, can not be empty
 	filter := bson.M{"userId": params.UserId}
 	// filter for url
-	if params.Url != "" {
-		filter["url"] = params.Url
+	if params.Url != nil {
+		filter["url"] = bson.M{"$regex": primitive.Regex{Pattern: *params.Url, Options: "i"}}
 	}
 	// filter for appName
-	if params.AppName != "" {
-		filter["appName"] = params.AppName
+	if params.AppName != nil {
+		filter["appName"] = bson.M{"$regex": primitive.Regex{Pattern: *params.AppName, Options: "i"}}
 	}
 	// filter for account
-	if params.Account != "" {
-		filter["account"] = params.Account
+	if params.Account != nil {
+		filter["account"] = bson.M{"$regex": primitive.Regex{Pattern: *params.Account, Options: "i"}}
 	}
 
 	cursor, err := r.collection.Find(context.Background(), filter)
@@ -70,8 +70,7 @@ func (r *PasswordRepo) GetPasswordsByParams(params PasswordQueryParams) ([]model
 }
 
 func (r *PasswordRepo) CreatePassword(password *models.Password) (*primitive.ObjectID, error) {
-	objectId := primitive.NewObjectID()
-	password.ID = objectId
+	password.ID = primitive.NewObjectID()
 	password.CreatedAt = primitive.NewDateTimeFromTime(time.Now())
 	password.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
 	result, err := r.collection.InsertOne(context.Background(), password)
@@ -84,7 +83,11 @@ func (r *PasswordRepo) CreatePassword(password *models.Password) (*primitive.Obj
 
 func (r *PasswordRepo) UpdatePassword(password *models.Password) error {
 	password.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
-	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": password.ID}, bson.M{"$set": password})
+	_, err := r.collection.UpdateOne(
+		context.Background(),
+		bson.M{"_id": password.ID},
+		bson.M{"$set": password},
+	)
 	return err
 }
 

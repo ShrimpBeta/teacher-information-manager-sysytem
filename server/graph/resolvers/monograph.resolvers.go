@@ -13,12 +13,12 @@ import (
 )
 
 // CreateMonograph is the resolver for the createMonograph field.
-func (r *mutationResolver) CreateMonograph(ctx context.Context, newMonographData graphql_models.NewMonograph) (*graphql_models.Monograph, error) {
+func (r *mutationResolver) CreateMonograph(ctx context.Context, newMonographData graphql_models.MonographData) (*graphql_models.Monograph, error) {
 	panic(fmt.Errorf("not implemented: CreateMonograph - createMonograph"))
 }
 
 // UpdateMonograph is the resolver for the updateMonograph field.
-func (r *mutationResolver) UpdateMonograph(ctx context.Context, id string, monographData graphql_models.UpdateMonograph) (*graphql_models.Monograph, error) {
+func (r *mutationResolver) UpdateMonograph(ctx context.Context, id string, monographData graphql_models.MonographData) (*graphql_models.Monograph, error) {
 	panic(fmt.Errorf("not implemented: UpdateMonograph - updateMonograph"))
 }
 
@@ -27,14 +27,14 @@ func (r *mutationResolver) DeleteMonograph(ctx context.Context, id string) (*gra
 	panic(fmt.Errorf("not implemented: DeleteMonograph - deleteMonograph"))
 }
 
-// UploadMonograph is the resolver for the uploadMonograph field.
-func (r *mutationResolver) UploadMonograph(ctx context.Context, file graphql.Upload) (*graphql_models.MonographPreview, error) {
-	panic(fmt.Errorf("not implemented: UploadMonograph - uploadMonograph"))
-}
-
 // UploadMonographs is the resolver for the uploadMonographs field.
 func (r *mutationResolver) UploadMonographs(ctx context.Context, file graphql.Upload) ([]*graphql_models.MonographPreview, error) {
 	panic(fmt.Errorf("not implemented: UploadMonographs - uploadMonographs"))
+}
+
+// CreatedMonographs is the resolver for the createdMonographs field.
+func (r *mutationResolver) CreatedMonographs(ctx context.Context, newMonographDatas []*graphql_models.MonographData) ([]*graphql_models.Monograph, error) {
+	panic(fmt.Errorf("not implemented: CreatedMonographs - createdMonographs"))
 }
 
 // Monograph is the resolver for the monograph field.

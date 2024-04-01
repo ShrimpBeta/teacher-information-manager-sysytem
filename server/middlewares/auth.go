@@ -3,12 +3,15 @@ package middlewares
 import (
 	"fmt"
 	"net/http"
-	"server/persistence/models"
-	"server/persistence/repository"
 	"server/services/jwt"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
+
+type AuthData struct {
+	Account string
+}
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
@@ -21,40 +24,36 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// validate jwt token
-		tokenStr := header
-		email, err := jwt.ParaseToken(tokenStr)
+		header_list := strings.Split(header, " ")
+		tokenStr := header_list[1]
+
+		account, err := jwt.ParaseToken(tokenStr)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Invalid token"})
 			return
 		}
 
-		user := models.User{Email: email}
-		id, err := repository.Repos.UserRepo.GetUserIdByEmail(email)
-
-		// create user and check if user exists in db
-		if err != nil {
-			ctx.Next()
-			return
+		authData := AuthData{
+			Account: account,
 		}
-		user.ID = *id
 
 		// put it in context
-		ctx.Set("user", &user)
+		ctx.Set("authData", &authData)
 		ctx.Next()
 	}
 }
 
-func ForContext(ctx *gin.Context) (*models.User, error) {
+func ForContext(ctx *gin.Context) (*AuthData, error) {
 	// get user
-	raw, exist := ctx.Get("user")
+	raw, exist := ctx.Get("authData")
 	if !exist {
 		err := fmt.Errorf("could not retrieve user")
 		return nil, err
 	}
-	user, ok := raw.(*models.User)
+	authData, ok := raw.(*AuthData)
 	if !ok {
 		err := fmt.Errorf("user has wrong type")
 		return nil, err
 	}
-	return user, nil
+	return authData, nil
 }

@@ -16,10 +16,10 @@ var (
 const TokenExpireDuration = time.Hour * 24
 
 // 生成Token
-func GenerateToken(email string) (string, error) {
+func GenerateToken(account string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claim := token.Claims.(jwt.MapClaims)
-	claim["email"] = email
+	claim["account"] = account
 	claim["exp"] = time.Now().Add(TokenExpireDuration).Unix()
 	tokenString, err := token.SignedString(SecretKey)
 	if err != nil {
@@ -35,8 +35,8 @@ func ParaseToken(tokenStr string) (string, error) {
 		return SecretKey, nil
 	})
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		email := claims["email"].(string)
-		return email, nil
+		account := claims["account"].(string)
+		return account, nil
 	} else {
 		return "", err
 	}

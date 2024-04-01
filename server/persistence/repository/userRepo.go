@@ -24,6 +24,11 @@ func (r *UserRepo) GetUserIdByEmail(email string) (*primitive.ObjectID, error) {
 	user := models.User{}
 	err := r.collection.FindOne(context.Background(), bson.M{"email": email}).Decode(&user)
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			// no user found
+			return nil, nil
+		}
+		// other error
 		return nil, err
 	}
 	return &user.ID, nil
@@ -86,8 +91,9 @@ func (r *UserRepo) GetAllUsers() ([]models.User, error) {
 func (r *UserRepo) CreateUser(user *models.User) (*primitive.ObjectID, error) {
 	objectId := primitive.NewObjectID()
 	user.ID = objectId
-	user.CreatedAt = primitive.NewDateTimeFromTime(time.Now())
-	user.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
+	createdTime := primitive.NewDateTimeFromTime(time.Now())
+	user.CreatedAt = createdTime
+	user.UpdatedAt = createdTime
 	result, err := r.collection.InsertOne(context.Background(), user)
 	if err != nil {
 		return nil, err

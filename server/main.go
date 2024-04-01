@@ -1,14 +1,22 @@
 package main
 
 import (
+	"embed"
+	"io/fs"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"path/filepath"
+	"server/environment"
 	"server/graph"
 	"server/graph/resolvers"
+	"server/middlewares"
 	"server/persistence/database"
 	"server/persistence/repository"
+	"server/restful"
+	"server/services/services"
+	"strings"
 	"syscall"
 
 	"github.com/99designs/gqlgen/graphql/handler"
@@ -17,20 +25,42 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const defaultPort = "8080"
-const defaultMongodbUrl = "mongodb://localhost:27017"
-const ServeURL = "http://localhost:8080"
-const DatabaseName = "TeacherInfoMS"
+//go:embed client/build
+var clientBuildFS embed.FS
 
-func graphHandler() gin.HandlerFunc {
-	h := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolvers.Resolver{}}))
+func graphHandler(
+	// accountService *services.AccountService,
+	classScheduleService *services.ClassScheduleService,
+	compGuidanceService *services.CompGuidanceService,
+	eduReformService *services.EduReformService,
+	mentorshipService *services.MentorshipService,
+	monographService *services.MonographService,
+	paperService *services.PaperService,
+	passwordService *services.PasswordService,
+	sciResearchService *services.SciResearchService,
+	uGPGGuidanceService *services.UGPGGuidanceService,
+	userService *services.UserService,
+) gin.HandlerFunc {
+	h := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolvers.Resolver{
+		// AccountService:       accountService,
+		ClassScheduleService: classScheduleService,
+		CompGuidanceService:  compGuidanceService,
+		EduReformService:     eduReformService,
+		MentorshipService:    mentorshipService,
+		MonographService:     monographService,
+		PaperService:         paperService,
+		PasswordService:      passwordService,
+		SciResearchService:   sciResearchService,
+		UGPGGuidanceService:  uGPGGuidanceService,
+		UserService:          userService,
+	}}))
 	return func(ctx *gin.Context) {
 		h.ServeHTTP(ctx.Writer, ctx.Request)
 	}
 }
 
 func playgroundHandler() gin.HandlerFunc {
-	h := playground.Handler("GraphQL", "/query")
+	h := playground.Handler("GraphQL", environment.GraphQL)
 
 	return func(ctx *gin.Context) {
 		h.ServeHTTP(ctx.Writer, ctx.Request)
@@ -40,11 +70,24 @@ func playgroundHandler() gin.HandlerFunc {
 func main() {
 
 	// Database Connect
-	DB := database.Connect(defaultMongodbUrl)
+	DB := database.Connect(environment.DefaultMongodbUrl)
 	defer DB.DisConnect()
 
 	// init Repos
-	repository.Repos = repository.NewRepositorys(DB.Client.Database(DatabaseName))
+	repository := repository.NewRepositorys(DB.Client.Database(environment.DatabaseName))
+
+	// init Services
+	accountService := services.NewAccountService(repository.UserRepo)
+	classScheduleService := services.NewClassScheduleService(repository.ClassScheduleRepo)
+	compGuidanceService := services.NewCompGuidanceService(repository.CompGuidanceRepo)
+	eduReformService := services.NewEduReformService(repository.EduReformRepo)
+	mentorshipService := services.NewMentorshipService(repository.MentorshipRepo)
+	monographService := services.NewMonographService(repository.MonographRepo)
+	paperService := services.NewPaperService(repository.PaperRepo)
+	passwordService := services.NewPasswordService(repository.PasswordRepo)
+	sciResearchService := services.NewSciResearchService(repository.SciResearchRepo)
+	uGPGGuidanceService := services.NewUGPGGuidanceService(repository.UGPGGuidanceRepo)
+	userService := services.NewUserService(repository.UserRepo)
 
 	// set gin mode to release
 	// gin.SetMode(gin.ReleaseMode)
@@ -67,19 +110,46 @@ func main() {
 		AllowOrigins: []string{"*"},
 		// AllowAllOrigins:  true,
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		AllowMethods:     []string{"GET", "POST", "DELETE"},
 		AllowCredentials: true,
 	}))
 
 	// add Auth Middleware
-	// r.Use(middlewares.AuthMiddleware())
+	r.Use(middlewares.AuthMiddleware())
 	// add ginContext Middleware
-	// r.Use(middlewares.GinContextToContextMiddleware())
+	r.Use(middlewares.GinContextToContextMiddleware())
 
-	r.POST("/query", graphHandler())
-	r.GET("/", playgroundHandler())
+	// add RESTFUL API
+	restful := restful.Restful{AccountService: accountService}
+
+	// GraphQL API
+	r.POST(environment.GraphQL, graphHandler(classScheduleService, compGuidanceService, eduReformService, mentorshipService, monographService, paperService, passwordService, sciResearchService, uGPGGuidanceService, userService))
+	r.GET(environment.Playground, playgroundHandler())
+
+	// RESTFUL API
+	r.GET(environment.Restful+"/accounts", restful.GetAccounts)
+	r.POST(environment.Restful+"/account/create", restful.CreateAccount)
+	r.POST(environment.Restful+"/admin/signin", restful.AdminSignIn)
+	r.DELETE(environment.Restful+"/account/delete/:id", restful.DeleteAccount)
+
+	// Client Build
+	fs, err := fs.Sub(clientBuildFS, "client/build")
+	if err != nil {
+		log.Fatalf("Failed to get sub filesystem: %v", err)
+	}
+
+	r.StaticFS("/client", http.FS(fs))
+
+	r.NoRoute(func(c *gin.Context) {
+		if strings.HasPrefix(c.Request.URL.Path, "/client") {
+			c.FileFromFS("index.html", http.FS(fs))
+		} else {
+			c.JSON(404, gin.H{"error": "Not Found"})
+		}
+	})
 
 	go func() {
-		if err := r.Run(`:` + defaultPort); err != nil {
+		if err := r.Run(`:` + environment.DefaultPort); err != nil {
 			log.Fatalf("Failed to start server: %v", err)
 		}
 	}()

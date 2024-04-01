@@ -7,242 +7,41 @@ package resolvers
 import (
 	"context"
 	"fmt"
-	"io"
 	graphql_models "server/graph/model"
-	"server/persistence/repository"
-	"server/services/avatar"
-	"server/services/jwt"
-	"time"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // DeleteAccount is the resolver for the deleteAccount field.
-func (r *mutationResolver) DeleteAccount(ctx context.Context, userID string) (*graphql_models.User, error) {
-	objectID, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
-	userData, err := repository.Repos.UserRepo.GetUserById(objectID)
-	if err != nil {
-		return nil, err
-	}
-
-	err = repository.Repos.UserRepo.DeleteUser(objectID)
-	if err != nil {
-		return nil, err
-	}
-
-	wechatAuth := false
-	if userData.WechatToken != "" {
-		wechatAuth = true
-	}
-
-	return &graphql_models.User{
-		ID:          userData.ID.Hex(),
-		Email:       userData.Email,
-		Username:    userData.Username,
-		Avatar:      ServeURL + "/avatars/" + userData.Avatar,
-		PhoneNumber: &userData.Phone,
-		WechatAuth:  wechatAuth,
-		Activate:    userData.Activate,
-		CreatedAt:   userData.CreatedAt.Time(),
-		UpdatedAt:   userData.UpdatedAt.Time(),
-	}, nil
+func (r *mutationResolver) DeleteAccount(ctx context.Context, userID string) (bool, error) {
+	return r.UserService.DeleteUser(userID)
 }
 
 // UpdateAccountPassword is the resolver for the updateAccountPassword field.
-func (r *mutationResolver) UpdateAccountPassword(ctx context.Context, userID string, passwordData *graphql_models.ChangePassword) (string, error) {
+func (r *mutationResolver) UpdateAccountPassword(ctx context.Context, userID string, updatePasswordData graphql_models.UpdatePassword) (bool, error) {
 	panic(fmt.Errorf("not implemented: UpdateAccountPassword - updateAccountPassword"))
 }
 
-// ForgetAccountPassword is the resolver for the forgetAccountPassword field.
-func (r *mutationResolver) ForgetAccountPassword(ctx context.Context, userID string, passwordCodeData *graphql_models.ResetPassword) (string, error) {
-	panic(fmt.Errorf("not implemented: ForgetAccountPassword - forgetAccountPassword"))
+// ResetAccountPassword is the resolver for the resetAccountPassword field.
+func (r *mutationResolver) ResetAccountPassword(ctx context.Context, userID string, resetPasswordData graphql_models.ResetPassword) (bool, error) {
+	panic(fmt.Errorf("not implemented: ResetAccountPassword - resetAccountPassword"))
 }
 
 // SignIn is the resolver for the signIn field.
-func (r *mutationResolver) SignIn(ctx context.Context, email string, password string) (*graphql_models.SignInResponse, error) {
-	userData, err := repository.Repos.UserRepo.GetUserByEmailAndPassword(email, password)
-	if err != nil {
-		return nil, err
-	}
-	if userData == nil {
-		return nil, fmt.Errorf("user not found")
-	}
-	token, err := jwt.GenerateToken(userData.Email)
-	if err != nil {
-		return nil, err
-	}
-
-	wechatAuth := false
-	if userData.WechatToken != "" {
-		wechatAuth = true
-	}
-
-	return &graphql_models.SignInResponse{
-		Token: token,
-		User: &graphql_models.User{
-			ID:          userData.ID.Hex(),
-			Username:    userData.Username,
-			Email:       userData.Email,
-			PhoneNumber: &userData.Phone,
-			WechatAuth:  wechatAuth,
-			Avatar:      ServeURL + "/avatars/" + userData.Avatar,
-			Activate:    userData.Activate,
-			CreatedAt:   userData.CreatedAt.Time(),
-			UpdatedAt:   userData.UpdatedAt.Time(),
-		},
-	}, nil
+func (r *mutationResolver) SignIn(ctx context.Context, signInData graphql_models.SigIn) (*graphql_models.SignInResponse, error) {
+	return r.UserService.SignIn(signInData)
 }
 
 // UpdateUser is the resolver for the updateUser field.
 func (r *mutationResolver) UpdateUser(ctx context.Context, userID string, userData graphql_models.UpdateUser) (*graphql_models.User, error) {
-	if userData.Username == nil && userData.Avatar == nil && userData.PhoneNumber == nil {
-		return nil, fmt.Errorf("no data to update")
-	}
-
-	objectID, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
-	userUpdate, err := repository.Repos.UserRepo.GetUserById(objectID)
-	if err != nil {
-		return nil, err
-	}
-
-	if userData.Username != nil {
-		userUpdate.Username = *userData.Username
-	}
-
-	if userData.Avatar != nil {
-		file := userData.Avatar.File
-
-		// check file type
-		if userData.Avatar.ContentType != "image/png" &&
-			userData.Avatar.ContentType != "image/jpeg" &&
-			userData.Avatar.ContentType != "image/jpg" &&
-			userData.Avatar.ContentType != "image/webp" {
-			return nil, fmt.Errorf("only png,jpeg,jpg,webp file is allowed")
-		}
-
-		// Read the contents of the file
-		data, err := io.ReadAll(file)
-		if err != nil {
-			return nil, err
-		}
-
-		// Pass the data as []byte to the SaveAvatar function
-		avatar, err := avatar.SaveAvatar(data)
-		if err != nil {
-			return nil, err
-		}
-		userUpdate.Avatar = avatar
-	}
-
-	if userData.PhoneNumber != nil {
-		userUpdate.Phone = *userData.PhoneNumber
-	}
-	userUpdate.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
-	err = repository.Repos.UserRepo.UpdateUser(userUpdate)
-	if err != nil {
-		return nil, err
-	}
-	userUpdate, err = repository.Repos.UserRepo.GetUserById(objectID)
-	if err != nil {
-		return nil, err
-	}
-
-	wechatAuth := false
-	if userUpdate.WechatToken != "" {
-		wechatAuth = true
-	}
-	return &graphql_models.User{
-		ID:          userUpdate.ID.Hex(),
-		Email:       userUpdate.Email,
-		Username:    userUpdate.Username,
-		Avatar:      ServeURL + "/avatars/" + userUpdate.Avatar,
-		PhoneNumber: &userUpdate.Phone,
-		WechatAuth:  wechatAuth,
-		Activate:    userUpdate.Activate,
-		CreatedAt:   userUpdate.CreatedAt.Time(),
-		UpdatedAt:   userUpdate.UpdatedAt.Time(),
-	}, nil
+	return r.UserService.UpdateUser(userID, userData)
 }
 
 // ActivateUser is the resolver for the activateUser field.
 func (r *mutationResolver) ActivateUser(ctx context.Context, userID string, userData graphql_models.ActivateUser) (*graphql_models.User, error) {
-	objectID, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
-	userUpdate, err := repository.Repos.UserRepo.GetUserById(objectID)
-	if err != nil {
-		return nil, err
-	}
-
-	userUpdate.Activate = true
-	userUpdate.Username = userData.Username
-	userUpdate.Password = userData.Password
-	if userData.Avatar != nil {
-		file := userData.Avatar.File
-
-		// check file type
-		if userData.Avatar.ContentType != "image/png" &&
-			userData.Avatar.ContentType != "image/jpeg" &&
-			userData.Avatar.ContentType != "image/jpg" &&
-			userData.Avatar.ContentType != "image/webp" {
-			return nil, fmt.Errorf("only png,jpeg,jpg,webp file is allowed")
-		}
-
-		// Read the contents of the file
-		data, err := io.ReadAll(file)
-		if err != nil {
-			return nil, err
-		}
-
-		// Pass the data as []byte to the SaveAvatar function
-		avatar, err := avatar.SaveAvatar(data)
-		if err != nil {
-			return nil, err
-		}
-		userUpdate.Avatar = avatar
-
-	}
-
-	if userData.PhoneNumber != nil {
-		userUpdate.Phone = *userData.PhoneNumber
-	}
-
-	err = repository.Repos.UserRepo.UpdateUser(userUpdate)
-	if err != nil {
-		return nil, err
-	}
-	userUpdate, err = repository.Repos.UserRepo.GetUserById(objectID)
-	if err != nil {
-		return nil, err
-	}
-
-	wechatAuth := false
-	if userUpdate.WechatToken != "" {
-		wechatAuth = true
-	}
-
-	return &graphql_models.User{
-		ID:          userUpdate.ID.Hex(),
-		Email:       userUpdate.Email,
-		Username:    userUpdate.Username,
-		Avatar:      ServeURL + "/avatars/" + userUpdate.Avatar,
-		PhoneNumber: &userUpdate.Phone,
-		WechatAuth:  wechatAuth,
-		Activate:    userUpdate.Activate,
-		CreatedAt:   userUpdate.CreatedAt.Time(),
-		UpdatedAt:   userUpdate.UpdatedAt.Time(),
-	}, nil
+	return r.UserService.ActivateUser(userID, userData)
 }
 
 // AddWechatAuth is the resolver for the addWechatAuth field.
-func (r *mutationResolver) AddWechatAuth(ctx context.Context, userID string, token string) (bool, error) {
+func (r *mutationResolver) AddWechatAuth(ctx context.Context, userID string, wechatAuthData graphql_models.WechatAuth) (bool, error) {
 	panic(fmt.Errorf("not implemented: AddWechatAuth - addWechatAuth"))
 }
 
@@ -253,55 +52,10 @@ func (r *mutationResolver) RemoveWechatAuth(ctx context.Context, userID string) 
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id string) (*graphql_models.User, error) {
-	objectID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-	userData, err := repository.Repos.UserRepo.GetUserById(objectID)
-	if err != nil {
-		return nil, err
-	}
-
-	wechatAuth := false
-	if userData.WechatToken != "" {
-		wechatAuth = true
-	}
-
-	return &graphql_models.User{
-		ID:          userData.ID.Hex(),
-		Email:       userData.Email,
-		Username:    userData.Username,
-		Avatar:      "/avatars/" + userData.Avatar,
-		PhoneNumber: &userData.Phone,
-		WechatAuth:  wechatAuth,
-		Activate:    userData.Activate,
-		CreatedAt:   userData.CreatedAt.Time(),
-		UpdatedAt:   userData.UpdatedAt.Time(),
-	}, nil
+	return r.UserService.GetUser(id)
 }
 
 // UserExports is the resolver for the userExports field.
 func (r *queryResolver) UserExports(ctx context.Context) ([]*graphql_models.UserExport, error) {
-	userDatas, err := repository.Repos.UserRepo.GetAllUsers()
-	if err != nil {
-		return nil, err
-	}
-	var users []*graphql_models.UserExport
-	for _, userData := range userDatas {
-		users = append(users, &graphql_models.UserExport{
-			ID:       userData.ID.Hex(),
-			Email:    userData.Email,
-			Username: userData.Username,
-			Avatar:   "/avatars/" + userData.Avatar,
-		})
-	}
-	return users, nil
+	return r.UserService.GetUserExports()
 }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-const ServeURL = "http://localhost:8080"

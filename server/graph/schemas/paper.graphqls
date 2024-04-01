@@ -22,7 +22,7 @@ type PaperPreview {
   journalLevel: String
 }
 
-input NewPaper {
+input PaperData {
   teachersIn: [ID]!
   teachersOut: [String]
   title: String!
@@ -32,28 +32,32 @@ input NewPaper {
   journalLevel: String
 }
 
-input UpdatePaper {
-  teachersIn: [ID]
+input PaperFilter {
+  teachersIn: [ID]!
   teachersOut: [String]
   title: String
-  publishDate: Time
+  publishDateStart: Time
+  publishDateEnd: Time
   rank: String
   journalName: String
   journalLevel: String
+  createdStart: Time
+  createdEnd: Time
+  updatedStart: Time
+  updatedEnd: Time
 }
 
 extend type Query {
   paper(id: ID!): Paper!
-  papers(userId: ID!): [Paper]!
 
-  papersByName(name: String!): [Paper]!
+  papersByFilter(filter: PaperFilter): [Paper]!
 }
 
 extend type Mutation {
-  createPaper(newPaperData: NewPaper!): Paper!
-  updatePaper(id: ID!, paperDataL: UpdatePaper!): Paper!
+  createPaper(newPaperData: PaperData!): Paper!
+  updatePaper(id: ID!, paperData: PaperData!): Paper!
   deletePaper(id: ID!): Paper!
 
-  uploadPaper(file: Upload!): Paper!
-  uploadPapers(file: Upload!): [Paper]!
+  uploadPapers(file: Upload!): [PaperPreview]!
+  createPapers(newPapersDatas: [PaperData]!): [Paper]!
 }

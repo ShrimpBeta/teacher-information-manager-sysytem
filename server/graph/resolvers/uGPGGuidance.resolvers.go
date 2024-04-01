@@ -8,15 +8,17 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
+
+	"github.com/99designs/gqlgen/graphql"
 )
 
 // CreateUPGuidance is the resolver for the createUPGuidance field.
-func (r *mutationResolver) CreateUPGuidance(ctx context.Context, newUGPGGuidanceData graphql_models.NewUGPGGuidance) (*graphql_models.UGPGGuidance, error) {
+func (r *mutationResolver) CreateUPGuidance(ctx context.Context, userID string, newUGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error) {
 	panic(fmt.Errorf("not implemented: CreateUPGuidance - createUPGuidance"))
 }
 
 // UpdateUPGuidance is the resolver for the updateUPGuidance field.
-func (r *mutationResolver) UpdateUPGuidance(ctx context.Context, uGPGGuidanceID string, uGPGGuidanceData graphql_models.UpdateUGPGGuidance) (*graphql_models.UGPGGuidance, error) {
+func (r *mutationResolver) UpdateUPGuidance(ctx context.Context, uGPGGuidanceID string, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error) {
 	panic(fmt.Errorf("not implemented: UpdateUPGuidance - updateUPGuidance"))
 }
 
@@ -25,17 +27,22 @@ func (r *mutationResolver) DeleteUPGuidance(ctx context.Context, uGPGGuidanceID 
 	panic(fmt.Errorf("not implemented: DeleteUPGuidance - deleteUPGuidance"))
 }
 
+// UploadUGPGGuidances is the resolver for the uploadUGPGGuidances field.
+func (r *mutationResolver) UploadUGPGGuidances(ctx context.Context, file graphql.Upload) ([]*graphql_models.UGPGGuidancePreview, error) {
+	panic(fmt.Errorf("not implemented: UploadUGPGGuidances - uploadUGPGGuidances"))
+}
+
+// CreateUPGuidances is the resolver for the createUPGuidances field.
+func (r *mutationResolver) CreateUPGuidances(ctx context.Context, userID string, newUGPGGuidanceDatas []*graphql_models.UGPGGuidanceData) ([]*graphql_models.UGPGGuidance, error) {
+	panic(fmt.Errorf("not implemented: CreateUPGuidances - createUPGuidances"))
+}
+
 // UGPGGuidance is the resolver for the uGPGGuidance field.
 func (r *queryResolver) UGPGGuidance(ctx context.Context, id string) (*graphql_models.UGPGGuidance, error) {
 	panic(fmt.Errorf("not implemented: UGPGGuidance - uGPGGuidance"))
 }
 
-// UGPGGuidances is the resolver for the uGPGGuidances field.
-func (r *queryResolver) UGPGGuidances(ctx context.Context, teacherID string) ([]*graphql_models.UGPGGuidance, error) {
-	panic(fmt.Errorf("not implemented: UGPGGuidances - uGPGGuidances"))
-}
-
-// UGPGGuidancesByTopicName is the resolver for the uGPGGuidancesByTopicName field.
-func (r *queryResolver) UGPGGuidancesByTopicName(ctx context.Context, name string) ([]*graphql_models.UGPGGuidance, error) {
-	panic(fmt.Errorf("not implemented: UGPGGuidancesByTopicName - uGPGGuidancesByTopicName"))
+// UGPGGuidancesByFilter is the resolver for the uGPGGuidancesByFilter field.
+func (r *queryResolver) UGPGGuidancesByFilter(ctx context.Context, filter graphql_models.UGPGGuidanceFilter) ([]*graphql_models.UGPGGuidance, error) {
+	panic(fmt.Errorf("not implemented: UGPGGuidancesByFilter - uGPGGuidancesByFilter"))
 }

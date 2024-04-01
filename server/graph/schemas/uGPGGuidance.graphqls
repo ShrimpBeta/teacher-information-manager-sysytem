@@ -13,18 +13,7 @@ type UGPGGuidance {
   updatedAt: Time!
 }
 
-input NewUGPGGuidance {
-  studentName: String!
-  thesisTopic: String!
-  openingCheckDate: Time
-  openingCheckResult: String
-  midtermCheckDate: Time
-  midtermCheckResult: String
-  defenseDate: Time
-  defenseResult: String
-}
-
-input UpdateUGPGGuidance {
+type UGPGGuidancePreview {
   studentName: String
   thesisTopic: String
   openingCheckDate: Time
@@ -35,18 +24,48 @@ input UpdateUGPGGuidance {
   defenseResult: String
 }
 
+input UGPGGuidanceData {
+  studentName: String!
+  thesisTopic: String!
+  openingCheckDate: Time
+  openingCheckResult: String
+  midtermCheckDate: Time
+  midtermCheckResult: String
+  defenseDate: Time
+  defenseResult: String
+}
+
+input UGPGGuidanceFilter {
+  userId: ID!
+  studentName: String
+  thesisTopic: String
+  defenseDateStart: Time
+  defenseDateEnd: Time
+  createdStart: Time
+  createdEnd: Time
+  updatedStart: Time
+  updatedEnd: Time
+}
+
 extend type Query {
   uGPGGuidance(id: ID!): UGPGGuidance!
-  uGPGGuidances(teacherId: ID!): [UGPGGuidance]!
-
-  uGPGGuidancesByTopicName(name: String!): [UGPGGuidance]!
+  uGPGGuidancesByFilter(filter: UGPGGuidanceFilter!): [UGPGGuidance]!
 }
 
 extend type Mutation {
-  createUPGuidance(newUGPGGuidanceData: NewUGPGGuidance!): UGPGGuidance!
+  createUPGuidance(
+    userId: ID!
+    newUGPGGuidanceData: UGPGGuidanceData!
+  ): UGPGGuidance!
   updateUPGuidance(
     uGPGGuidanceId: ID!
-    uGPGGuidanceData: UpdateUGPGGuidance!
+    uGPGGuidanceData: UGPGGuidanceData!
   ): UGPGGuidance!
   deleteUPGuidance(uGPGGuidanceId: ID!): UGPGGuidance!
+
+  uploadUGPGGuidances(file: Upload!): [UGPGGuidancePreview]!
+  createUPGuidances(
+    userId: ID!
+    newUGPGGuidanceDatas: [UGPGGuidanceData!]!
+  ): [UGPGGuidance!]!
 }

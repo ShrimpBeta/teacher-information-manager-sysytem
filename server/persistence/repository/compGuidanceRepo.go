@@ -16,9 +16,16 @@ type CompGuidanceRepo struct {
 }
 
 type CompGuidanceQueryParams struct {
-	UserId      primitive.ObjectID
-	ProjectName string
-	AwardStatus string
+	UserId        primitive.ObjectID
+	ProjectName   *string
+	StudentNames  []*string
+	GuidanceStart *primitive.DateTime
+	GuidanceEnd   *primitive.DateTime
+	AwardStatus   *string
+	CreatedStart  *primitive.DateTime
+	CreatedEnd    *primitive.DateTime
+	UpdatedStart  *primitive.DateTime
+	UpdatedEnd    *primitive.DateTime
 }
 
 func NewCompGuidanceRepo(db *mongo.Database) *CompGuidanceRepo {
@@ -42,12 +49,46 @@ func (r *CompGuidanceRepo) GetCompGuidancesByParams(params CompGuidanceQueryPara
 	// filter for userId, can not be empty
 	filter := bson.M{"userId": params.UserId}
 	// filter for projectName
-	if params.ProjectName != "" {
-		filter["projectName"] = params.ProjectName
+	if params.ProjectName != nil {
+		filter["projectName"] = bson.M{"$regex": primitive.Regex{Pattern: *params.ProjectName, Options: "i"}}
+	}
+	// filter for studentNames
+	if params.StudentNames != nil {
+		filter["studentNames"] = bson.M{"$in": params.StudentNames}
+	}
+	// filter for guidanceDate
+	if params.GuidanceStart != nil || params.GuidanceEnd != nil {
+		filter["guidanceDate"] = bson.M{}
+		if params.GuidanceStart != nil {
+			filter["guidanceDate"].(bson.M)["$gte"] = *params.GuidanceStart
+		}
+		if params.GuidanceEnd != nil {
+			filter["guidanceDate"].(bson.M)["$lte"] = *params.GuidanceEnd
+		}
 	}
 	// filter for awardStatus
-	if params.AwardStatus != "" {
-		filter["awardStatus"] = params.AwardStatus
+	if params.AwardStatus != nil {
+		filter["awardStatus"] = bson.M{"$regex": primitive.Regex{Pattern: *params.AwardStatus, Options: "i"}}
+	}
+	// filter for createdAt
+	if params.CreatedStart != nil || params.CreatedEnd != nil {
+		filter["createdAt"] = bson.M{}
+		if params.CreatedStart != nil {
+			filter["createdAt"].(bson.M)["$gte"] = *params.CreatedStart
+		}
+		if params.CreatedEnd != nil {
+			filter["createdAt"].(bson.M)["$lte"] = *params.CreatedEnd
+		}
+	}
+	// filter for updatedAt
+	if params.UpdatedStart != nil || params.UpdatedEnd != nil {
+		filter["updatedAt"] = bson.M{}
+		if params.UpdatedStart != nil {
+			filter["updatedAt"].(bson.M)["$gte"] = *params.UpdatedStart
+		}
+		if params.UpdatedEnd != nil {
+			filter["updatedAt"].(bson.M)["$lte"] = *params.UpdatedEnd
+		}
 	}
 
 	cursor, err := r.collection.Find(context.Background(), filter)
@@ -67,10 +108,10 @@ func (r *CompGuidanceRepo) GetCompGuidancesByParams(params CompGuidanceQueryPara
 }
 
 func (r *CompGuidanceRepo) CratedCompGuidance(compGuidance *models.CompGuidance) (*primitive.ObjectID, error) {
-	objectId := primitive.NewObjectID()
-	compGuidance.ID = objectId
-	compGuidance.CreatedAt = primitive.NewDateTimeFromTime(time.Now())
-	compGuidance.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
+	compGuidance.ID = primitive.NewObjectID()
+	createdTime := primitive.NewDateTimeFromTime(time.Now())
+	compGuidance.CreatedAt = createdTime
+	compGuidance.UpdatedAt = createdTime
 	result, err := r.collection.InsertOne(context.Background(), compGuidance)
 	if err != nil {
 		return nil, err

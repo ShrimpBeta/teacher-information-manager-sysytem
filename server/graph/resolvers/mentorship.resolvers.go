@@ -8,141 +8,23 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
-	"server/persistence/models"
-	"server/persistence/repository"
 
 	"github.com/99designs/gqlgen/graphql"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // CreateMentorship is the resolver for the createMentorship field.
-func (r *mutationResolver) CreateMentorship(ctx context.Context, userID string, newMentorshipData graphql_models.NewMentorship) (*graphql_models.Mentorship, error) {
-	userObjectId, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
-	studentNames := make([]string, len(newMentorshipData.Students))
-	for i, student := range newMentorshipData.Students {
-		studentNames[i] = *student
-	}
-	newMentorship := models.Mentorship{
-		UserId:       userObjectId,
-		ProjectName:  newMentorshipData.ProjectName,
-		StudentNames: studentNames,
-		Grade:        *newMentorshipData.Grade,
-		GuidanceDate: primitive.NewDateTimeFromTime(*newMentorshipData.GuidanceDate),
-	}
-	objectId, err := repository.Repos.MentorshipRepo.CreateMentorship(&newMentorship)
-	if err != nil {
-		return nil, err
-	}
-	mentorshipData, err := repository.Repos.MentorshipRepo.GetMentorshipById(*objectId)
-	if err != nil {
-		return nil, err
-	}
-	students := make([]*string, len(mentorshipData.StudentNames))
-	for i, student := range mentorshipData.StudentNames {
-		students[i] = &student
-	}
-	guidanceDate := mentorshipData.GuidanceDate.Time()
-	return &graphql_models.Mentorship{
-		ID:           mentorshipData.ID.Hex(),
-		ProjectName:  mentorshipData.ProjectName,
-		Students:     students,
-		Grade:        &mentorshipData.Grade,
-		GuidanceDate: &guidanceDate,
-		CreatedAt:    mentorshipData.CreatedAt.Time(),
-		UpdatedAt:    mentorshipData.UpdatedAt.Time(),
-	}, nil
+func (r *mutationResolver) CreateMentorship(ctx context.Context, userID string, newMentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
+	return r.MentorshipService.CreateMentorship(userID, newMentorshipData)
 }
 
 // UpdateMentorship is the resolver for the updateMentorship field.
-func (r *mutationResolver) UpdateMentorship(ctx context.Context, id string, mentorshipData *graphql_models.UpdateMentorship) (*graphql_models.Mentorship, error) {
-	if mentorshipData.ProjectName == nil && mentorshipData.Students == nil && mentorshipData.Grade == nil && mentorshipData.GuidanceDate == nil {
-		return nil, fmt.Errorf("no data to update")
-	}
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-	mentorshipUpdate, err := repository.Repos.MentorshipRepo.GetMentorshipById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	if mentorshipData.ProjectName != nil {
-		mentorshipUpdate.ProjectName = *mentorshipData.ProjectName
-	}
-	if mentorshipData.Students != nil {
-		studentNames := make([]string, len(mentorshipData.Students))
-		for i, student := range mentorshipData.Students {
-			studentNames[i] = *student
-		}
-		mentorshipUpdate.StudentNames = studentNames
-	}
-	if mentorshipData.Grade != nil {
-		mentorshipUpdate.Grade = *mentorshipData.Grade
-	}
-	if mentorshipData.GuidanceDate != nil {
-		mentorshipUpdate.GuidanceDate = primitive.NewDateTimeFromTime(*mentorshipData.GuidanceDate)
-	}
-
-	err = repository.Repos.MentorshipRepo.UpdateMentorship(mentorshipUpdate)
-	if err != nil {
-		return nil, err
-	}
-	mentorshipUpdate, err = repository.Repos.MentorshipRepo.GetMentorshipById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	students := make([]*string, len(mentorshipUpdate.StudentNames))
-	for i, student := range mentorshipUpdate.StudentNames {
-		students[i] = &student
-	}
-	guidanceDate := mentorshipUpdate.GuidanceDate.Time()
-	return &graphql_models.Mentorship{
-		ID:           mentorshipUpdate.ID.Hex(),
-		ProjectName:  mentorshipUpdate.ProjectName,
-		Students:     students,
-		Grade:        &mentorshipUpdate.Grade,
-		GuidanceDate: &guidanceDate,
-		CreatedAt:    mentorshipUpdate.CreatedAt.Time(),
-		UpdatedAt:    mentorshipUpdate.UpdatedAt.Time(),
-	}, nil
+func (r *mutationResolver) UpdateMentorship(ctx context.Context, id string, mentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
+	return r.MentorshipService.UpdateMentorship(id, mentorshipData)
 }
 
 // DeleteMentorship is the resolver for the deleteMentorship field.
 func (r *mutationResolver) DeleteMentorship(ctx context.Context, id string) (*graphql_models.Mentorship, error) {
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-	mentorshipData, err := repository.Repos.MentorshipRepo.GetMentorshipById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	err = repository.Repos.MentorshipRepo.DeleteMentorship(objectId)
-	if err != nil {
-		return nil, err
-	}
-	students := make([]*string, len(mentorshipData.StudentNames))
-	for i, student := range mentorshipData.StudentNames {
-		students[i] = &student
-	}
-	guidanceDate := mentorshipData.GuidanceDate.Time()
-	return &graphql_models.Mentorship{
-		ID:           mentorshipData.ID.Hex(),
-		ProjectName:  mentorshipData.ProjectName,
-		Students:     students,
-		Grade:        &mentorshipData.Grade,
-		GuidanceDate: &guidanceDate,
-		CreatedAt:    mentorshipData.CreatedAt.Time(),
-		UpdatedAt:    mentorshipData.UpdatedAt.Time(),
-	}, nil
-}
-
-// UploadMentorship is the resolver for the uploadMentorship field.
-func (r *mutationResolver) UploadMentorship(ctx context.Context, file graphql.Upload) (*graphql_models.MentorshipPreview, error) {
-	panic(fmt.Errorf("not implemented: UploadMentorship - uploadMentorship"))
+	return r.MentorshipService.DeleteMentorship(id)
 }
 
 // UploadMentorships is the resolver for the uploadMentorships field.
@@ -150,84 +32,17 @@ func (r *mutationResolver) UploadMentorships(ctx context.Context, file graphql.U
 	panic(fmt.Errorf("not implemented: UploadMentorships - uploadMentorships"))
 }
 
+// CreatedMentorships is the resolver for the createdMentorships field.
+func (r *mutationResolver) CreatedMentorships(ctx context.Context, userID string, newMentorshipDatas []*graphql_models.MentorshipData) ([]*graphql_models.Mentorship, error) {
+	panic(fmt.Errorf("not implemented: CreatedMentorships - createdMentorships"))
+}
+
 // Mentorship is the resolver for the mentorship field.
 func (r *queryResolver) Mentorship(ctx context.Context, id string) (*graphql_models.Mentorship, error) {
-	objectId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
-	mentorshipData, err := repository.Repos.MentorshipRepo.GetMentorshipById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	students := make([]*string, len(mentorshipData.StudentNames))
-	for i, student := range mentorshipData.StudentNames {
-		students[i] = &student
-	}
-	guidanceDate := mentorshipData.GuidanceDate.Time()
-	return &graphql_models.Mentorship{
-		ID:           mentorshipData.ID.Hex(),
-		ProjectName:  mentorshipData.ProjectName,
-		Students:     students,
-		Grade:        &mentorshipData.Grade,
-		GuidanceDate: &guidanceDate,
-		CreatedAt:    mentorshipData.CreatedAt.Time(),
-		UpdatedAt:    mentorshipData.UpdatedAt.Time(),
-	}, nil
+	return r.MentorshipService.GetMentorshipById(id)
 }
 
-// Mentorships is the resolver for the mentorships field.
-func (r *queryResolver) Mentorships(ctx context.Context, userID string) ([]*graphql_models.Mentorship, error) {
-	userObjectId, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
-	mentorshipsData, err := repository.Repos.MentorshipRepo.GetMentorshipsByParams(repository.MentorshipQueryParams{UserId: userObjectId})
-	if err != nil {
-		return nil, err
-	}
-	mentorships := make([]*graphql_models.Mentorship, len(mentorshipsData))
-	for i, mentorship := range mentorshipsData {
-		students := make([]*string, len(mentorship.StudentNames))
-		for j, student := range mentorship.StudentNames {
-			students[j] = &student
-		}
-		guidanceDate := mentorship.GuidanceDate.Time()
-		mentorships[i] = &graphql_models.Mentorship{
-			ID:           mentorship.ID.Hex(),
-			ProjectName:  mentorship.ProjectName,
-			Students:     students,
-			Grade:        &mentorship.Grade,
-			GuidanceDate: &guidanceDate,
-			CreatedAt:    mentorship.CreatedAt.Time(),
-			UpdatedAt:    mentorship.UpdatedAt.Time(),
-		}
-	}
-	return mentorships, nil
-}
-
-// MentorshipsByName is the resolver for the mentorshipsByName field.
-func (r *queryResolver) MentorshipsByName(ctx context.Context, name string) ([]*graphql_models.Mentorship, error) {
-	mentorshipsData, err := repository.Repos.MentorshipRepo.GetMentorshipsByParams(repository.MentorshipQueryParams{ProjectName: name})
-	if err != nil {
-		return nil, err
-	}
-	mentorships := make([]*graphql_models.Mentorship, len(mentorshipsData))
-	for i, mentorship := range mentorshipsData {
-		students := make([]*string, len(mentorship.StudentNames))
-		for j, student := range mentorship.StudentNames {
-			students[j] = &student
-		}
-		guidanceDate := mentorship.GuidanceDate.Time()
-		mentorships[i] = &graphql_models.Mentorship{
-			ID:           mentorship.ID.Hex(),
-			ProjectName:  mentorship.ProjectName,
-			Students:     students,
-			Grade:        &mentorship.Grade,
-			GuidanceDate: &guidanceDate,
-			CreatedAt:    mentorship.CreatedAt.Time(),
-			UpdatedAt:    mentorship.UpdatedAt.Time(),
-		}
-	}
-	return mentorships, nil
+// MentorshipsByFilter is the resolver for the mentorshipsByFilter field.
+func (r *queryResolver) MentorshipsByFilter(ctx context.Context, filter *graphql_models.MentorshipFilter) ([]*graphql_models.Mentorship, error) {
+	panic(fmt.Errorf("not implemented: MentorshipsByFilter - mentorshipsByFilter"))
 }

@@ -8,12 +8,12 @@ import (
 type Paper struct {
 	ID           primitive.ObjectID   `bson:"_id"`
 	TeachersIn   []primitive.ObjectID `bson:"teachersIn"`
-	TeachersOut  []string             `bson:"teachersOut,omitempty"`
+	TeachersOut  []*string            `bson:"teachersOut,omitempty"`
 	Title        string               `bson:"title"`
-	PublishDate  primitive.DateTime   `bson:"publishDate,omitempty"`
-	Rank         string               `bson:"rank,omitempty"`
-	JournalName  string               `bson:"journalName,omitempty"`
-	JournalLevel string               `bson:"journalLevel,omitempty"`
+	PublishDate  *primitive.DateTime  `bson:"publishDate,omitempty"`
+	Rank         *string              `bson:"rank,omitempty"`
+	JournalName  *string              `bson:"journalName,omitempty"`
+	JournalLevel *string              `bson:"journalLevel,omitempty"`
 	CreatedAt    primitive.DateTime   `bson:"createdAt"`
 	UpdatedAt    primitive.DateTime   `bson:"updatedAt"`
 }

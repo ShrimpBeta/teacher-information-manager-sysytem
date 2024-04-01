@@ -38,7 +38,7 @@ type CoursePreview {
   courseLocation: String
   courseType: String
   courseWeeks: [String]
-  classTimes: [ClassTime]
+  classTimes: [ClassTimePreview]
   studentCount: Int
   color: String
 }
@@ -48,45 +48,29 @@ type AcademicTermPreview {
   courses: [CoursePreview]
 }
 
-input NewClassTime {
+input ClassTimeData {
   dayOfWeek: Int!
   timeSlot: String!
 }
 
-input UpdateClassTime {
-  dayOfWeek: Int
-  timeSlot: String
-}
-
-input NewCourse {
+input CourseData {
   teacherNames: String
   courseName: String!
   courseLocation: String
   courseType: String
   courseWeeks: [String]!
-  classTimes: [NewClassTime]!
-  studentCount: Int
-  color: String
-}
-
-input UpdateCourse {
-  teacherNames: [String]
-  courseName: String
-  courseLocation: String
-  courseType: String
-  courseWeeks: [String]
-  classTimes: [NewClassTime]
+  classTimes: [ClassTimeData]!
   studentCount: Int
   color: String
 }
 
 input NewAcademicTerm {
-  termName: String
-  courses: [NewCourse]!
+  termName: String!
+  courses: [CourseData]!
 }
 
 input UpdateAcademicTerm {
-  name: String!
+  termName: String!
 }
 
 extend type Query {
@@ -98,8 +82,8 @@ extend type Query {
 }
 
 extend type Mutation {
-  createCourse(termId: ID!, newCourseData: NewCourse!): Course!
-  updateCourse(courseId: ID!, courseData: UpdateCourse!): Course!
+  createCourse(termId: ID!, newCourseData: CourseData!): Course!
+  updateCourse(courseId: ID!, courseData: CourseData!): Course!
   deleteCourse(termId: ID!, courseId: ID!): Course!
 
   createacademicTerm(userId: ID!, newTermData: NewAcademicTerm!): AcademicTerm!
