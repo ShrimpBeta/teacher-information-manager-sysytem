@@ -189,7 +189,7 @@ export function Users() {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user: any) => (
+                {users && users.length > 0 ? (users.map((user: any) => (
                   <tr key={user.id} className="hover:bg-gray-200">
                     <td className="border border-gray-300 px-2 py-1">{user.id}</td>
                     <td className="border border-gray-300 px-2 py-1">{user.username}</td>
@@ -203,8 +203,12 @@ export function Users() {
                       <button onClick={(event) => handleDeleteUser(user.id)} className="w-20 h-9 mr-4 bg-red-500/80
            hover:bg-red-600/80 rounded-md text-white">删除</button>
                     </td>
+                  </tr>))) : (
+                  <tr>
+                    <td colSpan={7} className="border border-gray-300 px-2 py-1 text-center">暂无用户</td>
                   </tr>
-                ))}
+                )
+                }
               </tbody>
             </table>
           </div>
