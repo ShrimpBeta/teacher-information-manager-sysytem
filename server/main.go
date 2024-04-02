@@ -25,7 +25,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//go:embed client/build
+//go:embed admin-dashboard/build
 var clientBuildFS embed.FS
 
 func graphHandler(
@@ -110,7 +110,7 @@ func main() {
 		AllowOrigins: []string{"*"},
 		// AllowAllOrigins:  true,
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
-		AllowMethods:     []string{"GET", "POST", "DELETE"},
+		AllowMethods:     []string{"GET", "POST", "DELETE", "OPTIONS"},
 		AllowCredentials: true,
 	}))
 
@@ -133,7 +133,7 @@ func main() {
 	r.DELETE(environment.Restful+"/account/delete/:id", restful.DeleteAccount)
 
 	// Client Build
-	fs, err := fs.Sub(clientBuildFS, "client/build")
+	fs, err := fs.Sub(clientBuildFS, "admin-dashboard/build")
 	if err != nil {
 		log.Fatalf("Failed to get sub filesystem: %v", err)
 	}
