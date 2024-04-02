@@ -4,7 +4,7 @@ import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import Taro from "@tarojs/taro";
 import qs from "qs";
 
-const httpUrl = 'http://localhost:8080/query'
+const httpUrl = 'http://localhost:8080/graphql'
 const ENDPOINT = 'http://localhost:8080'
 
 export const request = async (
