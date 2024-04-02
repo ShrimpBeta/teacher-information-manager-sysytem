@@ -1,8 +1,8 @@
 import { gql } from "apollo-angular";
 
 export const signInMutation = gql`
-  mutation signIn($email: String!, $password: String!){
-    signIn(email: $email, password: $password) {
+  mutation signIn($signInData: SigIn!){
+    signIn(signInData:$signInData) {
       token
       user {
         id

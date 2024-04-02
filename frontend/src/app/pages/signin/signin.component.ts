@@ -1,4 +1,3 @@
-import { NgClass } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { LoginformComponent } from '../../components/loginform/loginform.component';
 import { AuthService } from '../../core/auth/auth.service';
@@ -12,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-signin',
   standalone: true,
-  imports: [NgClass, LoginformComponent, MatSnackBarModule,MatButtonModule],
+  imports: [LoginformComponent, MatSnackBarModule, MatButtonModule],
   templateUrl: './signin.component.html',
   styleUrl: './signin.component.scss'
 })
