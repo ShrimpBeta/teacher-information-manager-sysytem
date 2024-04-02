@@ -31,6 +31,7 @@ export function SignIn() {
       let response = await apiClient.post('admin/signin', { account: account, password: password });
       let data = response.data as { token: string };
       dispatch(authSlice.actions.login(data.token));
+      setOnsignin(false);
       navigate('/users');
     } catch (error) {
       if ((error as AxiosError).response) {
@@ -40,11 +41,11 @@ export function SignIn() {
       } else {
         setErrorMessages('网络错误');
       }
+      setOnsignin(false);
     }
     setTimeout(() => {
       setErrorMessages('');
     }, 2000);
-    setOnsignin(false);
   }
 
   useEffect(() => {

@@ -1,10 +1,9 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../../app/store";
 import { JWT } from "../../features/jwt/jwt";
 import { authSlice } from "../../features/auth/authSlice";
-import { ListTable, ListColumn, VTable } from "@visactor/react-vtable";
 import { ApiClientContext } from "../..";
 import { AxiosError } from "axios";
 import { Refresh } from "../../components/refresh.svg";
@@ -14,7 +13,6 @@ export function Users() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const tableRef = useRef<any>(null);
   const token = useSelector((state: RootState) => state.auth.token);
   const [users, setUsers] = useState([]);
   const [errorMessages, setErrorMessages] = useState('');
@@ -24,10 +22,12 @@ export function Users() {
   const [oncreate, setOncreate] = useState(false);
   const [ondelete, setOndelete] = useState(false);
 
-
   const apiClient = useContext(ApiClientContext);
 
   const fetchUsers = async () => {
+    if (isfetching) {
+      return;
+    }
     setIsfetching(true);
     try {
       let response = await apiClient.get('accounts');
@@ -41,11 +41,11 @@ export function Users() {
       } else {
         setErrorMessages('网络错误');
       }
+      setIsfetching(false);
     }
     setTimeout(() => {
       setErrorMessages('');
     }, 2000);
-    setIsfetching(false);
   };
 
   const handleLogout = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -53,15 +53,21 @@ export function Users() {
     navigate('/signin');
   }
 
+
+  useEffect(() => {
+    console.log('ondelete updated', ondelete)
+  }, [ondelete]);
+
   const handleDeleteUser = (id: string) => {
+    console.log('delete user check before', id);
     if (ondelete) {
       return;
     }
     setOndelete(true);
-    console.log('delete user:', id);
+    console.log('delete user check after', id);
     apiClient.delete(`account/delete/${id}`).then((response) => {
-      console.log(response);
       fetchUsers();
+      setOndelete(false);
     }).catch((error) => {
       if ((error as AxiosError).response) {
         let data = (error as AxiosError).response?.data as { error: string };
@@ -69,11 +75,11 @@ export function Users() {
       } else {
         setErrorMessages('网络错误');
       }
+      setOndelete(false);
     });
     setTimeout(() => {
       setErrorMessages('');
     }, 2000);
-    setOndelete(false);
   }
 
   const CloseModal = () => {
@@ -92,6 +98,7 @@ export function Users() {
       console.log(response);
       CloseModal();
       fetchUsers();
+      setOncreate(false);
     }).catch((error) => {
       if ((error as AxiosError).response) {
         let data = (error as AxiosError).response?.data as { error: string };
@@ -99,11 +106,11 @@ export function Users() {
       } else {
         setErrorMessages('网络错误');
       }
+      setOncreate(false);
     });
     setTimeout(() => {
       setErrorMessages('');
     }, 2000);
-    setOncreate(false);
   }
 
   const showErrorMessage = (message: string) => {
@@ -168,49 +175,38 @@ export function Users() {
                hover:bg-sky-600/80 rounded-md text-white">创建用户</button>
             </div>
           </div>
-          <div className="h-2/3">
-            <ListTable className=" z-0" ref={tableRef} records={users} theme={VTable.themes.BRIGHT} defaultRowHeight={60}
-              onClickCell={
-                (params) => {
-                  const { col, row, targetIcon } = params;
-                  if (targetIcon) {
-                    if (targetIcon.name === 'delete') {
-                      if (tableRef.current) {
-                        let userId = tableRef.current.getCellValue(0, row);
-                        handleDeleteUser(userId);
-                      }
-
-                    }
-                  }
-                }
-              }>
-              <ListColumn field={'id'} title={'ID'} width={250} sort />
-              <ListColumn field={'username'} title={'用户名'} width={100} sort />
-              <ListColumn field={'email'} title={'邮箱'} width={220} sort />
-              <ListColumn field={'avatar'} title={'头像'} width={100} cellType={'image'} />
-              <ListColumn field={'activate'} title={'是否激活'} width={130} sort />
-              <ListColumn field={'createdAt'} title={'创建时间'} width={220} sort />
-              <ListColumn field={'delete'} title={'删除用户'} width={100} disableSelect
-                icon={VTable.register.icon(
-                  'delete',
-                  {
-                    name: 'delete',
-                    type: 'svg',
-                    svg: "https://lf9-dp-fe-cms-tos.byteorg.com/obj/bit-cloud/VTable/delete.svg",
-                    // svg: "../../svg/delete.svg",
-                    width: 24,
-                    height: 24,
-                    cursor: 'pointer',
-                    positionType: VTable.TYPES.IconPosition.right,
-                    tooltip: {
-                      style: { arrowMark: true },
-                      title: '删除用户',
-                      placement: VTable.TYPES.Placement.left
-                    },
-                  },
-                )}
-              />
-            </ListTable>
+          <div className="h-2/3 w-full overflow-auto">
+            <table className="table-auto border-collapse border border-gray-300 w-full">
+              <thead>
+                <tr className="bg-gray-100 sticky top-0">
+                  <th className="border border-gray-300 px-2 py-1">ID</th>
+                  <th className="border border-gray-300 px-2 py-1">用户名</th>
+                  <th className="border border-gray-300 px-2 py-1">邮箱</th>
+                  <th className="border border-gray-300 px-2 py-1">头像</th>
+                  <th className="border border-gray-300 px-2 py-1">是否激活</th>
+                  <th className="border border-gray-300 px-2 py-1">创建时间</th>
+                  <th className="border border-gray-300 px-2 py-1">删除用户</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user: any) => (
+                  <tr key={user.id} className="hover:bg-gray-200">
+                    <td className="border border-gray-300 px-2 py-1">{user.id}</td>
+                    <td className="border border-gray-300 px-2 py-1">{user.username}</td>
+                    <td className="border border-gray-300 px-2 py-1">{user.email}</td>
+                    <td className="border border-gray-300 px-2 py-1">
+                      <img src={user.avatar} alt="avatar" className="w-10 h-10 rounded-full" />
+                    </td>
+                    <td className="border border-gray-300 px-2 py-1">{user.activate ? '已激活' : '未激活'}</td>
+                    <td className="border border-gray-300 px-2 py-1">{user.createdAt}</td>
+                    <td className="border border-gray-300 px-2 py-1">
+                      <button onClick={(event) => handleDeleteUser(user.id)} className="w-20 h-9 mr-4 bg-red-500/80
+           hover:bg-red-600/80 rounded-md text-white">删除</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

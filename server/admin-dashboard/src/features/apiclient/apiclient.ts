@@ -3,7 +3,7 @@ import { Store } from '@reduxjs/toolkit';
 
 const apiClient = axios.create({
   baseURL: 'http://localhost:8080/restful/',
-  // baseURL: '/restful/'
+  // baseURL: '/restful/',
 });
 
 
