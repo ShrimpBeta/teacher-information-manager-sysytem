@@ -12,11 +12,11 @@ type CompGuidanceService struct {
 	Repo *repository.CompGuidanceRepo
 }
 
-func NewCompGuidanceService(r *repository.CompGuidanceRepo) *CompGuidanceService {
-	return &CompGuidanceService{Repo: r}
+func NewCompGuidanceService(compguidanceRepo *repository.CompGuidanceRepo) *CompGuidanceService {
+	return &CompGuidanceService{Repo: compguidanceRepo}
 }
 
-func (c *CompGuidanceService) CreateCompGuidance(userID string, newGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
+func (compGuidanceService *CompGuidanceService) CreateCompGuidance(userID string, newGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
 	userObjectId, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		return nil, err
@@ -31,11 +31,11 @@ func (c *CompGuidanceService) CreateCompGuidance(userID string, newGuidanceData 
 		GuidanceDate:     &guidanceDate,
 		AwardStatus:      newGuidanceData.AwardStatus,
 	}
-	objectId, err := c.Repo.CratedCompGuidance(&newCompGuidance)
+	objectId, err := compGuidanceService.Repo.CratedCompGuidance(&newCompGuidance)
 	if err != nil {
 		return nil, err
 	}
-	comGuidanceData, err := c.Repo.GetCompGuidanceById(*objectId)
+	comGuidanceData, err := compGuidanceService.Repo.GetCompGuidanceById(*objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (c *CompGuidanceService) CreateCompGuidance(userID string, newGuidanceData 
 	}, nil
 }
 
-func (c *CompGuidanceService) UpdateCompGuidance(id string, compGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
+func (compGuidanceService *CompGuidanceService) UpdateCompGuidance(id string, compGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -70,11 +70,11 @@ func (c *CompGuidanceService) UpdateCompGuidance(id string, compGuidanceData gra
 		AwardStatus:      compGuidanceData.AwardStatus,
 	}
 
-	err = c.Repo.UpdateCompGuidance(compGuidanceUpdate)
+	err = compGuidanceService.Repo.UpdateCompGuidance(compGuidanceUpdate)
 	if err != nil {
 		return nil, err
 	}
-	compGuidanceUpdate, err = c.Repo.GetCompGuidanceById(objectId)
+	compGuidanceUpdate, err = compGuidanceService.Repo.GetCompGuidanceById(objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -92,17 +92,17 @@ func (c *CompGuidanceService) UpdateCompGuidance(id string, compGuidanceData gra
 	}, nil
 }
 
-func (c *CompGuidanceService) DeleteCompGuidance(id string) (*graphql_models.CompGuidance, error) {
+func (compGuidanceService *CompGuidanceService) DeleteCompGuidance(id string) (*graphql_models.CompGuidance, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
-	compGuidanceData, err := c.Repo.GetCompGuidanceById(objectId)
+	compGuidanceData, err := compGuidanceService.Repo.GetCompGuidanceById(objectId)
 	if err != nil {
 		return nil, err
 	}
 
-	err = c.Repo.DeleteCompGuidance(objectId)
+	err = compGuidanceService.Repo.DeleteCompGuidance(objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -120,12 +120,12 @@ func (c *CompGuidanceService) DeleteCompGuidance(id string) (*graphql_models.Com
 	}, nil
 }
 
-func (c *CompGuidanceService) GetCompGuidanceById(id string) (*graphql_models.CompGuidance, error) {
+func (compGuidanceService *CompGuidanceService) GetCompGuidanceById(id string) (*graphql_models.CompGuidance, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
-	compGuidanceData, err := c.Repo.GetCompGuidanceById(objectId)
+	compGuidanceData, err := compGuidanceService.Repo.GetCompGuidanceById(objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -143,12 +143,12 @@ func (c *CompGuidanceService) GetCompGuidanceById(id string) (*graphql_models.Co
 	}, nil
 }
 
-func (c *CompGuidanceService) GetCompGuidancesByUserId(userID string) ([]*graphql_models.CompGuidance, error) {
+func (compGuidanceService *CompGuidanceService) GetCompGuidancesByUserId(userID string) ([]*graphql_models.CompGuidance, error) {
 	userObjectId, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		return nil, err
 	}
-	compGuidancesData, err := c.Repo.GetCompGuidancesByParams(repository.CompGuidanceQueryParams{UserId: userObjectId})
+	compGuidancesData, err := compGuidanceService.Repo.GetCompGuidancesByParams(repository.CompGuidanceQueryParams{UserId: userObjectId})
 	if err != nil {
 		return nil, err
 	}

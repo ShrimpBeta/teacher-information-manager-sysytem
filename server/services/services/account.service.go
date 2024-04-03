@@ -15,11 +15,11 @@ type AccountService struct {
 	Repo *repository.UserRepo
 }
 
-func NewAccountService(r *repository.UserRepo) *AccountService {
-	return &AccountService{Repo: r}
+func NewAccountService(userRepo *repository.UserRepo) *AccountService {
+	return &AccountService{Repo: userRepo}
 }
 
-func (a *AccountService) CreateAccount(newUserData models.RestfulCreateUser) (*models.RestfulCreateUser, error) {
+func (accountService *AccountService) CreateAccount(newUserData models.RestfulCreateUser) (*models.RestfulCreateUser, error) {
 	// Generate master key,用于密码管理加密
 	masterKey, err := passwordencrypt.GenerateMasterKey()
 	if err != nil {
@@ -47,7 +47,7 @@ func (a *AccountService) CreateAccount(newUserData models.RestfulCreateUser) (*m
 		MasterKey: masterKey,
 		Salt:      salt,
 	}
-	_, err = a.Repo.CreateUser(&newUser)
+	_, err = accountService.Repo.CreateUser(&newUser)
 	if err != nil {
 		return nil, err
 	}
@@ -57,8 +57,8 @@ func (a *AccountService) CreateAccount(newUserData models.RestfulCreateUser) (*m
 	}, nil
 }
 
-func (a *AccountService) GetAccounts() ([]*models.RestfulUser, error) {
-	userDatas, err := a.Repo.GetAllUsers()
+func (accountService *AccountService) GetAccounts() ([]*models.RestfulUser, error) {
+	userDatas, err := accountService.Repo.GetAllUsers()
 	if err != nil {
 		return nil, err
 	}
@@ -76,13 +76,13 @@ func (a *AccountService) GetAccounts() ([]*models.RestfulUser, error) {
 	return users, nil
 }
 
-func (a *AccountService) DeleteAccount(userID string) (*models.RestfulUser, error) {
+func (accountService *AccountService) DeleteAccount(userID string) (*models.RestfulUser, error) {
 	objectID, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	userData, err := a.Repo.GetUserById(objectID)
+	userData, err := accountService.Repo.GetUserById(objectID)
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +95,7 @@ func (a *AccountService) DeleteAccount(userID string) (*models.RestfulUser, erro
 		CreatedAt: userData.CreatedAt.Time(),
 	}
 
-	err = a.Repo.DeleteUser(objectID)
+	err = accountService.Repo.DeleteUser(objectID)
 	if err != nil {
 		return nil, err
 	}
@@ -103,8 +103,8 @@ func (a *AccountService) DeleteAccount(userID string) (*models.RestfulUser, erro
 	return &user, nil
 }
 
-func (a *AccountService) CheckEmailDuplicate(email string) (bool, error) {
-	userData, err := a.Repo.GetUserByEmail(email)
+func (accountService *AccountService) CheckEmailDuplicate(email string) (bool, error) {
+	userData, err := accountService.Repo.GetUserByEmail(email)
 	if err != nil {
 		return false, err
 	}

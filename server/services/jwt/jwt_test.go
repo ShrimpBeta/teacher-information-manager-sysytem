@@ -1,12 +1,13 @@
 package jwt
 
 import (
+	"server/environment"
 	"testing"
 )
 
 func TestGenerateToken(t *testing.T) {
 	email := "email@example.com"
-	_, err := GenerateToken(email)
+	_, err := GenerateToken(email, environment.UserTokenExpireTime)
 	if err != nil {
 		t.Errorf("GenerateToken error: %v", err)
 	}

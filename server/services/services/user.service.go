@@ -1,8 +1,9 @@
 package services
 
 import (
-	"fmt"
-	"io"
+	"fft
+	"io
+	"math/randth/rand"
 	"server/environment"
 	graphql_models "server/graph/model"
 	"server/persistence/repository"
@@ -11,20 +12,22 @@ import (
 	passwordencrypt "server/services/passwordEncrypt"
 	"time"
 
+	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserService struct {
-	Repo *repository.UserRepo
+	Repo    *repository.UserRepo
+	RedisDB *redis.Client
 }
 
-func NewUserService(r *repository.UserRepo) *UserService {
-	return &UserService{Repo: r}
+func NewUserService(userRepo *repository.UserRepo, redisDB *redis.Client) *UserService {
+	return &UserService{Repo: userRepo, RedisDB: redisDB}
 }
 
-func (u *UserService) SignIn(signInData graphql_models.SigIn) (*graphql_models.SignInResponse, error) {
+func (userService *UserService) SignIn(signInData graphql_models.SigIn) (*graphql_models.SignInResponse, error) {
 
-	userData, err := u.Repo.GetUserByEmail(signInData.Email)
+	userData, err := userService.Repo.GetUserByEmail(signInData.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +41,7 @@ func (u *UserService) SignIn(signInData graphql_models.SigIn) (*graphql_models.S
 	}
 
 	// generate token
-	token, err := jwt.GenerateToken(userData.Email)
+	token, err := jwt.GenerateToken(userData.Email,environment.UserTokenExpireTime)
 	if err != nil {
 		return nil, err
 	}
@@ -66,14 +69,14 @@ func (u *UserService) SignIn(signInData graphql_models.SigIn) (*graphql_models.S
 
 }
 
-func (u *UserService) UpdateUser(userID string, userData graphql_models.UpdateUser) (*graphql_models.User, error) {
+func (userService *UserService) UpdateUser(userID string, userData graphql_models.UpdateUser) (*graphql_models.User, error) {
 
 	objectID, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	userUpdate, err := u.Repo.GetUserById(objectID)
+	userUpdate, err := userService.Repo.GetUserById(objectID)
 	if err != nil {
 		return nil, err
 	}
@@ -83,11 +86,18 @@ func (u *UserService) UpdateUser(userID string, userData graphql_models.UpdateUs
 	if userData.Avatar != nil {
 		file := userData.Avatar.File
 
-		// check file type
-		if userData.Avatar.ContentType != "image/png" &&
-			userData.Avatar.ContentType != "image/jpeg" &&
-			userData.Avatar.ContentType != "image/jpg" &&
-			userData.Avatar.ContentType != "image/webp" {
+		// file type
+		mimeExtensions := map[string]string{
+			"image/png":  ".png",
+			"image/jpeg": ".jpeg",
+			"image/jpg":  ".jpg",
+			"image/webp": ".webp",
+		}
+
+		// get file type
+		filetypeName, exists := mimeExtensions[userData.Avatar.ContentType]
+
+		if !exists {
 			return nil, fmt.Errorf("only png,jpeg,jpg,webp file is allowed")
 		}
 
@@ -98,11 +108,16 @@ func (u *UserService) UpdateUser(userID string, userData graphql_models.UpdateUs
 		}
 
 		// Pass the data as []byte to the SaveAvatar function
-		avatar, err := avatar.SaveAvatar(data)
+		userAvatar, err := avatar.SaveAvatar(data, filetypeName)
 		if err != nil {
 			return nil, err
 		}
-		userUpdate.Avatar = avatar
+
+		// delete old avatar
+		oldavatar := userUpdate.Avatar
+		avatar.DeleteAvatar(oldavatar)
+
+		userUpdate.Avatar = userAvatar
 	}
 
 	if userData.PhoneNumber != nil {
@@ -111,12 +126,12 @@ func (u *UserService) UpdateUser(userID string, userData graphql_models.UpdateUs
 
 	userUpdate.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
 
-	err = u.Repo.UpdateUser(userUpdate)
+	err = userService.Repo.UpdateUser(userUpdate)
 	if err != nil {
 		return nil, err
 	}
 
-	userUpdate, err = u.Repo.GetUserById(objectID)
+	userUpdate, err = userService.Repo.GetUserById(objectID)
 	if err != nil {
 		return nil, err
 	}
@@ -139,28 +154,37 @@ func (u *UserService) UpdateUser(userID string, userData graphql_models.UpdateUs
 
 }
 
-func (u *UserService) ActivateUser(userID string, userData graphql_models.ActivateUser) (*graphql_models.User, error) {
+func (userService *UserService) ActivateUser(userID string, userData graphql_models.ActivateUser) (*graphql_models.User, error) {
 	objectID, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		return nil, err
 	}
 
-	userUpdate, err := u.Repo.GetUserById(objectID)
+	// get user by id
+	userUpdate, err := userService.Repo.GetUserById(objectID)
 	if err != nil {
 		return nil, err
 	}
 
 	userUpdate.Activate = true
 	userUpdate.Username = userData.Username
-	userUpdate.Password = userData.Password
+	userUpdate.Password = passwordencrypt.HashPassword(userData.Password, userUpdate.Salt)
+
 	if userData.Avatar != nil {
 		file := userData.Avatar.File
 
-		// check file type
-		if userData.Avatar.ContentType != "image/png" &&
-			userData.Avatar.ContentType != "image/jpeg" &&
-			userData.Avatar.ContentType != "image/jpg" &&
-			userData.Avatar.ContentType != "image/webp" {
+		// file type
+		mimeExtensions := map[string]string{
+			"image/png":  ".png",
+			"image/jpeg": ".jpeg",
+			"image/jpg":  ".jpg",
+			"image/webp": ".webp",
+		}
+
+		// get file type
+		filetypeName, exists := mimeExtensions[userData.Avatar.ContentType]
+
+		if !exists {
 			return nil, fmt.Errorf("only png,jpeg,jpg,webp file is allowed")
 		}
 
@@ -171,11 +195,16 @@ func (u *UserService) ActivateUser(userID string, userData graphql_models.Activa
 		}
 
 		// Pass the data as []byte to the SaveAvatar function
-		avatar, err := avatar.SaveAvatar(data)
+		userAvatar, err := avatar.SaveAvatar(data, filetypeName)
 		if err != nil {
 			return nil, err
 		}
-		userUpdate.Avatar = avatar
+
+		// delete old avatar
+		oldavatar := userUpdate.Avatar
+		avatar.DeleteAvatar(oldavatar)
+
+		userUpdate.Avatar = userAvatar
 
 	}
 
@@ -183,11 +212,11 @@ func (u *UserService) ActivateUser(userID string, userData graphql_models.Activa
 		userUpdate.Phone = userData.PhoneNumber
 	}
 
-	err = u.Repo.UpdateUser(userUpdate)
+	err = userService.Repo.UpdateUser(userUpdate)
 	if err != nil {
 		return nil, err
 	}
-	userUpdate, err = u.Repo.GetUserById(objectID)
+	userUpdate, err = userService.Repo.GetUserById(objectID)
 	if err != nil {
 		return nil, err
 	}
@@ -210,20 +239,51 @@ func (u *UserService) ActivateUser(userID string, userData graphql_models.Activa
 	}, nil
 }
 
-func (u *UserService) ResetPassword() error {
-	return nil
+func (userService *UserService) UpdatePassword(userID string, updatePasswordData graphql_models.UpdatePassword) (bool, error) {
+	objectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return false, err
+	}
+
+	userData, err := userService.Repo.GetUserById(objectID)
+	if err != nil {
+		return false, err
+	}
+
+	if userData.Password != passwordencrypt.HashPassword(updatePasswordData.OldPassword, userData.Salt) {
+		return false, fmt.Errorf("wrong password")
+	}
+
+	userData.Password = passwordencrypt.HashPassword(updatePasswordData.NewPassword, userData.Salt)
+
+	err = userService.Repo.UpdateUser(userData)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
-func (u *UserService) ForgetPassword() error {
-	return nil
+func (userService *UserService) ResetPassword(userID string, resetPasswordData graphql_models.ResetPassword) (bool, error) {
+	objectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
-func (u *UserService) GetUser(id string) (*graphql_models.User, error) {
+func (userService *UserService) GetEmialCode(email string) (bool, error) {
+	return true, nil
+}
+
+func (userService *UserService) GetUser(id string) (*graphql_models.User, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
-	userData, err := u.Repo.GetUserById(objectID)
+
+	userData, err := userService.Repo.GetUserById(objectID)
 	if err != nil {
 		return nil, err
 	}
@@ -246,11 +306,12 @@ func (u *UserService) GetUser(id string) (*graphql_models.User, error) {
 	}, nil
 }
 
-func (u *UserService) GetUserExports() ([]*graphql_models.UserExport, error) {
-	userDatas, err := u.Repo.GetAllUsers()
+func (userService *UserService) GetUserExports() ([]*graphql_models.UserExport, error) {
+	userDatas, err := userService.Repo.GetAllUsers()
 	if err != nil {
 		return nil, err
 	}
+
 	var users []*graphql_models.UserExport
 	for _, userData := range userDatas {
 		users = append(users, &graphql_models.UserExport{
@@ -264,16 +325,27 @@ func (u *UserService) GetUserExports() ([]*graphql_models.UserExport, error) {
 	return users, nil
 }
 
-func (u *UserService) DeleteUser(userID string) (bool, error) {
+func (userService *UserService) DeleteUser(userID string) (bool, error) {
 	objectID, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		return false, err
 	}
 
-	err = u.Repo.DeleteUser(objectID)
+	err = userService.Repo.DeleteUser(objectID)
 	if err != nil {
 		return false, err
 	}
 
 	return true, nil
 }
+
+// generate 6 bit random code
+func GenerateCode() string {
+	random := rand.New(rand.NewSource(time.Now().UnixNano()))
+	bytes := make([]byte, 6)
+	for i := range bytes {
+		bytes[i] = byte(48 + random.Intn(10))
+	}
+	return string(bytes)
+}
+

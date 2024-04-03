@@ -23,6 +23,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/redis/go-redis/v9"
 )
 
 //go:embed admin-dashboard/build
@@ -73,6 +74,13 @@ func main() {
 	DB := database.Connect(environment.DefaultMongodbUrl)
 	defer DB.DisConnect()
 
+	// init redis
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     environment.RedisAddress,
+		Password: "",
+		DB:       0,
+	})
+
 	// init Repos
 	repository := repository.NewRepositorys(DB.Client.Database(environment.DatabaseName))
 
@@ -87,7 +95,7 @@ func main() {
 	passwordService := services.NewPasswordService(repository.PasswordRepo)
 	sciResearchService := services.NewSciResearchService(repository.SciResearchRepo)
 	uGPGGuidanceService := services.NewUGPGGuidanceService(repository.UGPGGuidanceRepo)
-	userService := services.NewUserService(repository.UserRepo)
+	userService := services.NewUserService(repository.UserRepo, rdb)
 
 	// set gin mode to release
 	// gin.SetMode(gin.ReleaseMode)

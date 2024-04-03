@@ -6,6 +6,6 @@ type MonographService struct {
 	Repo *repository.MonographRepo
 }
 
-func NewMonographService(r *repository.MonographRepo) *MonographService {
-	return &MonographService{Repo: r}
+func NewMonographService(monographRepo *repository.MonographRepo) *MonographService {
+	return &MonographService{Repo: monographRepo}
 }

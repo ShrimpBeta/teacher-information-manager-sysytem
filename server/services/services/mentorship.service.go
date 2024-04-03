@@ -12,11 +12,11 @@ type MentorshipService struct {
 	Repo *repository.MentorshipRepo
 }
 
-func NewMentorshipService(r *repository.MentorshipRepo) *MentorshipService {
-	return &MentorshipService{Repo: r}
+func NewMentorshipService(mentorshipRepo *repository.MentorshipRepo) *MentorshipService {
+	return &MentorshipService{Repo: mentorshipRepo}
 }
 
-func (m *MentorshipService) CreateMentorship(userID string, newMentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
+func (mentorshipService *MentorshipService) CreateMentorship(userID string, newMentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
 	userObjectId, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		return nil, err
@@ -30,11 +30,11 @@ func (m *MentorshipService) CreateMentorship(userID string, newMentorshipData gr
 		Grade:        newMentorshipData.Grade,
 		GuidanceDate: &guidanceDate,
 	}
-	objectId, err := m.Repo.CreateMentorship(&newMentorship)
+	objectId, err := mentorshipService.Repo.CreateMentorship(&newMentorship)
 	if err != nil {
 		return nil, err
 	}
-	mentorshipData, err := m.Repo.GetMentorshipById(*objectId)
+	mentorshipData, err := mentorshipService.Repo.GetMentorshipById(*objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (m *MentorshipService) CreateMentorship(userID string, newMentorshipData gr
 	}, nil
 }
 
-func (m *MentorshipService) UpdateMentorship(id string, mentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
+func (mentorshipService *MentorshipService) UpdateMentorship(id string, mentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -67,11 +67,11 @@ func (m *MentorshipService) UpdateMentorship(id string, mentorshipData graphql_m
 		GuidanceDate: &guidanceDate,
 	}
 
-	err = m.Repo.UpdateMentorship(mentorshipUpdate)
+	err = mentorshipService.Repo.UpdateMentorship(mentorshipUpdate)
 	if err != nil {
 		return nil, err
 	}
-	mentorshipUpdate, err = m.Repo.GetMentorshipById(objectId)
+	mentorshipUpdate, err = mentorshipService.Repo.GetMentorshipById(objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -89,16 +89,16 @@ func (m *MentorshipService) UpdateMentorship(id string, mentorshipData graphql_m
 	}, nil
 }
 
-func (m *MentorshipService) DeleteMentorship(id string) (*graphql_models.Mentorship, error) {
+func (mentorshipService *MentorshipService) DeleteMentorship(id string) (*graphql_models.Mentorship, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
-	mentorshipData, err := m.Repo.GetMentorshipById(objectId)
+	mentorshipData, err := mentorshipService.Repo.GetMentorshipById(objectId)
 	if err != nil {
 		return nil, err
 	}
-	err = m.Repo.DeleteMentorship(objectId)
+	err = mentorshipService.Repo.DeleteMentorship(objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -115,12 +115,12 @@ func (m *MentorshipService) DeleteMentorship(id string) (*graphql_models.Mentors
 	}, nil
 }
 
-func (m *MentorshipService) GetMentorshipById(id string) (*graphql_models.Mentorship, error) {
+func (mentorshipService *MentorshipService) GetMentorshipById(id string) (*graphql_models.Mentorship, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
-	mentorshipData, err := m.Repo.GetMentorshipById(objectId)
+	mentorshipData, err := mentorshipService.Repo.GetMentorshipById(objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -137,12 +137,12 @@ func (m *MentorshipService) GetMentorshipById(id string) (*graphql_models.Mentor
 	}, nil
 }
 
-func (m *MentorshipService) GetMentorshipsByUserId(userID string) ([]*graphql_models.Mentorship, error) {
+func (mentorshipService *MentorshipService) GetMentorshipsByUserId(userID string) ([]*graphql_models.Mentorship, error) {
 	userObjectId, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		return nil, err
 	}
-	mentorshipsData, err := m.Repo.GetMentorshipsByParams(repository.MentorshipQueryParams{UserId: userObjectId})
+	mentorshipsData, err := mentorshipService.Repo.GetMentorshipsByParams(repository.MentorshipQueryParams{UserId: userObjectId})
 	if err != nil {
 		return nil, err
 	}

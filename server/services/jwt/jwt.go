@@ -12,15 +12,12 @@ var (
 	SecretKey = []byte("secret")
 )
 
-// 24小时有效
-const TokenExpireDuration = time.Hour * 24
-
 // 生成Token
-func GenerateToken(account string) (string, error) {
+func GenerateToken(account string, tokenExpireDuration time.Duration) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claim := token.Claims.(jwt.MapClaims)
 	claim["account"] = account
-	claim["exp"] = time.Now().Add(TokenExpireDuration).Unix()
+	claim["exp"] = time.Now().Add(tokenExpireDuration).Unix()
 	tokenString, err := token.SignedString(SecretKey)
 	if err != nil {
 		log.Fatal("Error in Generating key")

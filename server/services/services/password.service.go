@@ -12,11 +12,11 @@ type PasswordService struct {
 	Repo *repository.PasswordRepo
 }
 
-func NewPasswordService(r *repository.PasswordRepo) *PasswordService {
-	return &PasswordService{Repo: r}
+func NewPasswordService(passwordRepo *repository.PasswordRepo) *PasswordService {
+	return &PasswordService{Repo: passwordRepo}
 }
 
-func (p *PasswordService) CreatePassword(userID string, newPasswordData graphql_models.PasswordData) (*graphql_models.Password, error) {
+func (passwordService *PasswordService) CreatePassword(userID string, newPasswordData graphql_models.PasswordData) (*graphql_models.Password, error) {
 	userObjectId, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		return nil, err
@@ -29,11 +29,11 @@ func (p *PasswordService) CreatePassword(userID string, newPasswordData graphql_
 		Password:    newPasswordData.Password,
 		Description: newPasswordData.Description,
 	}
-	objectId, err := p.Repo.CreatePassword(&newPassword)
+	objectId, err := passwordService.Repo.CreatePassword(&newPassword)
 	if err != nil {
 		return nil, err
 	}
-	passwordData, err := p.Repo.GetPasswordById(*objectId)
+	passwordData, err := passwordService.Repo.GetPasswordById(*objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (p *PasswordService) CreatePassword(userID string, newPasswordData graphql_
 	}, nil
 }
 
-func (p *PasswordService) UpdatePassword(id string, passwordData graphql_models.PasswordData) (*graphql_models.Password, error) {
+func (passwordService *PasswordService) UpdatePassword(id string, passwordData graphql_models.PasswordData) (*graphql_models.Password, error) {
 
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -64,12 +64,12 @@ func (p *PasswordService) UpdatePassword(id string, passwordData graphql_models.
 		Description: passwordData.Description,
 	}
 
-	err = p.Repo.UpdatePassword(passwordUpdate)
+	err = passwordService.Repo.UpdatePassword(passwordUpdate)
 	if err != nil {
 		return nil, err
 	}
 
-	passwordUpdate, err = p.Repo.GetPasswordById(objectId)
+	passwordUpdate, err = passwordService.Repo.GetPasswordById(objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -85,16 +85,16 @@ func (p *PasswordService) UpdatePassword(id string, passwordData graphql_models.
 	}, nil
 }
 
-func (p *PasswordService) DeletePassword(id string) (*graphql_models.Password, error) {
+func (passwordService *PasswordService) DeletePassword(id string) (*graphql_models.Password, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
-	passwordData, err := p.Repo.GetPasswordById(objectId)
+	passwordData, err := passwordService.Repo.GetPasswordById(objectId)
 	if err != nil {
 		return nil, err
 	}
-	err = p.Repo.DeletePassword(objectId)
+	err = passwordService.Repo.DeletePassword(objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -110,12 +110,12 @@ func (p *PasswordService) DeletePassword(id string) (*graphql_models.Password, e
 	}, nil
 }
 
-func (p *PasswordService) GetPasswordById(id string) (*graphql_models.Password, error) {
+func (passwordService *PasswordService) GetPasswordById(id string) (*graphql_models.Password, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
-	passwordData, err := p.Repo.GetPasswordById(objectId)
+	passwordData, err := passwordService.Repo.GetPasswordById(objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -131,12 +131,12 @@ func (p *PasswordService) GetPasswordById(id string) (*graphql_models.Password, 
 	}, nil
 }
 
-func (p *PasswordService) GetPasswordsByUserId(userID string) ([]*graphql_models.Password, error) {
+func (passwordService *PasswordService) GetPasswordsByUserId(userID string) ([]*graphql_models.Password, error) {
 	userObjectId, err := primitive.ObjectIDFromHex(userID)
 	if err != nil {
 		return nil, err
 	}
-	passwordsData, err := p.Repo.GetPasswordsByParams(repository.PasswordQueryParams{UserId: userObjectId})
+	passwordsData, err := passwordService.Repo.GetPasswordsByParams(repository.PasswordQueryParams{UserId: userObjectId})
 	if err != nil {
 		return nil, err
 	}

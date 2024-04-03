@@ -6,6 +6,6 @@ type SciResearchService struct {
 	Repo *repository.SciResearchRepo
 }
 
-func NewSciResearchService(r *repository.SciResearchRepo) *SciResearchService {
-	return &SciResearchService{Repo: r}
+func NewSciResearchService(sciResearchRepo *repository.SciResearchRepo) *SciResearchService {
+	return &SciResearchService{Repo: sciResearchRepo}
 }

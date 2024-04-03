@@ -6,6 +6,6 @@ type EduReformService struct {
 	Repo *repository.EduReformRepo
 }
 
-func NewEduReformService(r *repository.EduReformRepo) *EduReformService {
-	return &EduReformService{Repo: r}
+func NewEduReformService(edureformRepo *repository.EduReformRepo) *EduReformService {
+	return &EduReformService{Repo: edureformRepo}
 }

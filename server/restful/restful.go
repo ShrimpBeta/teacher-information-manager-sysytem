@@ -109,7 +109,7 @@ func (restful *Restful) AdminSignIn(c *gin.Context) {
 	}
 
 	if admin.Account == environment.AdminAccount && admin.Password == environment.AdminPassword {
-		token, err := jwt.GenerateToken(admin.Account)
+		token, err := jwt.GenerateToken(admin.Account, environment.AdminTokenExpireDuration)
 		if err != nil {
 			c.JSON(401, gin.H{"error": err.Error()})
 			return

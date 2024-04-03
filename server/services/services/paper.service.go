@@ -12,11 +12,11 @@ type PaperService struct {
 	Repo *repository.PaperRepo
 }
 
-func NewPaperService(r *repository.PaperRepo) *PaperService {
-	return &PaperService{Repo: r}
+func NewPaperService(paperRepo *repository.PaperRepo) *PaperService {
+	return &PaperService{Repo: paperRepo}
 }
 
-func (p *PaperService) CreatePaper(newPaperData graphql_models.PaperData, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
+func (paperService *PaperService) CreatePaper(newPaperData graphql_models.PaperData, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
 	teachersIn := make([]primitive.ObjectID, len(newPaperData.TeachersIn))
 	for i, teacher := range newPaperData.TeachersIn {
 		objectId, err := primitive.ObjectIDFromHex(*teacher)
@@ -37,12 +37,12 @@ func (p *PaperService) CreatePaper(newPaperData graphql_models.PaperData, userRe
 		JournalLevel: newPaperData.JournalLevel,
 	}
 
-	objectId, err := p.Repo.CreatePaper(&newPaper)
+	objectId, err := paperService.Repo.CreatePaper(&newPaper)
 	if err != nil {
 		return nil, err
 	}
 
-	paperData, err := p.Repo.GetPaperById(*objectId)
+	paperData, err := paperService.Repo.GetPaperById(*objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -77,7 +77,7 @@ func (p *PaperService) CreatePaper(newPaperData graphql_models.PaperData, userRe
 	}, nil
 }
 
-func (p *PaperService) UpdatePaper(id string, paperData graphql_models.PaperData, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
+func (paperService *PaperService) UpdatePaper(id string, paperData graphql_models.PaperData, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -104,12 +104,12 @@ func (p *PaperService) UpdatePaper(id string, paperData graphql_models.PaperData
 		paperUpdate.TeachersIn = teachersIn
 	}
 
-	err = p.Repo.UpdatePaper(paperUpdate)
+	err = paperService.Repo.UpdatePaper(paperUpdate)
 	if err != nil {
 		return nil, err
 	}
 
-	paperUpdate, err = p.Repo.GetPaperById(objectId)
+	paperUpdate, err = paperService.Repo.GetPaperById(objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -145,16 +145,16 @@ func (p *PaperService) UpdatePaper(id string, paperData graphql_models.PaperData
 	}, nil
 }
 
-func (p *PaperService) DeletePaper(id string, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
+func (paperService *PaperService) DeletePaper(id string, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
-	PaperData, err := p.Repo.GetPaperById(objectId)
+	PaperData, err := paperService.Repo.GetPaperById(objectId)
 	if err != nil {
 		return nil, err
 	}
-	err = p.Repo.DeletePaper(objectId)
+	err = paperService.Repo.DeletePaper(objectId)
 	if err != nil {
 		return nil, err
 	}
@@ -190,12 +190,12 @@ func (p *PaperService) DeletePaper(id string, userRepo *repository.UserRepo) (*g
 	}, nil
 }
 
-func (p *PaperService) GetPaperById(id string, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
+func (paperService *PaperService) GetPaperById(id string, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
-	PaperData, err := p.Repo.GetPaperById(objectId)
+	PaperData, err := paperService.Repo.GetPaperById(objectId)
 	if err != nil {
 		return nil, err
 	}

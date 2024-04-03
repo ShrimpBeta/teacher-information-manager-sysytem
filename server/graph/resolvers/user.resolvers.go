@@ -17,12 +17,12 @@ func (r *mutationResolver) DeleteAccount(ctx context.Context, userID string) (bo
 
 // UpdateAccountPassword is the resolver for the updateAccountPassword field.
 func (r *mutationResolver) UpdateAccountPassword(ctx context.Context, userID string, updatePasswordData graphql_models.UpdatePassword) (bool, error) {
-	panic(fmt.Errorf("not implemented: UpdateAccountPassword - updateAccountPassword"))
+	return r.UserService.UpdatePassword(userID, updatePasswordData)
 }
 
 // ResetAccountPassword is the resolver for the resetAccountPassword field.
 func (r *mutationResolver) ResetAccountPassword(ctx context.Context, userID string, resetPasswordData graphql_models.ResetPassword) (bool, error) {
-	panic(fmt.Errorf("not implemented: ResetAccountPassword - resetAccountPassword"))
+	return r.UserService.ResetPassword(userID, resetPasswordData)
 }
 
 // SignIn is the resolver for the signIn field.

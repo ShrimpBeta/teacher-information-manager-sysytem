@@ -25,13 +25,13 @@ func GenerateAvatar(email string) (string, error) {
 		return "", err
 	}
 
-	return SaveAvatar(buf.Bytes())
+	return SaveAvatar(buf.Bytes(), ".png")
 }
 
-func SaveAvatar(file []byte) (string, error) {
+func SaveAvatar(file []byte, filetype string) (string, error) {
 	md5Sum := md5.Sum(file)
 	fileName := hex.EncodeToString(md5Sum[:])
-	imageFile, err := os.Create("assets/avatars/" + fileName + ".png")
+	imageFile, err := os.Create("assets/avatars/" + fileName + filetype)
 	if err != nil {
 		log.Fatal("Failed to create avatar file")
 		return "", err
@@ -43,7 +43,7 @@ func SaveAvatar(file []byte) (string, error) {
 }
 
 func DeleteAvatar(avatar string) {
-	err := os.Remove("assets" + avatar)
+	err := os.Remove("assets/avatars/" + avatar)
 	if err != nil {
 		log.Fatal("Failed to delete avatar file")
 	}

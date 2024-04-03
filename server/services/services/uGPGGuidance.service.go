@@ -6,6 +6,6 @@ type UGPGGuidanceService struct {
 	Repo *repository.UGPGGuidanceRepo
 }
 
-func NewUGPGGuidanceService(r *repository.UGPGGuidanceRepo) *UGPGGuidanceService {
-	return &UGPGGuidanceService{Repo: r}
+func NewUGPGGuidanceService(uGPGGuidanceRepo *repository.UGPGGuidanceRepo) *UGPGGuidanceService {
+	return &UGPGGuidanceService{Repo: uGPGGuidanceRepo}
 }
