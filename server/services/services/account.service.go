@@ -104,12 +104,12 @@ func (a *AccountService) DeleteAccount(userID string) (*models.RestfulUser, erro
 }
 
 func (a *AccountService) CheckEmailDuplicate(email string) (bool, error) {
-	uerId, err := a.Repo.GetUserIdByEmail(email)
+	userData, err := a.Repo.GetUserByEmail(email)
 	if err != nil {
 		return false, err
 	}
 
-	if uerId == nil {
+	if userData == nil {
 		return false, nil
 	}
 

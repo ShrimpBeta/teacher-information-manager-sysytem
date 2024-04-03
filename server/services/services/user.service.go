@@ -8,6 +8,7 @@ import (
 	"server/persistence/repository"
 	"server/services/avatar"
 	"server/services/jwt"
+	passwordencrypt "server/services/passwordEncrypt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -23,18 +24,26 @@ func NewUserService(r *repository.UserRepo) *UserService {
 
 func (u *UserService) SignIn(signInData graphql_models.SigIn) (*graphql_models.SignInResponse, error) {
 
-	userData, err := u.Repo.GetUserByEmailAndPassword(signInData.Email, signInData.Password)
+	userData, err := u.Repo.GetUserByEmail(signInData.Email)
 	if err != nil {
 		return nil, err
 	}
+
 	if userData == nil {
 		return nil, fmt.Errorf("user not found")
 	}
+
+	if userData.Password != passwordencrypt.HashPassword(signInData.Password, userData.Salt) {
+		return nil, fmt.Errorf("wrong password")
+	}
+
+	// generate token
 	token, err := jwt.GenerateToken(userData.Email)
 	if err != nil {
 		return nil, err
 	}
 
+	// check wechat auth
 	wechatAuth := false
 	if *userData.WechatOpenId != "" {
 		wechatAuth = true
@@ -63,6 +72,7 @@ func (u *UserService) UpdateUser(userID string, userData graphql_models.UpdateUs
 	if err != nil {
 		return nil, err
 	}
+
 	userUpdate, err := u.Repo.GetUserById(objectID)
 	if err != nil {
 		return nil, err
@@ -98,11 +108,14 @@ func (u *UserService) UpdateUser(userID string, userData graphql_models.UpdateUs
 	if userData.PhoneNumber != nil {
 		userUpdate.Phone = userData.PhoneNumber
 	}
+
 	userUpdate.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
+
 	err = u.Repo.UpdateUser(userUpdate)
 	if err != nil {
 		return nil, err
 	}
+
 	userUpdate, err = u.Repo.GetUserById(objectID)
 	if err != nil {
 		return nil, err
@@ -131,6 +144,7 @@ func (u *UserService) ActivateUser(userID string, userData graphql_models.Activa
 	if err != nil {
 		return nil, err
 	}
+
 	userUpdate, err := u.Repo.GetUserById(objectID)
 	if err != nil {
 		return nil, err

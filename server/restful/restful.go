@@ -60,7 +60,6 @@ func (restful *Restful) CreateAccount(c *gin.Context) {
 		}
 
 		Duplicate, err := restful.AccountService.CheckEmailDuplicate(user.Email)
-
 		if err != nil {
 			c.JSON(500, gin.H{"error": err.Error()})
 			return

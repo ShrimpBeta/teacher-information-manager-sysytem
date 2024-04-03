@@ -20,7 +20,7 @@ func NewUserRepo(db *mongo.Database) *UserRepo {
 	}
 }
 
-func (r *UserRepo) GetUserIdByEmail(email string) (*primitive.ObjectID, error) {
+func (r *UserRepo) GetUserByEmail(email string) (*models.User, error) {
 	user := models.User{}
 	err := r.collection.FindOne(context.Background(), bson.M{"email": email}).Decode(&user)
 	if err != nil {
@@ -29,15 +29,6 @@ func (r *UserRepo) GetUserIdByEmail(email string) (*primitive.ObjectID, error) {
 			return nil, nil
 		}
 		// other error
-		return nil, err
-	}
-	return &user.ID, nil
-}
-
-func (r *UserRepo) GetUserByEmailAndPassword(email, password string) (*models.User, error) {
-	user := models.User{}
-	err := r.collection.FindOne(context.Background(), bson.M{"email": email, "password": password}).Decode(&user)
-	if err != nil {
 		return nil, err
 	}
 	return &user, nil
