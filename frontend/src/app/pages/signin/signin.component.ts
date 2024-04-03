@@ -86,6 +86,7 @@ export class SigninComponent implements OnDestroy {
     if (!networkError) {
       // 提示用户
       console.log(error);
+      console.log(error.message);
       this.snackBar.open('登录失败，请检查邮箱和密码是否正确', '关闭', {
         duration: 3000,
       });
@@ -101,8 +102,8 @@ export class SigninComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     // 取消订阅
-    // this.destroy$.next(true);
-    // this.destroy$.complete();
+    this.destroy$.next(true);
+    this.destroy$.complete();
 
   }
 }
