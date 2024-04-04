@@ -52,14 +52,27 @@ export const activateUserMutation = gql`
 `
 
 export const updateUserPasswordMutation = gql`
-  mutation updateUserPassword($userId: ID!, $passwordData: ChangePassword!){
-    updateAccountPassword(userId: $userId, passwordData:$passwordData)
+  mutation updateUserPassword($userId: ID!, $passwordData: UpdatePassword!){
+    updateAccountPassword(userId: $userId, updatePasswordData:$passwordData)
   }
 `
 
-// export const removeWechatAuthMutation = gql`
-//   mutation removeWechatAuth($userId: ID!){
+export const fetchCodeMutation = gql`
+  mutation fetchCode($email:String){
 
-//   }
-// `
+  }
+`
+
+export const resetUserPasswordMutation = gql`
+  mutation resetUserPassword($resetPasswordData: ResetPassword){
+    resetAccountPassword(resetPasswordData: $resetPasswordData)
+  }
+`
+
+
+export const removeWechatAuthMutation = gql`
+  mutation removeWechatAuth($userId: ID!){
+    removeWechatAuth(userId: $userId)
+  }
+`
 
