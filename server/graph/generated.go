@@ -202,65 +202,66 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		ActivateUser          func(childComplexity int, userID string, userData graphql_models.ActivateUser) int
-		AddAwardRecord        func(childComplexity int, sciResearchID string, newAwardRecordData graphql_models.AwardRecordData) int
-		AddWechatAuth         func(childComplexity int, userID string, wechatAuthData graphql_models.WechatAuth) int
-		CreateAccount         func(childComplexity int, newUserData graphql_models.NewUser) int
-		CreateCompGuidance    func(childComplexity int, userID string, newGuidanceData graphql_models.CompGuidanceData) int
-		CreateCompGuidances   func(childComplexity int, userID string, newGuidancesData []*graphql_models.CompGuidanceData) int
-		CreateCourse          func(childComplexity int, termID string, newCourseData graphql_models.CourseData) int
-		CreateEduReform       func(childComplexity int, newEduReformData graphql_models.EduReformData) int
-		CreateMentorship      func(childComplexity int, userID string, newMentorshipData graphql_models.MentorshipData) int
-		CreateMonograph       func(childComplexity int, newMonographData graphql_models.MonographData) int
-		CreatePaper           func(childComplexity int, newPaperData graphql_models.PaperData) int
-		CreatePapers          func(childComplexity int, newPapersDatas []*graphql_models.PaperData) int
-		CreatePassword        func(childComplexity int, userID string, newPasswordData graphql_models.PasswordData) int
-		CreateSciResearch     func(childComplexity int, newSciResearchData graphql_models.SciResearchData) int
-		CreateUPGuidance      func(childComplexity int, userID string, newUGPGGuidanceData graphql_models.UGPGGuidanceData) int
-		CreateUPGuidances     func(childComplexity int, userID string, newUGPGGuidanceDatas []*graphql_models.UGPGGuidanceData) int
-		CreateacademicTerm    func(childComplexity int, userID string, newTermData graphql_models.NewAcademicTerm) int
-		CreatedEduReforms     func(childComplexity int, newEduReformDatas []*graphql_models.EduReformData) int
-		CreatedMentorships    func(childComplexity int, userID string, newMentorshipDatas []*graphql_models.MentorshipData) int
-		CreatedMonographs     func(childComplexity int, newMonographDatas []*graphql_models.MonographData) int
-		CreatedPasswords      func(childComplexity int, userID string, newPasswordDatas []*graphql_models.PasswordData) int
-		CreatedSciResearchs   func(childComplexity int, newAwardRecordDatas []*graphql_models.SciResearchData) int
-		DeleteAccount         func(childComplexity int, userID string) int
-		DeleteCompGuidance    func(childComplexity int, id string) int
-		DeleteCourse          func(childComplexity int, termID string, courseID string) int
-		DeleteEduReform       func(childComplexity int, id string) int
-		DeleteMentorship      func(childComplexity int, id string) int
-		DeleteMonograph       func(childComplexity int, id string) int
-		DeletePaper           func(childComplexity int, id string) int
-		DeletePassword        func(childComplexity int, id string) int
-		DeleteSciResearch     func(childComplexity int, sciResearchID string) int
-		DeleteUPGuidance      func(childComplexity int, uGPGGuidanceID string) int
-		DeleteacademicTerm    func(childComplexity int, termID string) int
-		RemoveAwardRecord     func(childComplexity int, sciResearchID string, awardRecordID string) int
-		RemoveWechatAuth      func(childComplexity int, userID string) int
-		ResetAccountPassword  func(childComplexity int, userID string, resetPasswordData graphql_models.ResetPassword) int
-		SignIn                func(childComplexity int, signInData graphql_models.SigIn) int
-		UpdateAccountPassword func(childComplexity int, userID string, updatePasswordData graphql_models.UpdatePassword) int
-		UpdateAwardRecord     func(childComplexity int, sciResearchID string, updateAwardRecordData graphql_models.AwardRecordData) int
-		UpdateCompGuidance    func(childComplexity int, id string, compGuidanceData graphql_models.CompGuidanceData) int
-		UpdateCourse          func(childComplexity int, courseID string, courseData graphql_models.CourseData) int
-		UpdateEduReform       func(childComplexity int, id string, eduReformData graphql_models.EduReformData) int
-		UpdateMentorship      func(childComplexity int, id string, mentorshipData graphql_models.MentorshipData) int
-		UpdateMonograph       func(childComplexity int, id string, monographData graphql_models.MonographData) int
-		UpdatePaper           func(childComplexity int, id string, paperData graphql_models.PaperData) int
-		UpdatePassword        func(childComplexity int, id string, passwordData graphql_models.PasswordData) int
-		UpdateSciResearch     func(childComplexity int, sciResearchID string, updateSciResearchData graphql_models.SciResearchData) int
-		UpdateUPGuidance      func(childComplexity int, uGPGGuidanceID string, uGPGGuidanceData graphql_models.UGPGGuidanceData) int
-		UpdateUser            func(childComplexity int, userID string, userData graphql_models.UpdateUser) int
-		UpdateacademicTerm    func(childComplexity int, termID string, termData graphql_models.UpdateAcademicTerm) int
-		UploadAcademicTerm    func(childComplexity int, file graphql.Upload) int
-		UploadCompGuidances   func(childComplexity int, file graphql.Upload) int
-		UploadEduReforms      func(childComplexity int, file graphql.Upload) int
-		UploadMentorships     func(childComplexity int, file graphql.Upload) int
-		UploadMonographs      func(childComplexity int, file graphql.Upload) int
-		UploadPapers          func(childComplexity int, file graphql.Upload) int
-		UploadPasswords       func(childComplexity int, file graphql.Upload) int
-		UploadSciResearchs    func(childComplexity int, file graphql.Upload) int
-		UploadUGPGGuidances   func(childComplexity int, file graphql.Upload) int
+		ActivateUser              func(childComplexity int, userID string, userData graphql_models.ActivateUser) int
+		AddAwardRecord            func(childComplexity int, sciResearchID string, newAwardRecordData graphql_models.AwardRecordData) int
+		AddWechatAuth             func(childComplexity int, userID string, wechatAuthData graphql_models.WechatAuth) int
+		CreateAccount             func(childComplexity int, newUserData graphql_models.NewUser) int
+		CreateCompGuidance        func(childComplexity int, userID string, newGuidanceData graphql_models.CompGuidanceData) int
+		CreateCompGuidances       func(childComplexity int, userID string, newGuidancesData []*graphql_models.CompGuidanceData) int
+		CreateCourse              func(childComplexity int, termID string, newCourseData graphql_models.CourseData) int
+		CreateEduReform           func(childComplexity int, newEduReformData graphql_models.EduReformData) int
+		CreateMentorship          func(childComplexity int, userID string, newMentorshipData graphql_models.MentorshipData) int
+		CreateMonograph           func(childComplexity int, newMonographData graphql_models.MonographData) int
+		CreatePaper               func(childComplexity int, newPaperData graphql_models.PaperData) int
+		CreatePapers              func(childComplexity int, newPapersDatas []*graphql_models.PaperData) int
+		CreatePassword            func(childComplexity int, userID string, newPasswordData graphql_models.PasswordData) int
+		CreateSciResearch         func(childComplexity int, newSciResearchData graphql_models.SciResearchData) int
+		CreateUPGuidance          func(childComplexity int, userID string, newUGPGGuidanceData graphql_models.UGPGGuidanceData) int
+		CreateUPGuidances         func(childComplexity int, userID string, newUGPGGuidanceDatas []*graphql_models.UGPGGuidanceData) int
+		CreateacademicTerm        func(childComplexity int, userID string, newTermData graphql_models.NewAcademicTerm) int
+		CreatedEduReforms         func(childComplexity int, newEduReformDatas []*graphql_models.EduReformData) int
+		CreatedMentorships        func(childComplexity int, userID string, newMentorshipDatas []*graphql_models.MentorshipData) int
+		CreatedMonographs         func(childComplexity int, newMonographDatas []*graphql_models.MonographData) int
+		CreatedPasswords          func(childComplexity int, userID string, newPasswordDatas []*graphql_models.PasswordData) int
+		CreatedSciResearchs       func(childComplexity int, newAwardRecordDatas []*graphql_models.SciResearchData) int
+		DeleteAccount             func(childComplexity int, userID string) int
+		DeleteCompGuidance        func(childComplexity int, id string) int
+		DeleteCourse              func(childComplexity int, termID string, courseID string) int
+		DeleteEduReform           func(childComplexity int, id string) int
+		DeleteMentorship          func(childComplexity int, id string) int
+		DeleteMonograph           func(childComplexity int, id string) int
+		DeletePaper               func(childComplexity int, id string) int
+		DeletePassword            func(childComplexity int, id string) int
+		DeleteSciResearch         func(childComplexity int, sciResearchID string) int
+		DeleteUPGuidance          func(childComplexity int, uGPGGuidanceID string) int
+		DeleteacademicTerm        func(childComplexity int, termID string) int
+		GenerateResetPasswordCode func(childComplexity int, email string) int
+		RemoveAwardRecord         func(childComplexity int, sciResearchID string, awardRecordID string) int
+		RemoveWechatAuth          func(childComplexity int, userID string) int
+		ResetAccountPassword      func(childComplexity int, resetPasswordData graphql_models.ResetPassword) int
+		SignIn                    func(childComplexity int, signInData graphql_models.SigIn) int
+		UpdateAccountPassword     func(childComplexity int, userID string, updatePasswordData graphql_models.UpdatePassword) int
+		UpdateAwardRecord         func(childComplexity int, sciResearchID string, updateAwardRecordData graphql_models.AwardRecordData) int
+		UpdateCompGuidance        func(childComplexity int, id string, compGuidanceData graphql_models.CompGuidanceData) int
+		UpdateCourse              func(childComplexity int, courseID string, courseData graphql_models.CourseData) int
+		UpdateEduReform           func(childComplexity int, id string, eduReformData graphql_models.EduReformData) int
+		UpdateMentorship          func(childComplexity int, id string, mentorshipData graphql_models.MentorshipData) int
+		UpdateMonograph           func(childComplexity int, id string, monographData graphql_models.MonographData) int
+		UpdatePaper               func(childComplexity int, id string, paperData graphql_models.PaperData) int
+		UpdatePassword            func(childComplexity int, id string, passwordData graphql_models.PasswordData) int
+		UpdateSciResearch         func(childComplexity int, sciResearchID string, updateSciResearchData graphql_models.SciResearchData) int
+		UpdateUPGuidance          func(childComplexity int, uGPGGuidanceID string, uGPGGuidanceData graphql_models.UGPGGuidanceData) int
+		UpdateUser                func(childComplexity int, userID string, userData graphql_models.UpdateUser) int
+		UpdateacademicTerm        func(childComplexity int, termID string, termData graphql_models.UpdateAcademicTerm) int
+		UploadAcademicTerm        func(childComplexity int, file graphql.Upload) int
+		UploadCompGuidances       func(childComplexity int, file graphql.Upload) int
+		UploadEduReforms          func(childComplexity int, file graphql.Upload) int
+		UploadMentorships         func(childComplexity int, file graphql.Upload) int
+		UploadMonographs          func(childComplexity int, file graphql.Upload) int
+		UploadPapers              func(childComplexity int, file graphql.Upload) int
+		UploadPasswords           func(childComplexity int, file graphql.Upload) int
+		UploadSciResearchs        func(childComplexity int, file graphql.Upload) int
+		UploadUGPGGuidances       func(childComplexity int, file graphql.Upload) int
 	}
 
 	Paper struct {
@@ -472,7 +473,8 @@ type MutationResolver interface {
 	CreateUPGuidances(ctx context.Context, userID string, newUGPGGuidanceDatas []*graphql_models.UGPGGuidanceData) ([]*graphql_models.UGPGGuidance, error)
 	DeleteAccount(ctx context.Context, userID string) (bool, error)
 	UpdateAccountPassword(ctx context.Context, userID string, updatePasswordData graphql_models.UpdatePassword) (bool, error)
-	ResetAccountPassword(ctx context.Context, userID string, resetPasswordData graphql_models.ResetPassword) (bool, error)
+	ResetAccountPassword(ctx context.Context, resetPasswordData graphql_models.ResetPassword) (bool, error)
+	GenerateResetPasswordCode(ctx context.Context, email string) (bool, error)
 	SignIn(ctx context.Context, signInData graphql_models.SigIn) (*graphql_models.SignInResponse, error)
 	UpdateUser(ctx context.Context, userID string, userData graphql_models.UpdateUser) (*graphql_models.User, error)
 	ActivateUser(ctx context.Context, userID string, userData graphql_models.ActivateUser) (*graphql_models.User, error)
@@ -1634,6 +1636,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteacademicTerm(childComplexity, args["termId"].(string)), true
 
+	case "Mutation.generateResetPasswordCode":
+		if e.complexity.Mutation.GenerateResetPasswordCode == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_generateResetPasswordCode_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.GenerateResetPasswordCode(childComplexity, args["email"].(string)), true
+
 	case "Mutation.removeAwardRecord":
 		if e.complexity.Mutation.RemoveAwardRecord == nil {
 			break
@@ -1668,7 +1682,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ResetAccountPassword(childComplexity, args["userId"].(string), args["resetPasswordData"].(graphql_models.ResetPassword)), true
+		return e.complexity.Mutation.ResetAccountPassword(childComplexity, args["resetPasswordData"].(graphql_models.ResetPassword)), true
 
 	case "Mutation.signIn":
 		if e.complexity.Mutation.SignIn == nil {
@@ -3644,6 +3658,21 @@ func (ec *executionContext) field_Mutation_deleteacademicTerm_args(ctx context.C
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_generateResetPasswordCode_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["email"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["email"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_removeAwardRecord_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -3686,24 +3715,15 @@ func (ec *executionContext) field_Mutation_removeWechatAuth_args(ctx context.Con
 func (ec *executionContext) field_Mutation_resetAccountPassword_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	var arg1 graphql_models.ResetPassword
+	var arg0 graphql_models.ResetPassword
 	if tmp, ok := rawArgs["resetPasswordData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resetPasswordData"))
-		arg1, err = ec.unmarshalNResetPassword2serverᚋgraphᚋmodelᚐResetPassword(ctx, tmp)
+		arg0, err = ec.unmarshalNResetPassword2serverᚋgraphᚋmodelᚐResetPassword(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["resetPasswordData"] = arg1
+	args["resetPasswordData"] = arg0
 	return args, nil
 }
 
@@ -12885,7 +12905,7 @@ func (ec *executionContext) _Mutation_resetAccountPassword(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ResetAccountPassword(rctx, fc.Args["userId"].(string), fc.Args["resetPasswordData"].(graphql_models.ResetPassword))
+		return ec.resolvers.Mutation().ResetAccountPassword(rctx, fc.Args["resetPasswordData"].(graphql_models.ResetPassword))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -12920,6 +12940,61 @@ func (ec *executionContext) fieldContext_Mutation_resetAccountPassword(ctx conte
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_resetAccountPassword_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_generateResetPasswordCode(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_generateResetPasswordCode(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().GenerateResetPasswordCode(rctx, fc.Args["email"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_generateResetPasswordCode(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_generateResetPasswordCode_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -23925,6 +24000,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "resetAccountPassword":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_resetAccountPassword(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "generateResetPasswordCode":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_generateResetPasswordCode(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

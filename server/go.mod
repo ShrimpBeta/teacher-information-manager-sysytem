@@ -6,7 +6,9 @@ require (
 	github.com/99designs/gqlgen v0.17.45
 	github.com/gin-gonic/gin v1.9.1
 	github.com/issue9/identicon/v2 v2.1.2
+	github.com/redis/go-redis/v9 v9.5.1
 	github.com/vektah/gqlparser/v2 v2.5.11
+	github.com/xhit/go-simple-mail/v2 v2.16.0
 	go.mongodb.org/mongo-driver v1.14.0
 )
 
@@ -14,10 +16,9 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+	github.com/go-test/deep v1.1.0 // indirect
 	github.com/kr/text v0.2.0 // indirect
-	github.com/redis/go-redis/v9 v9.5.1 // indirect
 	github.com/toorop/go-dkim v0.0.0-20201103131630-e1cd1a0a5208 // indirect
-	github.com/xhit/go-simple-mail/v2 v2.16.0 // indirect
 )
 
 require (

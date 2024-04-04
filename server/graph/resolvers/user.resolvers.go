@@ -6,8 +6,12 @@ package resolvers
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"server/environment"
 	graphql_models "server/graph/model"
+
+	"github.com/redis/go-redis/v9"
 )
 
 // DeleteAccount is the resolver for the deleteAccount field.
@@ -21,8 +25,51 @@ func (r *mutationResolver) UpdateAccountPassword(ctx context.Context, userID str
 }
 
 // ResetAccountPassword is the resolver for the resetAccountPassword field.
-func (r *mutationResolver) ResetAccountPassword(ctx context.Context, userID string, resetPasswordData graphql_models.ResetPassword) (bool, error) {
-	return r.UserService.ResetPassword(userID, resetPasswordData)
+func (r *mutationResolver) ResetAccountPassword(ctx context.Context, resetPasswordData graphql_models.ResetPassword) (bool, error) {
+
+	checkCode, err := r.RedisDB.Get(ctx, resetPasswordData.Email+"reset").Result()
+	if err == redis.Nil {
+		return false, errors.New("code expired")
+	} else if err != nil {
+		return false, err
+	}
+
+	if checkCode != resetPasswordData.Code {
+		return false, errors.New("wrong code")
+	}
+
+	// remove code after used
+	err = r.RedisDB.Del(ctx, resetPasswordData.Email+"reset").Err()
+	if err != nil {
+		return false, err
+	}
+
+	return r.UserService.ResetPassword(resetPasswordData)
+}
+
+// GenerateResetPasswordCode is the resolver for the generateResetPasswordCode field.
+func (r *mutationResolver) GenerateResetPasswordCode(ctx context.Context, email string) (bool, error) {
+	err := r.RedisDB.SetNX(ctx, email+"generate", 0, environment.GenerateLimitTime).Err()
+	if err != nil {
+		return false, err
+	}
+
+	times := r.RedisDB.Incr(ctx, email+"generate").Val()
+
+	if times > 6 {
+		return false, errors.New("too many times")
+	}
+
+	code := r.UserService.GenerateCode()
+	err = r.RedisDB.Set(ctx, email+"reset", code, environment.CodeExpireTime).Err()
+	if err != nil {
+		return false, err
+	}
+	sended, err := r.UserService.SendEmailCode(email, code)
+	if err != nil {
+		return false, err
+	}
+	return sended, nil
 }
 
 // SignIn is the resolver for the signIn field.

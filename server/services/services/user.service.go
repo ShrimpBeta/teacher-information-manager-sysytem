@@ -1,28 +1,27 @@
 package services
 
 import (
-	"fft
-	"io
-	"math/randth/rand"
+	"fmt"
+	"io"
+	"math/rand"
 	"server/environment"
 	graphql_models "server/graph/model"
 	"server/persistence/repository"
 	"server/services/avatar"
+	"server/services/email"
 	"server/services/jwt"
 	passwordencrypt "server/services/passwordEncrypt"
 	"time"
 
-	"github.com/redis/go-redis/v9"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserService struct {
-	Repo    *repository.UserRepo
-	RedisDB *redis.Client
+	Repo *repository.UserRepo
 }
 
-func NewUserService(userRepo *repository.UserRepo, redisDB *redis.Client) *UserService {
-	return &UserService{Repo: userRepo, RedisDB: redisDB}
+func NewUserService(userRepo *repository.UserRepo) *UserService {
+	return &UserService{Repo: userRepo}
 }
 
 func (userService *UserService) SignIn(signInData graphql_models.SigIn) (*graphql_models.SignInResponse, error) {
@@ -41,7 +40,7 @@ func (userService *UserService) SignIn(signInData graphql_models.SigIn) (*graphq
 	}
 
 	// generate token
-	token, err := jwt.GenerateToken(userData.Email,environment.UserTokenExpireTime)
+	token, err := jwt.GenerateToken(userData.Email, environment.UserTokenExpireTime)
 	if err != nil {
 		return nil, err
 	}
@@ -264,16 +263,19 @@ func (userService *UserService) UpdatePassword(userID string, updatePasswordData
 	return true, nil
 }
 
-func (userService *UserService) ResetPassword(userID string, resetPasswordData graphql_models.ResetPassword) (bool, error) {
-	objectID, err := primitive.ObjectIDFromHex(userID)
+func (userService *UserService) ResetPassword(resetPasswordData graphql_models.ResetPassword) (bool, error) {
+
+	userData, err := userService.Repo.GetUserByEmail(resetPasswordData.Email)
+	if err != nil {
+		return false, err
+	}
+	userData.Password = passwordencrypt.HashPassword(resetPasswordData.NewPassword, userData.Salt)
+
+	err = userService.Repo.UpdateUser(userData)
 	if err != nil {
 		return false, err
 	}
 
-	return true, nil
-}
-
-func (userService *UserService) GetEmialCode(email string) (bool, error) {
 	return true, nil
 }
 
@@ -340,7 +342,7 @@ func (userService *UserService) DeleteUser(userID string) (bool, error) {
 }
 
 // generate 6 bit random code
-func GenerateCode() string {
+func (userService *UserService) GenerateCode() string {
 	random := rand.New(rand.NewSource(time.Now().UnixNano()))
 	bytes := make([]byte, 6)
 	for i := range bytes {
@@ -349,3 +351,11 @@ func GenerateCode() string {
 	return string(bytes)
 }
 
+func (userService *UserService) SendEmailCode(receiverEmail string, code string) (bool, error) {
+	content := fmt.Sprintf("亲爱的 %s 用户，您的验证码是 %s ，有效时间为5分钟（请注意有效期）", receiverEmail, code)
+	err := email.SendEmail(content, receiverEmail)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}

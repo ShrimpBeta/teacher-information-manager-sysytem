@@ -1,6 +1,10 @@
 package resolvers
 
-import "server/services/services"
+import (
+	"server/services/services"
+
+	"github.com/redis/go-redis/v9"
+)
 
 // This file will not be regenerated automatically.
 //
@@ -18,4 +22,5 @@ type Resolver struct {
 	SciResearchService   *services.SciResearchService
 	UGPGGuidanceService  *services.UGPGGuidanceService
 	UserService          *services.UserService
+	RedisDB              *redis.Client
 }

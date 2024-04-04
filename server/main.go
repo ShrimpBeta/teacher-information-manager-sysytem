@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"fmt"
 	"io/fs"
 	"log"
 	"net/http"
@@ -41,6 +42,7 @@ func graphHandler(
 	sciResearchService *services.SciResearchService,
 	uGPGGuidanceService *services.UGPGGuidanceService,
 	userService *services.UserService,
+	redisDB *redis.Client,
 ) gin.HandlerFunc {
 	h := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolvers.Resolver{
 		// AccountService:       accountService,
@@ -54,6 +56,7 @@ func graphHandler(
 		SciResearchService:   sciResearchService,
 		UGPGGuidanceService:  uGPGGuidanceService,
 		UserService:          userService,
+		RedisDB:              redisDB,
 	}}))
 	return func(ctx *gin.Context) {
 		h.ServeHTTP(ctx.Writer, ctx.Request)
@@ -80,6 +83,8 @@ func main() {
 		Password: "",
 		DB:       0,
 	})
+	fmt.Println("Redis connected")
+	defer rdb.Close()
 
 	// init Repos
 	repository := repository.NewRepositorys(DB.Client.Database(environment.DatabaseName))
@@ -95,7 +100,7 @@ func main() {
 	passwordService := services.NewPasswordService(repository.PasswordRepo)
 	sciResearchService := services.NewSciResearchService(repository.SciResearchRepo)
 	uGPGGuidanceService := services.NewUGPGGuidanceService(repository.UGPGGuidanceRepo)
-	userService := services.NewUserService(repository.UserRepo, rdb)
+	userService := services.NewUserService(repository.UserRepo)
 
 	// set gin mode to release
 	// gin.SetMode(gin.ReleaseMode)
@@ -131,7 +136,7 @@ func main() {
 	restful := restful.Restful{AccountService: accountService}
 
 	// GraphQL API
-	r.POST(environment.GraphQL, graphHandler(classScheduleService, compGuidanceService, eduReformService, mentorshipService, monographService, paperService, passwordService, sciResearchService, uGPGGuidanceService, userService))
+	r.POST(environment.GraphQL, graphHandler(classScheduleService, compGuidanceService, eduReformService, mentorshipService, monographService, paperService, passwordService, sciResearchService, uGPGGuidanceService, userService, rdb))
 	r.GET(environment.Playground, playgroundHandler())
 
 	// RESTFUL API

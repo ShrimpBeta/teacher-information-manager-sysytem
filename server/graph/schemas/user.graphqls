@@ -71,7 +71,8 @@ extend type Mutation {
     userId: ID!
     updatePasswordData: UpdatePassword!
   ): Boolean!
-  resetAccountPassword(userId: ID!, resetPasswordData: ResetPassword!): Boolean!
+  resetAccountPassword(resetPasswordData: ResetPassword!): Boolean!
+  generateResetPasswordCode(email: String!): Boolean!
 
   signIn(signInData: SigIn!): SignInResponse!
   updateUser(userId: ID!, userData: UpdateUser!): User!
