@@ -53,6 +53,6 @@ func (r *queryResolver) AcademicTerm(ctx context.Context, id string) (*graphql_m
 }
 
 // Academicerms is the resolver for the academicerms field.
-func (r *queryResolver) Academicerms(ctx context.Context, userID string) ([]*graphql_models.AcademicTerm, error) {
+func (r *queryResolver) AcademicTerms(ctx context.Context, userID string) ([]*graphql_models.AcademicTermShort, error) {
 	panic(fmt.Errorf("not implemented: Academicerms - academicerms"))
 }

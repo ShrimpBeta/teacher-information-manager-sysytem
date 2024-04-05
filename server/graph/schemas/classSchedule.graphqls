@@ -26,6 +26,13 @@ type AcademicTerm {
   updatedAt: Time!
 }
 
+type AcademicTermShort {
+  id: ID!
+  termName: String!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
 # 课程表学期预览，OCR识别结果
 type ClassTimePreview {
   dayOfWeek: Int
@@ -78,7 +85,7 @@ extend type Query {
   academicTerm(id: ID!): AcademicTerm!
 
   # 查看用户所有学期
-  academicerms(userId: ID!): [AcademicTerm]!
+  academicTerms(userId: ID!): [AcademicTermShort]!
 }
 
 extend type Mutation {

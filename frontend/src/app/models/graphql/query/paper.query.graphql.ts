@@ -1,8 +1,8 @@
 import { gql } from "apollo-angular";
 
-export const papersQuery = gql`
-  query papers($userId: ID!) {
-    papers(userId: $userId) {
+export const papersByFilterQuery = gql`
+  query papersByFilter($filter: PaperFilter!) {
+    papersByFilter(filter: $filter) {
       id
       teachersIn{
         id

@@ -60,6 +60,7 @@ input EduReformFilter {
 
 extend type Query {
   eduReform(id: ID!): EduReform!
+  
   eduReformsByFilter(filter: EduReformFilter!): [EduReform]!
 }
 

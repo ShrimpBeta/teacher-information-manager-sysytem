@@ -61,6 +61,13 @@ type ComplexityRoot struct {
 		TermName func(childComplexity int) int
 	}
 
+	AcademicTermShort struct {
+		CreatedAt func(childComplexity int) int
+		ID        func(childComplexity int) int
+		TermName  func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+	}
+
 	AuthPayload struct {
 		Token func(childComplexity int) int
 	}
@@ -318,7 +325,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		AcademicTerm          func(childComplexity int, id string) int
-		Academicerms          func(childComplexity int, userID string) int
+		AcademicTerms         func(childComplexity int, userID string) int
 		AdminSignIn           func(childComplexity int, adminSignInInput *graphql_models.AdminSignInInput) int
 		CompGuidance          func(childComplexity int, id string) int
 		CompGuidancesByFilter func(childComplexity int, filter graphql_models.CompGuidanceFilter) int
@@ -327,8 +334,7 @@ type ComplexityRoot struct {
 		Mentorship            func(childComplexity int, id string) int
 		MentorshipsByFilter   func(childComplexity int, filter *graphql_models.MentorshipFilter) int
 		Monograph             func(childComplexity int, id string) int
-		Monographs            func(childComplexity int, userID string) int
-		MonographsByName      func(childComplexity int, name string) int
+		MonographsByFilter    func(childComplexity int, filter graphql_models.MonographFilter) int
 		Paper                 func(childComplexity int, id string) int
 		PapersByFilter        func(childComplexity int, filter *graphql_models.PaperFilter) int
 		PasswordTrue          func(childComplexity int, id string) int
@@ -495,7 +501,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	AdminSignIn(ctx context.Context, adminSignInInput *graphql_models.AdminSignInInput) (*graphql_models.AuthPayload, error)
 	AcademicTerm(ctx context.Context, id string) (*graphql_models.AcademicTerm, error)
-	Academicerms(ctx context.Context, userID string) ([]*graphql_models.AcademicTerm, error)
+	AcademicTerms(ctx context.Context, userID string) ([]*graphql_models.AcademicTermShort, error)
 	CompGuidance(ctx context.Context, id string) (*graphql_models.CompGuidance, error)
 	CompGuidancesByFilter(ctx context.Context, filter graphql_models.CompGuidanceFilter) ([]*graphql_models.CompGuidance, error)
 	EduReform(ctx context.Context, id string) (*graphql_models.EduReform, error)
@@ -503,8 +509,7 @@ type QueryResolver interface {
 	Mentorship(ctx context.Context, id string) (*graphql_models.Mentorship, error)
 	MentorshipsByFilter(ctx context.Context, filter *graphql_models.MentorshipFilter) ([]*graphql_models.Mentorship, error)
 	Monograph(ctx context.Context, id string) (*graphql_models.Monograph, error)
-	Monographs(ctx context.Context, userID string) ([]*graphql_models.Monograph, error)
-	MonographsByName(ctx context.Context, name string) ([]*graphql_models.Mentorship, error)
+	MonographsByFilter(ctx context.Context, filter graphql_models.MonographFilter) ([]*graphql_models.Monograph, error)
 	Paper(ctx context.Context, id string) (*graphql_models.Paper, error)
 	PapersByFilter(ctx context.Context, filter *graphql_models.PaperFilter) ([]*graphql_models.Paper, error)
 	PasswordTrue(ctx context.Context, id string) (*graphql_models.PasswordTrue, error)
@@ -584,6 +589,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AcademicTermPreview.TermName(childComplexity), true
+
+	case "AcademicTermShort.createdAt":
+		if e.complexity.AcademicTermShort.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.AcademicTermShort.CreatedAt(childComplexity), true
+
+	case "AcademicTermShort.id":
+		if e.complexity.AcademicTermShort.ID == nil {
+			break
+		}
+
+		return e.complexity.AcademicTermShort.ID(childComplexity), true
+
+	case "AcademicTermShort.termName":
+		if e.complexity.AcademicTermShort.TermName == nil {
+			break
+		}
+
+		return e.complexity.AcademicTermShort.TermName(childComplexity), true
+
+	case "AcademicTermShort.updatedAt":
+		if e.complexity.AcademicTermShort.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.AcademicTermShort.UpdatedAt(childComplexity), true
 
 	case "AuthPayload.token":
 		if e.complexity.AuthPayload.Token == nil {
@@ -2241,17 +2274,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AcademicTerm(childComplexity, args["id"].(string)), true
 
-	case "Query.academicerms":
-		if e.complexity.Query.Academicerms == nil {
+	case "Query.academicTerms":
+		if e.complexity.Query.AcademicTerms == nil {
 			break
 		}
 
-		args, err := ec.field_Query_academicerms_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_academicTerms_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.Academicerms(childComplexity, args["userId"].(string)), true
+		return e.complexity.Query.AcademicTerms(childComplexity, args["userId"].(string)), true
 
 	case "Query.adminSignIn":
 		if e.complexity.Query.AdminSignIn == nil {
@@ -2349,29 +2382,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Monograph(childComplexity, args["id"].(string)), true
 
-	case "Query.monographs":
-		if e.complexity.Query.Monographs == nil {
+	case "Query.monographsByFilter":
+		if e.complexity.Query.MonographsByFilter == nil {
 			break
 		}
 
-		args, err := ec.field_Query_monographs_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_monographsByFilter_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.Monographs(childComplexity, args["userId"].(string)), true
-
-	case "Query.monographsByName":
-		if e.complexity.Query.MonographsByName == nil {
-			break
-		}
-
-		args, err := ec.field_Query_monographsByName_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.MonographsByName(childComplexity, args["name"].(string)), true
+		return e.complexity.Query.MonographsByFilter(childComplexity, args["filter"].(graphql_models.MonographFilter)), true
 
 	case "Query.paper":
 		if e.complexity.Query.Paper == nil {
@@ -2956,6 +2977,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputMentorshipData,
 		ec.unmarshalInputMentorshipFilter,
 		ec.unmarshalInputMonographData,
+		ec.unmarshalInputMonographFilter,
 		ec.unmarshalInputNewAcademicTerm,
 		ec.unmarshalInputNewUser,
 		ec.unmarshalInputPaperData,
@@ -4298,7 +4320,7 @@ func (ec *executionContext) field_Query_academicTerm_args(ctx context.Context, r
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_academicerms_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_academicTerms_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -4433,33 +4455,18 @@ func (ec *executionContext) field_Query_monograph_args(ctx context.Context, rawA
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_monographsByName_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_monographsByFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["name"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+	var arg0 graphql_models.MonographFilter
+	if tmp, ok := rawArgs["filter"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
+		arg0, err = ec.unmarshalNMonographFilter2serverᚋgraphᚋmodelᚐMonographFilter(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["name"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_monographs_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
+	args["filter"] = arg0
 	return args, nil
 }
 
@@ -4971,6 +4978,182 @@ func (ec *executionContext) fieldContext_AcademicTermPreview_courses(ctx context
 				return ec.fieldContext_CoursePreview_color(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type CoursePreview", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AcademicTermShort_id(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AcademicTermShort) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicTermShort_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AcademicTermShort_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AcademicTermShort",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AcademicTermShort_termName(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AcademicTermShort) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicTermShort_termName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TermName, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AcademicTermShort_termName(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AcademicTermShort",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AcademicTermShort_createdAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AcademicTermShort) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicTermShort_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AcademicTermShort_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AcademicTermShort",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AcademicTermShort_updatedAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AcademicTermShort) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicTermShort_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AcademicTermShort_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AcademicTermShort",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
 		},
 	}
 	return fc, nil
@@ -15081,8 +15264,8 @@ func (ec *executionContext) fieldContext_Query_academicTerm(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_academicerms(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_academicerms(ctx, field)
+func (ec *executionContext) _Query_academicTerms(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_academicTerms(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -15095,7 +15278,7 @@ func (ec *executionContext) _Query_academicerms(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Academicerms(rctx, fc.Args["userId"].(string))
+		return ec.resolvers.Query().AcademicTerms(rctx, fc.Args["userId"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15107,12 +15290,12 @@ func (ec *executionContext) _Query_academicerms(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*graphql_models.AcademicTerm)
+	res := resTmp.([]*graphql_models.AcademicTermShort)
 	fc.Result = res
-	return ec.marshalNAcademicTerm2ᚕᚖserverᚋgraphᚋmodelᚐAcademicTerm(ctx, field.Selections, res)
+	return ec.marshalNAcademicTermShort2ᚕᚖserverᚋgraphᚋmodelᚐAcademicTermShort(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_academicerms(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_academicTerms(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -15121,17 +15304,15 @@ func (ec *executionContext) fieldContext_Query_academicerms(ctx context.Context,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "id":
-				return ec.fieldContext_AcademicTerm_id(ctx, field)
+				return ec.fieldContext_AcademicTermShort_id(ctx, field)
 			case "termName":
-				return ec.fieldContext_AcademicTerm_termName(ctx, field)
-			case "courses":
-				return ec.fieldContext_AcademicTerm_courses(ctx, field)
+				return ec.fieldContext_AcademicTermShort_termName(ctx, field)
 			case "createdAt":
-				return ec.fieldContext_AcademicTerm_createdAt(ctx, field)
+				return ec.fieldContext_AcademicTermShort_createdAt(ctx, field)
 			case "updatedAt":
-				return ec.fieldContext_AcademicTerm_updatedAt(ctx, field)
+				return ec.fieldContext_AcademicTermShort_updatedAt(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type AcademicTerm", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type AcademicTermShort", field.Name)
 		},
 	}
 	defer func() {
@@ -15141,7 +15322,7 @@ func (ec *executionContext) fieldContext_Query_academicerms(ctx context.Context,
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_academicerms_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_academicTerms_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -15677,8 +15858,8 @@ func (ec *executionContext) fieldContext_Query_monograph(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_monographs(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_monographs(ctx, field)
+func (ec *executionContext) _Query_monographsByFilter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_monographsByFilter(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -15691,7 +15872,7 @@ func (ec *executionContext) _Query_monographs(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Monographs(rctx, fc.Args["userId"].(string))
+		return ec.resolvers.Query().MonographsByFilter(rctx, fc.Args["filter"].(graphql_models.MonographFilter))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15708,7 +15889,7 @@ func (ec *executionContext) _Query_monographs(ctx context.Context, field graphql
 	return ec.marshalNMonograph2ᚕᚖserverᚋgraphᚋmodelᚐMonograph(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_monographs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_monographsByFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -15745,78 +15926,7 @@ func (ec *executionContext) fieldContext_Query_monographs(ctx context.Context, f
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_monographs_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_monographsByName(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_monographsByName(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MonographsByName(rctx, fc.Args["name"].(string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*graphql_models.Mentorship)
-	fc.Result = res
-	return ec.marshalNMentorship2ᚕᚖserverᚋgraphᚋmodelᚐMentorship(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_monographsByName(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Mentorship_id(ctx, field)
-			case "projectName":
-				return ec.fieldContext_Mentorship_projectName(ctx, field)
-			case "studentNames":
-				return ec.fieldContext_Mentorship_studentNames(ctx, field)
-			case "grade":
-				return ec.fieldContext_Mentorship_grade(ctx, field)
-			case "guidanceDate":
-				return ec.fieldContext_Mentorship_guidanceDate(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_Mentorship_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_Mentorship_updatedAt(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Mentorship", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_monographsByName_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_monographsByFilter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -22060,6 +22170,103 @@ func (ec *executionContext) unmarshalInputMonographData(ctx context.Context, obj
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputMonographFilter(ctx context.Context, obj interface{}) (graphql_models.MonographFilter, error) {
+	var it graphql_models.MonographFilter
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"teachersIn", "teachersOut", "title", "publishDateStart", "publishDateEnd", "publishLevel", "rank", "createdStart", "createdEnd", "updatedStart", "updatedEnd"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "teachersIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("teachersIn"))
+			data, err := ec.unmarshalNID2ᚕᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TeachersIn = data
+		case "teachersOut":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("teachersOut"))
+			data, err := ec.unmarshalOString2ᚕᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TeachersOut = data
+		case "title":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("title"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Title = data
+		case "publishDateStart":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("publishDateStart"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PublishDateStart = data
+		case "publishDateEnd":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("publishDateEnd"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PublishDateEnd = data
+		case "publishLevel":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("publishLevel"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.PublishLevel = data
+		case "rank":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("rank"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Rank = data
+		case "createdStart":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdStart"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedStart = data
+		case "createdEnd":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("createdEnd"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CreatedEnd = data
+		case "updatedStart":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedStart"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedStart = data
+		case "updatedEnd":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("updatedEnd"))
+			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UpdatedEnd = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewAcademicTerm(ctx context.Context, obj interface{}) (graphql_models.NewAcademicTerm, error) {
 	var it graphql_models.NewAcademicTerm
 	asMap := map[string]interface{}{}
@@ -23148,6 +23355,60 @@ func (ec *executionContext) _AcademicTermPreview(ctx context.Context, sel ast.Se
 			out.Values[i] = ec._AcademicTermPreview_termName(ctx, field, obj)
 		case "courses":
 			out.Values[i] = ec._AcademicTermPreview_courses(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var academicTermShortImplementors = []string{"AcademicTermShort"}
+
+func (ec *executionContext) _AcademicTermShort(ctx context.Context, sel ast.SelectionSet, obj *graphql_models.AcademicTermShort) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, academicTermShortImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("AcademicTermShort")
+		case "id":
+			out.Values[i] = ec._AcademicTermShort_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "termName":
+			out.Values[i] = ec._AcademicTermShort_termName(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createdAt":
+			out.Values[i] = ec._AcademicTermShort_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updatedAt":
+			out.Values[i] = ec._AcademicTermShort_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -24787,7 +25048,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "academicerms":
+		case "academicTerms":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -24796,7 +25057,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_academicerms(ctx, field)
+				res = ec._Query_academicTerms(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -24963,7 +25224,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "monographs":
+		case "monographsByFilter":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -24972,29 +25233,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_monographs(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "monographsByName":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_monographsByName(ctx, field)
+				res = ec._Query_monographsByFilter(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -26075,7 +26314,31 @@ func (ec *executionContext) marshalNAcademicTerm2serverᚋgraphᚋmodelᚐAcadem
 	return ec._AcademicTerm(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNAcademicTerm2ᚕᚖserverᚋgraphᚋmodelᚐAcademicTerm(ctx context.Context, sel ast.SelectionSet, v []*graphql_models.AcademicTerm) graphql.Marshaler {
+func (ec *executionContext) marshalNAcademicTerm2ᚖserverᚋgraphᚋmodelᚐAcademicTerm(ctx context.Context, sel ast.SelectionSet, v *graphql_models.AcademicTerm) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._AcademicTerm(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNAcademicTermPreview2serverᚋgraphᚋmodelᚐAcademicTermPreview(ctx context.Context, sel ast.SelectionSet, v graphql_models.AcademicTermPreview) graphql.Marshaler {
+	return ec._AcademicTermPreview(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNAcademicTermPreview2ᚖserverᚋgraphᚋmodelᚐAcademicTermPreview(ctx context.Context, sel ast.SelectionSet, v *graphql_models.AcademicTermPreview) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._AcademicTermPreview(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNAcademicTermShort2ᚕᚖserverᚋgraphᚋmodelᚐAcademicTermShort(ctx context.Context, sel ast.SelectionSet, v []*graphql_models.AcademicTermShort) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -26099,7 +26362,7 @@ func (ec *executionContext) marshalNAcademicTerm2ᚕᚖserverᚋgraphᚋmodelᚐ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalOAcademicTerm2ᚖserverᚋgraphᚋmodelᚐAcademicTerm(ctx, sel, v[i])
+			ret[i] = ec.marshalOAcademicTermShort2ᚖserverᚋgraphᚋmodelᚐAcademicTermShort(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -26111,30 +26374,6 @@ func (ec *executionContext) marshalNAcademicTerm2ᚕᚖserverᚋgraphᚋmodelᚐ
 	wg.Wait()
 
 	return ret
-}
-
-func (ec *executionContext) marshalNAcademicTerm2ᚖserverᚋgraphᚋmodelᚐAcademicTerm(ctx context.Context, sel ast.SelectionSet, v *graphql_models.AcademicTerm) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._AcademicTerm(ctx, sel, v)
-}
-
-func (ec *executionContext) marshalNAcademicTermPreview2serverᚋgraphᚋmodelᚐAcademicTermPreview(ctx context.Context, sel ast.SelectionSet, v graphql_models.AcademicTermPreview) graphql.Marshaler {
-	return ec._AcademicTermPreview(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNAcademicTermPreview2ᚖserverᚋgraphᚋmodelᚐAcademicTermPreview(ctx context.Context, sel ast.SelectionSet, v *graphql_models.AcademicTermPreview) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._AcademicTermPreview(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNActivateUser2serverᚋgraphᚋmodelᚐActivateUser(ctx context.Context, v interface{}) (graphql_models.ActivateUser, error) {
@@ -26793,6 +27032,11 @@ func (ec *executionContext) unmarshalNMonographData2ᚕᚖserverᚋgraphᚋmodel
 		}
 	}
 	return res, nil
+}
+
+func (ec *executionContext) unmarshalNMonographFilter2serverᚋgraphᚋmodelᚐMonographFilter(ctx context.Context, v interface{}) (graphql_models.MonographFilter, error) {
+	res, err := ec.unmarshalInputMonographFilter(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNMonographPreview2ᚕᚖserverᚋgraphᚋmodelᚐMonographPreview(ctx context.Context, sel ast.SelectionSet, v []*graphql_models.MonographPreview) graphql.Marshaler {
@@ -27780,11 +28024,11 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOAcademicTerm2ᚖserverᚋgraphᚋmodelᚐAcademicTerm(ctx context.Context, sel ast.SelectionSet, v *graphql_models.AcademicTerm) graphql.Marshaler {
+func (ec *executionContext) marshalOAcademicTermShort2ᚖserverᚋgraphᚋmodelᚐAcademicTermShort(ctx context.Context, sel ast.SelectionSet, v *graphql_models.AcademicTermShort) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec._AcademicTerm(ctx, sel, v)
+	return ec._AcademicTermShort(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOAdminSignInInput2ᚖserverᚋgraphᚋmodelᚐAdminSignInInput(ctx context.Context, v interface{}) (*graphql_models.AdminSignInInput, error) {

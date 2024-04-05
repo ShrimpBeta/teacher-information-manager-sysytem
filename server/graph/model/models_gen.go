@@ -21,6 +21,13 @@ type AcademicTermPreview struct {
 	Courses  []*CoursePreview `json:"courses,omitempty"`
 }
 
+type AcademicTermShort struct {
+	ID        string    `json:"id"`
+	TermName  string    `json:"termName"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
 type ActivateUser struct {
 	Username    string          `json:"username"`
 	Password    string          `json:"password"`
@@ -265,6 +272,20 @@ type MonographData struct {
 	PublishDate  *time.Time `json:"publishDate,omitempty"`
 	PublishLevel *string    `json:"publishLevel,omitempty"`
 	Rank         *string    `json:"rank,omitempty"`
+}
+
+type MonographFilter struct {
+	TeachersIn       []*string  `json:"teachersIn"`
+	TeachersOut      []*string  `json:"teachersOut,omitempty"`
+	Title            *string    `json:"title,omitempty"`
+	PublishDateStart *time.Time `json:"publishDateStart,omitempty"`
+	PublishDateEnd   *time.Time `json:"publishDateEnd,omitempty"`
+	PublishLevel     *string    `json:"publishLevel,omitempty"`
+	Rank             *string    `json:"rank,omitempty"`
+	CreatedStart     *time.Time `json:"createdStart,omitempty"`
+	CreatedEnd       *time.Time `json:"createdEnd,omitempty"`
+	UpdatedStart     *time.Time `json:"updatedStart,omitempty"`
+	UpdatedEnd       *time.Time `json:"updatedEnd,omitempty"`
 }
 
 type MonographPreview struct {

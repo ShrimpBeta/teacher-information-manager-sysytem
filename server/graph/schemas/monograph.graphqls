@@ -29,11 +29,24 @@ input MonographData {
   rank: String
 }
 
+input MonographFilter {
+  teachersIn: [ID]!
+  teachersOut: [String]
+  title: String
+  publishDateStart: Time
+  publishDateEnd: Time
+  publishLevel: String
+  rank: String
+  createdStart: Time
+  createdEnd: Time
+  updatedStart: Time
+  updatedEnd: Time
+}
+
 extend type Query {
   monograph(id: ID!): Monograph!
-  monographs(userId: ID!): [Monograph]!
 
-  monographsByName(name: String!): [Mentorship]!
+  monographsByFilter(filter: MonographFilter!): [Monograph]!
 }
 
 extend type Mutation {

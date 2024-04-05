@@ -1,13 +1,12 @@
 import { gql } from "apollo-angular";
 
-export const passwordsQuery = gql`
-  query passwords($userId: ID!) {
-    passwords(userId: $userId) {
+export const passwordsByFilterQuery = gql`
+  query passwordsByFilter($filter: PasswordFilter!) {
+    passwordsByFilter(filter: $filter) {
       id
       url
       appName
       account
-      password
       description
       updatedAt
       createdAt
@@ -15,9 +14,9 @@ export const passwordsQuery = gql`
   }
 `
 
-export const passwordQuery = gql`
-  query password($id: ID!) {
-    password(id: $id) {
+export const passwordTrueQuery = gql`
+  query passwordTrue($id: ID!) {
+    passwordTrue(id: $id) {
       id
       url
       appName

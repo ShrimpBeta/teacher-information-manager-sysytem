@@ -13,16 +13,16 @@ export const userQuery = gql`
       updatedAt
     }
   }
-`
+`;
 
 export const userExportsQuery = gql`
-    query userExports{
-        userExports{
-            id
-            username
-            email
-            avatar
-            createdAt
-        }
+  query userExports{
+    userExports{
+      id
+      username
+      email
+      avatar
+      createdAt
     }
-`
+  }
+`;
