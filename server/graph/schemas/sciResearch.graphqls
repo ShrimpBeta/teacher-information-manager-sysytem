@@ -47,6 +47,7 @@ type SciResearchPreview {
   achievement: String
   fund: String
   isAward: Boolean
+  awards: [AwardRecordPreview]
 }
 
 input AwardRecordData {
@@ -104,25 +105,26 @@ extend type Query {
 }
 
 extend type Mutation {
-  createSciResearch(newSciResearchData: SciResearchData!): SciResearch!
+  createSciResearch(sciResearchData: SciResearchData!): SciResearch!
   updateSciResearch(
-    sciResearchID: ID!
-    updateSciResearchData: SciResearchData!
+    sciResearchId: ID!
+    sciResearchData: SciResearchData!
   ): SciResearch!
-  deleteSciResearch(sciResearchID: ID!): SciResearch!
+  deleteSciResearch(sciResearchId: ID!): SciResearch!
 
   addAwardRecord(
     sciResearchId: ID!
-    newAwardRecordData: AwardRecordData!
-  ): SciResearch!
+    awardRecordData: AwardRecordData!
+  ): AwardRecord!
   updateAwardRecord(
     sciResearchId: ID!
-    updateAwardRecordData: AwardRecordData!
+    awardRecordId: ID!
+    awardRecordData: AwardRecordData!
   ): AwardRecord!
   removeAwardRecord(sciResearchId: ID!, awardRecordId: ID!): AwardRecord!
 
   uploadSciResearchs(file: Upload!): SciResearchPreview!
-  createdSciResearchs(
-    newAwardRecordDatas: [SciResearchData]!
-  ): [SciResearchPreview!]!
+  createSciResearchs(
+    sciResearchsData: [SciResearchData]!
+  ): [SciResearch!]!
 }

@@ -47,7 +47,7 @@ extend type Query {
 extend type Mutation {
   createCompGuidance(
     userId: ID!
-    newGuidanceData: CompGuidanceData!
+    compGuidanceData: CompGuidanceData!
   ): CompGuidance!
   updateCompGuidance(
     id: ID!
@@ -58,6 +58,6 @@ extend type Mutation {
   uploadCompGuidances(file: Upload!): [CompGuidancePreview]!
   createCompGuidances(
     userId: ID!
-    newGuidancesData: [CompGuidanceData]!
+    compGuidancesData: [CompGuidanceData]!
   ): [CompGuidance]!
 }

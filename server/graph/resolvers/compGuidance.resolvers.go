@@ -13,8 +13,8 @@ import (
 )
 
 // CreateCompGuidance is the resolver for the createCompGuidance field.
-func (r *mutationResolver) CreateCompGuidance(ctx context.Context, userID string, newGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
-	return r.CompGuidanceService.CreateCompGuidance(userID, newGuidanceData)
+func (r *mutationResolver) CreateCompGuidance(ctx context.Context, userID string, compGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
+	return r.CompGuidanceService.CreateCompGuidance(userID, compGuidanceData)
 }
 
 // UpdateCompGuidance is the resolver for the updateCompGuidance field.
@@ -33,7 +33,7 @@ func (r *mutationResolver) UploadCompGuidances(ctx context.Context, file graphql
 }
 
 // CreateCompGuidances is the resolver for the createCompGuidances field.
-func (r *mutationResolver) CreateCompGuidances(ctx context.Context, userID string, newGuidancesData []*graphql_models.CompGuidanceData) ([]*graphql_models.CompGuidance, error) {
+func (r *mutationResolver) CreateCompGuidances(ctx context.Context, userID string, compGuidancesData []*graphql_models.CompGuidanceData) ([]*graphql_models.CompGuidance, error) {
 	panic(fmt.Errorf("not implemented: CreateCompGuidances - createCompGuidances"))
 }
 

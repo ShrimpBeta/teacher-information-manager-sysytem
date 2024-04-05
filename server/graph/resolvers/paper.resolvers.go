@@ -13,8 +13,8 @@ import (
 )
 
 // CreatePaper is the resolver for the createPaper field.
-func (r *mutationResolver) CreatePaper(ctx context.Context, newPaperData graphql_models.PaperData) (*graphql_models.Paper, error) {
-	return r.PaperService.CreatePaper(newPaperData, r.UserService.Repo)
+func (r *mutationResolver) CreatePaper(ctx context.Context, paperData graphql_models.PaperData) (*graphql_models.Paper, error) {
+	return r.PaperService.CreatePaper(paperData, r.UserService.Repo)
 }
 
 // UpdatePaper is the resolver for the updatePaper field.
@@ -33,7 +33,7 @@ func (r *mutationResolver) UploadPapers(ctx context.Context, file graphql.Upload
 }
 
 // CreatePapers is the resolver for the createPapers field.
-func (r *mutationResolver) CreatePapers(ctx context.Context, newPapersDatas []*graphql_models.PaperData) ([]*graphql_models.Paper, error) {
+func (r *mutationResolver) CreatePapers(ctx context.Context, papersData []*graphql_models.PaperData) ([]*graphql_models.Paper, error) {
 	panic(fmt.Errorf("not implemented: CreatePapers - createPapers"))
 }
 

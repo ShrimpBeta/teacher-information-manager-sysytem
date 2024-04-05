@@ -11,7 +11,7 @@ import (
 	"server/environment"
 	graphql_models "server/graph/model"
 
-	"github.com/redis/go-redis/v9"
+	redis "github.com/redis/go-redis/v9"
 )
 
 // DeleteAccount is the resolver for the deleteAccount field.
@@ -26,7 +26,6 @@ func (r *mutationResolver) UpdateAccountPassword(ctx context.Context, userID str
 
 // ResetAccountPassword is the resolver for the resetAccountPassword field.
 func (r *mutationResolver) ResetAccountPassword(ctx context.Context, resetPasswordData graphql_models.ResetPassword) (bool, error) {
-
 	checkCode, err := r.RedisDB.Get(ctx, resetPasswordData.Email+"reset").Result()
 	if err == redis.Nil {
 		return false, errors.New("code expired")

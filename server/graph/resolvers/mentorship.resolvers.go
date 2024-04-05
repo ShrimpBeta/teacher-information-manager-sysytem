@@ -13,8 +13,8 @@ import (
 )
 
 // CreateMentorship is the resolver for the createMentorship field.
-func (r *mutationResolver) CreateMentorship(ctx context.Context, userID string, newMentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
-	return r.MentorshipService.CreateMentorship(userID, newMentorshipData)
+func (r *mutationResolver) CreateMentorship(ctx context.Context, userID string, mentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
+	return r.MentorshipService.CreateMentorship(userID, mentorshipData)
 }
 
 // UpdateMentorship is the resolver for the updateMentorship field.
@@ -33,7 +33,7 @@ func (r *mutationResolver) UploadMentorships(ctx context.Context, file graphql.U
 }
 
 // CreatedMentorships is the resolver for the createdMentorships field.
-func (r *mutationResolver) CreatedMentorships(ctx context.Context, userID string, newMentorshipDatas []*graphql_models.MentorshipData) ([]*graphql_models.Mentorship, error) {
+func (r *mutationResolver) CreateMentorships(ctx context.Context, userID string, mentorshipsData []*graphql_models.MentorshipData) ([]*graphql_models.Mentorship, error) {
 	panic(fmt.Errorf("not implemented: CreatedMentorships - createdMentorships"))
 }
 

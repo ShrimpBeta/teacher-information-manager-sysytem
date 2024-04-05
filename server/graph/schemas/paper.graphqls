@@ -54,10 +54,10 @@ extend type Query {
 }
 
 extend type Mutation {
-  createPaper(newPaperData: PaperData!): Paper!
+  createPaper(paperData: PaperData!): Paper!
   updatePaper(id: ID!, paperData: PaperData!): Paper!
   deletePaper(id: ID!): Paper!
 
   uploadPapers(file: Upload!): [PaperPreview]!
-  createPapers(newPapersDatas: [PaperData]!): [Paper]!
+  createPapers(papersData: [PaperData]!): [Paper]!
 }

@@ -42,7 +42,6 @@ func (passwordService *PasswordService) CreatePassword(userID string, newPasswor
 		URL:         passwordData.Url,
 		Account:     passwordData.Account,
 		AppName:     passwordData.AppName,
-		Password:    passwordData.Password,
 		Description: passwordData.Description,
 		CreatedAt:   passwordData.CreatedAt.Time(),
 		UpdatedAt:   passwordData.UpdatedAt.Time(),
@@ -78,7 +77,6 @@ func (passwordService *PasswordService) UpdatePassword(id string, passwordData g
 		URL:         passwordUpdate.Url,
 		Account:     passwordUpdate.Account,
 		AppName:     passwordUpdate.AppName,
-		Password:    passwordUpdate.Password,
 		Description: passwordUpdate.Description,
 		CreatedAt:   passwordUpdate.CreatedAt.Time(),
 		UpdatedAt:   passwordUpdate.UpdatedAt.Time(),
@@ -103,14 +101,13 @@ func (passwordService *PasswordService) DeletePassword(id string) (*graphql_mode
 		URL:         passwordData.Url,
 		Account:     passwordData.Account,
 		AppName:     passwordData.AppName,
-		Password:    passwordData.Password,
 		Description: passwordData.Description,
 		CreatedAt:   passwordData.CreatedAt.Time(),
 		UpdatedAt:   passwordData.UpdatedAt.Time(),
 	}, nil
 }
 
-func (passwordService *PasswordService) GetPasswordById(id string) (*graphql_models.Password, error) {
+func (passwordService *PasswordService) GetPasswordById(id string) (*graphql_models.PasswordTrue, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -119,7 +116,7 @@ func (passwordService *PasswordService) GetPasswordById(id string) (*graphql_mod
 	if err != nil {
 		return nil, err
 	}
-	return &graphql_models.Password{
+	return &graphql_models.PasswordTrue{
 		ID:          passwordData.ID.Hex(),
 		URL:         passwordData.Url,
 		Account:     passwordData.Account,
@@ -147,7 +144,6 @@ func (passwordService *PasswordService) GetPasswordsByUserId(userID string) ([]*
 			URL:         passwordData.Url,
 			Account:     passwordData.Account,
 			AppName:     passwordData.AppName,
-			Password:    passwordData.Password,
 			Description: passwordData.Description,
 			CreatedAt:   passwordData.CreatedAt.Time(),
 			UpdatedAt:   passwordData.UpdatedAt.Time(),

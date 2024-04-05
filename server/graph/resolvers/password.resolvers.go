@@ -13,8 +13,8 @@ import (
 )
 
 // CreatePassword is the resolver for the createPassword field.
-func (r *mutationResolver) CreatePassword(ctx context.Context, userID string, newPasswordData graphql_models.PasswordData) (*graphql_models.Password, error) {
-	return r.PasswordService.CreatePassword(userID, newPasswordData)
+func (r *mutationResolver) CreatePassword(ctx context.Context, userID string, passwordData graphql_models.PasswordData) (*graphql_models.Password, error) {
+	return r.PasswordService.CreatePassword(userID, passwordData)
 }
 
 // UpdatePassword is the resolver for the updatePassword field.
@@ -28,23 +28,18 @@ func (r *mutationResolver) DeletePassword(ctx context.Context, id string) (*grap
 }
 
 // UploadPasswords is the resolver for the uploadPasswords field.
-func (r *mutationResolver) UploadPasswords(ctx context.Context, file graphql.Upload) ([]*graphql_models.Password, error) {
+func (r *mutationResolver) UploadPasswords(ctx context.Context, file graphql.Upload) ([]*graphql_models.PasswordPreview, error) {
 	panic(fmt.Errorf("not implemented: UploadPasswords - uploadPasswords"))
 }
 
 // CreatedPasswords is the resolver for the createdPasswords field.
-func (r *mutationResolver) CreatedPasswords(ctx context.Context, userID string, newPasswordDatas []*graphql_models.PasswordData) ([]*graphql_models.Password, error) {
+func (r *mutationResolver) CreatePasswords(ctx context.Context, userID string, passwordsData []*graphql_models.PasswordData) ([]*graphql_models.Password, error) {
 	panic(fmt.Errorf("not implemented: CreatedPasswords - createdPasswords"))
 }
 
-// Password is the resolver for the password field.
-func (r *queryResolver) Password(ctx context.Context, id string) (*graphql_models.Password, error) {
-	return r.PasswordService.GetPasswordById(id)
-}
-
 // PasswordTrue is the resolver for the passwordTrue field.
-func (r *queryResolver) PasswordTrue(ctx context.Context, id string) (*graphql_models.Password, error) {
-	panic(fmt.Errorf("not implemented: PasswordTrue - passwordTrue"))
+func (r *queryResolver) PasswordTrue(ctx context.Context, id string) (*graphql_models.PasswordTrue, error) {
+	return r.PasswordService.GetPasswordById(id)
 }
 
 // PasswordsByFilter is the resolver for the passwordsByFilter field.

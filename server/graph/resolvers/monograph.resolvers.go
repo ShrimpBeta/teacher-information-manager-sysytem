@@ -13,7 +13,7 @@ import (
 )
 
 // CreateMonograph is the resolver for the createMonograph field.
-func (r *mutationResolver) CreateMonograph(ctx context.Context, newMonographData graphql_models.MonographData) (*graphql_models.Monograph, error) {
+func (r *mutationResolver) CreateMonograph(ctx context.Context, monographData graphql_models.MonographData) (*graphql_models.Monograph, error) {
 	panic(fmt.Errorf("not implemented: CreateMonograph - createMonograph"))
 }
 
@@ -33,7 +33,7 @@ func (r *mutationResolver) UploadMonographs(ctx context.Context, file graphql.Up
 }
 
 // CreatedMonographs is the resolver for the createdMonographs field.
-func (r *mutationResolver) CreatedMonographs(ctx context.Context, newMonographDatas []*graphql_models.MonographData) ([]*graphql_models.Monograph, error) {
+func (r *mutationResolver) CreateMonographs(ctx context.Context, monographsData []*graphql_models.MonographData) ([]*graphql_models.Monograph, error) {
 	panic(fmt.Errorf("not implemented: CreatedMonographs - createdMonographs"))
 }
 

@@ -64,10 +64,10 @@ extend type Query {
 }
 
 extend type Mutation {
-  createEduReform(newEduReformData: EduReformData!): EduReform!
+  createEduReform(eduReformData: EduReformData!): EduReform!
   updateEduReform(id: ID!, eduReformData: EduReformData!): EduReform!
   deleteEduReform(id: ID!): EduReform!
 
   uploadEduReforms(file: Upload!): [EduReformPreview]!
-  createdEduReforms(newEduReformDatas: [EduReformData]!): [EduReform]!
+  createEduReforms(eduReformsData: [EduReformData]!): [EduReform]!
 }

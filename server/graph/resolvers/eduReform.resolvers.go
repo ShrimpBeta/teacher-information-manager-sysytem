@@ -13,7 +13,7 @@ import (
 )
 
 // CreateEduReform is the resolver for the createEduReform field.
-func (r *mutationResolver) CreateEduReform(ctx context.Context, newEduReformData graphql_models.EduReformData) (*graphql_models.EduReform, error) {
+func (r *mutationResolver) CreateEduReform(ctx context.Context, eduReformData graphql_models.EduReformData) (*graphql_models.EduReform, error) {
 	panic(fmt.Errorf("not implemented: CreateEduReform - createEduReform"))
 }
 
@@ -33,7 +33,7 @@ func (r *mutationResolver) UploadEduReforms(ctx context.Context, file graphql.Up
 }
 
 // CreatedEduReforms is the resolver for the createdEduReforms field.
-func (r *mutationResolver) CreatedEduReforms(ctx context.Context, newEduReformDatas []*graphql_models.EduReformData) ([]*graphql_models.EduReform, error) {
+func (r *mutationResolver) CreateEduReforms(ctx context.Context, eduReformsData []*graphql_models.EduReformData) ([]*graphql_models.EduReform, error) {
 	panic(fmt.Errorf("not implemented: CreatedEduReforms - createdEduReforms"))
 }
 

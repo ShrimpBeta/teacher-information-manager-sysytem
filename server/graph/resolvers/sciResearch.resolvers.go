@@ -13,12 +13,12 @@ import (
 )
 
 // CreateSciResearch is the resolver for the createSciResearch field.
-func (r *mutationResolver) CreateSciResearch(ctx context.Context, newSciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error) {
+func (r *mutationResolver) CreateSciResearch(ctx context.Context, sciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error) {
 	panic(fmt.Errorf("not implemented: CreateSciResearch - createSciResearch"))
 }
 
 // UpdateSciResearch is the resolver for the updateSciResearch field.
-func (r *mutationResolver) UpdateSciResearch(ctx context.Context, sciResearchID string, updateSciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error) {
+func (r *mutationResolver) UpdateSciResearch(ctx context.Context, sciResearchID string, sciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error) {
 	panic(fmt.Errorf("not implemented: UpdateSciResearch - updateSciResearch"))
 }
 
@@ -28,12 +28,12 @@ func (r *mutationResolver) DeleteSciResearch(ctx context.Context, sciResearchID 
 }
 
 // AddAwardRecord is the resolver for the addAwardRecord field.
-func (r *mutationResolver) AddAwardRecord(ctx context.Context, sciResearchID string, newAwardRecordData graphql_models.AwardRecordData) (*graphql_models.SciResearch, error) {
+func (r *mutationResolver) AddAwardRecord(ctx context.Context, sciResearchID string, awardRecordData graphql_models.AwardRecordData) (*graphql_models.AwardRecord, error) {
 	panic(fmt.Errorf("not implemented: AddAwardRecord - addAwardRecord"))
 }
 
 // UpdateAwardRecord is the resolver for the updateAwardRecord field.
-func (r *mutationResolver) UpdateAwardRecord(ctx context.Context, sciResearchID string, updateAwardRecordData graphql_models.AwardRecordData) (*graphql_models.AwardRecord, error) {
+func (r *mutationResolver) UpdateAwardRecord(ctx context.Context, sciResearchID string, awardRecordID string, awardRecordData graphql_models.AwardRecordData) (*graphql_models.AwardRecord, error) {
 	panic(fmt.Errorf("not implemented: UpdateAwardRecord - updateAwardRecord"))
 }
 
@@ -48,7 +48,7 @@ func (r *mutationResolver) UploadSciResearchs(ctx context.Context, file graphql.
 }
 
 // CreatedSciResearchs is the resolver for the createdSciResearchs field.
-func (r *mutationResolver) CreatedSciResearchs(ctx context.Context, newAwardRecordDatas []*graphql_models.SciResearchData) ([]*graphql_models.SciResearchPreview, error) {
+func (r *mutationResolver) CreateSciResearchs(ctx context.Context, sciResearchsData []*graphql_models.SciResearchData) ([]*graphql_models.SciResearch, error) {
 	panic(fmt.Errorf("not implemented: CreatedSciResearchs - createdSciResearchs"))
 }
 

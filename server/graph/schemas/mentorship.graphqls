@@ -42,13 +42,13 @@ extend type Query {
 }
 
 extend type Mutation {
-  createMentorship(userId: ID!, newMentorshipData: MentorshipData!): Mentorship!
-  updateMentorship(id: ID!, MentorshipData: MentorshipData!): Mentorship!
+  createMentorship(userId: ID!, mentorshipData: MentorshipData!): Mentorship!
+  updateMentorship(id: ID!, mentorshipData: MentorshipData!): Mentorship!
   deleteMentorship(id: ID!): Mentorship!
 
   uploadMentorships(file: Upload!): [MentorshipPreview]!
-  createdMentorships(
+  createMentorships(
     userId: ID!
-    newMentorshipDatas: [MentorshipData]!
+    mentorshipsData: [MentorshipData]!
   ): [Mentorship]!
 }

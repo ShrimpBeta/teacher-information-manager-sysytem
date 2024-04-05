@@ -53,19 +53,19 @@ extend type Query {
 }
 
 extend type Mutation {
-  createUPGuidance(
+  createUGPGGuidance(
     userId: ID!
-    newUGPGGuidanceData: UGPGGuidanceData!
-  ): UGPGGuidance!
-  updateUPGuidance(
-    uGPGGuidanceId: ID!
     uGPGGuidanceData: UGPGGuidanceData!
   ): UGPGGuidance!
-  deleteUPGuidance(uGPGGuidanceId: ID!): UGPGGuidance!
+  updateUGPGGuidance(
+    id: ID!
+    uGPGGuidanceData: UGPGGuidanceData!
+  ): UGPGGuidance!
+  deleteUGPGGuidance(id: ID!): UGPGGuidance!
 
   uploadUGPGGuidances(file: Upload!): [UGPGGuidancePreview]!
-  createUPGuidances(
+  createUGPGGuidances(
     userId: ID!
-    newUGPGGuidanceDatas: [UGPGGuidanceData!]!
+    uGPGGuidancesData: [UGPGGuidanceData!]!
   ): [UGPGGuidance!]!
 }

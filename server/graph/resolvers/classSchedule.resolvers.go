@@ -13,12 +13,12 @@ import (
 )
 
 // CreateCourse is the resolver for the createCourse field.
-func (r *mutationResolver) CreateCourse(ctx context.Context, termID string, newCourseData graphql_models.CourseData) (*graphql_models.Course, error) {
+func (r *mutationResolver) CreateCourse(ctx context.Context, termID string, courseData graphql_models.CourseData) (*graphql_models.Course, error) {
 	panic(fmt.Errorf("not implemented: CreateCourse - createCourse"))
 }
 
 // UpdateCourse is the resolver for the updateCourse field.
-func (r *mutationResolver) UpdateCourse(ctx context.Context, courseID string, courseData graphql_models.CourseData) (*graphql_models.Course, error) {
+func (r *mutationResolver) UpdateCourse(ctx context.Context, termID string, courseID string, courseData graphql_models.CourseData) (*graphql_models.Course, error) {
 	panic(fmt.Errorf("not implemented: UpdateCourse - updateCourse"))
 }
 
@@ -28,17 +28,17 @@ func (r *mutationResolver) DeleteCourse(ctx context.Context, termID string, cour
 }
 
 // CreateacademicTerm is the resolver for the createacademicTerm field.
-func (r *mutationResolver) CreateacademicTerm(ctx context.Context, userID string, newTermData graphql_models.NewAcademicTerm) (*graphql_models.AcademicTerm, error) {
+func (r *mutationResolver) CreateAcademicTerm(ctx context.Context, userID string, termData graphql_models.NewAcademicTerm) (*graphql_models.AcademicTerm, error) {
 	panic(fmt.Errorf("not implemented: CreateacademicTerm - createacademicTerm"))
 }
 
 // UpdateacademicTerm is the resolver for the updateacademicTerm field.
-func (r *mutationResolver) UpdateacademicTerm(ctx context.Context, termID string, termData graphql_models.UpdateAcademicTerm) (*graphql_models.AcademicTerm, error) {
+func (r *mutationResolver) UpdateAcademicTerm(ctx context.Context, termID string, termData graphql_models.UpdateAcademicTerm) (*graphql_models.AcademicTerm, error) {
 	panic(fmt.Errorf("not implemented: UpdateacademicTerm - updateacademicTerm"))
 }
 
 // DeleteacademicTerm is the resolver for the deleteacademicTerm field.
-func (r *mutationResolver) DeleteacademicTerm(ctx context.Context, termID string) (*graphql_models.AcademicTerm, error) {
+func (r *mutationResolver) DeleteAcademicTerm(ctx context.Context, termID string) (*graphql_models.AcademicTerm, error) {
 	panic(fmt.Errorf("not implemented: DeleteacademicTerm - deleteacademicTerm"))
 }
 

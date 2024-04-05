@@ -17,8 +17,8 @@ type AcademicTerm struct {
 }
 
 type AcademicTermPreview struct {
-	Term    *string          `json:"Term,omitempty"`
-	Courses []*CoursePreview `json:"courses,omitempty"`
+	TermName *string          `json:"termName,omitempty"`
+	Courses  []*CoursePreview `json:"courses,omitempty"`
 }
 
 type ActivateUser struct {
@@ -342,7 +342,6 @@ type Password struct {
 	URL         *string   `json:"url,omitempty"`
 	AppName     *string   `json:"appName,omitempty"`
 	Account     string    `json:"account"`
-	Password    string    `json:"password"`
 	Description *string   `json:"description,omitempty"`
 	CreatedAt   time.Time `json:"createdAt"`
 	UpdatedAt   time.Time `json:"updatedAt"`
@@ -367,7 +366,19 @@ type PasswordPreview struct {
 	URL         *string `json:"url,omitempty"`
 	AppName     *string `json:"appName,omitempty"`
 	Account     string  `json:"account"`
+	Password    string  `json:"password"`
 	Description *string `json:"description,omitempty"`
+}
+
+type PasswordTrue struct {
+	ID          string    `json:"id"`
+	URL         *string   `json:"url,omitempty"`
+	AppName     *string   `json:"appName,omitempty"`
+	Account     string    `json:"account"`
+	Password    string    `json:"password"`
+	Description *string   `json:"description,omitempty"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 type Query struct {
@@ -440,17 +451,18 @@ type SciResearchFilter struct {
 }
 
 type SciResearchPreview struct {
-	TeachersIn  []*UserExport `json:"teachersIn,omitempty"`
-	TeachersOut []*string     `json:"teachersOut,omitempty"`
-	Number      *string       `json:"number,omitempty"`
-	Title       *string       `json:"title,omitempty"`
-	StartDate   *time.Time    `json:"startDate,omitempty"`
-	Duration    *string       `json:"duration,omitempty"`
-	Level       *string       `json:"level,omitempty"`
-	Rank        *string       `json:"rank,omitempty"`
-	Achievement *string       `json:"achievement,omitempty"`
-	Fund        *string       `json:"fund,omitempty"`
-	IsAward     *bool         `json:"isAward,omitempty"`
+	TeachersIn  []*UserExport         `json:"teachersIn,omitempty"`
+	TeachersOut []*string             `json:"teachersOut,omitempty"`
+	Number      *string               `json:"number,omitempty"`
+	Title       *string               `json:"title,omitempty"`
+	StartDate   *time.Time            `json:"startDate,omitempty"`
+	Duration    *string               `json:"duration,omitempty"`
+	Level       *string               `json:"level,omitempty"`
+	Rank        *string               `json:"rank,omitempty"`
+	Achievement *string               `json:"achievement,omitempty"`
+	Fund        *string               `json:"fund,omitempty"`
+	IsAward     *bool                 `json:"isAward,omitempty"`
+	Awards      []*AwardRecordPreview `json:"awards,omitempty"`
 }
 
 type SigIn struct {

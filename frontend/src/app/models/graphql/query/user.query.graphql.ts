@@ -15,7 +15,6 @@ export const userQuery = gql`
   }
 `
 
-
 export const userExportsQuery = gql`
     query userExports{
         userExports{
@@ -23,6 +22,7 @@ export const userExportsQuery = gql`
             username
             email
             avatar
+            createdAt
         }
     }
 `

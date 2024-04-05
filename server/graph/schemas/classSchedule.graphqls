@@ -44,7 +44,7 @@ type CoursePreview {
 }
 
 type AcademicTermPreview {
-  Term: String
+  termName: String
   courses: [CoursePreview]
 }
 
@@ -82,13 +82,13 @@ extend type Query {
 }
 
 extend type Mutation {
-  createCourse(termId: ID!, newCourseData: CourseData!): Course!
-  updateCourse(courseId: ID!, courseData: CourseData!): Course!
+  createCourse(termId: ID!, courseData: CourseData!): Course!
+  updateCourse(termId: ID!, courseId: ID!, courseData: CourseData!): Course!
   deleteCourse(termId: ID!, courseId: ID!): Course!
 
-  createacademicTerm(userId: ID!, newTermData: NewAcademicTerm!): AcademicTerm!
-  updateacademicTerm(termId: ID!, termData: UpdateAcademicTerm!): AcademicTerm!
-  deleteacademicTerm(termId: ID!): AcademicTerm!
+  createAcademicTerm(userId: ID!, termData: NewAcademicTerm!): AcademicTerm!
+  updateAcademicTerm(termId: ID!, termData: UpdateAcademicTerm!): AcademicTerm!
+  deleteAcademicTerm(termId: ID!): AcademicTerm!
 
   uploadAcademicTerm(file: Upload!): AcademicTermPreview!
 }

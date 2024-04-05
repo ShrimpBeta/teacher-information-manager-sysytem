@@ -13,17 +13,17 @@ import (
 )
 
 // CreateUPGuidance is the resolver for the createUPGuidance field.
-func (r *mutationResolver) CreateUPGuidance(ctx context.Context, userID string, newUGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error) {
+func (r *mutationResolver) CreateUGPGGuidance(ctx context.Context, userID string, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error) {
 	panic(fmt.Errorf("not implemented: CreateUPGuidance - createUPGuidance"))
 }
 
 // UpdateUPGuidance is the resolver for the updateUPGuidance field.
-func (r *mutationResolver) UpdateUPGuidance(ctx context.Context, uGPGGuidanceID string, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error) {
+func (r *mutationResolver) UpdateUGPGGuidance(ctx context.Context, id string, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error) {
 	panic(fmt.Errorf("not implemented: UpdateUPGuidance - updateUPGuidance"))
 }
 
 // DeleteUPGuidance is the resolver for the deleteUPGuidance field.
-func (r *mutationResolver) DeleteUPGuidance(ctx context.Context, uGPGGuidanceID string) (*graphql_models.UGPGGuidance, error) {
+func (r *mutationResolver) DeleteUGPGGuidance(ctx context.Context, id string) (*graphql_models.UGPGGuidance, error) {
 	panic(fmt.Errorf("not implemented: DeleteUPGuidance - deleteUPGuidance"))
 }
 
@@ -33,7 +33,7 @@ func (r *mutationResolver) UploadUGPGGuidances(ctx context.Context, file graphql
 }
 
 // CreateUPGuidances is the resolver for the createUPGuidances field.
-func (r *mutationResolver) CreateUPGuidances(ctx context.Context, userID string, newUGPGGuidanceDatas []*graphql_models.UGPGGuidanceData) ([]*graphql_models.UGPGGuidance, error) {
+func (r *mutationResolver) CreateUGPGGuidances(ctx context.Context, userID string, uGPGGuidancesData []*graphql_models.UGPGGuidanceData) ([]*graphql_models.UGPGGuidance, error) {
 	panic(fmt.Errorf("not implemented: CreateUPGuidances - createUPGuidances"))
 }
 
