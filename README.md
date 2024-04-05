@@ -27,3 +27,9 @@
 
 see in `/playground` or api test tool graphql mode (`/graphql`)
 
+## 数据库
+
+#### 1. MongoDB（用户数据存储）
+
+#### 2. Redis（验证码服务）
+
