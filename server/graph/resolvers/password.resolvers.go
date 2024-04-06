@@ -8,18 +8,51 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
+	"server/middlewares"
 
 	"github.com/99designs/gqlgen/graphql"
 )
 
 // CreatePassword is the resolver for the createPassword field.
-func (r *mutationResolver) CreatePassword(ctx context.Context, userID string, passwordData graphql_models.PasswordData) (*graphql_models.Password, error) {
-	return r.PasswordService.CreatePassword(userID, passwordData)
+func (r *mutationResolver) CreatePassword(ctx context.Context, passwordData graphql_models.PasswordData) (*graphql_models.Password, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return r.PasswordService.CreatePassword(user.ID, user.MasterKey, passwordData)
 }
 
 // UpdatePassword is the resolver for the updatePassword field.
 func (r *mutationResolver) UpdatePassword(ctx context.Context, id string, passwordData graphql_models.PasswordData) (*graphql_models.Password, error) {
-	return r.PasswordService.UpdatePassword(id, passwordData)
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return r.PasswordService.UpdatePassword(id, user.ID, user.MasterKey, passwordData)
 }
 
 // DeletePassword is the resolver for the deletePassword field.
@@ -33,7 +66,7 @@ func (r *mutationResolver) UploadPasswords(ctx context.Context, file graphql.Upl
 }
 
 // CreatedPasswords is the resolver for the createdPasswords field.
-func (r *mutationResolver) CreatePasswords(ctx context.Context, userID string, passwordsData []*graphql_models.PasswordData) ([]*graphql_models.Password, error) {
+func (r *mutationResolver) CreatePasswords(ctx context.Context, passwordsData []*graphql_models.PasswordData) ([]*graphql_models.Password, error) {
 	panic(fmt.Errorf("not implemented: CreatedPasswords - createdPasswords"))
 }
 
@@ -44,5 +77,5 @@ func (r *queryResolver) PasswordTrue(ctx context.Context, id string) (*graphql_m
 
 // PasswordsByFilter is the resolver for the passwordsByFilter field.
 func (r *queryResolver) PasswordsByFilter(ctx context.Context, filter graphql_models.PasswordFilter) ([]*graphql_models.Password, error) {
-	panic(fmt.Errorf("not implemented: PasswordsByFilter - passwordsByFilter"))
+	return r.PasswordService.GetPasswordsByFilter(filter)
 }

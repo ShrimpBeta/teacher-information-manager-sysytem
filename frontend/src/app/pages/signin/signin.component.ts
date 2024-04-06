@@ -65,14 +65,16 @@ export class SigninComponent implements OnDestroy {
         if (user.activate === false) {
           return this.router.navigate(['/main/account']).then(() => {
             // 取消订阅
-            this.destroy$.next(true);
-            return this.destroy$.unsubscribe();
+            this.isSignin = false;
+            // this.destroy$.next(true);
+            // return this.destroy$.unsubscribe();
           });
         }
         return this.router.navigate(['/main']).then(() => {
           // 取消订阅
-          this.destroy$.next(true);
-          return this.destroy$.unsubscribe();
+          this.isSignin = false;
+          // this.destroy$.next(true);
+          // return this.destroy$.unsubscribe();
         });
       }
     }
@@ -85,14 +87,13 @@ export class SigninComponent implements OnDestroy {
     const networkError = error.networkError;
     if (!networkError) {
       // 提示用户
-      console.log(error);
-      console.log(error.message);
       this.snackBar.open('登录失败，请检查邮箱和密码是否正确', '关闭', {
         duration: 3000,
       });
+
     } else {
       // 提示用户
-      this.snackBar.open('网络错误或API错误', '关闭', {
+      this.snackBar.open('网络错误或API错误，请稍后重试', '关闭', {
         duration: 3000,
       });
     }

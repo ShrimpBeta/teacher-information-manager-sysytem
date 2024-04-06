@@ -76,3 +76,8 @@ export const removeWechatAuthMutation = gql`
   }
 `;
 
+export const deleteUserMutation = gql`
+  mutation deleteUser($userId: ID!){
+    deleteAccount(userId: $userId)
+  }
+`;

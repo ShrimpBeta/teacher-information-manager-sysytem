@@ -8,13 +8,30 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
+	"server/middlewares"
 
 	"github.com/99designs/gqlgen/graphql"
 )
 
 // CreateMentorship is the resolver for the createMentorship field.
-func (r *mutationResolver) CreateMentorship(ctx context.Context, userID string, mentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
-	return r.MentorshipService.CreateMentorship(userID, mentorshipData)
+func (r *mutationResolver) CreateMentorship(ctx context.Context, mentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return r.MentorshipService.CreateMentorship(user.ID, mentorshipData)
 }
 
 // UpdateMentorship is the resolver for the updateMentorship field.
@@ -33,7 +50,7 @@ func (r *mutationResolver) UploadMentorships(ctx context.Context, file graphql.U
 }
 
 // CreatedMentorships is the resolver for the createdMentorships field.
-func (r *mutationResolver) CreateMentorships(ctx context.Context, userID string, mentorshipsData []*graphql_models.MentorshipData) ([]*graphql_models.Mentorship, error) {
+func (r *mutationResolver) CreateMentorships(ctx context.Context, mentorshipsData []*graphql_models.MentorshipData) ([]*graphql_models.Mentorship, error) {
 	panic(fmt.Errorf("not implemented: CreatedMentorships - createdMentorships"))
 }
 

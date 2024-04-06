@@ -212,25 +212,25 @@ type ComplexityRoot struct {
 		ActivateUser              func(childComplexity int, userID string, userData graphql_models.ActivateUser) int
 		AddAwardRecord            func(childComplexity int, sciResearchID string, awardRecordData graphql_models.AwardRecordData) int
 		AddWechatAuth             func(childComplexity int, userID string, wechatAuthData graphql_models.WechatAuth) int
-		CreateAcademicTerm        func(childComplexity int, userID string, termData graphql_models.NewAcademicTerm) int
+		CreateAcademicTerm        func(childComplexity int, termData graphql_models.NewAcademicTerm) int
 		CreateAccount             func(childComplexity int, newUserData graphql_models.NewUser) int
-		CreateCompGuidance        func(childComplexity int, userID string, compGuidanceData graphql_models.CompGuidanceData) int
-		CreateCompGuidances       func(childComplexity int, userID string, compGuidancesData []*graphql_models.CompGuidanceData) int
+		CreateCompGuidance        func(childComplexity int, compGuidanceData graphql_models.CompGuidanceData) int
+		CreateCompGuidances       func(childComplexity int, compGuidancesData []*graphql_models.CompGuidanceData) int
 		CreateCourse              func(childComplexity int, termID string, courseData graphql_models.CourseData) int
 		CreateEduReform           func(childComplexity int, eduReformData graphql_models.EduReformData) int
 		CreateEduReforms          func(childComplexity int, eduReformsData []*graphql_models.EduReformData) int
-		CreateMentorship          func(childComplexity int, userID string, mentorshipData graphql_models.MentorshipData) int
-		CreateMentorships         func(childComplexity int, userID string, mentorshipsData []*graphql_models.MentorshipData) int
+		CreateMentorship          func(childComplexity int, mentorshipData graphql_models.MentorshipData) int
+		CreateMentorships         func(childComplexity int, mentorshipsData []*graphql_models.MentorshipData) int
 		CreateMonograph           func(childComplexity int, monographData graphql_models.MonographData) int
 		CreateMonographs          func(childComplexity int, monographsData []*graphql_models.MonographData) int
 		CreatePaper               func(childComplexity int, paperData graphql_models.PaperData) int
 		CreatePapers              func(childComplexity int, papersData []*graphql_models.PaperData) int
-		CreatePassword            func(childComplexity int, userID string, passwordData graphql_models.PasswordData) int
-		CreatePasswords           func(childComplexity int, userID string, passwordsData []*graphql_models.PasswordData) int
+		CreatePassword            func(childComplexity int, passwordData graphql_models.PasswordData) int
+		CreatePasswords           func(childComplexity int, passwordsData []*graphql_models.PasswordData) int
 		CreateSciResearch         func(childComplexity int, sciResearchData graphql_models.SciResearchData) int
 		CreateSciResearchs        func(childComplexity int, sciResearchsData []*graphql_models.SciResearchData) int
-		CreateUGPGGuidance        func(childComplexity int, userID string, uGPGGuidanceData graphql_models.UGPGGuidanceData) int
-		CreateUGPGGuidances       func(childComplexity int, userID string, uGPGGuidancesData []*graphql_models.UGPGGuidanceData) int
+		CreateUGPGGuidance        func(childComplexity int, uGPGGuidanceData graphql_models.UGPGGuidanceData) int
+		CreateUGPGGuidances       func(childComplexity int, uGPGGuidancesData []*graphql_models.UGPGGuidanceData) int
 		DeleteAcademicTerm        func(childComplexity int, termID string) int
 		DeleteAccount             func(childComplexity int, userID string) int
 		DeleteCompGuidance        func(childComplexity int, id string) int
@@ -441,25 +441,25 @@ type MutationResolver interface {
 	CreateCourse(ctx context.Context, termID string, courseData graphql_models.CourseData) (*graphql_models.Course, error)
 	UpdateCourse(ctx context.Context, termID string, courseID string, courseData graphql_models.CourseData) (*graphql_models.Course, error)
 	DeleteCourse(ctx context.Context, termID string, courseID string) (*graphql_models.Course, error)
-	CreateAcademicTerm(ctx context.Context, userID string, termData graphql_models.NewAcademicTerm) (*graphql_models.AcademicTerm, error)
+	CreateAcademicTerm(ctx context.Context, termData graphql_models.NewAcademicTerm) (*graphql_models.AcademicTerm, error)
 	UpdateAcademicTerm(ctx context.Context, termID string, termData graphql_models.UpdateAcademicTerm) (*graphql_models.AcademicTerm, error)
 	DeleteAcademicTerm(ctx context.Context, termID string) (*graphql_models.AcademicTerm, error)
 	UploadAcademicTerm(ctx context.Context, file graphql.Upload) (*graphql_models.AcademicTermPreview, error)
-	CreateCompGuidance(ctx context.Context, userID string, compGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error)
+	CreateCompGuidance(ctx context.Context, compGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error)
 	UpdateCompGuidance(ctx context.Context, id string, compGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error)
 	DeleteCompGuidance(ctx context.Context, id string) (*graphql_models.CompGuidance, error)
 	UploadCompGuidances(ctx context.Context, file graphql.Upload) ([]*graphql_models.CompGuidancePreview, error)
-	CreateCompGuidances(ctx context.Context, userID string, compGuidancesData []*graphql_models.CompGuidanceData) ([]*graphql_models.CompGuidance, error)
+	CreateCompGuidances(ctx context.Context, compGuidancesData []*graphql_models.CompGuidanceData) ([]*graphql_models.CompGuidance, error)
 	CreateEduReform(ctx context.Context, eduReformData graphql_models.EduReformData) (*graphql_models.EduReform, error)
 	UpdateEduReform(ctx context.Context, id string, eduReformData graphql_models.EduReformData) (*graphql_models.EduReform, error)
 	DeleteEduReform(ctx context.Context, id string) (*graphql_models.EduReform, error)
 	UploadEduReforms(ctx context.Context, file graphql.Upload) ([]*graphql_models.EduReformPreview, error)
 	CreateEduReforms(ctx context.Context, eduReformsData []*graphql_models.EduReformData) ([]*graphql_models.EduReform, error)
-	CreateMentorship(ctx context.Context, userID string, mentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error)
+	CreateMentorship(ctx context.Context, mentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error)
 	UpdateMentorship(ctx context.Context, id string, mentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error)
 	DeleteMentorship(ctx context.Context, id string) (*graphql_models.Mentorship, error)
 	UploadMentorships(ctx context.Context, file graphql.Upload) ([]*graphql_models.MentorshipPreview, error)
-	CreateMentorships(ctx context.Context, userID string, mentorshipsData []*graphql_models.MentorshipData) ([]*graphql_models.Mentorship, error)
+	CreateMentorships(ctx context.Context, mentorshipsData []*graphql_models.MentorshipData) ([]*graphql_models.Mentorship, error)
 	CreateMonograph(ctx context.Context, monographData graphql_models.MonographData) (*graphql_models.Monograph, error)
 	UpdateMonograph(ctx context.Context, id string, monographData graphql_models.MonographData) (*graphql_models.Monograph, error)
 	DeleteMonograph(ctx context.Context, id string) (*graphql_models.Monograph, error)
@@ -470,11 +470,11 @@ type MutationResolver interface {
 	DeletePaper(ctx context.Context, id string) (*graphql_models.Paper, error)
 	UploadPapers(ctx context.Context, file graphql.Upload) ([]*graphql_models.PaperPreview, error)
 	CreatePapers(ctx context.Context, papersData []*graphql_models.PaperData) ([]*graphql_models.Paper, error)
-	CreatePassword(ctx context.Context, userID string, passwordData graphql_models.PasswordData) (*graphql_models.Password, error)
+	CreatePassword(ctx context.Context, passwordData graphql_models.PasswordData) (*graphql_models.Password, error)
 	UpdatePassword(ctx context.Context, id string, passwordData graphql_models.PasswordData) (*graphql_models.Password, error)
 	DeletePassword(ctx context.Context, id string) (*graphql_models.Password, error)
 	UploadPasswords(ctx context.Context, file graphql.Upload) ([]*graphql_models.PasswordPreview, error)
-	CreatePasswords(ctx context.Context, userID string, passwordsData []*graphql_models.PasswordData) ([]*graphql_models.Password, error)
+	CreatePasswords(ctx context.Context, passwordsData []*graphql_models.PasswordData) ([]*graphql_models.Password, error)
 	CreateSciResearch(ctx context.Context, sciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error)
 	UpdateSciResearch(ctx context.Context, sciResearchID string, sciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error)
 	DeleteSciResearch(ctx context.Context, sciResearchID string) (*graphql_models.SciResearch, error)
@@ -483,11 +483,11 @@ type MutationResolver interface {
 	RemoveAwardRecord(ctx context.Context, sciResearchID string, awardRecordID string) (*graphql_models.AwardRecord, error)
 	UploadSciResearchs(ctx context.Context, file graphql.Upload) (*graphql_models.SciResearchPreview, error)
 	CreateSciResearchs(ctx context.Context, sciResearchsData []*graphql_models.SciResearchData) ([]*graphql_models.SciResearch, error)
-	CreateUGPGGuidance(ctx context.Context, userID string, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error)
+	CreateUGPGGuidance(ctx context.Context, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error)
 	UpdateUGPGGuidance(ctx context.Context, id string, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error)
 	DeleteUGPGGuidance(ctx context.Context, id string) (*graphql_models.UGPGGuidance, error)
 	UploadUGPGGuidances(ctx context.Context, file graphql.Upload) ([]*graphql_models.UGPGGuidancePreview, error)
-	CreateUGPGGuidances(ctx context.Context, userID string, uGPGGuidancesData []*graphql_models.UGPGGuidanceData) ([]*graphql_models.UGPGGuidance, error)
+	CreateUGPGGuidances(ctx context.Context, uGPGGuidancesData []*graphql_models.UGPGGuidanceData) ([]*graphql_models.UGPGGuidance, error)
 	DeleteAccount(ctx context.Context, userID string) (bool, error)
 	UpdateAccountPassword(ctx context.Context, userID string, updatePasswordData graphql_models.UpdatePassword) (bool, error)
 	ResetAccountPassword(ctx context.Context, resetPasswordData graphql_models.ResetPassword) (bool, error)
@@ -1329,7 +1329,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateAcademicTerm(childComplexity, args["userId"].(string), args["termData"].(graphql_models.NewAcademicTerm)), true
+		return e.complexity.Mutation.CreateAcademicTerm(childComplexity, args["termData"].(graphql_models.NewAcademicTerm)), true
 
 	case "Mutation.createAccount":
 		if e.complexity.Mutation.CreateAccount == nil {
@@ -1353,7 +1353,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateCompGuidance(childComplexity, args["userId"].(string), args["compGuidanceData"].(graphql_models.CompGuidanceData)), true
+		return e.complexity.Mutation.CreateCompGuidance(childComplexity, args["compGuidanceData"].(graphql_models.CompGuidanceData)), true
 
 	case "Mutation.createCompGuidances":
 		if e.complexity.Mutation.CreateCompGuidances == nil {
@@ -1365,7 +1365,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateCompGuidances(childComplexity, args["userId"].(string), args["compGuidancesData"].([]*graphql_models.CompGuidanceData)), true
+		return e.complexity.Mutation.CreateCompGuidances(childComplexity, args["compGuidancesData"].([]*graphql_models.CompGuidanceData)), true
 
 	case "Mutation.createCourse":
 		if e.complexity.Mutation.CreateCourse == nil {
@@ -1413,7 +1413,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateMentorship(childComplexity, args["userId"].(string), args["mentorshipData"].(graphql_models.MentorshipData)), true
+		return e.complexity.Mutation.CreateMentorship(childComplexity, args["mentorshipData"].(graphql_models.MentorshipData)), true
 
 	case "Mutation.createMentorships":
 		if e.complexity.Mutation.CreateMentorships == nil {
@@ -1425,7 +1425,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateMentorships(childComplexity, args["userId"].(string), args["mentorshipsData"].([]*graphql_models.MentorshipData)), true
+		return e.complexity.Mutation.CreateMentorships(childComplexity, args["mentorshipsData"].([]*graphql_models.MentorshipData)), true
 
 	case "Mutation.createMonograph":
 		if e.complexity.Mutation.CreateMonograph == nil {
@@ -1485,7 +1485,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreatePassword(childComplexity, args["userId"].(string), args["passwordData"].(graphql_models.PasswordData)), true
+		return e.complexity.Mutation.CreatePassword(childComplexity, args["passwordData"].(graphql_models.PasswordData)), true
 
 	case "Mutation.createPasswords":
 		if e.complexity.Mutation.CreatePasswords == nil {
@@ -1497,7 +1497,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreatePasswords(childComplexity, args["userId"].(string), args["passwordsData"].([]*graphql_models.PasswordData)), true
+		return e.complexity.Mutation.CreatePasswords(childComplexity, args["passwordsData"].([]*graphql_models.PasswordData)), true
 
 	case "Mutation.createSciResearch":
 		if e.complexity.Mutation.CreateSciResearch == nil {
@@ -1533,7 +1533,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateUGPGGuidance(childComplexity, args["userId"].(string), args["uGPGGuidanceData"].(graphql_models.UGPGGuidanceData)), true
+		return e.complexity.Mutation.CreateUGPGGuidance(childComplexity, args["uGPGGuidanceData"].(graphql_models.UGPGGuidanceData)), true
 
 	case "Mutation.createUGPGGuidances":
 		if e.complexity.Mutation.CreateUGPGGuidances == nil {
@@ -1545,7 +1545,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateUGPGGuidances(childComplexity, args["userId"].(string), args["uGPGGuidancesData"].([]*graphql_models.UGPGGuidanceData)), true
+		return e.complexity.Mutation.CreateUGPGGuidances(childComplexity, args["uGPGGuidancesData"].([]*graphql_models.UGPGGuidanceData)), true
 
 	case "Mutation.deleteAcademicTerm":
 		if e.complexity.Mutation.DeleteAcademicTerm == nil {
@@ -3195,24 +3195,15 @@ func (ec *executionContext) field_Mutation_addWechatAuth_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_createAcademicTerm_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	var arg1 graphql_models.NewAcademicTerm
+	var arg0 graphql_models.NewAcademicTerm
 	if tmp, ok := rawArgs["termData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("termData"))
-		arg1, err = ec.unmarshalNNewAcademicTerm2serverᚋgraphᚋmodelᚐNewAcademicTerm(ctx, tmp)
+		arg0, err = ec.unmarshalNNewAcademicTerm2serverᚋgraphᚋmodelᚐNewAcademicTerm(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["termData"] = arg1
+	args["termData"] = arg0
 	return args, nil
 }
 
@@ -3234,48 +3225,30 @@ func (ec *executionContext) field_Mutation_createAccount_args(ctx context.Contex
 func (ec *executionContext) field_Mutation_createCompGuidance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	var arg1 graphql_models.CompGuidanceData
+	var arg0 graphql_models.CompGuidanceData
 	if tmp, ok := rawArgs["compGuidanceData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("compGuidanceData"))
-		arg1, err = ec.unmarshalNCompGuidanceData2serverᚋgraphᚋmodelᚐCompGuidanceData(ctx, tmp)
+		arg0, err = ec.unmarshalNCompGuidanceData2serverᚋgraphᚋmodelᚐCompGuidanceData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["compGuidanceData"] = arg1
+	args["compGuidanceData"] = arg0
 	return args, nil
 }
 
 func (ec *executionContext) field_Mutation_createCompGuidances_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	var arg1 []*graphql_models.CompGuidanceData
+	var arg0 []*graphql_models.CompGuidanceData
 	if tmp, ok := rawArgs["compGuidancesData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("compGuidancesData"))
-		arg1, err = ec.unmarshalNCompGuidanceData2ᚕᚖserverᚋgraphᚋmodelᚐCompGuidanceData(ctx, tmp)
+		arg0, err = ec.unmarshalNCompGuidanceData2ᚕᚖserverᚋgraphᚋmodelᚐCompGuidanceData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["compGuidancesData"] = arg1
+	args["compGuidancesData"] = arg0
 	return args, nil
 }
 
@@ -3336,48 +3309,30 @@ func (ec *executionContext) field_Mutation_createEduReforms_args(ctx context.Con
 func (ec *executionContext) field_Mutation_createMentorship_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	var arg1 graphql_models.MentorshipData
+	var arg0 graphql_models.MentorshipData
 	if tmp, ok := rawArgs["mentorshipData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mentorshipData"))
-		arg1, err = ec.unmarshalNMentorshipData2serverᚋgraphᚋmodelᚐMentorshipData(ctx, tmp)
+		arg0, err = ec.unmarshalNMentorshipData2serverᚋgraphᚋmodelᚐMentorshipData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["mentorshipData"] = arg1
+	args["mentorshipData"] = arg0
 	return args, nil
 }
 
 func (ec *executionContext) field_Mutation_createMentorships_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	var arg1 []*graphql_models.MentorshipData
+	var arg0 []*graphql_models.MentorshipData
 	if tmp, ok := rawArgs["mentorshipsData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("mentorshipsData"))
-		arg1, err = ec.unmarshalNMentorshipData2ᚕᚖserverᚋgraphᚋmodelᚐMentorshipData(ctx, tmp)
+		arg0, err = ec.unmarshalNMentorshipData2ᚕᚖserverᚋgraphᚋmodelᚐMentorshipData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["mentorshipsData"] = arg1
+	args["mentorshipsData"] = arg0
 	return args, nil
 }
 
@@ -3444,48 +3399,30 @@ func (ec *executionContext) field_Mutation_createPapers_args(ctx context.Context
 func (ec *executionContext) field_Mutation_createPassword_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	var arg1 graphql_models.PasswordData
+	var arg0 graphql_models.PasswordData
 	if tmp, ok := rawArgs["passwordData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("passwordData"))
-		arg1, err = ec.unmarshalNPasswordData2serverᚋgraphᚋmodelᚐPasswordData(ctx, tmp)
+		arg0, err = ec.unmarshalNPasswordData2serverᚋgraphᚋmodelᚐPasswordData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["passwordData"] = arg1
+	args["passwordData"] = arg0
 	return args, nil
 }
 
 func (ec *executionContext) field_Mutation_createPasswords_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	var arg1 []*graphql_models.PasswordData
+	var arg0 []*graphql_models.PasswordData
 	if tmp, ok := rawArgs["passwordsData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("passwordsData"))
-		arg1, err = ec.unmarshalNPasswordData2ᚕᚖserverᚋgraphᚋmodelᚐPasswordData(ctx, tmp)
+		arg0, err = ec.unmarshalNPasswordData2ᚕᚖserverᚋgraphᚋmodelᚐPasswordData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["passwordsData"] = arg1
+	args["passwordsData"] = arg0
 	return args, nil
 }
 
@@ -3522,48 +3459,30 @@ func (ec *executionContext) field_Mutation_createSciResearchs_args(ctx context.C
 func (ec *executionContext) field_Mutation_createUGPGGuidance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	var arg1 graphql_models.UGPGGuidanceData
+	var arg0 graphql_models.UGPGGuidanceData
 	if tmp, ok := rawArgs["uGPGGuidanceData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("uGPGGuidanceData"))
-		arg1, err = ec.unmarshalNUGPGGuidanceData2serverᚋgraphᚋmodelᚐUGPGGuidanceData(ctx, tmp)
+		arg0, err = ec.unmarshalNUGPGGuidanceData2serverᚋgraphᚋmodelᚐUGPGGuidanceData(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["uGPGGuidanceData"] = arg1
+	args["uGPGGuidanceData"] = arg0
 	return args, nil
 }
 
 func (ec *executionContext) field_Mutation_createUGPGGuidances_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	var arg1 []*graphql_models.UGPGGuidanceData
+	var arg0 []*graphql_models.UGPGGuidanceData
 	if tmp, ok := rawArgs["uGPGGuidancesData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("uGPGGuidancesData"))
-		arg1, err = ec.unmarshalNUGPGGuidanceData2ᚕᚖserverᚋgraphᚋmodelᚐUGPGGuidanceDataᚄ(ctx, tmp)
+		arg0, err = ec.unmarshalNUGPGGuidanceData2ᚕᚖserverᚋgraphᚋmodelᚐUGPGGuidanceDataᚄ(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["uGPGGuidancesData"] = arg1
+	args["uGPGGuidancesData"] = arg0
 	return args, nil
 }
 
@@ -9513,7 +9432,7 @@ func (ec *executionContext) _Mutation_createAcademicTerm(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateAcademicTerm(rctx, fc.Args["userId"].(string), fc.Args["termData"].(graphql_models.NewAcademicTerm))
+		return ec.resolvers.Mutation().CreateAcademicTerm(rctx, fc.Args["termData"].(graphql_models.NewAcademicTerm))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -9775,7 +9694,7 @@ func (ec *executionContext) _Mutation_createCompGuidance(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateCompGuidance(rctx, fc.Args["userId"].(string), fc.Args["compGuidanceData"].(graphql_models.CompGuidanceData))
+		return ec.resolvers.Mutation().CreateCompGuidance(rctx, fc.Args["compGuidanceData"].(graphql_models.CompGuidanceData))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10061,7 +9980,7 @@ func (ec *executionContext) _Mutation_createCompGuidances(ctx context.Context, f
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateCompGuidances(rctx, fc.Args["userId"].(string), fc.Args["compGuidancesData"].([]*graphql_models.CompGuidanceData))
+		return ec.resolvers.Mutation().CreateCompGuidances(rctx, fc.Args["compGuidancesData"].([]*graphql_models.CompGuidanceData))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10543,7 +10462,7 @@ func (ec *executionContext) _Mutation_createMentorship(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateMentorship(rctx, fc.Args["userId"].(string), fc.Args["mentorshipData"].(graphql_models.MentorshipData))
+		return ec.resolvers.Mutation().CreateMentorship(rctx, fc.Args["mentorshipData"].(graphql_models.MentorshipData))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -10821,7 +10740,7 @@ func (ec *executionContext) _Mutation_createMentorships(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateMentorships(rctx, fc.Args["userId"].(string), fc.Args["mentorshipsData"].([]*graphql_models.MentorshipData))
+		return ec.resolvers.Mutation().CreateMentorships(rctx, fc.Args["mentorshipsData"].([]*graphql_models.MentorshipData))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11640,7 +11559,7 @@ func (ec *executionContext) _Mutation_createPassword(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreatePassword(rctx, fc.Args["userId"].(string), fc.Args["passwordData"].(graphql_models.PasswordData))
+		return ec.resolvers.Mutation().CreatePassword(rctx, fc.Args["passwordData"].(graphql_models.PasswordData))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11920,7 +11839,7 @@ func (ec *executionContext) _Mutation_createPasswords(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreatePasswords(rctx, fc.Args["userId"].(string), fc.Args["passwordsData"].([]*graphql_models.PasswordData))
+		return ec.resolvers.Mutation().CreatePasswords(rctx, fc.Args["passwordsData"].([]*graphql_models.PasswordData))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -12633,7 +12552,7 @@ func (ec *executionContext) _Mutation_createUGPGGuidance(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateUGPGGuidance(rctx, fc.Args["userId"].(string), fc.Args["uGPGGuidanceData"].(graphql_models.UGPGGuidanceData))
+		return ec.resolvers.Mutation().CreateUGPGGuidance(rctx, fc.Args["uGPGGuidanceData"].(graphql_models.UGPGGuidanceData))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -12943,7 +12862,7 @@ func (ec *executionContext) _Mutation_createUGPGGuidances(ctx context.Context, f
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateUGPGGuidances(rctx, fc.Args["userId"].(string), fc.Args["uGPGGuidancesData"].([]*graphql_models.UGPGGuidanceData))
+		return ec.resolvers.Mutation().CreateUGPGGuidances(rctx, fc.Args["uGPGGuidancesData"].([]*graphql_models.UGPGGuidanceData))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

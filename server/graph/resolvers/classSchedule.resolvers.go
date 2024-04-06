@@ -28,7 +28,7 @@ func (r *mutationResolver) DeleteCourse(ctx context.Context, termID string, cour
 }
 
 // CreateacademicTerm is the resolver for the createacademicTerm field.
-func (r *mutationResolver) CreateAcademicTerm(ctx context.Context, userID string, termData graphql_models.NewAcademicTerm) (*graphql_models.AcademicTerm, error) {
+func (r *mutationResolver) CreateAcademicTerm(ctx context.Context, termData graphql_models.NewAcademicTerm) (*graphql_models.AcademicTerm, error) {
 	panic(fmt.Errorf("not implemented: CreateacademicTerm - createacademicTerm"))
 }
 

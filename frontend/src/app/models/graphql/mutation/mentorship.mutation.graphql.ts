@@ -54,8 +54,8 @@ export const uploadMentorshipsMutation = gql`
 `;
 
 export const createMentorshipsMutation = gql`
-  mutation createMentorships($userId:ID!,$mentorshipsData: [MentorshipData]!) {
-    createMentorships(userId: $userId,mentorshipsData: $mentorshipsData) {
+  mutation createMentorships($mentorshipsData: [MentorshipData]!) {
+    createMentorships(mentorshipsData: $mentorshipsData) {
       id
       projectName
       studentNames

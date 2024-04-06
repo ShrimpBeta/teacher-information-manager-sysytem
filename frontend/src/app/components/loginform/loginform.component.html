@@ -10,16 +10,15 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Password</mat-label>
-    <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" placeholder="密码至少8位包含字母和数字">
+    <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" placeholder="密码至少8位，且至少包含字母和数字">
     <button type="button" mat-icon-button matSuffix (click)="hide=!hide" [attr.aria-label]="'Hide password'"
       [attr.aria-pressed]="hide">
       <mat-icon>{{hide? 'visibility_off' : 'visibility'}}</mat-icon>
     </button>
-    <!-- 密码需要至少8位字母和数字组合 -->
+    <!-- 密码至少8位，且至少包含字母和数字 -->
     @if(signInForm.get('password')!.touched && signInForm.get('password')!.errors){
-    <mat-error>密码需要至少8位字母和数字组合</mat-error>
+    <mat-error>密码至少8位，且至少包含字母和数字</mat-error>
     }
   </mat-form-field>
-  <button type="submit" class="sign-in-button" mat-raised-button color="primary"
-    [disabled]="!signInForm.valid || isSignin">登录</button>
+  <button type="submit" class="sign-in-button" mat-raised-button color="primary" [disabled]="isSignin">登录</button>
 </form>

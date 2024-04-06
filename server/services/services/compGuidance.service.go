@@ -16,15 +16,11 @@ func NewCompGuidanceService(compguidanceRepo *repository.CompGuidanceRepo) *Comp
 	return &CompGuidanceService{Repo: compguidanceRepo}
 }
 
-func (compGuidanceService *CompGuidanceService) CreateCompGuidance(userID string, newGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
-	userObjectId, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
+func (compGuidanceService *CompGuidanceService) CreateCompGuidance(userId primitive.ObjectID, newGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
 	guidanceDate := primitive.NewDateTimeFromTime(*newGuidanceData.GuidanceDate)
 
 	newCompGuidance := models.CompGuidance{
-		UserId:           userObjectId,
+		UserId:           userId,
 		ProjectName:      newGuidanceData.ProjectName,
 		StudentNames:     newGuidanceData.StudentNames,
 		CompetitionScore: newGuidanceData.CompetitionScore,

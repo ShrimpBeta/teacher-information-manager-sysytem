@@ -1,8 +1,8 @@
 import { gql } from "apollo-angular";
 
 export const createCompGuidanceMutation = gql`
-  mutation createCompGuidance($userId:ID!,$compGuidanceData: CompGuidanceData!) {
-    createCompGuidance(userId: $userId,compGuidanceData: $compGuidanceData) {
+  mutation createCompGuidance($compGuidanceData: CompGuidanceData!) {
+    createCompGuidance(compGuidanceData: $compGuidanceData) {
       id
       projectName
       studentNames
@@ -58,8 +58,8 @@ export const uploadCompGuidancesMutation = gql`
 `;
 
 export const createCompGuidancesMutation = gql`
-  mutation createCompGuidances($userId:ID!,$compGuidancesData: [CompGuidanceData]!) {
-    createCompGuidances(userId: $userId,compGuidancesData: $compGuidancesData) {
+  mutation createCompGuidances($compGuidancesData: [CompGuidanceData]!) {
+    createCompGuidances(compGuidancesData: $compGuidancesData) {
       id
       projectName
       studentNames

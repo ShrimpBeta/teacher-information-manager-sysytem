@@ -26,7 +26,7 @@ func (r *mutationResolver) UpdateAccountPassword(ctx context.Context, userID str
 
 // ResetAccountPassword is the resolver for the resetAccountPassword field.
 func (r *mutationResolver) ResetAccountPassword(ctx context.Context, resetPasswordData graphql_models.ResetPassword) (bool, error) {
-	checkCode, err := r.RedisDB.Get(ctx, resetPasswordData.Email+"reset").Result()
+	checkCode, err := r.RedisDB.Get(ctx, resetPasswordData.Email+"-reset").Result()
 	if err == redis.Nil {
 		return false, errors.New("code expired")
 	} else if err != nil {
@@ -38,7 +38,7 @@ func (r *mutationResolver) ResetAccountPassword(ctx context.Context, resetPasswo
 	}
 
 	// remove code after used
-	err = r.RedisDB.Del(ctx, resetPasswordData.Email+"reset").Err()
+	err = r.RedisDB.Del(ctx, resetPasswordData.Email+"-reset").Err()
 	if err != nil {
 		return false, err
 	}
@@ -48,22 +48,32 @@ func (r *mutationResolver) ResetAccountPassword(ctx context.Context, resetPasswo
 
 // GenerateResetPasswordCode is the resolver for the generateResetPasswordCode field.
 func (r *mutationResolver) GenerateResetPasswordCode(ctx context.Context, email string) (bool, error) {
-	err := r.RedisDB.SetNX(ctx, email+"generate", 0, environment.GenerateLimitTime).Err()
+	exists, err := r.UserService.UserExists(email)
 	if err != nil {
 		return false, err
 	}
 
-	times := r.RedisDB.Incr(ctx, email+"generate").Val()
+	if !exists {
+		return false, errors.New("user not exists")
+	}
+
+	err = r.RedisDB.SetNX(ctx, email+"-generate", 0, environment.GenerateLimitTime).Err()
+	if err != nil {
+		return false, err
+	}
+
+	times := r.RedisDB.Incr(ctx, email+"-generate").Val()
 
 	if times > 6 {
-		return false, errors.New("too many times")
+		return false, errors.New("get code too many times, please try after 12 hours")
 	}
 
 	code := r.UserService.GenerateCode()
-	err = r.RedisDB.Set(ctx, email+"reset", code, environment.CodeExpireTime).Err()
+	err = r.RedisDB.Set(ctx, email+"-reset", code, environment.CodeExpireTime).Err()
 	if err != nil {
 		return false, err
 	}
+
 	sended, err := r.UserService.SendEmailCode(email, code)
 	if err != nil {
 		return false, err

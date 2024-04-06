@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { AuthRepository } from "../core/auth/auth.repository";
-import { passwordQuery, passwordsQuery } from "../models/graphql/query/password.query.graphql";
+import { passwordTrueQuery, passwordsByFilterQuery } from "../models/graphql/query/password.query.graphql";
 import { deletePasswordMutation, updatePasswordMutation, createPasswordMutation } from "../models/graphql/mutation/password.mutation.graphql";
-import { CreatePasswordResponse, NewPassword, Password, PasswordResponse, PasswordsResponse, UpdatePassword, UpdatePasswordResponse } from "../models/models/password.model";
+import { CreatePasswordResponse, EditPassword, Password, PasswordFilter, PasswordResponse, PasswordsResponse, PasswordTrue, UpdatePasswordResponse } from "../models/models/password.model";
 import { map, Observable } from "rxjs";
 
 @Injectable({
@@ -15,11 +15,16 @@ export class PasswordService {
     private authRepository: AuthRepository
   ) { }
 
-  getPasswords(): Observable<Password[] | null> {
+  getPasswords(passwordFilter: PasswordFilter): Observable<Password[] | null> {
     return this.apollo.query({
-      query: passwordsQuery,
+      query: passwordsByFilterQuery,
       variables: {
-        userId: this.authRepository.getUserId()
+        filter: {
+          userId: this.authRepository.getUserId(),
+          appName: passwordFilter.appName,
+          account: passwordFilter.account,
+          url: passwordFilter.url
+        }
       },
       fetchPolicy: 'network-only'
     }).pipe(
@@ -33,9 +38,9 @@ export class PasswordService {
     );
   }
 
-  getPassword(id: string): Observable<Password | null> {
+  getPassword(id: string): Observable<PasswordTrue | null> {
     return this.apollo.query({
-      query: passwordQuery,
+      query: passwordTrueQuery,
       variables: {
         id: id
       }
@@ -50,7 +55,7 @@ export class PasswordService {
     );
   }
 
-  createPassword(newPassword: NewPassword): Observable<Password | null> {
+  createPassword(newPassword: EditPassword): Observable<Password | null> {
     return this.apollo.mutate({
       mutation: createPasswordMutation,
       variables: {
@@ -74,7 +79,7 @@ export class PasswordService {
     );
   }
 
-  updatePassword(id: string, updatePassword: UpdatePassword): Observable<Password | null> {
+  updatePassword(id: string, updatePassword: EditPassword): Observable<Password | null> {
     return this.apollo.mutate({
       mutation: updatePasswordMutation,
       variables: {

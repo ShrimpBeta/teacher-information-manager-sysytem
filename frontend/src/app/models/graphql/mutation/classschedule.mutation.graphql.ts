@@ -1,8 +1,8 @@
 import { gql } from "apollo-angular";
 
 export const createAcademicTermMutation = gql`
-  mutation createAcademicTerm($userId:ID!,$termData: NewAcademicTerm!) {
-    createAcademicTerm(userId: $userId,termData: $termData) {
+  mutation createAcademicTerm($termData: NewAcademicTerm!) {
+    createAcademicTerm(termData: $termData) {
       id
       termName
       courses{

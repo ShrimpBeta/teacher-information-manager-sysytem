@@ -7,7 +7,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Password } from '../../../models/models/password.model';
+import { Password, PasswordFilter } from '../../../models/models/password.model';
 import { Router, RouterLink } from '@angular/router';
 import { PasswordService } from '../../../services/password.service';
 import { Subject, takeUntil } from 'rxjs';
@@ -33,15 +33,19 @@ export class OverviewpasswordComponent implements OnInit {
 
   ngOnInit() {
     this._selectedValue = '0';
-    this.searchFormControl = new FormControl('', [Validators.required]);
+    this.searchFormControl = new FormControl('');
 
     this.getPasswordList();
   }
 
-
-
   getPasswordList() {
-    this.passwordService.getPasswords().pipe(takeUntil(this.destroy$)).subscribe({
+    let passwordFilter = new PasswordFilter();
+    if (this.searchFormControl.value.length > 0) {
+      passwordFilter.appName = this.searchFormControl.value;
+      passwordFilter.account = this.searchFormControl.value;
+      passwordFilter.url = this.searchFormControl.value;
+    }
+    this.passwordService.getPasswords(passwordFilter).pipe(takeUntil(this.destroy$)).subscribe({
       next: (passwords) => {
         if (passwords) {
           this.passwordList = passwords;
@@ -68,10 +72,6 @@ export class OverviewpasswordComponent implements OnInit {
         console.error(error);
       }
     });
-  }
-
-  updatePasswordList() {
-
   }
 
   sortPasswordList() {

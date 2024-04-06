@@ -3,13 +3,23 @@ export class Password {
   url: string = ""
   appName: string = ""
   account: string = ""
+  description: string = ""
+  createdAt: Date = new Date(0)
+  updatedAt: Date = new Date(0)
+}
+
+export class PasswordTrue {
+  id: string = ""
+  url: string = ""
+  appName: string = ""
+  account: string = ""
   password: string = ""
   description: string = ""
   createdAt: Date = new Date(0)
   updatedAt: Date = new Date(0)
 }
 
-export class NewPassword {
+export class EditPassword {
   url: string | null = null
   appName: string | null = null
   account: string = ""
@@ -17,18 +27,16 @@ export class NewPassword {
   description: string | null = null
 }
 
-export class UpdatePassword {
+export class PasswordFilter {
   url: string | null = null
   appName: string | null = null
   account: string | null = null
-  password: string | null = null
-  description: string | null = null
 }
 
 export interface PasswordResponse {
   error?: unknown;
   data?: {
-    password: Password
+    password: PasswordTrue
   }
 
 }

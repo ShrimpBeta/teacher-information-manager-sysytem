@@ -22,9 +22,7 @@ export class LoginformComponent implements OnInit {
   @Input() isSignin: boolean = false;
 
   constructor(
-  ) {
-
-  }
+  ) {}
 
   ngOnInit() {
     this.signInForm = new FormGroup({

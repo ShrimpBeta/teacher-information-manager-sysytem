@@ -1,8 +1,8 @@
 import { gql } from "apollo-angular";
 
 export const createUgpgGuidanceMutation = gql`
-  mutation createUGPGGuidance($userId: ID!, $uGPGGuidanceData: UGPGGuidanceData!) {
-    createUGPGGuidance(userId: $userId, uGPGGuidanceData: $uGPGGuidanceData) {
+  mutation createUGPGGuidance($uGPGGuidanceData: UGPGGuidanceData!) {
+    createUGPGGuidance(uGPGGuidanceData: $uGPGGuidanceData) {
       id
       studentName
       thesisTopic
@@ -60,8 +60,8 @@ export const uploadUGPGGuidancesMutation = gql`
 `;
 
 export const createUGPGGuidancesMutation = gql`
-  mutation createUGPGGuidances($userId: ID!, $uGPGGuidancesData: [UGPGGuidanceData!]!) {
-    createUGPGGuidances(userId: $userId, uGPGGuidancesData: $uGPGGuidancesData) {
+  mutation createUGPGGuidances( $uGPGGuidancesData: [UGPGGuidanceData!]!) {
+    createUGPGGuidances(uGPGGuidancesData: $uGPGGuidancesData) {
       id
     }
   }

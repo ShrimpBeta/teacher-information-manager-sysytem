@@ -47,7 +47,7 @@ func (userService *UserService) SignIn(signInData graphql_models.SigIn) (*graphq
 
 	// check wechat auth
 	wechatAuth := false
-	if *userData.WechatOpenId != "" {
+	if userData.WechatOpenId != nil && *userData.WechatOpenId != "" {
 		wechatAuth = true
 	}
 
@@ -136,7 +136,7 @@ func (userService *UserService) UpdateUser(userID string, userData graphql_model
 	}
 
 	wechatAuth := false
-	if *userUpdate.WechatOpenId != "" {
+	if userUpdate.WechatOpenId != nil && *userUpdate.WechatOpenId != "" {
 		wechatAuth = true
 	}
 	return &graphql_models.User{
@@ -221,7 +221,7 @@ func (userService *UserService) ActivateUser(userID string, userData graphql_mod
 	}
 
 	wechatAuth := false
-	if *userUpdate.WechatOpenId != "" {
+	if userUpdate.WechatOpenId != nil && *userUpdate.WechatOpenId != "" {
 		wechatAuth = true
 	}
 
@@ -291,7 +291,7 @@ func (userService *UserService) GetUser(id string) (*graphql_models.User, error)
 	}
 
 	wechatAuth := false
-	if *userData.WechatOpenId != "" {
+	if userData.WechatOpenId != nil && *userData.WechatOpenId != "" {
 		wechatAuth = true
 	}
 
@@ -339,6 +339,19 @@ func (userService *UserService) DeleteUser(userID string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (userService *UserService) UserExists(email string) (bool, error) {
+	userData, err := userService.Repo.GetUserByEmail(email)
+	if err != nil {
+		return false, err
+	}
+
+	if userData != nil {
+		return true, nil
+	}
+
+	return false, nil
 }
 
 // generate 6 bit random code

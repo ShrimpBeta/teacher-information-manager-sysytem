@@ -41,15 +41,12 @@ input CompGuidanceFilter {
 
 extend type Query {
   compGuidance(id: ID!): CompGuidance!
-  
+
   compGuidancesByFilter(filter: CompGuidanceFilter!): [CompGuidance]!
 }
 
 extend type Mutation {
-  createCompGuidance(
-    userId: ID!
-    compGuidanceData: CompGuidanceData!
-  ): CompGuidance!
+  createCompGuidance(compGuidanceData: CompGuidanceData!): CompGuidance!
   updateCompGuidance(
     id: ID!
     compGuidanceData: CompGuidanceData!
@@ -57,8 +54,5 @@ extend type Mutation {
   deleteCompGuidance(id: ID!): CompGuidance!
 
   uploadCompGuidances(file: Upload!): [CompGuidancePreview]!
-  createCompGuidances(
-    userId: ID!
-    compGuidancesData: [CompGuidanceData]!
-  ): [CompGuidance]!
+  createCompGuidances(compGuidancesData: [CompGuidanceData]!): [CompGuidance]!
 }

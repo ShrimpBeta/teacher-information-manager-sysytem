@@ -18,7 +18,7 @@ import { URLValidator } from '../../../shared/formvalidator/url.validator';
   styleUrl: './newpassword.component.scss'
 })
 export class NewpasswordComponent implements OnInit, OnDestroy {
-  passwordGroup!: FormGroup;
+  passwordForm!: FormGroup;
   buttonLabel: string = '创建';
   isSmallMode!: boolean;
   private destroy$ = new Subject<boolean>();
@@ -33,16 +33,15 @@ export class NewpasswordComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.passwordGroup = new FormGroup({
+    this.passwordForm = new FormGroup({
       url: new FormControl('', [URLValidator()]),
       appName: new FormControl(''),
       account: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required]),
-      confirmPassword: new FormControl('', [Validators.required]),
       description: new FormControl('')
     });
 
-    this.passwordGroup.setValidators(PasswordMatchValidator)
+    this.passwordForm.setValidators(PasswordMatchValidator)
 
     // 响应大小小变化
     this.responsive.observe([
@@ -63,40 +62,25 @@ export class NewpasswordComponent implements OnInit, OnDestroy {
   }
 
   createPassword(event: any) {
-    if (this.passwordGroup.invalid) {
-      let message = '请填写所有必填项 ';
-      if (this.passwordGroup.get('url')?.invalid) {
-        message += 'URL格式错误 ';
-      }
-      if (this.passwordGroup.get('account')?.invalid) {
-        message += '账号为空 ';
-      }
-      if (this.passwordGroup.get('password')?.invalid) {
-        message += '密码为空 ';
-      }
-      if (this.passwordGroup.get('confirmPassword')?.invalid) {
-        message += '确认密码为空 ';
-      }
-      if (this.passwordGroup.get('password')?.value !== this.passwordGroup.get('confirmPassword')?.value) {
-        message += '密码不一致';
-      }
-      this.snackBar.open(message, '关闭', { duration: 3000 });
+    if (this.passwordForm.invalid) {
+
       return;
     }
 
-    this.passwordService.createPassword(this.passwordGroup.value).pipe(takeUntil(this.destroy$)).subscribe(
-      {
-        next: (password) => {
-          if (password) {
-            this.snackBar.open('创建密码成功', '关闭', { duration: 3000 });
-            this.router.navigate(['/main/password']);
-          } else {
+    this.passwordService.createPassword(this.passwordForm.value)
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        {
+          next: (password) => {
+            if (password) {
+              this.snackBar.open('创建密码成功', '关闭', { duration: 3000 });
+              this.router.navigate(['/main/password']);
+            } else {
+              this.snackBar.open('创建密码失败', '关闭', { duration: 3000 });
+            }
+          },
+          error: (error) => {
             this.snackBar.open('创建密码失败', '关闭', { duration: 3000 });
           }
-        },
-        error: (error) => {
-          this.snackBar.open('创建密码失败', '关闭', { duration: 3000 });
-        }
-      })
+        })
   }
 }

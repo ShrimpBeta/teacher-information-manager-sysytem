@@ -17,15 +17,10 @@ export class UserExport {
   avatar: string = ""
 }
 
-export class ResetPassword {
+export class ResetUserPassword {
   email: string = ""
   password: string = ""
-  confirmPassword: string = ""
-}
-
-export class ChangePassword {
-  oldPassword: string = ""
-  newPassword: string = ""
+  code: string = ""
 }
 
 export class UpdateUser {
@@ -63,6 +58,14 @@ export interface UpdateUserResponse {
   }
 }
 
+export interface UpdateUserPasswordResponse {
+  error?: unknown;
+  data?: {
+    updateAccountPassword: boolean
+  }
+}
+
+
 export interface ActivateUserResponse {
   error?: unknown;
   data?: {
@@ -70,11 +73,30 @@ export interface ActivateUserResponse {
   }
 }
 
-export interface UpdateUserPasswordResponse {
+export interface FetchCodeResponse {
   error?: unknown;
   data?: {
-    updateAccountPassword: {
-      boolean: boolean
-    }
+    generateResetPasswordCode: boolean
+  }
+}
+
+export interface ResetUserPasswordResponse {
+  error?: unknown;
+  data?: {
+    resetAccountPassword: boolean
+  }
+}
+
+export interface RemoveWechatAuthResponse {
+  error?: unknown;
+  data?: {
+    removeWechatAuth: boolean
+  }
+}
+
+export interface DeleteAccountResponse {
+  error?: unknown;
+  data?: {
+    deleteAccount: boolean
   }
 }

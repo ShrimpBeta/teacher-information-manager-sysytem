@@ -23,9 +23,7 @@ export class ResetpasswordformComponent {
   @Output() fetchCode = new EventEmitter<any>();
 
   onSubmit() {
-    if (this.resetPasswordForm.valid) {
-      this.resetPassword.emit();
-    }
+    this.resetPassword.emit();
   }
 
   sendCode() {

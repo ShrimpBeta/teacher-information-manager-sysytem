@@ -29,7 +29,8 @@ func GenerateAvatar(email string) (string, error) {
 }
 
 func SaveAvatar(file []byte, filetype string) (string, error) {
-	md5Sum := md5.Sum(file)
+	// make a unique filename
+	md5Sum := md5.Sum(append(file, []byte(time.Now().String())...))
 	fileName := hex.EncodeToString(md5Sum[:])
 	imageFile, err := os.Create("assets/avatars/" + fileName + filetype)
 	if err != nil {

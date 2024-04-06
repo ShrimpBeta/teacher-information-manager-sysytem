@@ -17,6 +17,7 @@ import { PhoneNumberValidator } from '../../shared/formvalidator/phonenumber.val
 import { PasswordMatchValidator } from '../../shared/formvalidator/passwordmatch.validator';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from '../../services/user.service';
+import { ApolloError } from '@apollo/client';
 
 
 @Component({
@@ -36,7 +37,9 @@ export class AccountComponent implements OnInit, OnDestroy {
   previewUrl: any = null;
   oldPasswordHide = true;
   passwordHide = true;
-  confirmPasswordHide = true;
+  isActivate = false;
+  isUpdateUser = false;
+  isUpdatePassword = false;
 
   constructor(
     private authRepository: AuthRepository,
@@ -76,9 +79,9 @@ export class AccountComponent implements OnInit, OnDestroy {
       });
 
       this.passwordForm = new FormGroup({
-        oldPassword: new FormControl('', [PasswordFormatValidator()]),
-        password: new FormControl('', [PasswordFormatValidator()]),
-        confirmPassword: new FormControl('', [PasswordFormatValidator()]),
+        oldPassword: new FormControl('', [Validators.required, PasswordFormatValidator(), Validators.minLength(8)]),
+        password: new FormControl('', [Validators.required, PasswordFormatValidator(), Validators.minLength(8)]),
+        confirmPassword: new FormControl('', [Validators.required, PasswordFormatValidator(), Validators.minLength(8)]),
       });
 
       this.passwordForm.setValidators(PasswordMatchValidator);
@@ -87,8 +90,8 @@ export class AccountComponent implements OnInit, OnDestroy {
         email: new FormControl({ value: this.user?.email, disabled: true }),
         username: new FormControl('', [Validators.required]),
         phoneNumber: new FormControl(this.user?.phoneNumber, [PhoneNumberValidator()]),
-        password: new FormControl('', [Validators.required, PasswordFormatValidator()]),
-        confirmPassword: new FormControl('', [Validators.required, PasswordFormatValidator()]),
+        password: new FormControl('', [Validators.required, PasswordFormatValidator(), Validators.minLength(8)]),
+        confirmPassword: new FormControl('', [Validators.required, PasswordFormatValidator(), Validators.minLength(8)]),
       });
       this.userForm.setValidators(PasswordMatchValidator)
     }
@@ -121,20 +124,9 @@ export class AccountComponent implements OnInit, OnDestroy {
 
   updateUser() {
     if (!this.userForm.valid) {
-      let errorMessage = '请检查输入 ';
-      if (this.userForm.get('username')?.errors) {
-        errorMessage += '用户名不能为空 ';
-      }
-
-      if (this.userForm.get('phoneNumber')?.errors) {
-        errorMessage += '电话号码格式错误，';
-      }
-      this.snackBar.open(errorMessage, '关闭', {
-        duration: 3000,
-      });
       return;
     }
-
+    this.isUpdateUser = true;
     let updateUser: UpdateUser = new UpdateUser();
 
     updateUser.username = this.userForm.get('username')?.value;
@@ -150,25 +142,27 @@ export class AccountComponent implements OnInit, OnDestroy {
     this.userService.updateUser(updateUser).pipe(takeUntil(this.destroy$)).subscribe(
       {
         next: (user) => {
-          if (user) {
-            this.snackBar.open('用户信息已更新', '关闭', {
-              duration: 3000,
-            });
-            // 清空avatar，避免重复上传
-            if (fileInput && fileInput.files && fileInput.files.length > 0) {
-              this.previewUrl = null;
-              fileInput.value = '';
-            }
-          } else {
+          this.snackBar.open('用户信息已更新', '关闭', {
+            duration: 3000,
+          });
+          // 清空avatar，避免重复上传
+          if (fileInput && fileInput.files && fileInput.files.length > 0) {
+            this.previewUrl = null;
+            fileInput.value = '';
+          }
+          this.isUpdateUser = false;
+        },
+        error: (error: ApolloError) => {
+          if (!error.networkError) {
             this.snackBar.open('用户信息更新失败', '关闭', {
               duration: 3000,
             });
+          } else {
+            this.snackBar.open('网络错误或API错误，请稍后重试', '关闭', {
+              duration: 3000,
+            });
           }
-        },
-        error: (error) => {
-          this.snackBar.open('用户信息更新失败', '关闭', {
-            duration: 3000,
-          });
+          this.isUpdateUser = false;
         }
       }
     )
@@ -176,24 +170,14 @@ export class AccountComponent implements OnInit, OnDestroy {
 
   activateUser() {
     if (!this.userForm.valid) {
-      let errorMessage = '请检查输入 ';
-      if (this.userForm.get('username')?.errors) {
-        errorMessage += '用户名不能为空 ';
-      }
-      if (this.userForm.get('password')?.errors || this.userForm.get('confirmPassword')?.errors) {
-        errorMessage += '密码格式错误，至少8位，包含字母和数字 ';
-      }
       if (this.userForm.get('password')?.value !== this.userForm.get('confirmPassword')?.value) {
-        errorMessage += '两次输入密码不一致 ';
+        this.snackBar.open('两次输入密码不一致', '关闭', {
+          duration: 3000,
+        });
       }
-      if (this.userForm.get('phoneNumber')?.errors) {
-        errorMessage += '电话号码格式错误 ';
-      }
-      this.snackBar.open(errorMessage, '关闭', {
-        duration: 3000,
-      });
       return;
     }
+    this.isActivate = true;
     let activateUser: ActivateUser = new ActivateUser();
     activateUser.username = this.userForm.get('username')?.value;
     activateUser.password = this.userForm.get('password')?.value;
@@ -208,34 +192,39 @@ export class AccountComponent implements OnInit, OnDestroy {
 
     this.userService.activateUser(activateUser).pipe(takeUntil(this.destroy$)).subscribe({
       next: (user) => {
-        if (user) {
-          this.snackBar.open('用户信息已激活', '关闭', {
-            duration: 3000,
-          });
-          this.userForm = new FormGroup({
-            email: new FormControl({ value: this.user?.email, disabled: true }),
-            username: new FormControl(this.user?.username, [Validators.required]),
-            phoneNumber: new FormControl(this.user?.phoneNumber, [PhoneNumberValidator()]),
-          });
+        this.snackBar.open('用户信息已激活', '关闭', {
+          duration: 3000,
+        });
 
-          this.passwordForm = new FormGroup({
-            oldPassword: new FormControl('', [PasswordFormatValidator()]),
-            password: new FormControl('', [PasswordFormatValidator()]),
-            confirmPassword: new FormControl('', [PasswordFormatValidator()]),
-          });
+        this.userForm = new FormGroup({
+          email: new FormControl({ value: this.user?.email, disabled: true }),
+          username: new FormControl(this.user?.username, [Validators.required]),
+          phoneNumber: new FormControl(this.user?.phoneNumber, [PhoneNumberValidator()]),
+        });
 
-          this.passwordForm.setValidators(PasswordMatchValidator);
-          this.changeDetectorRef.detectChanges();
-        } else {
+        this.passwordForm = new FormGroup({
+          oldPassword: new FormControl('', [Validators.required, PasswordFormatValidator(), Validators.minLength(8)]),
+          password: new FormControl('', [Validators.required, PasswordFormatValidator(), Validators.minLength(8)]),
+          confirmPassword: new FormControl('', [Validators.required, PasswordFormatValidator(), Validators.minLength(8)]),
+        });
+
+        this.passwordForm.setValidators(PasswordMatchValidator);
+        this.passwordHide = true;
+
+        this.isActivate = false;
+        this.changeDetectorRef.detectChanges();
+      },
+      error: (error: ApolloError) => {
+        if (!error.networkError) {
           this.snackBar.open('用户信息激活失败', '关闭', {
             duration: 3000,
           });
+        } else {
+          this.snackBar.open('网络错误或API错误，请稍后重试', '关闭', {
+            duration: 3000,
+          });
         }
-      },
-      error: (error) => {
-        this.snackBar.open('用户信息激活失败', '关闭', {
-          duration: 3000,
-        });
+        this.isActivate = false;
       }
     }
     )
@@ -243,46 +232,45 @@ export class AccountComponent implements OnInit, OnDestroy {
 
   updateUserPassword() {
     if (!this.passwordForm.valid) {
-      let errorMessage = '请检查输入 ';
-      if (this.passwordForm.get('oldPassword')?.value === '' || this.passwordForm.get('password')?.value === '' || this.passwordForm.get('confirmPassword')?.value === '') {
-        errorMessage += '密码为空 ';
+      if (this.passwordForm.get('password')?.value !== this.passwordForm.get('confirmPassword')?.value) {
+        this.snackBar.open('两次输入密码不一致', '关闭', {
+          duration: 3000,
+        });
       }
-      if (this.passwordForm.get('oldPassword')?.errors || this.passwordForm.get('password')?.errors || this.passwordForm.get('confirmPassword')?.errors) {
-        errorMessage += '密码格式错误 ';
-      }
-      if (this.userForm.get('password')?.value !== this.userForm.get('confirmPassword')?.value) {
-        errorMessage += '两次输入密码不一致 ';
-      }
-      this.snackBar.open(errorMessage, '关闭', {
-        duration: 3000,
-      });
       return;
     }
+    this.isUpdatePassword = true;
     let updateUserPassword = {
       oldPassword: this.passwordForm.get('oldPassword')?.value,
       newPassword: this.passwordForm.get('password')?.value,
     }
     this.userService.updateUserPassword(updateUserPassword).pipe(takeUntil(this.destroy$)).subscribe({
       next: (user) => {
-        if (user) {
-          this.snackBar.open('用户密码已更新', '关闭', {
+        this.snackBar.open('用户密码已更新', '关闭', {
+          duration: 3000,
+        });
+
+        this.passwordForm.reset({
+          oldPassword: '',
+          password: '',
+          confirmPassword: '',
+        });
+
+        this.passwordHide = true;
+        this.oldPasswordHide = true;
+        this.isUpdatePassword = false;
+      },
+      error: (error: ApolloError) => {
+        if (!error.networkError) {
+          this.snackBar.open(error.message, '关闭', {
             duration: 3000,
           });
-          this.passwordForm = new FormGroup({
-            oldPassword: new FormControl('', [PasswordFormatValidator()]),
-            password: new FormControl('', [PasswordFormatValidator()]),
-            confirmPassword: new FormControl('', [PasswordFormatValidator()]),
-          });
         } else {
-          this.snackBar.open('用户密码更新失败', '关闭', {
+          this.snackBar.open('网络错误或API错误，请稍后重试', '关闭', {
             duration: 3000,
           });
         }
-      },
-      error: (error) => {
-        this.snackBar.open('用户密码更新失败', '关闭', {
-          duration: 3000,
-        });
+        this.isUpdatePassword = false;
       }
     });
 
@@ -292,7 +280,29 @@ export class AccountComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(DeleteuserdialogComponent);
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        alert('delete user');
+        let userId = this.user?.id;
+        if (userId) {
+          this.userService.deleteUser(userId).pipe(takeUntil(this.destroy$)).subscribe({
+            next: (result) => {
+              this.snackBar.open('删除账号成功', '关闭', {
+                duration: 3000,
+              });
+              this.authRepository.clear();
+            },
+            error: (error: ApolloError) => {
+              if (!error.networkError) {
+                this.snackBar.open('用户删除失败', '关闭', {
+                  duration: 3000,
+                });
+              } else {
+                this.snackBar.open('网络错误或API错误，请稍后重试', '关闭', {
+                  duration: 3000,
+                });
+              }
+            }
+
+          });
+        }
       } else {
         alert('cancel delete user');
       }

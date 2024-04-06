@@ -16,15 +16,11 @@ func NewMentorshipService(mentorshipRepo *repository.MentorshipRepo) *Mentorship
 	return &MentorshipService{Repo: mentorshipRepo}
 }
 
-func (mentorshipService *MentorshipService) CreateMentorship(userID string, newMentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
-	userObjectId, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
+func (mentorshipService *MentorshipService) CreateMentorship(userId primitive.ObjectID, newMentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
 	guidanceDate := primitive.NewDateTimeFromTime(*newMentorshipData.GuidanceDate)
 
 	newMentorship := models.Mentorship{
-		UserId:       userObjectId,
+		UserId:       userId,
 		ProjectName:  newMentorshipData.ProjectName,
 		StudentNames: newMentorshipData.StudentNames,
 		Grade:        newMentorshipData.Grade,

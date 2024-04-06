@@ -14,9 +14,8 @@ import { MatDivider } from '@angular/material/divider';
   styleUrl: './passwordform.component.scss'
 })
 export class PasswordformComponent {
-  passwordHide = true;
-  confirmPasswordHide = true;
-  @Input() passwordGroup!: FormGroup;
+  hide = true;
+  @Input() passwordForm!: FormGroup;
   @Input() buttonLabel!: string;
 
   @Output() submitForm = new EventEmitter<any>();

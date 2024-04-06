@@ -1,8 +1,8 @@
 import { gql } from "apollo-angular";
 
 export const createPasswordMutation = gql`
-  mutation createPassword($userId: ID!, $passwordData: PasswordData!) {
-    createPassword(userId: $userId, passwordData: $passwordData) {
+  mutation createPassword($passwordData: PasswordData!) {
+    createPassword(passwordData: $passwordData) {
       id
       url
       appName
@@ -46,8 +46,8 @@ export const uploadPasswordsMutation = gql`
 `;
 
 export const createPasswordsMutation = gql`
-  mutation createPasswords($userId: ID!, $newPasswordDatas: [PasswordData!]!) {
-    createPasswords(userId: $userId, passwordsData: $newPasswordDatas) {
+  mutation createPasswords($newPasswordDatas: [PasswordData!]!) {
+    createPasswords(passwordsData: $newPasswordDatas) {
       id
     }
   }

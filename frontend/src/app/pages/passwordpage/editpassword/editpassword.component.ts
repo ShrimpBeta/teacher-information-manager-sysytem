@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Password } from '../../../models/models/password.model';
+import { PasswordTrue } from '../../../models/models/password.model';
 import { MatDividerModule } from '@angular/material/divider';
 import { PasswordformComponent } from '../../../components/passwordform/passwordform.component';
 import { PasswordMatchValidator } from '../../../shared/formvalidator/passwordmatch.validator';
@@ -18,8 +18,8 @@ import { URLValidator } from '../../../shared/formvalidator/url.validator';
   styleUrl: './editpassword.component.scss'
 })
 export class EditpasswordComponent implements OnInit, OnDestroy {
-  password!: Password;
-  passwordGroup: FormGroup = new FormGroup({
+  password!: PasswordTrue;
+  passwordForm: FormGroup = new FormGroup({
     url: new FormControl('', [URLValidator]),
     appName: new FormControl(''),
     account: new FormControl('', [Validators.required]),
@@ -39,28 +39,28 @@ export class EditpasswordComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
-      this.passwordService.getPassword(params['id']).pipe(takeUntil(this.destroy$)).subscribe({
-        next: (password) => {
-          if (password) {
-            this.password = password;
+      this.passwordService.getPassword(params['id'])
+        .pipe(takeUntil(this.destroy$)).subscribe({
+          next: (password) => {
+            if (password) {
+              this.password = password;
 
-            this.passwordGroup = new FormGroup({
-              url: new FormControl(this.password?.url || '', [URLValidator()]),
-              appName: new FormControl(this.password?.appName || ''),
-              account: new FormControl(this.password?.account || '', [Validators.required]),
-              password: new FormControl(this.password?.password || '', [Validators.required]),
-              confirmPassword: new FormControl(this.password?.password || '', [Validators.required]),
-              description: new FormControl(this.password?.description || ''),
-            });
+              this.passwordForm = new FormGroup({
+                url: new FormControl(this.password?.url || '', [URLValidator()]),
+                appName: new FormControl(this.password?.appName || ''),
+                account: new FormControl(this.password?.account || '', [Validators.required]),
+                password: new FormControl(this.password?.password || '', [Validators.required]),
+                description: new FormControl(this.password?.description || ''),
+              });
 
-            this.passwordGroup.setValidators(PasswordMatchValidator);
-            this.snackBar.open('获取密码成功', '关闭', { duration: 3000 });
+              this.passwordForm.setValidators(PasswordMatchValidator);
+              this.snackBar.open('获取密码成功', '关闭', { duration: 3000 });
+            }
+          },
+          error: (error: unknown) => {
+            this.snackBar.open('获取密码失败', '关闭', { duration: 3000 });
           }
-        },
-        error: (error: unknown) => {
-          this.snackBar.open('获取密码失败', '关闭', { duration: 3000 });
-        }
-      });
+        });
     });
 
   }
@@ -71,39 +71,23 @@ export class EditpasswordComponent implements OnInit, OnDestroy {
   }
 
   updatePassword(event: any) {
-    if (this.passwordGroup.invalid) {
-      let message = '请填写所有必填项 ';
-      if (this.passwordGroup.get('url')?.invalid) {
-        message += 'URL格式错误 ';
-      }
-      if (this.passwordGroup.get('account')?.invalid) {
-        message += '账号为空 ';
-      }
-      if (this.passwordGroup.get('password')?.invalid) {
-        message += '密码为空 ';
-      }
-      if (this.passwordGroup.get('confirmPassword')?.invalid) {
-        message += '确认密码为空 ';
-      }
-      if (this.passwordGroup.get('password')?.value !== this.passwordGroup.get('confirmPassword')?.value) {
-        message += '密码不一致';
-      }
-      this.snackBar.open(message, '关闭', { duration: 3000 });
+    if (this.passwordForm.invalid) {
       return;
     }
 
-    this.passwordService.updatePassword(this.password.id, this.passwordGroup.value).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (password) => {
-        if (password) {
-          this.snackBar.open('更新成功', '关闭', { duration: 3000 });
-          this.router.navigate(['/main/password']);
+    this.passwordService.updatePassword(this.password.id, this.passwordForm.value)
+      .pipe(takeUntil(this.destroy$)).subscribe({
+        next: (password) => {
+          if (password) {
+            this.snackBar.open('更新成功', '关闭', { duration: 3000 });
+            this.router.navigate(['/main/password']);
+          }
+        },
+        error: (error: unknown) => {
+          console.error(error);
+          this.snackBar.open('更新失败', '关闭', { duration: 3000 });
         }
-      },
-      error: (error: unknown) => {
-        console.error(error);
-        this.snackBar.open('更新失败', '关闭', { duration: 3000 });
-      }
-    });
+      });
   }
 
 }

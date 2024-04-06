@@ -13,7 +13,7 @@ import (
 )
 
 // CreateUPGuidance is the resolver for the createUPGuidance field.
-func (r *mutationResolver) CreateUGPGGuidance(ctx context.Context, userID string, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error) {
+func (r *mutationResolver) CreateUGPGGuidance(ctx context.Context, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error) {
 	panic(fmt.Errorf("not implemented: CreateUPGuidance - createUPGuidance"))
 }
 
@@ -33,7 +33,7 @@ func (r *mutationResolver) UploadUGPGGuidances(ctx context.Context, file graphql
 }
 
 // CreateUPGuidances is the resolver for the createUPGuidances field.
-func (r *mutationResolver) CreateUGPGGuidances(ctx context.Context, userID string, uGPGGuidancesData []*graphql_models.UGPGGuidanceData) ([]*graphql_models.UGPGGuidance, error) {
+func (r *mutationResolver) CreateUGPGGuidances(ctx context.Context, uGPGGuidancesData []*graphql_models.UGPGGuidanceData) ([]*graphql_models.UGPGGuidance, error) {
 	panic(fmt.Errorf("not implemented: CreateUPGuidances - createUPGuidances"))
 }
 

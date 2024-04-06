@@ -93,7 +93,7 @@ extend type Mutation {
   updateCourse(termId: ID!, courseId: ID!, courseData: CourseData!): Course!
   deleteCourse(termId: ID!, courseId: ID!): Course!
 
-  createAcademicTerm(userId: ID!, termData: NewAcademicTerm!): AcademicTerm!
+  createAcademicTerm(termData: NewAcademicTerm!): AcademicTerm!
   updateAcademicTerm(termId: ID!, termData: UpdateAcademicTerm!): AcademicTerm!
   deleteAcademicTerm(termId: ID!): AcademicTerm!
 
