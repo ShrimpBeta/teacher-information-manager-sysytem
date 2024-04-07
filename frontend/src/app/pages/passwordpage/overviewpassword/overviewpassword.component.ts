@@ -21,7 +21,7 @@ import { DatePipe } from '@angular/common';
   styleUrl: './overviewpassword.component.scss'
 })
 export class OverviewpasswordComponent implements OnInit, OnDestroy {
-  _selectedValue!: string;
+
   searchFormControl!: FormControl;
   destroy$ = new Subject<boolean>();
   passwordList: Password[] = [];
@@ -32,7 +32,6 @@ export class OverviewpasswordComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this._selectedValue = '0';
     this.searchFormControl = new FormControl('');
 
     this.getPasswordList();
@@ -78,34 +77,4 @@ export class OverviewpasswordComponent implements OnInit, OnDestroy {
       }
     });
   }
-
-  sortPasswordList() {
-    let passwordListCopy = this.passwordList.slice();
-    switch (this.selectedValue) {
-      case '0':
-        // 按名称排序
-        passwordListCopy.sort((a, b) => a.appName.localeCompare(b.appName));
-        break;
-      case '1':
-        // 按创建时间排序
-        passwordListCopy.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-        break;
-      case '2':
-        // 按修改时间排序
-        passwordListCopy.sort((a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime());
-        break;
-    }
-    this.passwordList = passwordListCopy;
-
-  }
-
-  get selectedValue(): string {
-    return this._selectedValue;
-  }
-
-  set selectedValue(value: string) {
-    this._selectedValue = value;
-    this.sortPasswordList();
-  }
-
 }

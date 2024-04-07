@@ -31,6 +31,7 @@ export class MainComponent implements OnInit {
         { path: '/main/educationreform', name: '教改项目' },
         { path: '/main/mentorship', name: '导师制' },
         { path: '/main/competitionguidance', name: '竞赛指导' },
+        { path: '/main//ugpgguidance', name: '毕设指导' }
       ]
     },
     {

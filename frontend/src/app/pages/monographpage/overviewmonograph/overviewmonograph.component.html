@@ -1,1 +1,119 @@
-<p>overviewmonograph works!</p>
+<div class="container">
+
+  <div class="title">
+    <h1>导师制</h1>
+    <div class="operation">
+      <a mat-raised-button color="primary" routerLink="/main/mentorship/new">
+        <mat-icon>add</mat-icon>
+        <span>添加记录</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="filter">
+    <div class="sub-title">
+      <h2>搜索</h2>
+    </div>
+    <mat-divider></mat-divider>
+    <form [formGroup]="SearchForm" (ngSubmit)="onSearch()" class="filter-content">
+      <div class="filter-box">
+        <mat-form-field appearance="outline">
+          <mat-label>项目名称</mat-label>
+          <input matInput type="text" formControlName="projectName" placeholder="项目名称">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>学生姓名</mat-label>
+          <mat-chip-grid #chipGrid aria-label="Enter fruits">
+            @for(studentName of studentNames.controls;track $index) {
+            <mat-chip-row (removed)="removeStudentName($index)" [editable]="true"
+              (edited)="editStudentName( $event,$index)" aria-description="press enter to edit">
+              {{studentName.value}}
+              <button matChipRemove aria-label="remove">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+            }
+            <input placeholder="New StudentName..." [matChipInputFor]="chipGrid"
+              (matChipInputTokenEnd)="addStudentName($event)" />
+          </mat-chip-grid>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>项目成绩</mat-label>
+          <input matInput type="text" formControlName="grade" placeholder="项目成绩">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>项目名称</mat-label>
+          <input matInput type="text" formControlName="projectName" placeholder="项目名称">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>项目时间</mat-label>
+          <mat-date-range-input [rangePicker]="guidanceDatePicker">
+            <input matStartDate formControlName="guidanceDateStart" placeholder="Start date">
+            <input matEndDate formControlName="guidanceDateEnd" placeholder="End date">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="guidanceDatePicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #guidanceDatePicker></mat-date-range-picker>
+          @if (SearchForm.controls['guidanceDateStart'].hasError('matStartDateInvalid')) {
+          <mat-error>Invalid start date</mat-error>
+          }
+          @if (SearchForm.controls['guidanceDateEnd'].hasError('matEndDateInvalid')) {
+          <mat-error>Invalid end date</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>创建时间</mat-label>
+          <mat-date-range-input [rangePicker]="createdPicker">
+            <input matStartDate formControlName="createdStart" placeholder="Start date">
+            <input matEndDate formControlName="createdEnd" placeholder="End date">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="createdPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #createdPicker></mat-date-range-picker>
+          @if (SearchForm.controls['createdStart'].hasError('matStartDateInvalid')) {
+          <mat-error>Invalid start date</mat-error>
+          }
+          @if (SearchForm.controls['createdEnd'].hasError('matEndDateInvalid')) {
+          <mat-error>Invalid end date</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>更新时间</mat-label>
+          <mat-date-range-input [rangePicker]="updatedPicker">
+            <input matStartDate formControlName="updatedStart" placeholder="Start date">
+            <input matEndDate formControlName="updatedEnd" placeholder="End date">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="updatedPicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #updatedPicker></mat-date-range-picker>
+          @if (SearchForm.controls['updatedStart'].hasError('matStartDateInvalid')) {
+          <mat-error>Invalid start date</mat-error>
+          }
+          @if (SearchForm.controls['updatedEnd'].hasError('matEndDateInvalid')) {
+          <mat-error>Invalid end date</mat-error>
+          }
+        </mat-form-field>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="filter-operation">
+        <button mat-raised-button color="primary" type="submit">
+          <span>搜索</span>
+        </button>
+        <button mat-raised-button color="primary" (click)="clearForm()" type="button">清空表单</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="search-result">
+    <div class="sub-title">
+      <h2>结果</h2>
+    </div>
+    <mat-divider></mat-divider>
+
+  </div>
+
+</div>
+

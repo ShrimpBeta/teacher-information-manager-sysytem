@@ -2,8 +2,9 @@ import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { AuthRepository } from "../core/auth/auth.repository";
 import { activateUserMutation, deleteUserMutation, fetchCodeMutation, removeWechatAuthMutation, resetUserPasswordMutation, updateUserMutation, updateUserPasswordMutation } from "../models/graphql/mutation/user.mutation.graphql";
-import { ActivateUser, ActivateUserResponse, DeleteAccountResponse, FetchCodeResponse, RemoveWechatAuthResponse, ResetUserPassword, ResetUserPasswordResponse, UpdateUser, UpdateUserPassword, UpdateUserPasswordResponse, UpdateUserResponse, User } from "../models/models/user.model";
+import { ActivateUser, ActivateUserResponse, DeleteAccountResponse, FetchCodeResponse, RemoveWechatAuthResponse, ResetUserPassword, ResetUserPasswordResponse, UpdateUser, UpdateUserPassword, UpdateUserPasswordResponse, UpdateUserResponse, User, UserExport, UserExportsResponse } from "../models/models/user.model";
 import { map, Observable } from "rxjs";
+import { userExportsQuery } from "../models/graphql/query/user.query.graphql";
 
 
 @Injectable({
@@ -155,6 +156,16 @@ export class UserService {
       }
       return null;
     })
+    );
+  }
+
+  userExports(): Observable<UserExport[]> {
+    return this.apollo.query({
+      query: userExportsQuery
+    }).pipe(map((response: unknown) => {
+      return (response as UserExportsResponse).data?.userExports || [];
+    }),
+      map(users => users.filter(user => user.id !== this.authRepository.getUserId()))
     );
   }
 }

@@ -320,7 +320,7 @@ func (userService *UserService) GetUserExports() ([]*graphql_models.UserExport, 
 			ID:        userData.ID.Hex(),
 			Username:  userData.Username,
 			Email:     userData.Email,
-			Avatar:    "/avatars/" + userData.Avatar,
+			Avatar:    environment.ServeURL + "/avatars/" + userData.Avatar,
 			CreatedAt: userData.CreatedAt.Time(),
 		})
 	}

@@ -100,3 +100,10 @@ export interface DeleteAccountResponse {
     deleteAccount: boolean
   }
 }
+
+export interface UserExportsResponse {
+  error?: unknown;
+  data?: {
+    userExports: UserExport[]
+  }
+}

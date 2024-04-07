@@ -9,6 +9,7 @@ import { DOCUMENT } from '@angular/common';
 import { AuthService } from './core/auth/auth.service';
 import { AuthRepository } from './core/auth/auth.repository';
 import { TokenInterceptor } from './core/auth/token.interceptor';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,6 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptorsFromDi()),
     { provide: Document, useExisting: DOCUMENT },
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true, deps: [Router, AuthService, AuthRepository, DOCUMENT] },
-    graphqlProvider
+    graphqlProvider,
+    { provide: MAT_DATE_LOCALE, useValue: 'zh-CN' }
   ]
 };
