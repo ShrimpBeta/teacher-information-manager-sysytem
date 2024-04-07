@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDivider } from '@angular/material/divider';
 import { PasswordformComponent } from '../../../components/passwordform/passwordform.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { PasswordMatchValidator } from '../../../shared/formvalidator/passwordmatch.validator';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { PasswordService } from '../../../services/password.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -41,8 +40,6 @@ export class NewpasswordComponent implements OnInit, OnDestroy {
       description: new FormControl('')
     });
 
-    this.passwordForm.setValidators(PasswordMatchValidator)
-
     // 响应大小小变化
     this.responsive.observe([
       Breakpoints.HandsetLandscape,
@@ -63,7 +60,7 @@ export class NewpasswordComponent implements OnInit, OnDestroy {
 
   createPassword(event: any) {
     if (this.passwordForm.invalid) {
-
+      this.snackBar.open('请检查表单', '关闭', { duration: 3000 });
       return;
     }
 

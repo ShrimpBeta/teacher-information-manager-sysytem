@@ -52,8 +52,6 @@ export class EditpasswordComponent implements OnInit, OnDestroy {
                 password: new FormControl(this.password?.password || '', [Validators.required]),
                 description: new FormControl(this.password?.description || ''),
               });
-
-              this.passwordForm.setValidators(PasswordMatchValidator);
               this.snackBar.open('获取密码成功', '关闭', { duration: 3000 });
             }
           },
@@ -72,6 +70,7 @@ export class EditpasswordComponent implements OnInit, OnDestroy {
 
   updatePassword(event: any) {
     if (this.passwordForm.invalid) {
+      this.snackBar.open('请检查表单', '关闭', { duration: 3000 });
       return;
     }
 

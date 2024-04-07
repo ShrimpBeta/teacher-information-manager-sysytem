@@ -52,22 +52,33 @@ func (passwordService *PasswordService) CreatePassword(userID primitive.ObjectID
 	}, nil
 }
 
-func (passwordService *PasswordService) UpdatePassword(id string, userId primitive.ObjectID, masterKey string, passwordData graphql_models.PasswordData) (*graphql_models.Password, error) {
+func (passwordService *PasswordService) UpdatePassword(id string, masterKey string, passwordData graphql_models.PasswordData) (*graphql_models.Password, error) {
 
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
 
-	passwordEncrypt, err := passwordencrypt.Encrypt(masterKey, passwordData.Password)
+	passwordUpdate, err := passwordService.Repo.GetPasswordById(objectId)
+	if err != nil {
+		return nil, err
+	}
 
-	passwordUpdate := &models.Password{
-		ID:          objectId,
-		Url:         passwordData.URL,
-		AppName:     passwordData.AppName,
-		Account:     passwordData.Account,
-		Password:    passwordEncrypt,
-		Description: passwordData.Description,
+	passwordEncrypt, err := passwordencrypt.Encrypt(masterKey, passwordData.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	passwordUpdate.Account = passwordData.Account
+	passwordUpdate.Password = passwordEncrypt
+	if passwordData.URL != nil {
+		passwordUpdate.Url = passwordData.URL
+	}
+	if passwordData.AppName != nil {
+		passwordUpdate.AppName = passwordData.AppName
+	}
+	if passwordData.Description != nil {
+		passwordUpdate.Description = passwordData.Description
 	}
 
 	err = passwordService.Repo.UpdatePassword(passwordUpdate)
@@ -114,7 +125,7 @@ func (passwordService *PasswordService) DeletePassword(id string) (*graphql_mode
 	}, nil
 }
 
-func (passwordService *PasswordService) GetPasswordById(id string) (*graphql_models.PasswordTrue, error) {
+func (passwordService *PasswordService) GetPasswordById(id, masterKey string) (*graphql_models.PasswordTrue, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -123,26 +134,28 @@ func (passwordService *PasswordService) GetPasswordById(id string) (*graphql_mod
 	if err != nil {
 		return nil, err
 	}
+
+	passwordDecrypt, err := passwordencrypt.Decrypt(masterKey, passwordData.Password)
+	if err != nil {
+		return nil, err
+	}
+
 	return &graphql_models.PasswordTrue{
 		ID:          passwordData.ID.Hex(),
 		URL:         passwordData.Url,
 		Account:     passwordData.Account,
 		AppName:     passwordData.AppName,
-		Password:    passwordData.Password,
+		Password:    passwordDecrypt,
 		Description: passwordData.Description,
 		CreatedAt:   passwordData.CreatedAt.Time(),
 		UpdatedAt:   passwordData.UpdatedAt.Time(),
 	}, nil
 }
 
-func (passwordService *PasswordService) GetPasswordsByFilter(filter graphql_models.PasswordFilter) ([]*graphql_models.Password, error) {
-	userObjectId, err := primitive.ObjectIDFromHex(filter.UserID)
-	if err != nil {
-		return nil, err
-	}
+func (passwordService *PasswordService) GetPasswordsByFilter(userId primitive.ObjectID, filter graphql_models.PasswordFilter) ([]*graphql_models.Password, error) {
 	passwordsData, err := passwordService.Repo.GetPasswordsByParams(
 		repository.PasswordQueryParams{
-			UserId:  userObjectId,
+			UserId:  userId,
 			Url:     filter.URL,
 			AppName: filter.AppName,
 			Account: filter.Account,

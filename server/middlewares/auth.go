@@ -47,7 +47,7 @@ func ForContext(ctx *gin.Context) (*AuthData, error) {
 	// get user
 	raw, exist := ctx.Get("authData")
 	if !exist {
-		err := fmt.Errorf("could not retrieve user")
+		err := fmt.Errorf("could not retrieve user, probably no token")
 		return nil, err
 	}
 	authData, ok := raw.(*AuthData)

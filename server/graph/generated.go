@@ -21522,20 +21522,13 @@ func (ec *executionContext) unmarshalInputCompGuidanceFilter(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"userId", "projectName", "studentNames", "guidanceDateStart", "guidanceDateEnd", "awardStatus", "createdStart", "createdEnd", "updatedStart", "updatedEnd"}
+	fieldsInOrder := [...]string{"projectName", "studentNames", "guidanceDateStart", "guidanceDateEnd", "awardStatus", "createdStart", "createdEnd", "updatedStart", "updatedEnd"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "userId":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserID = data
 		case "projectName":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("projectName"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -21944,20 +21937,13 @@ func (ec *executionContext) unmarshalInputMentorshipFilter(ctx context.Context, 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"userId", "projectName", "studentNames", "grade", "guidanceDateStart", "guidanceDateEnd", "createdStart", "createdEnd", "updatedStart", "updatedEnd"}
+	fieldsInOrder := [...]string{"projectName", "studentNames", "grade", "guidanceDateStart", "guidanceDateEnd", "createdStart", "createdEnd", "updatedStart", "updatedEnd"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "userId":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserID = data
 		case "projectName":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("projectName"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -22489,20 +22475,13 @@ func (ec *executionContext) unmarshalInputPasswordFilter(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"userId", "url", "appName", "account"}
+	fieldsInOrder := [...]string{"url", "appName", "account"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "userId":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserID = data
 		case "url":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("url"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -22980,20 +22959,13 @@ func (ec *executionContext) unmarshalInputUGPGGuidanceFilter(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"userId", "studentName", "thesisTopic", "defenseDateStart", "defenseDateEnd", "createdStart", "createdEnd", "updatedStart", "updatedEnd"}
+	fieldsInOrder := [...]string{"studentName", "thesisTopic", "defenseDateStart", "defenseDateEnd", "createdStart", "createdEnd", "updatedStart", "updatedEnd"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "userId":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-			data, err := ec.unmarshalNID2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserID = data
 		case "studentName":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("studentName"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)

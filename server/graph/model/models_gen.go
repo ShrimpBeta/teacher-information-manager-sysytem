@@ -103,7 +103,6 @@ type CompGuidanceData struct {
 }
 
 type CompGuidanceFilter struct {
-	UserID            string     `json:"userId"`
 	ProjectName       *string    `json:"projectName,omitempty"`
 	StudentNames      []*string  `json:"studentNames,omitempty"`
 	GuidanceDateStart *time.Time `json:"guidanceDateStart,omitempty"`
@@ -234,7 +233,6 @@ type MentorshipData struct {
 }
 
 type MentorshipFilter struct {
-	UserID            string     `json:"userId"`
 	ProjectName       *string    `json:"projectName,omitempty"`
 	StudentNames      []*string  `json:"studentNames,omitempty"`
 	Grade             *string    `json:"grade,omitempty"`
@@ -377,7 +375,6 @@ type PasswordData struct {
 }
 
 type PasswordFilter struct {
-	UserID  string  `json:"userId"`
 	URL     *string `json:"url,omitempty"`
 	AppName *string `json:"appName,omitempty"`
 	Account *string `json:"account,omitempty"`
@@ -522,7 +519,6 @@ type UGPGGuidanceData struct {
 }
 
 type UGPGGuidanceFilter struct {
-	UserID           string     `json:"userId"`
 	StudentName      *string    `json:"studentName,omitempty"`
 	ThesisTopic      *string    `json:"thesisTopic,omitempty"`
 	DefenseDateStart *time.Time `json:"defenseDateStart,omitempty"`

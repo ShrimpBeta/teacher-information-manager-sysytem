@@ -6,6 +6,7 @@ import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldModule } from '@angular/mat
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { PasswordFormatValidator } from '../../shared/formvalidator/passwordformat.validator';
 import { EmailValidator } from '../../shared/formvalidator/email.validator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-loginform',
@@ -22,7 +23,8 @@ export class LoginformComponent implements OnInit {
   @Input() isSignin: boolean = false;
 
   constructor(
-  ) {}
+    private matsnackbar: MatSnackBar,
+  ) { }
 
   ngOnInit() {
     this.signInForm = new FormGroup({
@@ -34,6 +36,10 @@ export class LoginformComponent implements OnInit {
   onSubmit() {
     if (this.signInForm.valid) {
       this.signIn.emit(this.signInForm.value);
+    } else {
+      this.matsnackbar.open('请检查表单', '关闭', {
+        duration: 3000,
+      });
     }
   }
 

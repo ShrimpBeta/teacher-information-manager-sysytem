@@ -3,7 +3,7 @@ package passwordencrypt
 import "testing"
 
 func TestEncryptAndDecrypt(t *testing.T) {
-	key := "keyforencryptpassword11111111111"
+	key := "8c4746a3ef88adb9c2f50c7d9e7eb6010b47d3f6ea0f03991cedfe6509911f50"
 	password := "password"
 	encryptedPassword, err := Encrypt(key, password)
 	if err != nil {

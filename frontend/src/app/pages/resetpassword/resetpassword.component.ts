@@ -37,6 +37,10 @@ export class ResetpasswordComponent implements OnInit, OnDestroy {
         this.matsnackbar.open('两次密码不一致', '关闭', {
           duration: 2000,
         });
+      } else {
+        this.matsnackbar.open('请检查表单', '关闭', {
+          duration: 2000,
+        });
       }
       return;
     } else {

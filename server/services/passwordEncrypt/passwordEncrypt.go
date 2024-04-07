@@ -46,7 +46,9 @@ func GenerateMasterKey() (string, error) {
 	// generate masterkey with sha512
 	hasher := sha512.New()
 	hasher.Write([]byte(timestamp + hex.EncodeToString(salt)))
-	return hex.EncodeToString(hasher.Sum(nil)), nil
+	masterKey := hasher.Sum(nil)
+	truncatedMasterKey := masterKey[:32]
+	return hex.EncodeToString(truncatedMasterKey), nil
 }
 
 // Generate Key for Password Encrypt & Decrypt
@@ -58,7 +60,11 @@ func GenerateKey(masterKey string, passwordId string) string {
 
 // Encrypt Password with AES
 func Encrypt(key string, password string) (string, error) {
-	block, err := aes.NewCipher([]byte(key))
+	keyBytes, err := hex.DecodeString(key)
+	if err != nil {
+		return "", err
+	}
+	block, err := aes.NewCipher(keyBytes)
 	if err != nil {
 		return "", err
 	}
@@ -78,8 +84,12 @@ func Encrypt(key string, password string) (string, error) {
 // Decrypt Password with AES
 func Decrypt(key string, passwordEncrypted string) (string, error) {
 	chiperText, _ := base64.URLEncoding.DecodeString(passwordEncrypted)
+	keyBytes, err := hex.DecodeString(key)
+	if err != nil {
+		return "", err
+	}
 
-	block, err := aes.NewCipher([]byte(key))
+	block, err := aes.NewCipher(keyBytes)
 	if err != nil {
 		return "", err
 	}

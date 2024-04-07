@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,7 +20,7 @@ import { DatePipe } from '@angular/common';
   templateUrl: './overviewpassword.component.html',
   styleUrl: './overviewpassword.component.scss'
 })
-export class OverviewpasswordComponent implements OnInit {
+export class OverviewpasswordComponent implements OnInit, OnDestroy {
   _selectedValue!: string;
   searchFormControl!: FormControl;
   destroy$ = new Subject<boolean>();
@@ -36,6 +36,11 @@ export class OverviewpasswordComponent implements OnInit {
     this.searchFormControl = new FormControl('');
 
     this.getPasswordList();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   getPasswordList() {

@@ -174,6 +174,10 @@ export class AccountComponent implements OnInit, OnDestroy {
         this.snackBar.open('两次输入密码不一致', '关闭', {
           duration: 3000,
         });
+      } else {
+        this.snackBar.open('请检查输入表单', '关闭', {
+          duration: 3000,
+        });
       }
       return;
     }
@@ -234,6 +238,10 @@ export class AccountComponent implements OnInit, OnDestroy {
     if (!this.passwordForm.valid) {
       if (this.passwordForm.get('password')?.value !== this.passwordForm.get('confirmPassword')?.value) {
         this.snackBar.open('两次输入密码不一致', '关闭', {
+          duration: 3000,
+        });
+      } else {
+        this.snackBar.open('请检查输入表单', '关闭', {
           duration: 3000,
         });
       }

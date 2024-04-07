@@ -47,12 +47,11 @@ func (r *mutationResolver) UpdatePassword(ctx context.Context, id string, passwo
 	}
 
 	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
-
 	if err != nil {
 		return nil, err
 	}
 
-	return r.PasswordService.UpdatePassword(id, user.ID, user.MasterKey, passwordData)
+	return r.PasswordService.UpdatePassword(id, user.MasterKey, passwordData)
 }
 
 // DeletePassword is the resolver for the deletePassword field.
@@ -72,10 +71,42 @@ func (r *mutationResolver) CreatePasswords(ctx context.Context, passwordsData []
 
 // PasswordTrue is the resolver for the passwordTrue field.
 func (r *queryResolver) PasswordTrue(ctx context.Context, id string) (*graphql_models.PasswordTrue, error) {
-	return r.PasswordService.GetPasswordById(id)
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return r.PasswordService.GetPasswordById(id, user.MasterKey)
 }
 
 // PasswordsByFilter is the resolver for the passwordsByFilter field.
 func (r *queryResolver) PasswordsByFilter(ctx context.Context, filter graphql_models.PasswordFilter) ([]*graphql_models.Password, error) {
-	return r.PasswordService.GetPasswordsByFilter(filter)
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return r.PasswordService.GetPasswordsByFilter(user.ID, filter)
 }

@@ -33,18 +33,18 @@ export class PasswordFilter {
   account: string | null = null
 }
 
-export interface PasswordResponse {
+export interface PasswordTrueResponse {
   error?: unknown;
   data?: {
-    password: PasswordTrue
+    passwordTrue: PasswordTrue
   }
 
 }
 
-export interface PasswordsResponse {
+export interface PasswordsByFilterResponse {
   error?: unknown;
   data?: {
-    passwords: Password[]
+    passwordsByFilter: Password[]
   }
 }
 

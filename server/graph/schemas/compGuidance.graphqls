@@ -27,7 +27,6 @@ input CompGuidanceData {
 }
 
 input CompGuidanceFilter {
-  userId: ID!
   projectName: String
   studentNames: [String]
   guidanceDateStart: Time

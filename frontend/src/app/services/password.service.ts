@@ -3,7 +3,7 @@ import { Apollo } from "apollo-angular";
 import { AuthRepository } from "../core/auth/auth.repository";
 import { passwordTrueQuery, passwordsByFilterQuery } from "../models/graphql/query/password.query.graphql";
 import { deletePasswordMutation, updatePasswordMutation, createPasswordMutation } from "../models/graphql/mutation/password.mutation.graphql";
-import { CreatePasswordResponse, EditPassword, Password, PasswordFilter, PasswordResponse, PasswordsResponse, PasswordTrue, UpdatePasswordResponse } from "../models/models/password.model";
+import { CreatePasswordResponse, EditPassword, Password, PasswordFilter, PasswordsByFilterResponse, PasswordTrue, PasswordTrueResponse, UpdatePasswordResponse } from "../models/models/password.model";
 import { map, Observable } from "rxjs";
 
 @Injectable({
@@ -20,7 +20,6 @@ export class PasswordService {
       query: passwordsByFilterQuery,
       variables: {
         filter: {
-          userId: this.authRepository.getUserId(),
           appName: passwordFilter.appName,
           account: passwordFilter.account,
           url: passwordFilter.url
@@ -29,7 +28,7 @@ export class PasswordService {
       fetchPolicy: 'network-only'
     }).pipe(
       map((response: unknown) => {
-        let passwords = (response as PasswordsResponse).data?.passwords;
+        let passwords = (response as PasswordsByFilterResponse).data?.passwordsByFilter;
         if (typeof passwords !== 'undefined' && passwords !== null) {
           return passwords;
         }
@@ -46,7 +45,7 @@ export class PasswordService {
       }
     }).pipe(
       map((response: unknown) => {
-        let password = (response as PasswordResponse).data?.password;
+        let password = (response as PasswordTrueResponse).data?.passwordTrue;
         if (typeof password !== 'undefined' && password !== null) {
           return password;
         }
@@ -59,7 +58,6 @@ export class PasswordService {
     return this.apollo.mutate({
       mutation: createPasswordMutation,
       variables: {
-        userId: this.authRepository.getUserId(),
         passwordData: {
           url: newPassword.url,
           appName: newPassword.appName,

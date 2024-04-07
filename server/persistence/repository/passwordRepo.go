@@ -40,18 +40,29 @@ func (r *PasswordRepo) GetPasswordsByParams(params PasswordQueryParams) ([]model
 	passwords := []models.Password{}
 
 	// filter for userId, can not be empty
-	filter := bson.M{"userId": params.UserId}
+	filter := bson.M{
+		"$and": []bson.M{
+			{"userId": params.UserId},
+		},
+	}
+
+	optionalFilters := []bson.M{}
+
 	// filter for url
 	if params.Url != nil {
-		filter["url"] = bson.M{"$regex": primitive.Regex{Pattern: *params.Url, Options: "i"}}
+		optionalFilters = append(optionalFilters, bson.M{"url": bson.M{"$regex": primitive.Regex{Pattern: *params.Url, Options: "i"}}})
 	}
 	// filter for appName
 	if params.AppName != nil {
-		filter["appName"] = bson.M{"$regex": primitive.Regex{Pattern: *params.AppName, Options: "i"}}
+		optionalFilters = append(optionalFilters, bson.M{"appName": bson.M{"$regex": primitive.Regex{Pattern: *params.AppName, Options: "i"}}})
 	}
 	// filter for account
 	if params.Account != nil {
-		filter["account"] = bson.M{"$regex": primitive.Regex{Pattern: *params.Account, Options: "i"}}
+		optionalFilters = append(optionalFilters, bson.M{"account": bson.M{"$regex": primitive.Regex{Pattern: *params.Account, Options: "i"}}})
+	}
+
+	if len(optionalFilters) > 0 {
+		filter["$and"] = append(filter["$and"].([]bson.M), bson.M{"$or": optionalFilters})
 	}
 
 	cursor, err := r.collection.Find(context.Background(), filter)

@@ -36,7 +36,6 @@ input UGPGGuidanceData {
 }
 
 input UGPGGuidanceFilter {
-  userId: ID!
   studentName: String
   thesisTopic: String
   defenseDateStart: Time

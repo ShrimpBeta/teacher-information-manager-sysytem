@@ -24,7 +24,6 @@ input MentorshipData {
 }
 
 input MentorshipFilter {
-  userId: ID!
   projectName: String
   studentNames: [String]
   grade: String
