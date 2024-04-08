@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -12,6 +12,11 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { RouterLink } from '@angular/router';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { Subject, takeUntil } from 'rxjs';
+import { UserExport } from '../../../models/models/user.model';
+import { UserService } from '../../../services/user.service';
+import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-overviewpaper',
@@ -19,57 +24,113 @@ import { provideNativeDateAdapter } from '@angular/material/core';
   providers: [provideNativeDateAdapter()],
   imports: [MatDividerModule, MatInputModule, MatFormFieldModule, MatIconModule,
     MatSelectModule, MatButtonModule, ReactiveFormsModule, RouterLink, MatCardModule,
-    DatePipe, MatDatepickerModule, MatChipsModule],
+    DatePipe, MatDatepickerModule, MatChipsModule, MatAutocompleteModule],
   templateUrl: './overviewpaper.component.html',
   styleUrl: './overviewpaper.component.scss'
 })
-export class OverviewpaperComponent {
+export class OverviewpaperComponent implements OnInit, OnDestroy {
   SearchForm!: FormGroup;
+  teachersInCtrl = new FormControl();
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+
+  teachersInOptions: UserExport[] = [];
+  @ViewChild('teacherInInput') teachersInInput!: ElementRef<HTMLInputElement>;
+
+  $destroy: Subject<boolean> = new Subject<boolean>();
+
   constructor(
+    private userService: UserService,
 
   ) { }
 
   ngOnInit(): void {
     this.SearchForm = new FormGroup({
-      projectName: new FormControl(''),
-      studentNames: new FormArray([]),
-      grade: new FormControl(''),
-      guidanceDateStart: new FormControl(''),
-      guidanceDateEnd: new FormControl(''),
+      title: new FormControl(''),
+      teachersIn: new FormArray([]),
+      teachersOut: new FormArray([]),
+      rank: new FormControl(''),
+      journalName: new FormControl(''),
+      journalLevel: new FormControl(''),
+      publishDateStart: new FormControl(''),
+      publishDateEnd: new FormControl(''),
       createdStart: new FormControl(''),
       createdEnd: new FormControl(''),
       updatedStart: new FormControl(''),
       updatedEnd: new FormControl(''),
     });
+
+    this.userService.userExports().pipe(takeUntil(this.$destroy)).subscribe({
+      next: (response) => {
+        console.log(response);
+        this.teachersInOptions = response;
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
   }
 
   ngOnDestroy(): void {
-
+    this.$destroy.next(true);
+    this.$destroy.complete();
   }
 
 
-  get studentNames() {
-    return this.SearchForm.get('studentNames') as FormArray;
+  get teachersIn() {
+    return this.SearchForm.get('teachersIn') as FormArray;
   }
 
-  addStudentName(event: MatChipInputEvent) {
+  get teachersOut() {
+    return this.SearchForm.get('teachersOut') as FormArray;
+  }
+
+  teachersInSelected(event: MatAutocompleteSelectedEvent) {
+    let selectedTeacherIn: UserExport = event.option.value;
+    this.teachersIn.push(new FormControl(selectedTeacherIn));
+    this.teachersInInput.nativeElement.value = '';
+    this.teachersInCtrl.setValue(null);
+  }
+
+  addTeachersIn(event: MatChipInputEvent) {
     let value = (event.value || '').trim();
     if (value) {
-      this.studentNames.push(new FormControl(value));
+      this.teachersIn.push(new FormControl(value));
+    }
+    event.chipInput!.clear();
+    this.teachersInCtrl.setValue(null);
+  }
+
+  addTeachersOut(event: MatChipInputEvent) {
+    let value = (event.value || '').trim();
+    if (value) {
+      this.teachersOut.push(new FormControl(value));
     }
     event.chipInput!.clear();
   }
 
-  removeStudentName(index: number) {
-    this.studentNames.removeAt(index);
+  removeTeachersIn(index: number) {
+    this.teachersIn.removeAt(index);
   }
 
-  editStudentName(event: MatChipEditedEvent, index: number) {
+  removeTeachersOut(index: number) {
+    this.teachersOut.removeAt(index);
+  }
+
+  editTeachersIn(event: MatChipEditedEvent, index: number) {
     let value = (event.value || '').trim();
     if (value) {
-      this.studentNames.at(index).setValue(value);
+      this.teachersIn.at(index).setValue(value);
     } else {
-      this.studentNames.removeAt(index);
+      this.teachersIn.removeAt(index);
+    }
+  }
+
+  editTeachersOut(event: MatChipEditedEvent, index: number) {
+    let value = (event.value || '').trim();
+    if (value) {
+      this.teachersOut.at(index).setValue(value);
+    } else {
+      this.teachersOut.removeAt(index);
     }
   }
 

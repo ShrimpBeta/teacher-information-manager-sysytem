@@ -1,4 +1,4 @@
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,7 +24,7 @@ import { UserExport } from '../../../models/models/user.model';
   providers: [provideNativeDateAdapter()],
   imports: [MatDividerModule, MatInputModule, MatFormFieldModule, MatIconModule,
     MatSelectModule, MatButtonModule, ReactiveFormsModule, RouterLink, MatCardModule,
-    DatePipe, MatDatepickerModule, MatChipsModule, MatAutocompleteModule, AsyncPipe],
+    DatePipe, MatDatepickerModule, MatChipsModule, MatAutocompleteModule],
   templateUrl: './overviewedureform.component.html',
   styleUrl: './overviewedureform.component.scss'
 })

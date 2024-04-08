@@ -42,6 +42,24 @@ import { NewpaperComponent } from './pages/paperpage/newpaper/newpaper.component
 import { OverviewsciresearchComponent } from './pages/sciresearchpage/overviewsciresearch/overviewsciresearch.component';
 import { EditsciresearchComponent } from './pages/sciresearchpage/editsciresearch/editsciresearch.component';
 import { NewsciresearchComponent } from './pages/sciresearchpage/newsciresearch/newsciresearch.component';
+import { PreviewpasswordComponent } from './pages/passwordpage/previewpassword/previewpassword.component';
+import { ExportpasswordComponent } from './pages/passwordpage/exportpassword/exportpassword.component';
+import { PreviewclassscheduleComponent } from './pages/classschedulepage/previewclassschedule/previewclassschedule.component';
+import { ExportclassscheduleComponent } from './pages/classschedulepage/exportclassschedule/exportclassschedule.component';
+import { PreviewedureformComponent } from './pages/edureformpage/previewedureform/previewedureform.component';
+import { ExportedureformComponent } from './pages/edureformpage/exportedureform/exportedureform.component';
+import { PreviewcompguidanceComponent } from './pages/compguidancepage/previewcompguidance/previewcompguidance.component';
+import { ExportcompguidanceComponent } from './pages/compguidancepage/exportcompguidance/exportcompguidance.component';
+import { PreviewugpgguidanceComponent } from './pages/ugpuguidancepage/previewugpgguidance/previewugpgguidance.component';
+import { ExportugpgguidanceComponent } from './pages/ugpuguidancepage/exportugpgguidance/exportugpgguidance.component';
+import { PreviewmentorshipComponent } from './pages/mentorshippage/previewmentorship/previewmentorship.component';
+import { ExportmentorshipComponent } from './pages/mentorshippage/exportmentorship/exportmentorship.component';
+import { PreviewmonographComponent } from './pages/monographpage/previewmonograph/previewmonograph.component';
+import { ExportmonographComponent } from './pages/monographpage/exportmonograph/exportmonograph.component';
+import { PreviewpaperComponent } from './pages/paperpage/previewpaper/previewpaper.component';
+import { ExportpaperComponent } from './pages/paperpage/exportpaper/exportpaper.component';
+import { PreviewsciresearchComponent } from './pages/sciresearchpage/previewsciresearch/previewsciresearch.component';
+import { ExportsciresearchComponent } from './pages/sciresearchpage/exportsciresearch/exportsciresearch.component';
 
 export const routes: Routes = [
   {
@@ -55,7 +73,9 @@ export const routes: Routes = [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewpasswordComponent, title: 'Overview Password' },
           { path: 'edit/:id', component: EditpasswordComponent, title: 'Edit Password' },
-          { path: 'new', component: NewpasswordComponent, title: 'New Password' }
+          { path: 'new', component: NewpasswordComponent, title: 'New Password' },
+          { path: 'preview', component: PreviewpasswordComponent, title: 'Preview Password' },
+          { path: 'export', component: ExportpasswordComponent, title: 'Export Password' },
         ]
       },
       {
@@ -63,7 +83,9 @@ export const routes: Routes = [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewclassscheduleComponent, title: 'Overview Class Schedule' },
           { path: 'edit', component: EditclassscheduleComponent, title: 'Edit Class Schedule' },
-          { path: 'new', component: NewclassscheduleComponent, title: 'New Class Schedule' }
+          { path: 'new', component: NewclassscheduleComponent, title: 'New Class Schedule' },
+          { path: 'preview', component: PreviewclassscheduleComponent, title: 'Preview Class Schedule' },
+          { path: 'export', component: ExportclassscheduleComponent, title: 'Export Class Schedule' },
         ]
       },
       {
@@ -71,8 +93,9 @@ export const routes: Routes = [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewedureformComponent, title: 'Overview Education Reform' },
           { path: 'edit', component: EditedureformComponent, title: 'Edit Education Reform' },
-          { path: 'new', component: NewedureformComponent, title: 'New Education Reform' }
-
+          { path: 'new', component: NewedureformComponent, title: 'New Education Reform' },
+          { path: 'preview', component: PreviewedureformComponent, title: 'Preview Education Reform' },
+          { path: 'export', component: ExportedureformComponent, title: 'Export Education Reform' },
         ]
       },
       {
@@ -80,8 +103,9 @@ export const routes: Routes = [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewcompguidanceComponent, title: 'Overview Competition Guidance' },
           { path: 'edit', component: EditcompguidanceComponent, title: 'Edit Competition Guidance' },
-          { path: 'new', component: NewcompguidanceComponent, title: 'New Competition Guidance' }
-
+          { path: 'new', component: NewcompguidanceComponent, title: 'New Competition Guidance' },
+          { path: 'preview', component: PreviewcompguidanceComponent, title: 'Preview Competition Guidance' },
+          { path: 'export', component: ExportcompguidanceComponent, title: 'Export Competition Guidance' },
         ]
       },
       {
@@ -89,8 +113,9 @@ export const routes: Routes = [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewugpgguidanceComponent, title: 'Overview UG/PG Guidance' },
           { path: 'edit', component: EditugpgguidanceComponent, title: 'Edit UG/PG Guidance' },
-          { path: 'new', component: NewugpgguidanceComponent, title: 'New UG/PG Guidance' }
-
+          { path: 'new', component: NewugpgguidanceComponent, title: 'New UG/PG Guidance' },
+          { path: 'preview', component: PreviewugpgguidanceComponent, title: 'Preview UG/PG Guidance' },
+          { path: 'export', component: ExportugpgguidanceComponent, title: 'Export UG/PG Guidance' },
         ]
       },
       {
@@ -98,8 +123,9 @@ export const routes: Routes = [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewmentorshipComponent, title: 'Overview Mentorship' },
           { path: 'edit', component: EditmentorshipComponent, title: 'Edit Mentorship' },
-          { path: 'new', component: NewmentorshipComponent, title: 'New Mentorship' }
-
+          { path: 'new', component: NewmentorshipComponent, title: 'New Mentorship' },
+          { path: 'preview', component: PreviewmentorshipComponent, title: 'Preview Mentorship' },
+          { path: 'export', component: ExportmentorshipComponent, title: 'Export Mentorship' },
         ]
       },
       {
@@ -107,8 +133,9 @@ export const routes: Routes = [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewmonographComponent, title: 'Overview Monograph' },
           { path: 'edit', component: EditmonographComponent, title: 'Edit Monograph' },
-          { path: 'new', component: NewmonographComponent, title: 'New Monograph' }
-
+          { path: 'new', component: NewmonographComponent, title: 'New Monograph' },
+          { path: 'preview', component: PreviewmonographComponent, title: 'Preview Monograph' },
+          { path: 'export', component: ExportmonographComponent, title: 'Export Monograph' },
         ]
       },
       {
@@ -116,8 +143,9 @@ export const routes: Routes = [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewpaperComponent, title: 'Overview Paper' },
           { path: 'edit', component: EditpaperComponent, title: 'Edit Paper' },
-          { path: 'new', component: NewpaperComponent, title: 'New Paper' }
-
+          { path: 'new', component: NewpaperComponent, title: 'New Paper' },
+          { path: 'preview', component: PreviewpaperComponent, title: 'Preview Paper' },
+          { path: 'export', component: ExportpaperComponent, title: 'Export Paper' },
         ]
       },
       {
@@ -125,8 +153,9 @@ export const routes: Routes = [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewsciresearchComponent, title: 'Overview Scientific Research' },
           { path: 'edit', component: EditsciresearchComponent, title: 'Edit Scientific Research' },
-          { path: 'new', component: NewsciresearchComponent, title: 'New Scientific Research' }
-
+          { path: 'new', component: NewsciresearchComponent, title: 'New Scientific Research' },
+          { path: 'preview', component: PreviewsciresearchComponent, title: 'Preview Scientific Research' },
+          { path: 'export', component: ExportsciresearchComponent, title: 'Export Scientific Research' },
         ]
       },
     ],

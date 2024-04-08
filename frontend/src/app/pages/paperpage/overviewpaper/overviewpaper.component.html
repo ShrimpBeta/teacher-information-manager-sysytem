@@ -1,7 +1,7 @@
 <div class="container">
 
   <div class="title">
-    <h1>导师制</h1>
+    <h1>论文管理</h1>
     <div class="operation">
       <a mat-raised-button color="primary" routerLink="/main/mentorship/new">
         <mat-icon>add</mat-icon>
@@ -18,49 +18,84 @@
     <form [formGroup]="SearchForm" (ngSubmit)="onSearch()" class="filter-content">
       <div class="filter-box">
         <mat-form-field appearance="outline">
-          <mat-label>项目名称</mat-label>
-          <input matInput type="text" formControlName="projectName" placeholder="项目名称">
+          <mat-label>题目</mat-label>
+          <input matInput type="text" formControlName="title" placeholder="题目">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>学生姓名</mat-label>
-          <mat-chip-grid #chipGrid aria-label="Enter fruits">
-            @for(studentName of studentNames.controls;track $index) {
-            <mat-chip-row (removed)="removeStudentName($index)" [editable]="true"
-              (edited)="editStudentName( $event,$index)" aria-description="press enter to edit">
-              {{studentName.value}}
+          <mat-label>内部教师</mat-label>
+          <mat-chip-grid #chipGridTeachersIn aria-label="Fruit selection">
+            @for(teacherIn of teachersIn.controls;track $index) {
+            <mat-chip-row (removed)="removeTeachersIn($index)">
+              {{teacherIn.value.username}}
               <button matChipRemove aria-label="remove">
                 <mat-icon>cancel</mat-icon>
               </button>
             </mat-chip-row>
             }
-            <input placeholder="New StudentName..." [matChipInputFor]="chipGrid"
-              (matChipInputTokenEnd)="addStudentName($event)" />
+          </mat-chip-grid>
+          <input placeholder="New Tearcher..." #teacherInInput [formControl]="teachersInCtrl"
+            [matChipInputFor]="chipGridTeachersIn" [matAutocomplete]="auto"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="addTeachersIn($event)" />
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="teachersInSelected($event)">
+            @for(teacherInItem of teachersInOptions;track $index) {
+            <mat-option [value]="teacherInItem">
+              <div class="select-item">
+                <img [src]="teacherInItem.avatar" alt="Avatar" />
+                <div class="select-detail">
+                  <span>{{teacherInItem.username}}</span>
+                  <span>{{teacherInItem.email}}</span>
+                </div>
+              </div>
+            </mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>外部教师</mat-label>
+          <mat-chip-grid #chipGridTeachersOut aria-label="Enter fruits">
+            @for(teacherOut of teachersOut.controls;track $index) {
+            <mat-chip-row (removed)="removeTeachersOut($index)" [editable]="true"
+              (edited)="editTeachersOut($event,$index)" aria-description="press enter to edit">
+              {{teacherOut.value}}
+              <button matChipRemove aria-label="remove">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip-row>
+            }
+            <input placeholder="New Tearcher.." [matChipInputFor]="chipGridTeachersOut"
+              (matChipInputTokenEnd)="addTeachersOut($event)" />
           </mat-chip-grid>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>项目成绩</mat-label>
-          <input matInput type="text" formControlName="grade" placeholder="项目成绩">
+          <mat-label>排名</mat-label>
+          <input matInput type="text" formControlName="rank" placeholder="排名">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>项目名称</mat-label>
-          <input matInput type="text" formControlName="projectName" placeholder="项目名称">
+          <mat-label>期刊名称</mat-label>
+          <input matInput type="text" formControlName="journalName" placeholder="期刊名称">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>项目时间</mat-label>
-          <mat-date-range-input [rangePicker]="guidanceDatePicker">
-            <input matStartDate formControlName="guidanceDateStart" placeholder="Start date">
-            <input matEndDate formControlName="guidanceDateEnd" placeholder="End date">
+          <mat-label>期刊级别</mat-label>
+          <input matInput type="text" formControlName="journalLevel" placeholder="期刊级别">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>发表时间</mat-label>
+          <mat-date-range-input [rangePicker]="publishDatePicker">
+            <input matStartDate formControlName="publishDateStart" placeholder="Start date">
+            <input matEndDate formControlName="publishDateEnd" placeholder="End date">
           </mat-date-range-input>
-          <mat-datepicker-toggle matIconSuffix [for]="guidanceDatePicker"></mat-datepicker-toggle>
-          <mat-date-range-picker #guidanceDatePicker></mat-date-range-picker>
-          @if (SearchForm.controls['guidanceDateStart'].hasError('matStartDateInvalid')) {
+          <mat-datepicker-toggle matIconSuffix [for]="publishDatePicker"></mat-datepicker-toggle>
+          <mat-date-range-picker #publishDatePicker></mat-date-range-picker>
+          @if (SearchForm.controls['publishDateStart'].hasError('matStartDateInvalid')) {
           <mat-error>Invalid start date</mat-error>
           }
-          @if (SearchForm.controls['guidanceDateEnd'].hasError('matEndDateInvalid')) {
+          @if (SearchForm.controls['publishDateEnd'].hasError('matEndDateInvalid')) {
           <mat-error>Invalid end date</mat-error>
           }
         </mat-form-field>
@@ -107,6 +142,18 @@
     </form>
   </div>
 
+  <div class="fab-container">
+    <a mat-fab color="primary" aria-label="create password" routerLink="/main/paper/new">
+      <mat-icon>add</mat-icon>
+    </a>
+    <a mat-fab color="primary" aria-label="import password" routerLink="/main/paper/new">
+      <mat-icon>upload_2</mat-icon>
+    </a>
+    <a mat-fab color="primary" aria-label="export password" routerLink="/main/paper/export">
+      <mat-icon>download_2</mat-icon>
+    </a>
+  </div>
+
   <div class="search-result">
     <div class="sub-title">
       <h2>结果</h2>
@@ -116,4 +163,3 @@
   </div>
 
 </div>
-
