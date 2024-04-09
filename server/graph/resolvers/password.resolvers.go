@@ -64,11 +64,6 @@ func (r *mutationResolver) UploadPasswords(ctx context.Context, file graphql.Upl
 	panic(fmt.Errorf("not implemented: UploadPasswords - uploadPasswords"))
 }
 
-// CreatedPasswords is the resolver for the createdPasswords field.
-func (r *mutationResolver) CreatePasswords(ctx context.Context, passwordsData []*graphql_models.PasswordData) ([]*graphql_models.Password, error) {
-	panic(fmt.Errorf("not implemented: CreatedPasswords - createdPasswords"))
-}
-
 // PasswordTrue is the resolver for the passwordTrue field.
 func (r *queryResolver) PasswordTrue(ctx context.Context, id string) (*graphql_models.PasswordTrue, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)

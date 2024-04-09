@@ -49,11 +49,6 @@ func (r *mutationResolver) UploadMentorships(ctx context.Context, file graphql.U
 	panic(fmt.Errorf("not implemented: UploadMentorships - uploadMentorships"))
 }
 
-// CreatedMentorships is the resolver for the createdMentorships field.
-func (r *mutationResolver) CreateMentorships(ctx context.Context, mentorshipsData []*graphql_models.MentorshipData) ([]*graphql_models.Mentorship, error) {
-	panic(fmt.Errorf("not implemented: CreatedMentorships - createdMentorships"))
-}
-
 // Mentorship is the resolver for the mentorship field.
 func (r *queryResolver) Mentorship(ctx context.Context, id string) (*graphql_models.Mentorship, error) {
 	return r.MentorshipService.GetMentorshipById(id)

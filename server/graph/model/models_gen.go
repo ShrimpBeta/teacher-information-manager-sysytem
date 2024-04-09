@@ -456,7 +456,7 @@ type SciResearchFilter struct {
 	CreatedEnd        *time.Time `json:"createdEnd,omitempty"`
 	UpdatedStart      *time.Time `json:"updatedStart,omitempty"`
 	UpdatedEnd        *time.Time `json:"updatedEnd,omitempty"`
-	IsAward           bool       `json:"isAward"`
+	IsAward           *bool      `json:"isAward,omitempty"`
 	AwardName         *string    `json:"awardName,omitempty"`
 	AwardDateStart    *time.Time `json:"awardDateStart,omitempty"`
 	AwardDateEnd      *time.Time `json:"awardDateEnd,omitempty"`

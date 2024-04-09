@@ -53,5 +53,4 @@ extend type Mutation {
   deleteCompGuidance(id: ID!): CompGuidance!
 
   uploadCompGuidances(file: Upload!): [CompGuidancePreview]!
-  createCompGuidances(compGuidancesData: [CompGuidanceData]!): [CompGuidance]!
 }

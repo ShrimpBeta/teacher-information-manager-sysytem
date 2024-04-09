@@ -87,7 +87,7 @@ input SciResearchFilter {
   createdEnd: Time
   updatedStart: Time
   updatedEnd: Time
-  isAward: Boolean!
+  isAward: Boolean
   awardName: String
   awardDateStart: Time
   awardDateEnd: Time
@@ -112,19 +112,5 @@ extend type Mutation {
   ): SciResearch!
   deleteSciResearch(sciResearchId: ID!): SciResearch!
 
-  addAwardRecord(
-    sciResearchId: ID!
-    awardRecordData: AwardRecordData!
-  ): AwardRecord!
-  updateAwardRecord(
-    sciResearchId: ID!
-    awardRecordId: ID!
-    awardRecordData: AwardRecordData!
-  ): AwardRecord!
-  removeAwardRecord(sciResearchId: ID!, awardRecordId: ID!): AwardRecord!
-
   uploadSciResearchs(file: Upload!): SciResearchPreview!
-  createSciResearchs(
-    sciResearchsData: [SciResearchData]!
-  ): [SciResearch!]!
 }

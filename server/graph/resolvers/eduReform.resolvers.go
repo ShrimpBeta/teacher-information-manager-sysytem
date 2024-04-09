@@ -32,11 +32,6 @@ func (r *mutationResolver) UploadEduReforms(ctx context.Context, file graphql.Up
 	panic(fmt.Errorf("not implemented: UploadEduReforms - uploadEduReforms"))
 }
 
-// CreatedEduReforms is the resolver for the createdEduReforms field.
-func (r *mutationResolver) CreateEduReforms(ctx context.Context, eduReformsData []*graphql_models.EduReformData) ([]*graphql_models.EduReform, error) {
-	panic(fmt.Errorf("not implemented: CreatedEduReforms - createdEduReforms"))
-}
-
 // EduReform is the resolver for the eduReform field.
 func (r *queryResolver) EduReform(ctx context.Context, id string) (*graphql_models.EduReform, error) {
 	panic(fmt.Errorf("not implemented: EduReform - eduReform"))

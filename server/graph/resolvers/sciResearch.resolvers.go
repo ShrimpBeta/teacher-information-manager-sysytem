@@ -27,29 +27,9 @@ func (r *mutationResolver) DeleteSciResearch(ctx context.Context, sciResearchID 
 	panic(fmt.Errorf("not implemented: DeleteSciResearch - deleteSciResearch"))
 }
 
-// AddAwardRecord is the resolver for the addAwardRecord field.
-func (r *mutationResolver) AddAwardRecord(ctx context.Context, sciResearchID string, awardRecordData graphql_models.AwardRecordData) (*graphql_models.AwardRecord, error) {
-	panic(fmt.Errorf("not implemented: AddAwardRecord - addAwardRecord"))
-}
-
-// UpdateAwardRecord is the resolver for the updateAwardRecord field.
-func (r *mutationResolver) UpdateAwardRecord(ctx context.Context, sciResearchID string, awardRecordID string, awardRecordData graphql_models.AwardRecordData) (*graphql_models.AwardRecord, error) {
-	panic(fmt.Errorf("not implemented: UpdateAwardRecord - updateAwardRecord"))
-}
-
-// RemoveAwardRecord is the resolver for the removeAwardRecord field.
-func (r *mutationResolver) RemoveAwardRecord(ctx context.Context, sciResearchID string, awardRecordID string) (*graphql_models.AwardRecord, error) {
-	panic(fmt.Errorf("not implemented: RemoveAwardRecord - removeAwardRecord"))
-}
-
 // UploadSciResearchs is the resolver for the uploadSciResearchs field.
 func (r *mutationResolver) UploadSciResearchs(ctx context.Context, file graphql.Upload) (*graphql_models.SciResearchPreview, error) {
 	panic(fmt.Errorf("not implemented: UploadSciResearchs - uploadSciResearchs"))
-}
-
-// CreatedSciResearchs is the resolver for the createdSciResearchs field.
-func (r *mutationResolver) CreateSciResearchs(ctx context.Context, sciResearchsData []*graphql_models.SciResearchData) ([]*graphql_models.SciResearch, error) {
-	panic(fmt.Errorf("not implemented: CreatedSciResearchs - createdSciResearchs"))
 }
 
 // SciResearch is the resolver for the sciResearch field.

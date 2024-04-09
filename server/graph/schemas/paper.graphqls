@@ -59,5 +59,4 @@ extend type Mutation {
   deletePaper(id: ID!): Paper!
 
   uploadPapers(file: Upload!): [PaperPreview]!
-  createPapers(papersData: [PaperData]!): [Paper]!
 }

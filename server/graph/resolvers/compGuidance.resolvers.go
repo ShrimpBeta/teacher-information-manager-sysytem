@@ -48,11 +48,6 @@ func (r *mutationResolver) UploadCompGuidances(ctx context.Context, file graphql
 	panic(fmt.Errorf("not implemented: UploadCompGuidances - uploadCompGuidances"))
 }
 
-// CreateCompGuidances is the resolver for the createCompGuidances field.
-func (r *mutationResolver) CreateCompGuidances(ctx context.Context, compGuidancesData []*graphql_models.CompGuidanceData) ([]*graphql_models.CompGuidance, error) {
-	panic(fmt.Errorf("not implemented: CreateCompGuidances - createCompGuidances"))
-}
-
 // CompGuidance is the resolver for the compGuidance field.
 func (r *queryResolver) CompGuidance(ctx context.Context, id string) (*graphql_models.CompGuidance, error) {
 	return r.CompGuidanceService.GetCompGuidanceById(id)

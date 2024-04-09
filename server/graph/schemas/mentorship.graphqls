@@ -46,5 +46,4 @@ extend type Mutation {
   deleteMentorship(id: ID!): Mentorship!
 
   uploadMentorships(file: Upload!): [MentorshipPreview]!
-  createMentorships(mentorshipsData: [MentorshipData]!): [Mentorship]!
 }

@@ -70,5 +70,4 @@ extend type Mutation {
   deleteEduReform(id: ID!): EduReform!
 
   uploadEduReforms(file: Upload!): [EduReformPreview]!
-  createEduReforms(eduReformsData: [EduReformData]!): [EduReform]!
 }

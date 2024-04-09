@@ -55,5 +55,4 @@ extend type Mutation {
   deleteMonograph(id: ID!): Monograph!
 
   uploadMonographs(file: Upload!): [MonographPreview]!
-  createMonographs(monographsData: [MonographData]!): [Monograph]!
 }

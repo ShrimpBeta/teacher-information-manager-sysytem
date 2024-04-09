@@ -32,11 +32,6 @@ func (r *mutationResolver) UploadMonographs(ctx context.Context, file graphql.Up
 	panic(fmt.Errorf("not implemented: UploadMonographs - uploadMonographs"))
 }
 
-// CreatedMonographs is the resolver for the createdMonographs field.
-func (r *mutationResolver) CreateMonographs(ctx context.Context, monographsData []*graphql_models.MonographData) ([]*graphql_models.Monograph, error) {
-	panic(fmt.Errorf("not implemented: CreatedMonographs - createdMonographs"))
-}
-
 // Monograph is the resolver for the monograph field.
 func (r *queryResolver) Monograph(ctx context.Context, id string) (*graphql_models.Monograph, error) {
 	panic(fmt.Errorf("not implemented: Monograph - monograph"))
@@ -45,17 +40,4 @@ func (r *queryResolver) Monograph(ctx context.Context, id string) (*graphql_mode
 // MonographsByFilter is the resolver for the monographsByFilter field.
 func (r *queryResolver) MonographsByFilter(ctx context.Context, filter graphql_models.MonographFilter) ([]*graphql_models.Monograph, error) {
 	panic(fmt.Errorf("not implemented: MonographsByFilter - monographsByFilter"))
-}
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *queryResolver) Monographs(ctx context.Context, userID string) ([]*graphql_models.Monograph, error) {
-	panic(fmt.Errorf("not implemented: Monographs - monographs"))
-}
-func (r *queryResolver) MonographsByName(ctx context.Context, name string) ([]*graphql_models.Mentorship, error) {
-	panic(fmt.Errorf("not implemented: MonographsByName - monographsByName"))
 }

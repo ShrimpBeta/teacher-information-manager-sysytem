@@ -60,5 +60,4 @@ extend type Mutation {
   deleteUGPGGuidance(id: ID!): UGPGGuidance!
 
   uploadUGPGGuidances(file: Upload!): [UGPGGuidancePreview]!
-  createUGPGGuidances(uGPGGuidancesData: [UGPGGuidanceData!]!): [UGPGGuidance!]!
 }

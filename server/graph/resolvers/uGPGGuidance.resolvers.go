@@ -32,11 +32,6 @@ func (r *mutationResolver) UploadUGPGGuidances(ctx context.Context, file graphql
 	panic(fmt.Errorf("not implemented: UploadUGPGGuidances - uploadUGPGGuidances"))
 }
 
-// CreateUPGuidances is the resolver for the createUPGuidances field.
-func (r *mutationResolver) CreateUGPGGuidances(ctx context.Context, uGPGGuidancesData []*graphql_models.UGPGGuidanceData) ([]*graphql_models.UGPGGuidance, error) {
-	panic(fmt.Errorf("not implemented: CreateUPGuidances - createUPGuidances"))
-}
-
 // UGPGGuidance is the resolver for the uGPGGuidance field.
 func (r *queryResolver) UGPGGuidance(ctx context.Context, id string) (*graphql_models.UGPGGuidance, error) {
 	panic(fmt.Errorf("not implemented: UGPGGuidance - uGPGGuidance"))

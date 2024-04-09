@@ -32,11 +32,6 @@ func (r *mutationResolver) UploadPapers(ctx context.Context, file graphql.Upload
 	panic(fmt.Errorf("not implemented: UploadPapers - uploadPapers"))
 }
 
-// CreatePapers is the resolver for the createPapers field.
-func (r *mutationResolver) CreatePapers(ctx context.Context, papersData []*graphql_models.PaperData) ([]*graphql_models.Paper, error) {
-	panic(fmt.Errorf("not implemented: CreatePapers - createPapers"))
-}
-
 // Paper is the resolver for the paper field.
 func (r *queryResolver) Paper(ctx context.Context, id string) (*graphql_models.Paper, error) {
 	return r.PaperService.GetPaperById(id, r.UserService.Repo)
