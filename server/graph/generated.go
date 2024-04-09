@@ -314,22 +314,23 @@ type ComplexityRoot struct {
 
 	Query struct {
 		AcademicTerm          func(childComplexity int, id string) int
-		AcademicTerms         func(childComplexity int, userID string) int
+		AcademicTerms         func(childComplexity int) int
 		AdminSignIn           func(childComplexity int, adminSignInInput *graphql_models.AdminSignInInput) int
 		CompGuidance          func(childComplexity int, id string) int
 		CompGuidancesByFilter func(childComplexity int, filter graphql_models.CompGuidanceFilter) int
 		EduReform             func(childComplexity int, id string) int
 		EduReformsByFilter    func(childComplexity int, filter graphql_models.EduReformFilter) int
 		Mentorship            func(childComplexity int, id string) int
-		MentorshipsByFilter   func(childComplexity int, filter *graphql_models.MentorshipFilter) int
+		MentorshipsByFilter   func(childComplexity int, filter graphql_models.MentorshipFilter) int
 		Monograph             func(childComplexity int, id string) int
 		MonographsByFilter    func(childComplexity int, filter graphql_models.MonographFilter) int
 		Paper                 func(childComplexity int, id string) int
-		PapersByFilter        func(childComplexity int, filter *graphql_models.PaperFilter) int
+		PapersByFilter        func(childComplexity int, filter graphql_models.PaperFilter) int
 		PasswordTrue          func(childComplexity int, id string) int
+		PasswordTrueByFilter  func(childComplexity int, filter graphql_models.PasswordFilter) int
 		PasswordsByFilter     func(childComplexity int, filter graphql_models.PasswordFilter) int
 		SciResearch           func(childComplexity int, id string) int
-		SciResearchsByFilter  func(childComplexity int, filter *graphql_models.SciResearchFilter) int
+		SciResearchsByFilter  func(childComplexity int, filter graphql_models.SciResearchFilter) int
 		UGPGGuidance          func(childComplexity int, id string) int
 		UGPGGuidancesByFilter func(childComplexity int, filter graphql_models.UGPGGuidanceFilter) int
 		User                  func(childComplexity int, id string) int
@@ -479,21 +480,22 @@ type MutationResolver interface {
 type QueryResolver interface {
 	AdminSignIn(ctx context.Context, adminSignInInput *graphql_models.AdminSignInInput) (*graphql_models.AuthPayload, error)
 	AcademicTerm(ctx context.Context, id string) (*graphql_models.AcademicTerm, error)
-	AcademicTerms(ctx context.Context, userID string) ([]*graphql_models.AcademicTermShort, error)
+	AcademicTerms(ctx context.Context) ([]*graphql_models.AcademicTermShort, error)
 	CompGuidance(ctx context.Context, id string) (*graphql_models.CompGuidance, error)
 	CompGuidancesByFilter(ctx context.Context, filter graphql_models.CompGuidanceFilter) ([]*graphql_models.CompGuidance, error)
 	EduReform(ctx context.Context, id string) (*graphql_models.EduReform, error)
 	EduReformsByFilter(ctx context.Context, filter graphql_models.EduReformFilter) ([]*graphql_models.EduReform, error)
 	Mentorship(ctx context.Context, id string) (*graphql_models.Mentorship, error)
-	MentorshipsByFilter(ctx context.Context, filter *graphql_models.MentorshipFilter) ([]*graphql_models.Mentorship, error)
+	MentorshipsByFilter(ctx context.Context, filter graphql_models.MentorshipFilter) ([]*graphql_models.Mentorship, error)
 	Monograph(ctx context.Context, id string) (*graphql_models.Monograph, error)
 	MonographsByFilter(ctx context.Context, filter graphql_models.MonographFilter) ([]*graphql_models.Monograph, error)
 	Paper(ctx context.Context, id string) (*graphql_models.Paper, error)
-	PapersByFilter(ctx context.Context, filter *graphql_models.PaperFilter) ([]*graphql_models.Paper, error)
+	PapersByFilter(ctx context.Context, filter graphql_models.PaperFilter) ([]*graphql_models.Paper, error)
 	PasswordTrue(ctx context.Context, id string) (*graphql_models.PasswordTrue, error)
 	PasswordsByFilter(ctx context.Context, filter graphql_models.PasswordFilter) ([]*graphql_models.Password, error)
+	PasswordTrueByFilter(ctx context.Context, filter graphql_models.PasswordFilter) ([]*graphql_models.PasswordTrue, error)
 	SciResearch(ctx context.Context, id string) (*graphql_models.SciResearch, error)
-	SciResearchsByFilter(ctx context.Context, filter *graphql_models.SciResearchFilter) ([]*graphql_models.SciResearch, error)
+	SciResearchsByFilter(ctx context.Context, filter graphql_models.SciResearchFilter) ([]*graphql_models.SciResearch, error)
 	UGPGGuidance(ctx context.Context, id string) (*graphql_models.UGPGGuidance, error)
 	UGPGGuidancesByFilter(ctx context.Context, filter graphql_models.UGPGGuidanceFilter) ([]*graphql_models.UGPGGuidance, error)
 	User(ctx context.Context, id string) (*graphql_models.User, error)
@@ -2125,12 +2127,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		args, err := ec.field_Query_academicTerms_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.AcademicTerms(childComplexity, args["userId"].(string)), true
+		return e.complexity.Query.AcademicTerms(childComplexity), true
 
 	case "Query.adminSignIn":
 		if e.complexity.Query.AdminSignIn == nil {
@@ -2214,7 +2211,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.MentorshipsByFilter(childComplexity, args["filter"].(*graphql_models.MentorshipFilter)), true
+		return e.complexity.Query.MentorshipsByFilter(childComplexity, args["filter"].(graphql_models.MentorshipFilter)), true
 
 	case "Query.monograph":
 		if e.complexity.Query.Monograph == nil {
@@ -2262,7 +2259,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.PapersByFilter(childComplexity, args["filter"].(*graphql_models.PaperFilter)), true
+		return e.complexity.Query.PapersByFilter(childComplexity, args["filter"].(graphql_models.PaperFilter)), true
 
 	case "Query.passwordTrue":
 		if e.complexity.Query.PasswordTrue == nil {
@@ -2275,6 +2272,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.PasswordTrue(childComplexity, args["id"].(string)), true
+
+	case "Query.passwordTrueByFilter":
+		if e.complexity.Query.PasswordTrueByFilter == nil {
+			break
+		}
+
+		args, err := ec.field_Query_passwordTrueByFilter_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.PasswordTrueByFilter(childComplexity, args["filter"].(graphql_models.PasswordFilter)), true
 
 	case "Query.passwordsByFilter":
 		if e.complexity.Query.PasswordsByFilter == nil {
@@ -2310,7 +2319,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.SciResearchsByFilter(childComplexity, args["filter"].(*graphql_models.SciResearchFilter)), true
+		return e.complexity.Query.SciResearchsByFilter(childComplexity, args["filter"].(graphql_models.SciResearchFilter)), true
 
 	case "Query.uGPGGuidance":
 		if e.complexity.Query.UGPGGuidance == nil {
@@ -3884,21 +3893,6 @@ func (ec *executionContext) field_Query_academicTerm_args(ctx context.Context, r
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_academicTerms_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["userId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["userId"] = arg0
-	return args, nil
-}
-
 func (ec *executionContext) field_Query_adminSignIn_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -3992,10 +3986,10 @@ func (ec *executionContext) field_Query_mentorship_args(ctx context.Context, raw
 func (ec *executionContext) field_Query_mentorshipsByFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *graphql_models.MentorshipFilter
+	var arg0 graphql_models.MentorshipFilter
 	if tmp, ok := rawArgs["filter"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
-		arg0, err = ec.unmarshalOMentorshipFilter2ᚖserverᚋgraphᚋmodelᚐMentorshipFilter(ctx, tmp)
+		arg0, err = ec.unmarshalNMentorshipFilter2serverᚋgraphᚋmodelᚐMentorshipFilter(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4052,10 +4046,25 @@ func (ec *executionContext) field_Query_paper_args(ctx context.Context, rawArgs 
 func (ec *executionContext) field_Query_papersByFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *graphql_models.PaperFilter
+	var arg0 graphql_models.PaperFilter
 	if tmp, ok := rawArgs["filter"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
-		arg0, err = ec.unmarshalOPaperFilter2ᚖserverᚋgraphᚋmodelᚐPaperFilter(ctx, tmp)
+		arg0, err = ec.unmarshalNPaperFilter2serverᚋgraphᚋmodelᚐPaperFilter(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_passwordTrueByFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 graphql_models.PasswordFilter
+	if tmp, ok := rawArgs["filter"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
+		arg0, err = ec.unmarshalNPasswordFilter2serverᚋgraphᚋmodelᚐPasswordFilter(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -4112,10 +4121,10 @@ func (ec *executionContext) field_Query_sciResearch_args(ctx context.Context, ra
 func (ec *executionContext) field_Query_sciResearchsByFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *graphql_models.SciResearchFilter
+	var arg0 graphql_models.SciResearchFilter
 	if tmp, ok := rawArgs["filter"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
-		arg0, err = ec.unmarshalOSciResearchFilter2ᚖserverᚋgraphᚋmodelᚐSciResearchFilter(ctx, tmp)
+		arg0, err = ec.unmarshalNSciResearchFilter2serverᚋgraphᚋmodelᚐSciResearchFilter(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -14013,7 +14022,7 @@ func (ec *executionContext) _Query_academicTerms(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().AcademicTerms(rctx, fc.Args["userId"].(string))
+		return ec.resolvers.Query().AcademicTerms(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -14049,17 +14058,6 @@ func (ec *executionContext) fieldContext_Query_academicTerms(ctx context.Context
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AcademicTermShort", field.Name)
 		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_academicTerms_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
 	}
 	return fc, nil
 }
@@ -14461,7 +14459,7 @@ func (ec *executionContext) _Query_mentorshipsByFilter(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MentorshipsByFilter(rctx, fc.Args["filter"].(*graphql_models.MentorshipFilter))
+		return ec.resolvers.Query().MentorshipsByFilter(rctx, fc.Args["filter"].(graphql_models.MentorshipFilter))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -14759,7 +14757,7 @@ func (ec *executionContext) _Query_papersByFilter(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().PapersByFilter(rctx, fc.Args["filter"].(*graphql_models.PaperFilter))
+		return ec.resolvers.Query().PapersByFilter(rctx, fc.Args["filter"].(graphql_models.PaperFilter))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -14966,6 +14964,79 @@ func (ec *executionContext) fieldContext_Query_passwordsByFilter(ctx context.Con
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_passwordTrueByFilter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_passwordTrueByFilter(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().PasswordTrueByFilter(rctx, fc.Args["filter"].(graphql_models.PasswordFilter))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*graphql_models.PasswordTrue)
+	fc.Result = res
+	return ec.marshalNPasswordTrue2ᚕᚖserverᚋgraphᚋmodelᚐPasswordTrue(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_passwordTrueByFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_PasswordTrue_id(ctx, field)
+			case "url":
+				return ec.fieldContext_PasswordTrue_url(ctx, field)
+			case "appName":
+				return ec.fieldContext_PasswordTrue_appName(ctx, field)
+			case "account":
+				return ec.fieldContext_PasswordTrue_account(ctx, field)
+			case "password":
+				return ec.fieldContext_PasswordTrue_password(ctx, field)
+			case "description":
+				return ec.fieldContext_PasswordTrue_description(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_PasswordTrue_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_PasswordTrue_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type PasswordTrue", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_passwordTrueByFilter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query_sciResearch(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_sciResearch(ctx, field)
 	if err != nil {
@@ -15067,7 +15138,7 @@ func (ec *executionContext) _Query_sciResearchsByFilter(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().SciResearchsByFilter(rctx, fc.Args["filter"].(*graphql_models.SciResearchFilter))
+		return ec.resolvers.Query().SciResearchsByFilter(rctx, fc.Args["filter"].(graphql_models.SciResearchFilter))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -23964,6 +24035,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "passwordTrueByFilter":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_passwordTrueByFilter(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "sciResearch":
 			field := field
 
@@ -25482,6 +25575,11 @@ func (ec *executionContext) unmarshalNMentorshipData2serverᚋgraphᚋmodelᚐMe
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNMentorshipFilter2serverᚋgraphᚋmodelᚐMentorshipFilter(ctx context.Context, v interface{}) (graphql_models.MentorshipFilter, error) {
+	res, err := ec.unmarshalInputMentorshipFilter(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNMentorshipPreview2ᚕᚖserverᚋgraphᚋmodelᚐMentorshipPreview(ctx context.Context, sel ast.SelectionSet, v []*graphql_models.MentorshipPreview) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -25687,6 +25785,11 @@ func (ec *executionContext) unmarshalNPaperData2serverᚋgraphᚋmodelᚐPaperDa
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNPaperFilter2serverᚋgraphᚋmodelᚐPaperFilter(ctx context.Context, v interface{}) (graphql_models.PaperFilter, error) {
+	res, err := ec.unmarshalInputPaperFilter(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNPaperPreview2ᚕᚖserverᚋgraphᚋmodelᚐPaperPreview(ctx context.Context, sel ast.SelectionSet, v []*graphql_models.PaperPreview) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
@@ -25829,6 +25932,44 @@ func (ec *executionContext) marshalNPasswordTrue2serverᚋgraphᚋmodelᚐPasswo
 	return ec._PasswordTrue(ctx, sel, &v)
 }
 
+func (ec *executionContext) marshalNPasswordTrue2ᚕᚖserverᚋgraphᚋmodelᚐPasswordTrue(ctx context.Context, sel ast.SelectionSet, v []*graphql_models.PasswordTrue) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOPasswordTrue2ᚖserverᚋgraphᚋmodelᚐPasswordTrue(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
+}
+
 func (ec *executionContext) marshalNPasswordTrue2ᚖserverᚋgraphᚋmodelᚐPasswordTrue(ctx context.Context, sel ast.SelectionSet, v *graphql_models.PasswordTrue) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
@@ -25904,6 +26045,11 @@ func (ec *executionContext) marshalNSciResearch2ᚖserverᚋgraphᚋmodelᚐSciR
 
 func (ec *executionContext) unmarshalNSciResearchData2serverᚋgraphᚋmodelᚐSciResearchData(ctx context.Context, v interface{}) (graphql_models.SciResearchData, error) {
 	res, err := ec.unmarshalInputSciResearchData(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNSciResearchFilter2serverᚋgraphᚋmodelᚐSciResearchFilter(ctx context.Context, v interface{}) (graphql_models.SciResearchFilter, error) {
+	res, err := ec.unmarshalInputSciResearchFilter(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -26808,14 +26954,6 @@ func (ec *executionContext) marshalOMentorship2ᚖserverᚋgraphᚋmodelᚐMento
 	return ec._Mentorship(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOMentorshipFilter2ᚖserverᚋgraphᚋmodelᚐMentorshipFilter(ctx context.Context, v interface{}) (*graphql_models.MentorshipFilter, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputMentorshipFilter(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) marshalOMentorshipPreview2ᚖserverᚋgraphᚋmodelᚐMentorshipPreview(ctx context.Context, sel ast.SelectionSet, v *graphql_models.MentorshipPreview) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -26844,14 +26982,6 @@ func (ec *executionContext) marshalOPaper2ᚖserverᚋgraphᚋmodelᚐPaper(ctx 
 	return ec._Paper(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOPaperFilter2ᚖserverᚋgraphᚋmodelᚐPaperFilter(ctx context.Context, v interface{}) (*graphql_models.PaperFilter, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputPaperFilter(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) marshalOPaperPreview2ᚖserverᚋgraphᚋmodelᚐPaperPreview(ctx context.Context, sel ast.SelectionSet, v *graphql_models.PaperPreview) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -26873,12 +27003,11 @@ func (ec *executionContext) marshalOPasswordPreview2ᚖserverᚋgraphᚋmodelᚐ
 	return ec._PasswordPreview(ctx, sel, v)
 }
 
-func (ec *executionContext) unmarshalOSciResearchFilter2ᚖserverᚋgraphᚋmodelᚐSciResearchFilter(ctx context.Context, v interface{}) (*graphql_models.SciResearchFilter, error) {
+func (ec *executionContext) marshalOPasswordTrue2ᚖserverᚋgraphᚋmodelᚐPasswordTrue(ctx context.Context, sel ast.SelectionSet, v *graphql_models.PasswordTrue) graphql.Marshaler {
 	if v == nil {
-		return nil, nil
+		return graphql.Null
 	}
-	res, err := ec.unmarshalInputSciResearchFilter(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
+	return ec._PasswordTrue(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {

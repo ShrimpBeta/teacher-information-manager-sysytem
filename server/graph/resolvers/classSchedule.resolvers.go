@@ -8,51 +8,161 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
+	"server/middlewares"
 
 	"github.com/99designs/gqlgen/graphql"
 )
 
 // CreateCourse is the resolver for the createCourse field.
 func (r *mutationResolver) CreateCourse(ctx context.Context, termID string, courseData graphql_models.CourseData) (*graphql_models.Course, error) {
-	panic(fmt.Errorf("not implemented: CreateCourse - createCourse"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if no token found, return an error
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.ClassScheduleService.CreateCourese(termID, courseData)
 }
 
 // UpdateCourse is the resolver for the updateCourse field.
 func (r *mutationResolver) UpdateCourse(ctx context.Context, termID string, courseID string, courseData graphql_models.CourseData) (*graphql_models.Course, error) {
-	panic(fmt.Errorf("not implemented: UpdateCourse - updateCourse"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if no token found, return an error
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.ClassScheduleService.UpdateCourse(termID, courseID, courseData)
 }
 
 // DeleteCourse is the resolver for the deleteCourse field.
 func (r *mutationResolver) DeleteCourse(ctx context.Context, termID string, courseID string) (*graphql_models.Course, error) {
-	panic(fmt.Errorf("not implemented: DeleteCourse - deleteCourse"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if no token found, return an error
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.ClassScheduleService.DeleteCourse(termID, courseID)
 }
 
 // CreateacademicTerm is the resolver for the createacademicTerm field.
 func (r *mutationResolver) CreateAcademicTerm(ctx context.Context, termData graphql_models.NewAcademicTerm) (*graphql_models.AcademicTerm, error) {
-	panic(fmt.Errorf("not implemented: CreateacademicTerm - createacademicTerm"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.ClassScheduleService.CreateAcademicTerm(user.ID, termData)
 }
 
 // UpdateacademicTerm is the resolver for the updateacademicTerm field.
 func (r *mutationResolver) UpdateAcademicTerm(ctx context.Context, termID string, termData graphql_models.UpdateAcademicTerm) (*graphql_models.AcademicTerm, error) {
-	panic(fmt.Errorf("not implemented: UpdateacademicTerm - updateacademicTerm"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if no token found, return an error
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.ClassScheduleService.UpdateAcademicTerm(termID, termData)
 }
 
 // DeleteacademicTerm is the resolver for the deleteacademicTerm field.
 func (r *mutationResolver) DeleteAcademicTerm(ctx context.Context, termID string) (*graphql_models.AcademicTerm, error) {
-	panic(fmt.Errorf("not implemented: DeleteacademicTerm - deleteacademicTerm"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if no token found, return an error
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.ClassScheduleService.DeleteAcademicTerm(termID)
 }
 
 // UploadAcademicTerm is the resolver for the uploadAcademicTerm field.
 func (r *mutationResolver) UploadAcademicTerm(ctx context.Context, file graphql.Upload) (*graphql_models.AcademicTermPreview, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if no token found, return an error
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	panic(fmt.Errorf("not implemented: UploadAcademicTerm - uploadAcademicTerm"))
 }
 
 // AcademicTerm is the resolver for the academicTerm field.
 func (r *queryResolver) AcademicTerm(ctx context.Context, id string) (*graphql_models.AcademicTerm, error) {
-	panic(fmt.Errorf("not implemented: AcademicTerm - academicTerm"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if no token found, return an error
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.ClassScheduleService.GetAcademicTermById(id)
 }
 
 // Academicerms is the resolver for the academicerms field.
-func (r *queryResolver) AcademicTerms(ctx context.Context, userID string) ([]*graphql_models.AcademicTermShort, error) {
-	panic(fmt.Errorf("not implemented: Academicerms - academicerms"))
+func (r *queryResolver) AcademicTerms(ctx context.Context) ([]*graphql_models.AcademicTermShort, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.ClassScheduleService.GetAcademicTerms(user.ID)
 }

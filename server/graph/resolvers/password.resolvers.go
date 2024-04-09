@@ -26,7 +26,6 @@ func (r *mutationResolver) CreatePassword(ctx context.Context, passwordData grap
 	}
 
 	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
-
 	if err != nil {
 		return nil, err
 	}
@@ -56,11 +55,31 @@ func (r *mutationResolver) UpdatePassword(ctx context.Context, id string, passwo
 
 // DeletePassword is the resolver for the deletePassword field.
 func (r *mutationResolver) DeletePassword(ctx context.Context, id string) (*graphql_models.Password, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	return r.PasswordService.DeletePassword(id)
 }
 
 // UploadPasswords is the resolver for the uploadPasswords field.
 func (r *mutationResolver) UploadPasswords(ctx context.Context, file graphql.Upload) ([]*graphql_models.PasswordPreview, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	panic(fmt.Errorf("not implemented: UploadPasswords - uploadPasswords"))
 }
 
@@ -98,10 +117,14 @@ func (r *queryResolver) PasswordsByFilter(ctx context.Context, filter graphql_mo
 	}
 
 	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
-
 	if err != nil {
 		return nil, err
 	}
 
 	return r.PasswordService.GetPasswordsByFilter(user.ID, filter)
+}
+
+// PasswordTrueByFilter is the resolver for the passwordTrueByFilter field.
+func (r *queryResolver) PasswordTrueByFilter(ctx context.Context, filter graphql_models.PasswordFilter) ([]*graphql_models.PasswordTrue, error) {
+	panic(fmt.Errorf("not implemented: PasswordTrueByFilter - passwordTrueByFilter"))
 }

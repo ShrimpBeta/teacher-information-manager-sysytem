@@ -85,7 +85,7 @@ extend type Query {
   academicTerm(id: ID!): AcademicTerm!
 
   # 查看用户所有学期
-  academicTerms(userId: ID!): [AcademicTermShort]!
+  academicTerms: [AcademicTermShort]!
 }
 
 extend type Mutation {

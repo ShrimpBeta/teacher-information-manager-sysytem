@@ -50,7 +50,7 @@ input PaperFilter {
 extend type Query {
   paper(id: ID!): Paper!
 
-  papersByFilter(filter: PaperFilter): [Paper]!
+  papersByFilter(filter: PaperFilter!): [Paper]!
 }
 
 extend type Mutation {

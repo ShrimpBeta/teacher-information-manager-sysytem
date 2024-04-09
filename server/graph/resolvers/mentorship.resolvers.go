@@ -26,7 +26,6 @@ func (r *mutationResolver) CreateMentorship(ctx context.Context, mentorshipData 
 	}
 
 	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
-
 	if err != nil {
 		return nil, err
 	}
@@ -36,25 +35,80 @@ func (r *mutationResolver) CreateMentorship(ctx context.Context, mentorshipData 
 
 // UpdateMentorship is the resolver for the updateMentorship field.
 func (r *mutationResolver) UpdateMentorship(ctx context.Context, id string, mentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	return r.MentorshipService.UpdateMentorship(id, mentorshipData)
 }
 
 // DeleteMentorship is the resolver for the deleteMentorship field.
 func (r *mutationResolver) DeleteMentorship(ctx context.Context, id string) (*graphql_models.Mentorship, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	return r.MentorshipService.DeleteMentorship(id)
 }
 
 // UploadMentorships is the resolver for the uploadMentorships field.
 func (r *mutationResolver) UploadMentorships(ctx context.Context, file graphql.Upload) ([]*graphql_models.MentorshipPreview, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	panic(fmt.Errorf("not implemented: UploadMentorships - uploadMentorships"))
 }
 
 // Mentorship is the resolver for the mentorship field.
 func (r *queryResolver) Mentorship(ctx context.Context, id string) (*graphql_models.Mentorship, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	return r.MentorshipService.GetMentorshipById(id)
 }
 
 // MentorshipsByFilter is the resolver for the mentorshipsByFilter field.
-func (r *queryResolver) MentorshipsByFilter(ctx context.Context, filter *graphql_models.MentorshipFilter) ([]*graphql_models.Mentorship, error) {
-	panic(fmt.Errorf("not implemented: MentorshipsByFilter - mentorshipsByFilter"))
+func (r *queryResolver) MentorshipsByFilter(ctx context.Context, filter graphql_models.MentorshipFilter) ([]*graphql_models.Mentorship, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.MentorshipService.GetMentorshipsByFilter(user.ID, filter)
 }

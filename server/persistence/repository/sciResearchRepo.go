@@ -35,26 +35,26 @@ type SciResearchQueryParams struct {
 	TeachersOut       []*string
 	Number            *string
 	Title             *string
-	StartDateStart    *primitive.DateTime
-	StartDateEnd      *primitive.DateTime
+	StartDateStart    *time.Time
+	StartDateEnd      *time.Time
 	Level             *string
 	Rank              *string
 	Achievement       *string
 	Fund              *string
-	CreatedStart      *primitive.DateTime
-	CreatedEnd        *primitive.DateTime
-	UpdatedStart      *primitive.DateTime
-	UpdatedEnd        *primitive.DateTime
+	CreatedStart      *time.Time
+	CreatedEnd        *time.Time
+	UpdatedStart      *time.Time
+	UpdatedEnd        *time.Time
 	IsAward           bool
 	AwardName         *string
-	AwardDateStart    *primitive.DateTime
-	AwardDateEnd      *primitive.DateTime
+	AwardDateStart    *time.Time
+	AwardDateEnd      *time.Time
 	AwardLevel        *string
 	AwardRank         *string
-	AwardCreatedStart *primitive.DateTime
-	AwardCreatedEnd   *primitive.DateTime
-	AwardUpdatedStart *primitive.DateTime
-	AwardUpdatedEnd   *primitive.DateTime
+	AwardCreatedStart *time.Time
+	AwardCreatedEnd   *time.Time
+	AwardUpdatedStart *time.Time
+	AwardUpdatedEnd   *time.Time
 }
 
 func (r *SciResearchRepo) GetSciResearchById(id primitive.ObjectID) (*models.SciResearch, error) {
@@ -96,10 +96,12 @@ func (r *SciResearchRepo) GetSciResearchsByParams(params SciResearchQueryParams)
 	if params.StartDateStart != nil || params.StartDateEnd != nil {
 		filter["startDate"] = bson.M{}
 		if params.StartDateStart != nil {
-			filter["startDate"].(bson.M)["$gte"] = *params.StartDateStart
+			startDateStart := primitive.NewDateTimeFromTime(*params.StartDateStart)
+			filter["startDate"].(bson.M)["$gte"] = startDateStart
 		}
 		if params.StartDateEnd != nil {
-			filter["startDate"].(bson.M)["$lte"] = *params.StartDateEnd
+			startDateEnd := primitive.NewDateTimeFromTime(*params.StartDateEnd)
+			filter["startDate"].(bson.M)["$lte"] = startDateEnd
 		}
 	}
 	// filter for level
@@ -122,20 +124,24 @@ func (r *SciResearchRepo) GetSciResearchsByParams(params SciResearchQueryParams)
 	if params.CreatedStart != nil || params.CreatedEnd != nil {
 		filter["createdAt"] = bson.M{}
 		if params.CreatedStart != nil {
-			filter["createdAt"].(bson.M)["$gte"] = *params.CreatedStart
+			createdStart := primitive.NewDateTimeFromTime(*params.CreatedStart)
+			filter["createdAt"].(bson.M)["$gte"] = createdStart
 		}
 		if params.CreatedEnd != nil {
-			filter["createdAt"].(bson.M)["$lte"] = *params.CreatedEnd
+			createdEnd := primitive.NewDateTimeFromTime(*params.CreatedEnd)
+			filter["createdAt"].(bson.M)["$lte"] = createdEnd
 		}
 	}
 	// filter for updated
 	if params.UpdatedStart != nil || params.UpdatedEnd != nil {
 		filter["updatedAt"] = bson.M{}
 		if params.UpdatedStart != nil {
-			filter["updatedAt"].(bson.M)["$gte"] = *params.UpdatedStart
+			updatedStart := primitive.NewDateTimeFromTime(*params.UpdatedStart)
+			filter["updatedAt"].(bson.M)["$gte"] = updatedStart
 		}
 		if params.UpdatedEnd != nil {
-			filter["updatedAt"].(bson.M)["$lte"] = *params.UpdatedEnd
+			updatedEnd := primitive.NewDateTimeFromTime(*params.UpdatedEnd)
+			filter["updatedAt"].(bson.M)["$lte"] = updatedEnd
 		}
 	}
 	// filter for Award
@@ -149,10 +155,12 @@ func (r *SciResearchRepo) GetSciResearchsByParams(params SciResearchQueryParams)
 		if params.AwardDateStart != nil || params.AwardDateEnd != nil {
 			filter["awarddRecords.awardDate"] = bson.M{}
 			if params.AwardDateStart != nil {
-				filter["awarddRecords.awardDate"].(bson.M)["$gte"] = *params.AwardDateStart
+				awardDateStart := primitive.NewDateTimeFromTime(*params.AwardDateStart)
+				filter["awarddRecords.awardDate"].(bson.M)["$gte"] = awardDateStart
 			}
 			if params.AwardDateEnd != nil {
-				filter["awarddRecords.awardDate"].(bson.M)["$lte"] = *params.AwardDateEnd
+				awardDateEnd := primitive.NewDateTimeFromTime(*params.AwardDateEnd)
+				filter["awarddRecords.awardDate"].(bson.M)["$lte"] = awardDateEnd
 			}
 		}
 		// filter for awardLevel
@@ -167,20 +175,24 @@ func (r *SciResearchRepo) GetSciResearchsByParams(params SciResearchQueryParams)
 		if params.AwardCreatedStart != nil || params.AwardCreatedEnd != nil {
 			filter["awarddRecords.createdAt"] = bson.M{}
 			if params.AwardCreatedStart != nil {
-				filter["awarddRecords.createdAt"].(bson.M)["$gte"] = *params.AwardCreatedStart
+				awardCreatedStart := primitive.NewDateTimeFromTime(*params.AwardCreatedStart)
+				filter["awarddRecords.createdAt"].(bson.M)["$gte"] = awardCreatedStart
 			}
 			if params.AwardCreatedEnd != nil {
-				filter["awarddRecords.createdAt"].(bson.M)["$lte"] = *params.AwardCreatedEnd
+				awardCreatedEnd := primitive.NewDateTimeFromTime(*params.AwardCreatedEnd)
+				filter["awarddRecords.createdAt"].(bson.M)["$lte"] = awardCreatedEnd
 			}
 		}
 		// filter for awardUpdated
 		if params.AwardUpdatedStart != nil || params.AwardUpdatedEnd != nil {
 			filter["awarddRecords.updatedAt"] = bson.M{}
 			if params.AwardUpdatedStart != nil {
-				filter["awarddRecords.updatedAt"].(bson.M)["$gte"] = *params.AwardUpdatedStart
+				awardUpdatedStart := primitive.NewDateTimeFromTime(*params.AwardUpdatedStart)
+				filter["awarddRecords.updatedAt"].(bson.M)["$gte"] = awardUpdatedStart
 			}
 			if params.AwardUpdatedEnd != nil {
-				filter["awarddRecords.updatedAt"].(bson.M)["$lte"] = *params.AwardUpdatedEnd
+				awardUpdatedEnd := primitive.NewDateTimeFromTime(*params.AwardUpdatedEnd)
+				filter["awarddRecords.updatedAt"].(bson.M)["$lte"] = awardUpdatedEnd
 			}
 		}
 	}

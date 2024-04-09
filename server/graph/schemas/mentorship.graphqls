@@ -37,7 +37,7 @@ input MentorshipFilter {
 
 extend type Query {
   mentorship(id: ID!): Mentorship!
-  mentorshipsByFilter(filter: MentorshipFilter): [Mentorship]!
+  mentorshipsByFilter(filter: MentorshipFilter!): [Mentorship]!
 }
 
 extend type Mutation {

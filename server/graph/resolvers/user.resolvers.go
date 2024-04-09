@@ -10,17 +10,38 @@ import (
 	"fmt"
 	"server/environment"
 	graphql_models "server/graph/model"
+	"server/middlewares"
 
 	redis "github.com/redis/go-redis/v9"
 )
 
 // DeleteAccount is the resolver for the deleteAccount field.
 func (r *mutationResolver) DeleteAccount(ctx context.Context, userID string) (bool, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return false, err
+	}
+
 	return r.UserService.DeleteUser(userID)
 }
 
 // UpdateAccountPassword is the resolver for the updateAccountPassword field.
 func (r *mutationResolver) UpdateAccountPassword(ctx context.Context, userID string, updatePasswordData graphql_models.UpdatePassword) (bool, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return false, err
+	}
+
 	return r.UserService.UpdatePassword(userID, updatePasswordData)
 }
 
@@ -88,30 +109,90 @@ func (r *mutationResolver) SignIn(ctx context.Context, signInData graphql_models
 
 // UpdateUser is the resolver for the updateUser field.
 func (r *mutationResolver) UpdateUser(ctx context.Context, userID string, userData graphql_models.UpdateUser) (*graphql_models.User, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	return r.UserService.UpdateUser(userID, userData)
 }
 
 // ActivateUser is the resolver for the activateUser field.
 func (r *mutationResolver) ActivateUser(ctx context.Context, userID string, userData graphql_models.ActivateUser) (*graphql_models.User, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	return r.UserService.ActivateUser(userID, userData)
 }
 
 // AddWechatAuth is the resolver for the addWechatAuth field.
 func (r *mutationResolver) AddWechatAuth(ctx context.Context, userID string, wechatAuthData graphql_models.WechatAuth) (bool, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return false, err
+	}
+
 	panic(fmt.Errorf("not implemented: AddWechatAuth - addWechatAuth"))
 }
 
 // RemoveWechatAuth is the resolver for the removeWechatAuth field.
 func (r *mutationResolver) RemoveWechatAuth(ctx context.Context, userID string) (bool, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return false, err
+	}
+
 	panic(fmt.Errorf("not implemented: RemoveWechatAuth - removeWechatAuth"))
 }
 
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id string) (*graphql_models.User, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	return r.UserService.GetUser(id)
 }
 
 // UserExports is the resolver for the userExports field.
 func (r *queryResolver) UserExports(ctx context.Context) ([]*graphql_models.UserExport, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	return r.UserService.GetUserExports()
 }

@@ -71,15 +71,9 @@ func (passwordService *PasswordService) UpdatePassword(id string, masterKey stri
 
 	passwordUpdate.Account = passwordData.Account
 	passwordUpdate.Password = passwordEncrypt
-	if passwordData.URL != nil {
-		passwordUpdate.Url = passwordData.URL
-	}
-	if passwordData.AppName != nil {
-		passwordUpdate.AppName = passwordData.AppName
-	}
-	if passwordData.Description != nil {
-		passwordUpdate.Description = passwordData.Description
-	}
+	passwordUpdate.Url = passwordData.URL
+	passwordUpdate.AppName = passwordData.AppName
+	passwordUpdate.Description = passwordData.Description
 
 	err = passwordService.Repo.UpdatePassword(passwordUpdate)
 	if err != nil {

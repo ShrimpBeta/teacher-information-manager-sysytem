@@ -8,36 +8,107 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
+	"server/middlewares"
 
 	"github.com/99designs/gqlgen/graphql"
 )
 
 // CreateEduReform is the resolver for the createEduReform field.
 func (r *mutationResolver) CreateEduReform(ctx context.Context, eduReformData graphql_models.EduReformData) (*graphql_models.EduReform, error) {
-	panic(fmt.Errorf("not implemented: CreateEduReform - createEduReform"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.EduReformService.CreateEduReform(user.ID, eduReformData, r.UserService.Repo)
 }
 
 // UpdateEduReform is the resolver for the updateEduReform field.
 func (r *mutationResolver) UpdateEduReform(ctx context.Context, id string, eduReformData graphql_models.EduReformData) (*graphql_models.EduReform, error) {
-	panic(fmt.Errorf("not implemented: UpdateEduReform - updateEduReform"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.EduReformService.UpdateEduReform(id, eduReformData, r.UserService.Repo)
 }
 
 // DeleteEduReform is the resolver for the deleteEduReform field.
 func (r *mutationResolver) DeleteEduReform(ctx context.Context, id string) (*graphql_models.EduReform, error) {
-	panic(fmt.Errorf("not implemented: DeleteEduReform - deleteEduReform"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.EduReformService.DeleteEduReform(id, r.UserService.Repo)
 }
 
 // UploadEduReforms is the resolver for the uploadEduReforms field.
 func (r *mutationResolver) UploadEduReforms(ctx context.Context, file graphql.Upload) ([]*graphql_models.EduReformPreview, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	panic(fmt.Errorf("not implemented: UploadEduReforms - uploadEduReforms"))
 }
 
 // EduReform is the resolver for the eduReform field.
 func (r *queryResolver) EduReform(ctx context.Context, id string) (*graphql_models.EduReform, error) {
-	panic(fmt.Errorf("not implemented: EduReform - eduReform"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.EduReformService.GetEduReformById(id, r.UserService.Repo)
 }
 
 // EduReformsByFilter is the resolver for the eduReformsByFilter field.
 func (r *queryResolver) EduReformsByFilter(ctx context.Context, filter graphql_models.EduReformFilter) ([]*graphql_models.EduReform, error) {
-	panic(fmt.Errorf("not implemented: EduReformsByFilter - eduReformsByFilter"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.EduReformService.GetEduReformsByFilter(user.ID, filter, r.UserService.Repo)
 }

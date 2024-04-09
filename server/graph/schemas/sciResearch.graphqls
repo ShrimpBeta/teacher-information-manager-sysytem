@@ -101,7 +101,7 @@ input SciResearchFilter {
 
 extend type Query {
   sciResearch(id: ID!): SciResearch!
-  sciResearchsByFilter(filter: SciResearchFilter): [SciResearch!]!
+  sciResearchsByFilter(filter: SciResearchFilter!): [SciResearch!]!
 }
 
 extend type Mutation {

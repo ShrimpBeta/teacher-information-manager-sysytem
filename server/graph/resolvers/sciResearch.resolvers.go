@@ -6,38 +6,108 @@ package resolvers
 
 import (
 	"context"
-	"fmt"
 	graphql_models "server/graph/model"
+	"server/middlewares"
 
 	"github.com/99designs/gqlgen/graphql"
 )
 
 // CreateSciResearch is the resolver for the createSciResearch field.
 func (r *mutationResolver) CreateSciResearch(ctx context.Context, sciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error) {
-	panic(fmt.Errorf("not implemented: CreateSciResearch - createSciResearch"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.SciResearchService.CreateSciResearch(user.ID, sciResearchData, r.UserService.Repo)
 }
 
 // UpdateSciResearch is the resolver for the updateSciResearch field.
 func (r *mutationResolver) UpdateSciResearch(ctx context.Context, sciResearchID string, sciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error) {
-	panic(fmt.Errorf("not implemented: UpdateSciResearch - updateSciResearch"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.SciResearchService.UpdateSciResearch(sciResearchID, sciResearchData, r.UserService.Repo)
 }
 
 // DeleteSciResearch is the resolver for the deleteSciResearch field.
 func (r *mutationResolver) DeleteSciResearch(ctx context.Context, sciResearchID string) (*graphql_models.SciResearch, error) {
-	panic(fmt.Errorf("not implemented: DeleteSciResearch - deleteSciResearch"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.SciResearchService.DeleteSciResearch(sciResearchID, r.UserService.Repo)
 }
 
 // UploadSciResearchs is the resolver for the uploadSciResearchs field.
 func (r *mutationResolver) UploadSciResearchs(ctx context.Context, file graphql.Upload) (*graphql_models.SciResearchPreview, error) {
-	panic(fmt.Errorf("not implemented: UploadSciResearchs - uploadSciResearchs"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.SciResearchService.UploadSciResearchs(file, r.UserService.Repo)
 }
 
 // SciResearch is the resolver for the sciResearch field.
 func (r *queryResolver) SciResearch(ctx context.Context, id string) (*graphql_models.SciResearch, error) {
-	panic(fmt.Errorf("not implemented: SciResearch - sciResearch"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.SciResearchService.GetSciResearchById(id, r.UserService.Repo)
 }
 
 // SciResearchsByFilter is the resolver for the sciResearchsByFilter field.
-func (r *queryResolver) SciResearchsByFilter(ctx context.Context, filter *graphql_models.SciResearchFilter) ([]*graphql_models.SciResearch, error) {
-	panic(fmt.Errorf("not implemented: SciResearchsByFilter - sciResearchsByFilter"))
+func (r *queryResolver) SciResearchsByFilter(ctx context.Context, filter graphql_models.SciResearchFilter) ([]*graphql_models.SciResearch, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.SciResearchService.GetSciResearchsByFilter(user.ID, filter, r.UserService.Repo)
 }

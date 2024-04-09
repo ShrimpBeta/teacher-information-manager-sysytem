@@ -55,21 +55,28 @@ func (compGuidanceService *CompGuidanceService) UpdateCompGuidance(id string, co
 		return nil, err
 	}
 
-	guidaceDate := primitive.NewDateTimeFromTime(*compGuidanceData.GuidanceDate)
+	compGuidanceUpdate, err := compGuidanceService.Repo.GetCompGuidanceById(objectId)
+	if err != nil {
+		return nil, err
+	}
 
-	compGuidanceUpdate := &models.CompGuidance{
-		ID:               objectId,
-		ProjectName:      compGuidanceData.ProjectName,
-		StudentNames:     compGuidanceData.StudentNames,
-		CompetitionScore: compGuidanceData.CompetitionScore,
-		GuidanceDate:     &guidaceDate,
-		AwardStatus:      compGuidanceData.AwardStatus,
+	compGuidanceUpdate.ProjectName = compGuidanceData.ProjectName
+	compGuidanceUpdate.StudentNames = compGuidanceData.StudentNames
+	compGuidanceUpdate.CompetitionScore = compGuidanceData.CompetitionScore
+	compGuidanceUpdate.AwardStatus = compGuidanceData.AwardStatus
+
+	if compGuidanceData.GuidanceDate == nil {
+		compGuidanceUpdate.GuidanceDate = nil
+	} else {
+		guidanceDate := primitive.NewDateTimeFromTime(*compGuidanceData.GuidanceDate)
+		compGuidanceUpdate.GuidanceDate = &guidanceDate
 	}
 
 	err = compGuidanceService.Repo.UpdateCompGuidance(compGuidanceUpdate)
 	if err != nil {
 		return nil, err
 	}
+
 	compGuidanceUpdate, err = compGuidanceService.Repo.GetCompGuidanceById(objectId)
 	if err != nil {
 		return nil, err
@@ -139,12 +146,20 @@ func (compGuidanceService *CompGuidanceService) GetCompGuidanceById(id string) (
 	}, nil
 }
 
-func (compGuidanceService *CompGuidanceService) GetCompGuidancesByUserId(userID string) ([]*graphql_models.CompGuidance, error) {
-	userObjectId, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
-	compGuidancesData, err := compGuidanceService.Repo.GetCompGuidancesByParams(repository.CompGuidanceQueryParams{UserId: userObjectId})
+func (compGuidanceService *CompGuidanceService) GetCompGuidancesByFilter(userId primitive.ObjectID, filter graphql_models.CompGuidanceFilter) ([]*graphql_models.CompGuidance, error) {
+	compGuidancesData, err := compGuidanceService.Repo.GetCompGuidancesByParams(
+		repository.CompGuidanceQueryParams{
+			UserId:            userId,
+			ProjectName:       filter.ProjectName,
+			StudentNames:      filter.StudentNames,
+			GuidanceDateStart: filter.GuidanceDateStart,
+			GuidanceDateEnd:   filter.GuidanceDateEnd,
+			AwardStatus:       filter.AwardStatus,
+			CreatedStart:      filter.CreatedStart,
+			CreatedEnd:        filter.CreatedEnd,
+			UpdatedStart:      filter.UpdatedStart,
+			UpdatedEnd:        filter.UpdatedEnd,
+		})
 	if err != nil {
 		return nil, err
 	}

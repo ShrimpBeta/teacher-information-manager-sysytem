@@ -26,10 +26,12 @@ func (mentorshipService *MentorshipService) CreateMentorship(userId primitive.Ob
 		Grade:        newMentorshipData.Grade,
 		GuidanceDate: &guidanceDate,
 	}
+
 	objectId, err := mentorshipService.Repo.CreateMentorship(&newMentorship)
 	if err != nil {
 		return nil, err
 	}
+
 	mentorshipData, err := mentorshipService.Repo.GetMentorshipById(*objectId)
 	if err != nil {
 		return nil, err
@@ -53,20 +55,27 @@ func (mentorshipService *MentorshipService) UpdateMentorship(id string, mentorsh
 		return nil, err
 	}
 
-	guidanceDate := primitive.NewDateTimeFromTime(*mentorshipData.GuidanceDate)
+	mentorshipUpdate, err := mentorshipService.Repo.GetMentorshipById(objectId)
+	if err != nil {
+		return nil, err
+	}
 
-	mentorshipUpdate := &models.Mentorship{
-		ID:           objectId,
-		ProjectName:  mentorshipData.ProjectName,
-		StudentNames: mentorshipData.StudentNames,
-		Grade:        mentorshipData.Grade,
-		GuidanceDate: &guidanceDate,
+	mentorshipUpdate.ProjectName = mentorshipData.ProjectName
+	mentorshipUpdate.StudentNames = mentorshipData.StudentNames
+	mentorshipUpdate.Grade = mentorshipData.Grade
+
+	if mentorshipData.GuidanceDate == nil {
+		mentorshipUpdate.GuidanceDate = nil
+	} else {
+		guidanceDate := primitive.NewDateTimeFromTime(*mentorshipData.GuidanceDate)
+		mentorshipUpdate.GuidanceDate = &guidanceDate
 	}
 
 	err = mentorshipService.Repo.UpdateMentorship(mentorshipUpdate)
 	if err != nil {
 		return nil, err
 	}
+
 	mentorshipUpdate, err = mentorshipService.Repo.GetMentorshipById(objectId)
 	if err != nil {
 		return nil, err
@@ -133,12 +142,20 @@ func (mentorshipService *MentorshipService) GetMentorshipById(id string) (*graph
 	}, nil
 }
 
-func (mentorshipService *MentorshipService) GetMentorshipsByUserId(userID string) ([]*graphql_models.Mentorship, error) {
-	userObjectId, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
-	mentorshipsData, err := mentorshipService.Repo.GetMentorshipsByParams(repository.MentorshipQueryParams{UserId: userObjectId})
+func (mentorshipService *MentorshipService) GetMentorshipsByFilter(userId primitive.ObjectID, filter graphql_models.MentorshipFilter) ([]*graphql_models.Mentorship, error) {
+	mentorshipsData, err := mentorshipService.Repo.GetMentorshipsByParams(
+		repository.MentorshipQueryParams{
+			UserId:            userId,
+			ProjectName:       filter.ProjectName,
+			StudentNames:      filter.StudentNames,
+			Grade:             filter.Grade,
+			GuidanceDateStart: filter.GuidanceDateStart,
+			GuidanceDateEnd:   filter.GuidanceDateEnd,
+			CreatedAtStart:    filter.CreatedStart,
+			CreatedAtEnd:      filter.CreatedEnd,
+			UpdatedAtStart:    filter.UpdatedStart,
+			UpdatedAtEnd:      filter.UpdatedEnd,
+		})
 	if err != nil {
 		return nil, err
 	}

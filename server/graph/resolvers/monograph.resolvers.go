@@ -6,38 +6,108 @@ package resolvers
 
 import (
 	"context"
-	"fmt"
 	graphql_models "server/graph/model"
+	"server/middlewares"
 
 	"github.com/99designs/gqlgen/graphql"
 )
 
 // CreateMonograph is the resolver for the createMonograph field.
 func (r *mutationResolver) CreateMonograph(ctx context.Context, monographData graphql_models.MonographData) (*graphql_models.Monograph, error) {
-	panic(fmt.Errorf("not implemented: CreateMonograph - createMonograph"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.MonographService.CreateMonograph(user.ID, monographData, r.UserService.Repo)
 }
 
 // UpdateMonograph is the resolver for the updateMonograph field.
 func (r *mutationResolver) UpdateMonograph(ctx context.Context, id string, monographData graphql_models.MonographData) (*graphql_models.Monograph, error) {
-	panic(fmt.Errorf("not implemented: UpdateMonograph - updateMonograph"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.MonographService.UpdateMonograph(id, monographData, r.UserService.Repo)
 }
 
 // DeleteMonograph is the resolver for the deleteMonograph field.
 func (r *mutationResolver) DeleteMonograph(ctx context.Context, id string) (*graphql_models.Monograph, error) {
-	panic(fmt.Errorf("not implemented: DeleteMonograph - deleteMonograph"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.MonographService.DeleteMonograph(id, r.UserService.Repo)
 }
 
 // UploadMonographs is the resolver for the uploadMonographs field.
 func (r *mutationResolver) UploadMonographs(ctx context.Context, file graphql.Upload) ([]*graphql_models.MonographPreview, error) {
-	panic(fmt.Errorf("not implemented: UploadMonographs - uploadMonographs"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.MonographService.UploadMonographs(file, r.UserService.Repo)
 }
 
 // Monograph is the resolver for the monograph field.
 func (r *queryResolver) Monograph(ctx context.Context, id string) (*graphql_models.Monograph, error) {
-	panic(fmt.Errorf("not implemented: Monograph - monograph"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.MonographService.GetMonographById(id, r.UserService.Repo)
 }
 
 // MonographsByFilter is the resolver for the monographsByFilter field.
 func (r *queryResolver) MonographsByFilter(ctx context.Context, filter graphql_models.MonographFilter) ([]*graphql_models.Monograph, error) {
-	panic(fmt.Errorf("not implemented: MonographsByFilter - monographsByFilter"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.MonographService.GetMonographsByFilter(user.ID, filter, r.UserService.Repo)
 }

@@ -8,36 +8,107 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
+	"server/middlewares"
 
 	"github.com/99designs/gqlgen/graphql"
 )
 
 // CreateUPGuidance is the resolver for the createUPGuidance field.
 func (r *mutationResolver) CreateUGPGGuidance(ctx context.Context, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error) {
-	panic(fmt.Errorf("not implemented: CreateUPGuidance - createUPGuidance"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.UGPGGuidanceService.CreateUGPGGuidance(user.ID, uGPGGuidanceData)
 }
 
 // UpdateUPGuidance is the resolver for the updateUPGuidance field.
 func (r *mutationResolver) UpdateUGPGGuidance(ctx context.Context, id string, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error) {
-	panic(fmt.Errorf("not implemented: UpdateUPGuidance - updateUPGuidance"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.UGPGGuidanceService.UpdateUGPGGuidance(id, uGPGGuidanceData)
 }
 
 // DeleteUPGuidance is the resolver for the deleteUPGuidance field.
 func (r *mutationResolver) DeleteUGPGGuidance(ctx context.Context, id string) (*graphql_models.UGPGGuidance, error) {
-	panic(fmt.Errorf("not implemented: DeleteUPGuidance - deleteUPGuidance"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.UGPGGuidanceService.DeleteUGPGGuidance(id)
 }
 
 // UploadUGPGGuidances is the resolver for the uploadUGPGGuidances field.
 func (r *mutationResolver) UploadUGPGGuidances(ctx context.Context, file graphql.Upload) ([]*graphql_models.UGPGGuidancePreview, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	panic(fmt.Errorf("not implemented: UploadUGPGGuidances - uploadUGPGGuidances"))
 }
 
 // UGPGGuidance is the resolver for the uGPGGuidance field.
 func (r *queryResolver) UGPGGuidance(ctx context.Context, id string) (*graphql_models.UGPGGuidance, error) {
-	panic(fmt.Errorf("not implemented: UGPGGuidance - uGPGGuidance"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.UGPGGuidanceService.GetUGPGGuidanceById(id)
 }
 
 // UGPGGuidancesByFilter is the resolver for the uGPGGuidancesByFilter field.
 func (r *queryResolver) UGPGGuidancesByFilter(ctx context.Context, filter graphql_models.UGPGGuidanceFilter) ([]*graphql_models.UGPGGuidance, error) {
-	panic(fmt.Errorf("not implemented: UGPGGuidancesByFilter - uGPGGuidancesByFilter"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.UGPGGuidanceService.GetUGPGGuidancesByFilter(user.ID, filter)
 }

@@ -19,12 +19,12 @@ type MentorshipQueryParams struct {
 	ProjectName       *string
 	StudentNames      []*string
 	Grade             *string
-	GuidanceDateStart *primitive.DateTime
-	GuidanceDateEnd   *primitive.DateTime
-	CreatedAtStart    *primitive.DateTime
-	CreatedAtEnd      *primitive.DateTime
-	UpdatedAtStart    *primitive.DateTime
-	UpdatedAtEnd      *primitive.DateTime
+	GuidanceDateStart *time.Time
+	GuidanceDateEnd   *time.Time
+	CreatedAtStart    *time.Time
+	CreatedAtEnd      *time.Time
+	UpdatedAtStart    *time.Time
+	UpdatedAtEnd      *time.Time
 }
 
 func NewMentorshipRepo(db *mongo.Database) *MentorshipRepo {
@@ -63,30 +63,36 @@ func (r *MentorshipRepo) GetMentorshipsByParams(params MentorshipQueryParams) ([
 	if params.GuidanceDateStart != nil || params.GuidanceDateEnd != nil {
 		filter["guidanceDate"] = bson.M{}
 		if params.GuidanceDateStart != nil {
-			filter["guidanceDate"].(bson.M)["$gte"] = params.GuidanceDateStart
+			guidaneDateStart := primitive.NewDateTimeFromTime(*params.GuidanceDateStart)
+			filter["guidanceDate"].(bson.M)["$gte"] = guidaneDateStart
 		}
 		if params.GuidanceDateEnd != nil {
-			filter["guidanceDate"].(bson.M)["$lte"] = params.GuidanceDateEnd
+			guidanceDateEnd := primitive.NewDateTimeFromTime(*params.GuidanceDateEnd)
+			filter["guidanceDate"].(bson.M)["$lte"] = guidanceDateEnd
 		}
 	}
 	// filter for createdAt
 	if params.CreatedAtStart != nil || params.CreatedAtEnd != nil {
 		filter["createdAt"] = bson.M{}
 		if params.CreatedAtStart != nil {
-			filter["createdAt"].(bson.M)["$gte"] = params.CreatedAtStart
+			createdStart := primitive.NewDateTimeFromTime(*params.CreatedAtStart)
+			filter["createdAt"].(bson.M)["$gte"] = createdStart
 		}
 		if params.CreatedAtEnd != nil {
-			filter["createdAt"].(bson.M)["$lte"] = params.CreatedAtEnd
+			createdEnd := primitive.NewDateTimeFromTime(*params.CreatedAtEnd)
+			filter["createdAt"].(bson.M)["$lte"] = createdEnd
 		}
 	}
 	// filter for updatedAt
 	if params.UpdatedAtStart != nil || params.UpdatedAtEnd != nil {
 		filter["updatedAt"] = bson.M{}
 		if params.UpdatedAtStart != nil {
-			filter["updatedAt"].(bson.M)["$gte"] = params.UpdatedAtStart
+			updatedStart := primitive.NewDateTimeFromTime(*params.UpdatedAtStart)
+			filter["updatedAt"].(bson.M)["$gte"] = updatedStart
 		}
 		if params.UpdatedAtEnd != nil {
-			filter["updatedAt"].(bson.M)["$lte"] = params.UpdatedAtEnd
+			updatedEnd := primitive.NewDateTimeFromTime(*params.UpdatedAtEnd)
+			filter["updatedAt"].(bson.M)["$lte"] = updatedEnd
 		}
 	}
 

@@ -18,12 +18,12 @@ type UGPGGuidanceQueryParams struct {
 	UserId           primitive.ObjectID
 	StudentName      *string
 	ThesisTopic      *string
-	DefenseDateStart *primitive.DateTime
-	DefenseDateEnd   *primitive.DateTime
-	CreatedStart     *primitive.DateTime
-	CreatedEnd       *primitive.DateTime
-	UpdatedStart     *primitive.DateTime
-	UpdatedEnd       *primitive.DateTime
+	DefenseDateStart *time.Time
+	DefenseDateEnd   *time.Time
+	CreatedStart     *time.Time
+	CreatedEnd       *time.Time
+	UpdatedStart     *time.Time
+	UpdatedEnd       *time.Time
 }
 
 func NewUGPGGuidanceRepo(db *mongo.Database) *UGPGGuidanceRepo {
@@ -58,30 +58,36 @@ func (r *UGPGGuidanceRepo) GetUGPGGuidancesByParams(params UGPGGuidanceQueryPara
 	if params.DefenseDateStart != nil || params.DefenseDateEnd != nil {
 		filter["defenseDate"] = bson.M{}
 		if params.DefenseDateStart != nil {
-			filter["defenseDate"].(bson.M)["$gte"] = params.DefenseDateStart
+			defenseDateStart := primitive.NewDateTimeFromTime(*params.DefenseDateStart)
+			filter["defenseDate"].(bson.M)["$gte"] = defenseDateStart
 		}
 		if params.DefenseDateEnd != nil {
-			filter["defenseDate"].(bson.M)["$lte"] = params.DefenseDateEnd
+			defenseDateEnd := primitive.NewDateTimeFromTime(*params.DefenseDateEnd)
+			filter["defenseDate"].(bson.M)["$lte"] = defenseDateEnd
 		}
 	}
 	// filter for created time
 	if params.CreatedStart != nil || params.CreatedEnd != nil {
 		filter["createdAt"] = bson.M{}
 		if params.CreatedStart != nil {
-			filter["createdAt"].(bson.M)["$gte"] = params.CreatedStart
+			createdStart := primitive.NewDateTimeFromTime(*params.CreatedStart)
+			filter["createdAt"].(bson.M)["$gte"] = createdStart
 		}
 		if params.CreatedEnd != nil {
-			filter["createdAt"].(bson.M)["$lte"] = params.CreatedEnd
+			createdEnd := primitive.NewDateTimeFromTime(*params.CreatedEnd)
+			filter["createdAt"].(bson.M)["$lte"] = createdEnd
 		}
 	}
 	// filter for updated time
 	if params.UpdatedStart != nil || params.UpdatedEnd != nil {
 		filter["updatedAt"] = bson.M{}
 		if params.UpdatedStart != nil {
-			filter["updatedAt"].(bson.M)["$gte"] = params.UpdatedStart
+			updatedStart := primitive.NewDateTimeFromTime(*params.UpdatedStart)
+			filter["updatedAt"].(bson.M)["$gte"] = updatedStart
 		}
 		if params.UpdatedEnd != nil {
-			filter["updatedAt"].(bson.M)["$lte"] = params.UpdatedEnd
+			updatedEnd := primitive.NewDateTimeFromTime(*params.UpdatedEnd)
+			filter["updatedAt"].(bson.M)["$lte"] = updatedEnd
 		}
 	}
 

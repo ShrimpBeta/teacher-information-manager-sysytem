@@ -16,14 +16,15 @@ func NewPaperService(paperRepo *repository.PaperRepo) *PaperService {
 	return &PaperService{Repo: paperRepo}
 }
 
-func (paperService *PaperService) CreatePaper(newPaperData graphql_models.PaperData, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
-	teachersIn := make([]primitive.ObjectID, len(newPaperData.TeachersIn))
+func (paperService *PaperService) CreatePaper(userId primitive.ObjectID, newPaperData graphql_models.PaperData, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
+	teachersIn := make([]primitive.ObjectID, len(newPaperData.TeachersIn)+1)
+	teachersIn[0] = userId
 	for i, teacher := range newPaperData.TeachersIn {
 		objectId, err := primitive.ObjectIDFromHex(*teacher)
 		if err != nil {
 			return nil, err
 		}
-		teachersIn[i] = objectId
+		teachersIn[i+1] = objectId
 	}
 	publishDate := primitive.NewDateTimeFromTime(*newPaperData.PublishDate)
 
@@ -217,9 +218,7 @@ func (paperService *PaperService) GetPaperById(id string, userRepo *repository.U
 	}
 
 	TeachersOut := make([]*string, len(PaperData.TeachersOut))
-	for i, teacher := range PaperData.TeachersOut {
-		TeachersOut[i] = teacher
-	}
+	copy(TeachersOut, PaperData.TeachersOut)
 
 	return &graphql_models.Paper{
 		ID:           PaperData.ID.Hex(),
@@ -233,4 +232,75 @@ func (paperService *PaperService) GetPaperById(id string, userRepo *repository.U
 		CreatedAt:    PaperData.CreatedAt.Time(),
 		UpdatedAt:    PaperData.UpdatedAt.Time(),
 	}, nil
+}
+
+func (paperService *PaperService) GetPapersByFilter(userId primitive.ObjectID, filter graphql_models.PaperFilter, userRepo *repository.UserRepo) ([]*graphql_models.Paper, error) {
+
+	TeachersInID := make([]primitive.ObjectID, len(filter.TeachersIn)+1)
+	TeachersInID[0] = userId
+	for i, teacherIn := range filter.TeachersIn {
+		objectId, err := primitive.ObjectIDFromHex(*teacherIn)
+		if err != nil {
+			return nil, err
+		}
+		TeachersInID[i+1] = objectId
+	}
+
+	papersData, err := paperService.Repo.GetPapersByParams(
+		repository.PaperQueryParams{
+			TeachersIn:       TeachersInID,
+			TeachersOut:      filter.TeachersOut,
+			Title:            filter.Title,
+			PublishDateStart: filter.PublishDateStart,
+			PublishDateEnd:   filter.PublishDateEnd,
+			Rank:             filter.Rank,
+			JournalName:      filter.JournalName,
+			JournalLevel:     filter.JournalLevel,
+			CreatedAtStart:   filter.CreatedStart,
+			CreatedAtEnd:     filter.CreatedEnd,
+			UpdatedAtStart:   filter.UpdatedStart,
+			UpdatedAtEnd:     filter.UpdatedEnd,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	papers := make([]*graphql_models.Paper, len(papersData))
+	for i, paper := range papersData {
+		usersIn, err := userRepo.GetUsersByIds(paper.TeachersIn)
+		if err != nil {
+			return nil, err
+		}
+		userseExport := make([]*graphql_models.UserExport, len(usersIn))
+
+		for i, user := range usersIn {
+			userseExport[i] = &graphql_models.UserExport{
+				ID:       user.ID.Hex(),
+				Username: user.Username,
+				Email:    user.Email,
+				Avatar:   user.Avatar,
+			}
+		}
+
+		TeachersOut := make([]*string, len(paper.TeachersOut))
+		copy(TeachersOut, paper.TeachersOut)
+
+		publishDate := paper.PublishDate.Time()
+
+		papers[i] = &graphql_models.Paper{
+			ID:           paper.ID.Hex(),
+			TeachersIn:   userseExport,
+			TeachersOut:  TeachersOut,
+			Title:        paper.Title,
+			PublishDate:  &publishDate,
+			Rank:         paper.Rank,
+			JournalName:  paper.JournalName,
+			JournalLevel: paper.JournalLevel,
+			CreatedAt:    paper.CreatedAt.Time(),
+			UpdatedAt:    paper.UpdatedAt.Time(),
+		}
+	}
+
+	return papers, nil
 }

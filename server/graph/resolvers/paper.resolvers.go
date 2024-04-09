@@ -8,36 +8,103 @@ import (
 	"context"
 	"fmt"
 	graphql_models "server/graph/model"
+	"server/middlewares"
 
 	"github.com/99designs/gqlgen/graphql"
 )
 
 // CreatePaper is the resolver for the createPaper field.
 func (r *mutationResolver) CreatePaper(ctx context.Context, paperData graphql_models.PaperData) (*graphql_models.Paper, error) {
-	return r.PaperService.CreatePaper(paperData, r.UserService.Repo)
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.PaperService.CreatePaper(user.ID, paperData, r.UserService.Repo)
 }
 
 // UpdatePaper is the resolver for the updatePaper field.
 func (r *mutationResolver) UpdatePaper(ctx context.Context, id string, paperData graphql_models.PaperData) (*graphql_models.Paper, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
 	return r.PaperService.UpdatePaper(id, paperData, r.UserService.Repo)
 }
 
 // DeletePaper is the resolver for the deletePaper field.
 func (r *mutationResolver) DeletePaper(ctx context.Context, id string) (*graphql_models.Paper, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
 	return r.PaperService.DeletePaper(id, r.UserService.Repo)
 }
 
 // UploadPapers is the resolver for the uploadPapers field.
 func (r *mutationResolver) UploadPapers(ctx context.Context, file graphql.Upload) ([]*graphql_models.PaperPreview, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
 	panic(fmt.Errorf("not implemented: UploadPapers - uploadPapers"))
 }
 
 // Paper is the resolver for the paper field.
 func (r *queryResolver) Paper(ctx context.Context, id string) (*graphql_models.Paper, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
 	return r.PaperService.GetPaperById(id, r.UserService.Repo)
 }
 
 // PapersByFilter is the resolver for the papersByFilter field.
-func (r *queryResolver) PapersByFilter(ctx context.Context, filter *graphql_models.PaperFilter) ([]*graphql_models.Paper, error) {
-	panic(fmt.Errorf("not implemented: PapersByFilter - papersByFilter"))
+func (r *queryResolver) PapersByFilter(ctx context.Context, filter graphql_models.PaperFilter) ([]*graphql_models.Paper, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.PaperService.GetPapersByFilter(user.ID, filter, r.UserService.Repo)
 }

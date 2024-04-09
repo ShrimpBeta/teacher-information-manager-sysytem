@@ -20,6 +20,7 @@ func (r *mutationResolver) CreateCompGuidance(ctx context.Context, compGuidanceD
 		return nil, err
 	}
 
+	// if no token found, return an error
 	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
@@ -35,25 +36,85 @@ func (r *mutationResolver) CreateCompGuidance(ctx context.Context, compGuidanceD
 
 // UpdateCompGuidance is the resolver for the updateCompGuidance field.
 func (r *mutationResolver) UpdateCompGuidance(ctx context.Context, id string, compGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if no token found, return an error
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	return r.CompGuidanceService.UpdateCompGuidance(id, compGuidanceData)
 }
 
 // DeleteCompGuidance is the resolver for the deleteCompGuidance field.
 func (r *mutationResolver) DeleteCompGuidance(ctx context.Context, id string) (*graphql_models.CompGuidance, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if no token found, return an error
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	return r.CompGuidanceService.DeleteCompGuidance(id)
 }
 
 // UploadCompGuidances is the resolver for the uploadCompGuidances field.
 func (r *mutationResolver) UploadCompGuidances(ctx context.Context, file graphql.Upload) ([]*graphql_models.CompGuidancePreview, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if no token found, return an error
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	panic(fmt.Errorf("not implemented: UploadCompGuidances - uploadCompGuidances"))
 }
 
 // CompGuidance is the resolver for the compGuidance field.
 func (r *queryResolver) CompGuidance(ctx context.Context, id string) (*graphql_models.CompGuidance, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if no token found, return an error
+	_, err = middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
 	return r.CompGuidanceService.GetCompGuidanceById(id)
 }
 
 // CompGuidancesByFilter is the resolver for the compGuidancesByFilter field.
 func (r *queryResolver) CompGuidancesByFilter(ctx context.Context, filter graphql_models.CompGuidanceFilter) ([]*graphql_models.CompGuidance, error) {
-	panic(fmt.Errorf("not implemented: CompGuidancesByFilter - compGuidancesByFilter"))
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.CompGuidanceService.GetCompGuidancesByFilter(user.ID, filter)
 }
