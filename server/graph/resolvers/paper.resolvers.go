@@ -40,11 +40,17 @@ func (r *mutationResolver) UpdatePaper(ctx context.Context, id string, paperData
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
-	return r.PaperService.UpdatePaper(id, paperData, r.UserService.Repo)
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.PaperService.UpdatePaper(id, user.ID, paperData, r.UserService.Repo)
 }
 
 // DeletePaper is the resolver for the deletePaper field.

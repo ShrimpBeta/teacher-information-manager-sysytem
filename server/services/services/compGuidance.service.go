@@ -4,6 +4,7 @@ import (
 	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"server/persistence/repository"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -17,16 +18,20 @@ func NewCompGuidanceService(compguidanceRepo *repository.CompGuidanceRepo) *Comp
 }
 
 func (compGuidanceService *CompGuidanceService) CreateCompGuidance(userId primitive.ObjectID, newGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
-	guidanceDate := primitive.NewDateTimeFromTime(*newGuidanceData.GuidanceDate)
 
 	newCompGuidance := models.CompGuidance{
 		UserId:           userId,
 		ProjectName:      newGuidanceData.ProjectName,
 		StudentNames:     newGuidanceData.StudentNames,
 		CompetitionScore: newGuidanceData.CompetitionScore,
-		GuidanceDate:     &guidanceDate,
 		AwardStatus:      newGuidanceData.AwardStatus,
 	}
+
+	if newGuidanceData.GuidanceDate != nil {
+		guidanceDate := primitive.NewDateTimeFromTime(*newGuidanceData.GuidanceDate)
+		newCompGuidance.GuidanceDate = &guidanceDate
+	}
+
 	objectId, err := compGuidanceService.Repo.CratedCompGuidance(&newCompGuidance)
 	if err != nil {
 		return nil, err
@@ -36,13 +41,18 @@ func (compGuidanceService *CompGuidanceService) CreateCompGuidance(userId primit
 		return nil, err
 	}
 
-	createdGuidanceDate := comGuidanceData.GuidanceDate.Time()
+	var guidanceDate *time.Time = nil
+	if comGuidanceData.GuidanceDate != nil {
+		date := comGuidanceData.GuidanceDate.Time()
+		guidanceDate = &date
+	}
+
 	return &graphql_models.CompGuidance{
 		ID:               comGuidanceData.ID.Hex(),
 		ProjectName:      comGuidanceData.ProjectName,
 		StudentNames:     newGuidanceData.StudentNames,
 		CompetitionScore: comGuidanceData.CompetitionScore,
-		GuidanceDate:     &createdGuidanceDate,
+		GuidanceDate:     guidanceDate,
 		AwardStatus:      comGuidanceData.AwardStatus,
 		CreatedAt:        comGuidanceData.CreatedAt.Time(),
 		UpdatedAt:        comGuidanceData.UpdatedAt.Time(),
@@ -82,13 +92,18 @@ func (compGuidanceService *CompGuidanceService) UpdateCompGuidance(id string, co
 		return nil, err
 	}
 
-	guidanceDate := compGuidanceUpdate.GuidanceDate.Time()
+	var guidanceDate *time.Time = nil
+	if compGuidanceUpdate.GuidanceDate != nil {
+		date := compGuidanceUpdate.GuidanceDate.Time()
+		guidanceDate = &date
+	}
+
 	return &graphql_models.CompGuidance{
 		ID:               compGuidanceUpdate.ID.Hex(),
 		ProjectName:      compGuidanceUpdate.ProjectName,
 		StudentNames:     compGuidanceUpdate.StudentNames,
 		CompetitionScore: compGuidanceUpdate.CompetitionScore,
-		GuidanceDate:     &guidanceDate,
+		GuidanceDate:     guidanceDate,
 		AwardStatus:      compGuidanceUpdate.AwardStatus,
 		CreatedAt:        compGuidanceUpdate.CreatedAt.Time(),
 		UpdatedAt:        compGuidanceUpdate.UpdatedAt.Time(),
@@ -96,11 +111,13 @@ func (compGuidanceService *CompGuidanceService) UpdateCompGuidance(id string, co
 }
 
 func (compGuidanceService *CompGuidanceService) DeleteCompGuidance(id string) (*graphql_models.CompGuidance, error) {
-	objectId, err := primitive.ObjectIDFromHex(id)
+
+	compGuidanceData, err := compGuidanceService.GetCompGuidanceById(id)
 	if err != nil {
 		return nil, err
 	}
-	compGuidanceData, err := compGuidanceService.Repo.GetCompGuidanceById(objectId)
+
+	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
@@ -110,17 +127,7 @@ func (compGuidanceService *CompGuidanceService) DeleteCompGuidance(id string) (*
 		return nil, err
 	}
 
-	guidanceDate := compGuidanceData.GuidanceDate.Time()
-	return &graphql_models.CompGuidance{
-		ID:               compGuidanceData.ID.Hex(),
-		ProjectName:      compGuidanceData.ProjectName,
-		StudentNames:     compGuidanceData.StudentNames,
-		CompetitionScore: compGuidanceData.CompetitionScore,
-		GuidanceDate:     &guidanceDate,
-		AwardStatus:      compGuidanceData.AwardStatus,
-		CreatedAt:        compGuidanceData.CreatedAt.Time(),
-		UpdatedAt:        compGuidanceData.UpdatedAt.Time(),
-	}, nil
+	return compGuidanceData, nil
 }
 
 func (compGuidanceService *CompGuidanceService) GetCompGuidanceById(id string) (*graphql_models.CompGuidance, error) {
@@ -133,13 +140,18 @@ func (compGuidanceService *CompGuidanceService) GetCompGuidanceById(id string) (
 		return nil, err
 	}
 
-	guidanceDate := compGuidanceData.GuidanceDate.Time()
+	var guidanceDate *time.Time = nil
+	if compGuidanceData.GuidanceDate != nil {
+		date := compGuidanceData.GuidanceDate.Time()
+		guidanceDate = &date
+	}
+
 	return &graphql_models.CompGuidance{
 		ID:               compGuidanceData.ID.Hex(),
 		ProjectName:      compGuidanceData.ProjectName,
 		StudentNames:     compGuidanceData.StudentNames,
 		CompetitionScore: compGuidanceData.CompetitionScore,
-		GuidanceDate:     &guidanceDate,
+		GuidanceDate:     guidanceDate,
 		AwardStatus:      compGuidanceData.AwardStatus,
 		CreatedAt:        compGuidanceData.CreatedAt.Time(),
 		UpdatedAt:        compGuidanceData.UpdatedAt.Time(),
@@ -165,14 +177,17 @@ func (compGuidanceService *CompGuidanceService) GetCompGuidancesByFilter(userId 
 	}
 	compGuidances := make([]*graphql_models.CompGuidance, len(compGuidancesData))
 	for i, compGuidanceData := range compGuidancesData {
-
-		guidanceDate := compGuidanceData.GuidanceDate.Time()
+		var guidanceDate *time.Time = nil
+		if compGuidanceData.GuidanceDate != nil {
+			date := compGuidanceData.GuidanceDate.Time()
+			guidanceDate = &date
+		}
 		compGuidances[i] = &graphql_models.CompGuidance{
 			ID:               compGuidanceData.ID.Hex(),
 			ProjectName:      compGuidanceData.ProjectName,
 			StudentNames:     compGuidanceData.StudentNames,
 			CompetitionScore: compGuidanceData.CompetitionScore,
-			GuidanceDate:     &guidanceDate,
+			GuidanceDate:     guidanceDate,
 			AwardStatus:      compGuidanceData.AwardStatus,
 			CreatedAt:        compGuidanceData.CreatedAt.Time(),
 			UpdatedAt:        compGuidanceData.UpdatedAt.Time(),

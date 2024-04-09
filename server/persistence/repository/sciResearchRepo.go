@@ -20,41 +20,27 @@ func NewSciResearchRepo(db *mongo.Database) *SciResearchRepo {
 	}
 }
 
-type AwardRecordRepo struct {
-	collection *mongo.Collection
-}
-
-func NewAwardRecordRepo(db *mongo.Database) *AwardRecordRepo {
-	return &AwardRecordRepo{
-		collection: db.Collection("AwardRecord"),
-	}
-}
-
 type SciResearchQueryParams struct {
-	TeachersIn        []primitive.ObjectID
-	TeachersOut       []*string
-	Number            *string
-	Title             *string
-	StartDateStart    *time.Time
-	StartDateEnd      *time.Time
-	Level             *string
-	Rank              *string
-	Achievement       *string
-	Fund              *string
-	CreatedStart      *time.Time
-	CreatedEnd        *time.Time
-	UpdatedStart      *time.Time
-	UpdatedEnd        *time.Time
-	IsAward           bool
-	AwardName         *string
-	AwardDateStart    *time.Time
-	AwardDateEnd      *time.Time
-	AwardLevel        *string
-	AwardRank         *string
-	AwardCreatedStart *time.Time
-	AwardCreatedEnd   *time.Time
-	AwardUpdatedStart *time.Time
-	AwardUpdatedEnd   *time.Time
+	TeachersIn     []primitive.ObjectID
+	TeachersOut    []*string
+	Number         *string
+	Title          *string
+	StartDateStart *time.Time
+	StartDateEnd   *time.Time
+	Level          *string
+	Rank           *string
+	Achievement    *string
+	Fund           *string
+	CreatedStart   *time.Time
+	CreatedEnd     *time.Time
+	UpdatedStart   *time.Time
+	UpdatedEnd     *time.Time
+	IsAward        *bool
+	AwardName      *string
+	AwardDateStart *time.Time
+	AwardDateEnd   *time.Time
+	AwardLevel     *string
+	AwardRank      *string
 }
 
 func (r *SciResearchRepo) GetSciResearchById(id primitive.ObjectID) (*models.SciResearch, error) {
@@ -64,15 +50,6 @@ func (r *SciResearchRepo) GetSciResearchById(id primitive.ObjectID) (*models.Sci
 		return nil, err
 	}
 	return &sciResearch, nil
-}
-
-func (r *AwardRecordRepo) GetAwardRecordById(id primitive.ObjectID) (*models.AwardRecord, error) {
-	awardRecord := models.AwardRecord{}
-	err := r.collection.FindOne(context.Background(), bson.M{"_id": id}).Decode(&awardRecord)
-	if err != nil {
-		return nil, err
-	}
-	return &awardRecord, nil
 }
 
 func (r *SciResearchRepo) GetSciResearchsByParams(params SciResearchQueryParams) ([]models.SciResearch, error) {
@@ -144,56 +121,37 @@ func (r *SciResearchRepo) GetSciResearchsByParams(params SciResearchQueryParams)
 			filter["updatedAt"].(bson.M)["$lte"] = updatedEnd
 		}
 	}
-	// filter for Award
-	if params.IsAward {
-		filter["isAward"] = true
-		// filter for awardName
-		if params.AwardName != nil {
-			filter["awarddRecords.awardName"] = bson.M{"$regex": primitive.Regex{Pattern: *params.AwardName, Options: "i"}}
-		}
-		// filter for awardDate
-		if params.AwardDateStart != nil || params.AwardDateEnd != nil {
-			filter["awarddRecords.awardDate"] = bson.M{}
-			if params.AwardDateStart != nil {
-				awardDateStart := primitive.NewDateTimeFromTime(*params.AwardDateStart)
-				filter["awarddRecords.awardDate"].(bson.M)["$gte"] = awardDateStart
+
+	if params.IsAward != nil {
+		// filter for Award
+		if *params.IsAward {
+			filter["isAward"] = true
+			// filter for awardName
+			if params.AwardName != nil {
+				filter["awarddRecords.awardName"] = bson.M{"$regex": primitive.Regex{Pattern: *params.AwardName, Options: "i"}}
 			}
-			if params.AwardDateEnd != nil {
-				awardDateEnd := primitive.NewDateTimeFromTime(*params.AwardDateEnd)
-				filter["awarddRecords.awardDate"].(bson.M)["$lte"] = awardDateEnd
+			// filter for awardDate
+			if params.AwardDateStart != nil || params.AwardDateEnd != nil {
+				filter["awarddRecords.awardDate"] = bson.M{}
+				if params.AwardDateStart != nil {
+					awardDateStart := primitive.NewDateTimeFromTime(*params.AwardDateStart)
+					filter["awarddRecords.awardDate"].(bson.M)["$gte"] = awardDateStart
+				}
+				if params.AwardDateEnd != nil {
+					awardDateEnd := primitive.NewDateTimeFromTime(*params.AwardDateEnd)
+					filter["awarddRecords.awardDate"].(bson.M)["$lte"] = awardDateEnd
+				}
 			}
-		}
-		// filter for awardLevel
-		if params.AwardLevel != nil {
-			filter["awarddRecords.awardLevel"] = bson.M{"$regex": primitive.Regex{Pattern: *params.AwardLevel, Options: "i"}}
-		}
-		// filter for awardRank
-		if params.AwardRank != nil {
-			filter["awarddRecords.awardRank"] = bson.M{"$regex": primitive.Regex{Pattern: *params.AwardRank, Options: "i"}}
-		}
-		// filter for awardCreated
-		if params.AwardCreatedStart != nil || params.AwardCreatedEnd != nil {
-			filter["awarddRecords.createdAt"] = bson.M{}
-			if params.AwardCreatedStart != nil {
-				awardCreatedStart := primitive.NewDateTimeFromTime(*params.AwardCreatedStart)
-				filter["awarddRecords.createdAt"].(bson.M)["$gte"] = awardCreatedStart
+			// filter for awardLevel
+			if params.AwardLevel != nil {
+				filter["awarddRecords.awardLevel"] = bson.M{"$regex": primitive.Regex{Pattern: *params.AwardLevel, Options: "i"}}
 			}
-			if params.AwardCreatedEnd != nil {
-				awardCreatedEnd := primitive.NewDateTimeFromTime(*params.AwardCreatedEnd)
-				filter["awarddRecords.createdAt"].(bson.M)["$lte"] = awardCreatedEnd
+			// filter for awardRank
+			if params.AwardRank != nil {
+				filter["awarddRecords.awardRank"] = bson.M{"$regex": primitive.Regex{Pattern: *params.AwardRank, Options: "i"}}
 			}
-		}
-		// filter for awardUpdated
-		if params.AwardUpdatedStart != nil || params.AwardUpdatedEnd != nil {
-			filter["awarddRecords.updatedAt"] = bson.M{}
-			if params.AwardUpdatedStart != nil {
-				awardUpdatedStart := primitive.NewDateTimeFromTime(*params.AwardUpdatedStart)
-				filter["awarddRecords.updatedAt"].(bson.M)["$gte"] = awardUpdatedStart
-			}
-			if params.AwardUpdatedEnd != nil {
-				awardUpdatedEnd := primitive.NewDateTimeFromTime(*params.AwardUpdatedEnd)
-				filter["awarddRecords.updatedAt"].(bson.M)["$lte"] = awardUpdatedEnd
-			}
+		} else {
+			filter["isAward"] = false
 		}
 	}
 
@@ -221,11 +179,9 @@ func (r *SciResearchRepo) CreateSciResearch(sciResearch *models.SciResearch) (*p
 	sciResearch.CreatedAt = createdTime
 	sciResearch.UpdatedAt = createdTime
 
-	if sciResearch.AwarddRecords != nil {
-		for _, awardRecord := range sciResearch.AwarddRecords {
+	if sciResearch.AwardRecords != nil {
+		for _, awardRecord := range sciResearch.AwardRecords {
 			awardRecord.ID = primitive.NewObjectID()
-			awardRecord.CreatedAt = createdTime
-			awardRecord.UpdatedAt = createdTime
 		}
 	}
 
@@ -237,54 +193,13 @@ func (r *SciResearchRepo) CreateSciResearch(sciResearch *models.SciResearch) (*p
 	return &newSciResearchId, nil
 }
 
-func (r *SciResearchRepo) AddAwardRecord(sciResearchId primitive.ObjectID, awardRecord *models.AwardRecord) error {
-	awardRecord.ID = primitive.NewObjectID()
-	createdTime := primitive.NewDateTimeFromTime(time.Now())
-	awardRecord.CreatedAt = createdTime
-	awardRecord.UpdatedAt = createdTime
-	_, err := r.collection.UpdateOne(
-		context.Background(),
-		bson.M{"_id": sciResearchId},
-		bson.M{
-			"$push": bson.M{"awarddRecords": awardRecord},
-			"$set":  bson.M{"updatedAt": createdTime},
-		},
-	)
-	return err
-}
-
 func (r *SciResearchRepo) UpdateSciResearch(sciResearch *models.SciResearch) error {
 	sciResearch.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
 	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": sciResearch.ID}, bson.M{"$set": sciResearch})
 	return err
 }
 
-func (r *AwardRecordRepo) UpdateAwardRecord(sciResearchId primitive.ObjectID, awardRecord *models.AwardRecord) error {
-	updatedTime := primitive.NewDateTimeFromTime(time.Now())
-	awardRecord.UpdatedAt = updatedTime
-	_, err := r.collection.UpdateOne(
-		context.Background(),
-		bson.M{"_id": sciResearchId, "awarddRecords._id": awardRecord.ID},
-		bson.M{
-			"$set": bson.M{"awarddRecords.$": awardRecord, "updatedAt": updatedTime},
-		},
-	)
-	return err
-}
-
 func (r *SciResearchRepo) DeleteSciResearch(id primitive.ObjectID) error {
 	_, err := r.collection.DeleteOne(context.Background(), bson.M{"_id": id})
-	return err
-}
-
-func (r *AwardRecordRepo) DeleteAwardRecord(id primitive.ObjectID) error {
-	_, err := r.collection.UpdateOne(
-		context.Background(),
-		bson.M{"_id": id},
-		bson.M{
-			"$pull": bson.M{"awarddRecords": bson.M{"_id": id}},
-			"$set":  bson.M{"updatedAt": primitive.NewDateTimeFromTime(time.Now())},
-		},
-	)
 	return err
 }

@@ -17,14 +17,17 @@ func NewMentorshipService(mentorshipRepo *repository.MentorshipRepo) *Mentorship
 }
 
 func (mentorshipService *MentorshipService) CreateMentorship(userId primitive.ObjectID, newMentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
-	guidanceDate := primitive.NewDateTimeFromTime(*newMentorshipData.GuidanceDate)
 
 	newMentorship := models.Mentorship{
 		UserId:       userId,
 		ProjectName:  newMentorshipData.ProjectName,
 		StudentNames: newMentorshipData.StudentNames,
 		Grade:        newMentorshipData.Grade,
-		GuidanceDate: &guidanceDate,
+	}
+
+	if newMentorshipData.GuidanceDate != nil {
+		guidanceDate := primitive.NewDateTimeFromTime(*newMentorshipData.GuidanceDate)
+		newMentorship.GuidanceDate = &guidanceDate
 	}
 
 	objectId, err := mentorshipService.Repo.CreateMentorship(&newMentorship)
@@ -95,29 +98,22 @@ func (mentorshipService *MentorshipService) UpdateMentorship(id string, mentorsh
 }
 
 func (mentorshipService *MentorshipService) DeleteMentorship(id string) (*graphql_models.Mentorship, error) {
+	mentorshipData, err := mentorshipService.GetMentorshipById(id)
+	if err != nil {
+		return nil, err
+	}
+
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
-	mentorshipData, err := mentorshipService.Repo.GetMentorshipById(objectId)
-	if err != nil {
-		return nil, err
-	}
+
 	err = mentorshipService.Repo.DeleteMentorship(objectId)
 	if err != nil {
 		return nil, err
 	}
 
-	guidanceDate := mentorshipData.GuidanceDate.Time()
-	return &graphql_models.Mentorship{
-		ID:           mentorshipData.ID.Hex(),
-		ProjectName:  mentorshipData.ProjectName,
-		StudentNames: mentorshipData.StudentNames,
-		Grade:        mentorshipData.Grade,
-		GuidanceDate: &guidanceDate,
-		CreatedAt:    mentorshipData.CreatedAt.Time(),
-		UpdatedAt:    mentorshipData.UpdatedAt.Time(),
-	}, nil
+	return mentorshipData, nil
 }
 
 func (mentorshipService *MentorshipService) GetMentorshipById(id string) (*graphql_models.Mentorship, error) {

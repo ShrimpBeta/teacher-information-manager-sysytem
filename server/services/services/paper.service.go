@@ -4,6 +4,7 @@ import (
 	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"server/persistence/repository"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -26,16 +27,19 @@ func (paperService *PaperService) CreatePaper(userId primitive.ObjectID, newPape
 		}
 		teachersIn[i+1] = objectId
 	}
-	publishDate := primitive.NewDateTimeFromTime(*newPaperData.PublishDate)
 
 	newPaper := models.Paper{
 		TeachersIn:   teachersIn,
 		TeachersOut:  newPaperData.TeachersOut,
 		Title:        newPaperData.Title,
-		PublishDate:  &publishDate,
 		Rank:         newPaperData.Rank,
 		JournalName:  newPaperData.JournalName,
 		JournalLevel: newPaperData.JournalLevel,
+	}
+
+	if newPaperData.PublishDate != nil {
+		publishDate := primitive.NewDateTimeFromTime(*newPaperData.PublishDate)
+		newPaper.PublishDate = &publishDate
 	}
 
 	objectId, err := paperService.Repo.CreatePaper(&newPaper)
@@ -47,29 +51,24 @@ func (paperService *PaperService) CreatePaper(userId primitive.ObjectID, newPape
 	if err != nil {
 		return nil, err
 	}
-	createdPublishDate := paperData.PublishDate.Time()
 
-	usersIn, err := userRepo.GetUsersByIds(teachersIn)
+	var publishDate *time.Time = nil
+	if paperData.PublishDate != nil {
+		date := paperData.PublishDate.Time()
+		publishDate = &date
+	}
+
+	usersInExport, err := userRepo.GetUsersExportByIds(teachersIn)
 	if err != nil {
 		return nil, err
-	}
-	userseExport := make([]*graphql_models.UserExport, len(usersIn))
-
-	for i, user := range usersIn {
-		userseExport[i] = &graphql_models.UserExport{
-			ID:       user.ID.Hex(),
-			Username: user.Username,
-			Email:    user.Email,
-			Avatar:   user.Avatar,
-		}
 	}
 
 	return &graphql_models.Paper{
 		ID:           paperData.ID.Hex(),
-		TeachersIn:   userseExport,
+		TeachersIn:   usersInExport,
 		TeachersOut:  paperData.TeachersOut,
 		Title:        paperData.Title,
-		PublishDate:  &createdPublishDate,
+		PublishDate:  publishDate,
 		Rank:         paperData.Rank,
 		JournalName:  paperData.JournalName,
 		JournalLevel: paperData.JournalLevel,
@@ -78,31 +77,39 @@ func (paperService *PaperService) CreatePaper(userId primitive.ObjectID, newPape
 	}, nil
 }
 
-func (paperService *PaperService) UpdatePaper(id string, paperData graphql_models.PaperData, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
+func (paperService *PaperService) UpdatePaper(id string, userId primitive.ObjectID, paperData graphql_models.PaperData, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
 
-	publishDate := primitive.NewDateTimeFromTime(*paperData.PublishDate)
-
-	paperUpdate := &models.Paper{
-		ID:          objectId,
-		TeachersOut: paperData.TeachersOut,
-		Title:       paperData.Title,
-		PublishDate: &publishDate,
-		Rank:        paperData.Rank,
+	paperUpdate, err := paperService.Repo.GetPaperById(objectId)
+	if err != nil {
+		return nil, err
 	}
-	if paperData.TeachersIn != nil {
-		teachersIn := make([]primitive.ObjectID, len(paperData.TeachersIn))
-		for i, teacher := range paperData.TeachersIn {
-			objectId, err := primitive.ObjectIDFromHex(*teacher)
-			if err != nil {
-				return nil, err
-			}
-			teachersIn[i] = objectId
+
+	teachersIn := make([]primitive.ObjectID, len(paperData.TeachersIn)+1)
+	teachersIn[0] = userId
+	for i, teacher := range paperData.TeachersIn {
+		objectId, err := primitive.ObjectIDFromHex(*teacher)
+		if err != nil {
+			return nil, err
 		}
-		paperUpdate.TeachersIn = teachersIn
+		teachersIn[i+1] = objectId
+	}
+
+	paperUpdate.TeachersIn = teachersIn
+	paperUpdate.TeachersOut = paperData.TeachersOut
+	paperUpdate.Title = paperData.Title
+	paperUpdate.Rank = paperData.Rank
+	paperUpdate.JournalName = paperData.JournalName
+	paperUpdate.JournalLevel = paperData.JournalLevel
+
+	if paperData.PublishDate == nil {
+		paperUpdate.PublishDate = nil
+	} else {
+		publishDate := primitive.NewDateTimeFromTime(*paperData.PublishDate)
+		paperUpdate.PublishDate = &publishDate
 	}
 
 	err = paperService.Repo.UpdatePaper(paperUpdate)
@@ -115,29 +122,23 @@ func (paperService *PaperService) UpdatePaper(id string, paperData graphql_model
 		return nil, err
 	}
 
-	usersIn, err := userRepo.GetUsersByIds(paperUpdate.TeachersIn)
+	usersInExport, err := userRepo.GetUsersExportByIds(paperUpdate.TeachersIn)
 	if err != nil {
 		return nil, err
 	}
-	userseExport := make([]*graphql_models.UserExport, len(usersIn))
 
-	for i, user := range usersIn {
-		userseExport[i] = &graphql_models.UserExport{
-			ID:       user.ID.Hex(),
-			Username: user.Username,
-			Email:    user.Email,
-			Avatar:   user.Avatar,
-		}
+	var publishDate *time.Time = nil
+	if paperUpdate.PublishDate != nil {
+		date := paperUpdate.PublishDate.Time()
+		publishDate = &date
 	}
-
-	updatePublishDate := paperUpdate.PublishDate.Time()
 
 	return &graphql_models.Paper{
 		ID:           paperUpdate.ID.Hex(),
-		TeachersIn:   userseExport,
+		TeachersIn:   usersInExport,
 		TeachersOut:  paperUpdate.TeachersOut,
 		Title:        paperUpdate.Title,
-		PublishDate:  &updatePublishDate,
+		PublishDate:  publishDate,
 		Rank:         paperUpdate.Rank,
 		JournalName:  paperUpdate.JournalName,
 		JournalLevel: paperUpdate.JournalLevel,
@@ -147,48 +148,23 @@ func (paperService *PaperService) UpdatePaper(id string, paperData graphql_model
 }
 
 func (paperService *PaperService) DeletePaper(id string, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
+
+	PaperData, err := paperService.GetPaperById(id, userRepo)
+	if err != nil {
+		return nil, err
+	}
+
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
 	}
-	PaperData, err := paperService.Repo.GetPaperById(objectId)
-	if err != nil {
-		return nil, err
-	}
+
 	err = paperService.Repo.DeletePaper(objectId)
 	if err != nil {
 		return nil, err
 	}
 
-	usersIn, err := userRepo.GetUsersByIds(PaperData.TeachersIn)
-	if err != nil {
-		return nil, err
-	}
-	userseExport := make([]*graphql_models.UserExport, len(usersIn))
-
-	for i, user := range usersIn {
-		userseExport[i] = &graphql_models.UserExport{
-			ID:       user.ID.Hex(),
-			Username: user.Username,
-			Email:    user.Email,
-			Avatar:   user.Avatar,
-		}
-	}
-
-	publishDate := PaperData.PublishDate.Time()
-
-	return &graphql_models.Paper{
-		ID:           PaperData.ID.Hex(),
-		TeachersIn:   userseExport,
-		TeachersOut:  PaperData.TeachersOut,
-		Title:        PaperData.Title,
-		PublishDate:  &publishDate,
-		Rank:         PaperData.Rank,
-		JournalName:  PaperData.JournalName,
-		JournalLevel: PaperData.JournalLevel,
-		CreatedAt:    PaperData.CreatedAt.Time(),
-		UpdatedAt:    PaperData.UpdatedAt.Time(),
-	}, nil
+	return PaperData, nil
 }
 
 func (paperService *PaperService) GetPaperById(id string, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
@@ -196,36 +172,29 @@ func (paperService *PaperService) GetPaperById(id string, userRepo *repository.U
 	if err != nil {
 		return nil, err
 	}
+
 	PaperData, err := paperService.Repo.GetPaperById(objectId)
 	if err != nil {
 		return nil, err
 	}
-	publishDate := PaperData.PublishDate.Time()
 
-	usersIn, err := userRepo.GetUsersByIds(PaperData.TeachersIn)
+	var publishDate *time.Time = nil
+	if PaperData.PublishDate != nil {
+		date := PaperData.PublishDate.Time()
+		publishDate = &date
+	}
+
+	usersInExport, err := userRepo.GetUsersExportByIds(PaperData.TeachersIn)
 	if err != nil {
 		return nil, err
 	}
-	userseExport := make([]*graphql_models.UserExport, len(usersIn))
-
-	for i, user := range usersIn {
-		userseExport[i] = &graphql_models.UserExport{
-			ID:       user.ID.Hex(),
-			Username: user.Username,
-			Email:    user.Email,
-			Avatar:   user.Avatar,
-		}
-	}
-
-	TeachersOut := make([]*string, len(PaperData.TeachersOut))
-	copy(TeachersOut, PaperData.TeachersOut)
 
 	return &graphql_models.Paper{
 		ID:           PaperData.ID.Hex(),
-		TeachersIn:   userseExport,
-		TeachersOut:  TeachersOut,
+		TeachersIn:   usersInExport,
+		TeachersOut:  PaperData.TeachersOut,
 		Title:        PaperData.Title,
-		PublishDate:  &publishDate,
+		PublishDate:  publishDate,
 		Rank:         PaperData.Rank,
 		JournalName:  PaperData.JournalName,
 		JournalLevel: PaperData.JournalLevel,
@@ -268,32 +237,23 @@ func (paperService *PaperService) GetPapersByFilter(userId primitive.ObjectID, f
 
 	papers := make([]*graphql_models.Paper, len(papersData))
 	for i, paper := range papersData {
-		usersIn, err := userRepo.GetUsersByIds(paper.TeachersIn)
+		usersInExport, err := userRepo.GetUsersExportByIds(paper.TeachersIn)
 		if err != nil {
 			return nil, err
 		}
-		userseExport := make([]*graphql_models.UserExport, len(usersIn))
 
-		for i, user := range usersIn {
-			userseExport[i] = &graphql_models.UserExport{
-				ID:       user.ID.Hex(),
-				Username: user.Username,
-				Email:    user.Email,
-				Avatar:   user.Avatar,
-			}
+		var publishDate *time.Time = nil
+		if paper.PublishDate != nil {
+			date := paper.PublishDate.Time()
+			publishDate = &date
 		}
-
-		TeachersOut := make([]*string, len(paper.TeachersOut))
-		copy(TeachersOut, paper.TeachersOut)
-
-		publishDate := paper.PublishDate.Time()
 
 		papers[i] = &graphql_models.Paper{
 			ID:           paper.ID.Hex(),
-			TeachersIn:   userseExport,
-			TeachersOut:  TeachersOut,
+			TeachersIn:   usersInExport,
+			TeachersOut:  paper.TeachersOut,
 			Title:        paper.Title,
-			PublishDate:  &publishDate,
+			PublishDate:  publishDate,
 			Rank:         paper.Rank,
 			JournalName:  paper.JournalName,
 			JournalLevel: paper.JournalLevel,

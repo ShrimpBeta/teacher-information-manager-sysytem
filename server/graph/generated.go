@@ -74,9 +74,9 @@ type ComplexityRoot struct {
 
 	AwardRecord struct {
 		AwardDate  func(childComplexity int) int
+		AwardLevel func(childComplexity int) int
 		AwardName  func(childComplexity int) int
 		AwardRank  func(childComplexity int) int
-		Awardlevel func(childComplexity int) int
 		CreatedAt  func(childComplexity int) int
 		ID         func(childComplexity int) int
 		UpdatedAt  func(childComplexity int) int
@@ -84,9 +84,9 @@ type ComplexityRoot struct {
 
 	AwardRecordPreview struct {
 		AwardDate  func(childComplexity int) int
+		AwardLevel func(childComplexity int) int
 		AwardName  func(childComplexity int) int
 		AwardRank  func(childComplexity int) int
-		Awardlevel func(childComplexity int) int
 	}
 
 	ClassTime struct {
@@ -612,6 +612,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AwardRecord.AwardDate(childComplexity), true
 
+	case "AwardRecord.awardLevel":
+		if e.complexity.AwardRecord.AwardLevel == nil {
+			break
+		}
+
+		return e.complexity.AwardRecord.AwardLevel(childComplexity), true
+
 	case "AwardRecord.awardName":
 		if e.complexity.AwardRecord.AwardName == nil {
 			break
@@ -625,13 +632,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AwardRecord.AwardRank(childComplexity), true
-
-	case "AwardRecord.awardlevel":
-		if e.complexity.AwardRecord.Awardlevel == nil {
-			break
-		}
-
-		return e.complexity.AwardRecord.Awardlevel(childComplexity), true
 
 	case "AwardRecord.createdAt":
 		if e.complexity.AwardRecord.CreatedAt == nil {
@@ -661,6 +661,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AwardRecordPreview.AwardDate(childComplexity), true
 
+	case "AwardRecordPreview.awardLevel":
+		if e.complexity.AwardRecordPreview.AwardLevel == nil {
+			break
+		}
+
+		return e.complexity.AwardRecordPreview.AwardLevel(childComplexity), true
+
 	case "AwardRecordPreview.awardName":
 		if e.complexity.AwardRecordPreview.AwardName == nil {
 			break
@@ -674,13 +681,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AwardRecordPreview.AwardRank(childComplexity), true
-
-	case "AwardRecordPreview.awardlevel":
-		if e.complexity.AwardRecordPreview.Awardlevel == nil {
-			break
-		}
-
-		return e.complexity.AwardRecordPreview.Awardlevel(childComplexity), true
 
 	case "ClassTime.dayOfWeek":
 		if e.complexity.ClassTime.DayOfWeek == nil {
@@ -4905,8 +4905,8 @@ func (ec *executionContext) fieldContext_AwardRecord_awardDate(ctx context.Conte
 	return fc, nil
 }
 
-func (ec *executionContext) _AwardRecord_awardlevel(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AwardRecord) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AwardRecord_awardlevel(ctx, field)
+func (ec *executionContext) _AwardRecord_awardLevel(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AwardRecord) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AwardRecord_awardLevel(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4919,7 +4919,7 @@ func (ec *executionContext) _AwardRecord_awardlevel(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Awardlevel, nil
+		return obj.AwardLevel, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4933,7 +4933,7 @@ func (ec *executionContext) _AwardRecord_awardlevel(ctx context.Context, field g
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_AwardRecord_awardlevel(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AwardRecord_awardLevel(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AwardRecord",
 		Field:      field,
@@ -5157,8 +5157,8 @@ func (ec *executionContext) fieldContext_AwardRecordPreview_awardDate(ctx contex
 	return fc, nil
 }
 
-func (ec *executionContext) _AwardRecordPreview_awardlevel(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AwardRecordPreview) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AwardRecordPreview_awardlevel(ctx, field)
+func (ec *executionContext) _AwardRecordPreview_awardLevel(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AwardRecordPreview) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AwardRecordPreview_awardLevel(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -5171,7 +5171,7 @@ func (ec *executionContext) _AwardRecordPreview_awardlevel(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Awardlevel, nil
+		return obj.AwardLevel, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5185,7 +5185,7 @@ func (ec *executionContext) _AwardRecordPreview_awardlevel(ctx context.Context, 
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_AwardRecordPreview_awardlevel(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AwardRecordPreview_awardLevel(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "AwardRecordPreview",
 		Field:      field,
@@ -16190,8 +16190,8 @@ func (ec *executionContext) fieldContext_SciResearch_awards(ctx context.Context,
 				return ec.fieldContext_AwardRecord_awardName(ctx, field)
 			case "awardDate":
 				return ec.fieldContext_AwardRecord_awardDate(ctx, field)
-			case "awardlevel":
-				return ec.fieldContext_AwardRecord_awardlevel(ctx, field)
+			case "awardLevel":
+				return ec.fieldContext_AwardRecord_awardLevel(ctx, field)
 			case "awardRank":
 				return ec.fieldContext_AwardRecord_awardRank(ctx, field)
 			case "createdAt":
@@ -16796,8 +16796,8 @@ func (ec *executionContext) fieldContext_SciResearchPreview_awards(ctx context.C
 				return ec.fieldContext_AwardRecordPreview_awardName(ctx, field)
 			case "awardDate":
 				return ec.fieldContext_AwardRecordPreview_awardDate(ctx, field)
-			case "awardlevel":
-				return ec.fieldContext_AwardRecordPreview_awardlevel(ctx, field)
+			case "awardLevel":
+				return ec.fieldContext_AwardRecordPreview_awardLevel(ctx, field)
 			case "awardRank":
 				return ec.fieldContext_AwardRecordPreview_awardRank(ctx, field)
 			}
@@ -20272,7 +20272,7 @@ func (ec *executionContext) unmarshalInputAwardRecordData(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"awardName", "awardDate", "awardlevel", "awardRank"}
+	fieldsInOrder := [...]string{"awardName", "awardDate", "awardLevel", "awardRank"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -20293,13 +20293,13 @@ func (ec *executionContext) unmarshalInputAwardRecordData(ctx context.Context, o
 				return it, err
 			}
 			it.AwardDate = data
-		case "awardlevel":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("awardlevel"))
+		case "awardLevel":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("awardLevel"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Awardlevel = data
+			it.AwardLevel = data
 		case "awardRank":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("awardRank"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -21548,7 +21548,7 @@ func (ec *executionContext) unmarshalInputSciResearchFilter(ctx context.Context,
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"teachersIn", "teachersOut", "number", "title", "startDateStart", "startDateEnd", "level", "rank", "achievement", "fund", "createdStart", "createdEnd", "updatedStart", "updatedEnd", "isAward", "awardName", "awardDateStart", "awardDateEnd", "awardlevel", "awardRank", "awardCreatedStart", "awardCreatedEnd", "awardUpdatedStart", "awardUpdatedEnd"}
+	fieldsInOrder := [...]string{"teachersIn", "teachersOut", "number", "title", "startDateStart", "startDateEnd", "level", "rank", "achievement", "fund", "createdStart", "createdEnd", "updatedStart", "updatedEnd", "isAward", "awardName", "awardDateStart", "awardDateEnd", "awardLevel", "awardRank", "awardCreatedStart", "awardCreatedEnd", "awardUpdatedStart", "awardUpdatedEnd"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21681,13 +21681,13 @@ func (ec *executionContext) unmarshalInputSciResearchFilter(ctx context.Context,
 				return it, err
 			}
 			it.AwardDateEnd = data
-		case "awardlevel":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("awardlevel"))
+		case "awardLevel":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("awardLevel"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Awardlevel = data
+			it.AwardLevel = data
 		case "awardRank":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("awardRank"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
@@ -22272,8 +22272,8 @@ func (ec *executionContext) _AwardRecord(ctx context.Context, sel ast.SelectionS
 			}
 		case "awardDate":
 			out.Values[i] = ec._AwardRecord_awardDate(ctx, field, obj)
-		case "awardlevel":
-			out.Values[i] = ec._AwardRecord_awardlevel(ctx, field, obj)
+		case "awardLevel":
+			out.Values[i] = ec._AwardRecord_awardLevel(ctx, field, obj)
 		case "awardRank":
 			out.Values[i] = ec._AwardRecord_awardRank(ctx, field, obj)
 		case "createdAt":
@@ -22324,8 +22324,8 @@ func (ec *executionContext) _AwardRecordPreview(ctx context.Context, sel ast.Sel
 			out.Values[i] = ec._AwardRecordPreview_awardName(ctx, field, obj)
 		case "awardDate":
 			out.Values[i] = ec._AwardRecordPreview_awardDate(ctx, field, obj)
-		case "awardlevel":
-			out.Values[i] = ec._AwardRecordPreview_awardlevel(ctx, field, obj)
+		case "awardLevel":
+			out.Values[i] = ec._AwardRecordPreview_awardLevel(ctx, field, obj)
 		case "awardRank":
 			out.Values[i] = ec._AwardRecordPreview_awardRank(ctx, field, obj)
 		default:

@@ -44,5 +44,19 @@ func (classScheduleService *ClassScheduleService) GetAcademicTermById(id string)
 }
 
 func (classScheduleService *ClassScheduleService) GetAcademicTerms(userId primitive.ObjectID) ([]*graphql_models.AcademicTermShort, error) {
-	panic("not implemented")
+	AcademicTermsData, err := classScheduleService.Repo.GetAcademicTermsByUserId(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	academicTerms := make([]*graphql_models.AcademicTermShort, len(AcademicTermsData))
+	for i, academicterm := range AcademicTermsData {
+		academicTerms[i] = &graphql_models.AcademicTermShort{
+			ID:        academicterm.ID.Hex(),
+			TermName:  academicterm.Name,
+			CreatedAt: academicterm.CreatedAt.Time(),
+			UpdatedAt: academicterm.UpdatedAt.Time(),
+		}
+	}
+	return academicTerms, nil
 }

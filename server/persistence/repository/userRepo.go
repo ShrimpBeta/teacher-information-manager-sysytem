@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"time"
 
@@ -59,6 +60,24 @@ func (r *UserRepo) GetUsersByIds(ids []primitive.ObjectID) ([]models.User, error
 		users = append(users, user)
 	}
 	return users, nil
+}
+
+func (r *UserRepo) GetUsersExportByIds(ids []primitive.ObjectID) ([]*graphql_models.UserExport, error) {
+	usersIn, err := r.GetUsersByIds(ids)
+	if err != nil {
+		return nil, err
+	}
+
+	usersExport := make([]*graphql_models.UserExport, len(usersIn))
+	for i, user := range usersIn {
+		usersExport[i] = &graphql_models.UserExport{
+			ID:       user.ID.Hex(),
+			Username: user.Username,
+			Email:    user.Email,
+			Avatar:   user.Avatar,
+		}
+	}
+	return usersExport, nil
 }
 
 func (r *UserRepo) GetAllUsers() ([]models.User, error) {

@@ -48,7 +48,7 @@ type AwardRecord struct {
 	ID         string     `json:"id"`
 	AwardName  string     `json:"awardName"`
 	AwardDate  *time.Time `json:"awardDate,omitempty"`
-	Awardlevel *string    `json:"awardlevel,omitempty"`
+	AwardLevel *string    `json:"awardLevel,omitempty"`
 	AwardRank  *string    `json:"awardRank,omitempty"`
 	CreatedAt  time.Time  `json:"createdAt"`
 	UpdatedAt  time.Time  `json:"updatedAt"`
@@ -57,14 +57,14 @@ type AwardRecord struct {
 type AwardRecordData struct {
 	AwardName  string     `json:"awardName"`
 	AwardDate  *time.Time `json:"awardDate,omitempty"`
-	Awardlevel *string    `json:"awardlevel,omitempty"`
+	AwardLevel *string    `json:"awardLevel,omitempty"`
 	AwardRank  *string    `json:"awardRank,omitempty"`
 }
 
 type AwardRecordPreview struct {
 	AwardName  *string    `json:"awardName,omitempty"`
 	AwardDate  *time.Time `json:"awardDate,omitempty"`
-	Awardlevel *string    `json:"awardlevel,omitempty"`
+	AwardLevel *string    `json:"awardLevel,omitempty"`
 	AwardRank  *string    `json:"awardRank,omitempty"`
 }
 
@@ -460,7 +460,7 @@ type SciResearchFilter struct {
 	AwardName         *string    `json:"awardName,omitempty"`
 	AwardDateStart    *time.Time `json:"awardDateStart,omitempty"`
 	AwardDateEnd      *time.Time `json:"awardDateEnd,omitempty"`
-	Awardlevel        *string    `json:"awardlevel,omitempty"`
+	AwardLevel        *string    `json:"awardLevel,omitempty"`
 	AwardRank         *string    `json:"awardRank,omitempty"`
 	AwardCreatedStart *time.Time `json:"awardCreatedStart,omitempty"`
 	AwardCreatedEnd   *time.Time `json:"awardCreatedEnd,omitempty"`
