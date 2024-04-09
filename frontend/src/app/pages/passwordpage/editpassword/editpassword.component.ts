@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PasswordTrue } from '../../../models/models/password.model';
 import { MatDividerModule } from '@angular/material/divider';
 import { PasswordformComponent } from '../../../components/passwordform/passwordform.component';
-import { PasswordMatchValidator } from '../../../shared/formvalidator/passwordmatch.validator';
 import { PasswordService } from '../../../services/password.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, takeUntil } from 'rxjs';
@@ -69,11 +68,6 @@ export class EditpasswordComponent implements OnInit, OnDestroy {
   }
 
   updatePassword(event: any) {
-    if (this.passwordForm.invalid) {
-      this.snackBar.open('请检查表单', '关闭', { duration: 3000 });
-      return;
-    }
-
     this.passwordService.updatePassword(this.password.id, this.passwordForm.value)
       .pipe(takeUntil(this.destroy$)).subscribe({
         next: (password) => {

@@ -1,1 +1,53 @@
-<p>compguidanceform works!</p>
+<form [formGroup]="compGuidanceForm" (ngSubmit)="onSubmit()">
+  <div class="form-content">
+    <mat-form-field appearance="outline">
+      <mat-label>项目名称</mat-label>
+      <input matInput type="text" formControlName="projectName" placeholder="项目名称">
+      @if(compGuidanceForm.get('projectName')!.touched && compGuidanceForm.get('projectName')!.errors){
+      <mat-error>项目名称不能为空</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>学生姓名</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Enter fruits">
+        @for(studentName of studentNames.controls;track $index) {
+        <mat-chip-row (removed)="removeStudentName($index)" [editable]="true" (edited)="editStudentName( $event,$index)"
+          aria-description="press enter to edit">
+          {{studentName.value}}
+          <button matChipRemove aria-label="remove">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        }
+        <input placeholder="New StudentName..." [matChipInputFor]="chipGrid"
+          (matChipInputTokenEnd)="addStudentName($event)" />
+      </mat-chip-grid>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>竞赛分数</mat-label>
+      <input matInput type="text" formControlName="competitionScore" placeholder="竞赛分数">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>获奖情况</mat-label>
+      <input matInput type="text" formControlName="awardStatus" placeholder="项目成绩">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>项目日期</mat-label>
+      <input matInput [matDatepicker]="guidanceDatePicker" formControlName="guidanceDate" placeholder="项目日期">
+      <mat-datepicker-toggle matIconSuffix [for]="guidanceDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #guidanceDatePicker></mat-datepicker>
+    </mat-form-field>
+
+
+  </div>
+  <mat-divider></mat-divider>
+  <div class="form-submit">
+    <button type="submit" mat-raised-button color="primary">
+      {{buttonLabel}}
+    </button>
+  </div>
+</form>

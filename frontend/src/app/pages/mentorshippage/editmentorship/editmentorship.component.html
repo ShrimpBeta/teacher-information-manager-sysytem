@@ -1,1 +1,12 @@
-<app-mentorshipform></app-mentorshipform>
+<div class="container">
+  <div class="content-wrapper">
+    <div class="title">
+      <h2>编辑导师制</h2>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="content">
+      <app-mentorshipform [buttonLabel]="buttonLabel" [mentorshipForm]="mentorshipForm"
+        (submitForm)="createMentorship()"></app-mentorshipform>
+    </div>
+  </div>
+</div>

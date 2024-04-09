@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDivider } from '@angular/material/divider';
+import { MatDividerModule } from '@angular/material/divider';
 import { PasswordformComponent } from '../../../components/passwordform/passwordform.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -12,7 +12,7 @@ import { URLValidator } from '../../../shared/formvalidator/url.validator';
 @Component({
   selector: 'app-newpassword',
   standalone: true,
-  imports: [MatDivider, PasswordformComponent],
+  imports: [MatDividerModule, PasswordformComponent],
   templateUrl: './newpassword.component.html',
   styleUrl: './newpassword.component.scss'
 })
@@ -59,11 +59,6 @@ export class NewpasswordComponent implements OnInit, OnDestroy {
   }
 
   createPassword(event: any) {
-    if (this.passwordForm.invalid) {
-      this.snackBar.open('请检查表单', '关闭', { duration: 3000 });
-      return;
-    }
-
     this.passwordService.createPassword(this.passwordForm.value)
       .pipe(takeUntil(this.destroy$)).subscribe(
         {

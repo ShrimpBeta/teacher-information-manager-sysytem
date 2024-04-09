@@ -1,1 +1,86 @@
-<p>paperform works!</p>
+<form [formGroup]="paperForm" (ngSubmit)="onSubmit()">
+  <div class="form-content">
+    <mat-form-field appearance="outline">
+      <mat-label>题目</mat-label>
+      <input matInput type="text" formControlName="title" placeholder="题目">
+      @if(paperForm.get('title')!.touched &&paperForm.get('title')!.errors) {
+      <mat-error>题目不能为空</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>内部教师</mat-label>
+      <mat-chip-grid #chipGridTeachersIn aria-label="Fruit selection">
+        @for(teacherIn of teachersIn.controls;track $index) {
+        <mat-chip-row (removed)="removeTeachersIn($index)">
+          {{teacherIn.value.username}}
+          <button matChipRemove aria-label="remove">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        }
+      </mat-chip-grid>
+      <input placeholder="New Tearcher..." #teacherInInput [formControl]="teachersInCtrl"
+        [matChipInputFor]="chipGridTeachersIn" [matAutocomplete]="auto"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="addTeachersIn($event)" />
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="teachersInSelected($event)">
+        @for(teacherInItem of teachersInOptions;track $index) {
+        <mat-option [value]="teacherInItem">
+          <div class="select-item">
+            <img [src]="teacherInItem.avatar" alt="Avatar" />
+            <div class="select-detail">
+              <span>{{teacherInItem.username}}</span>
+              <span>{{teacherInItem.email}}</span>
+            </div>
+          </div>
+        </mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>外部教师</mat-label>
+      <mat-chip-grid #chipGridTeachersOut aria-label="Enter fruits">
+        @for(teacherOut of teachersOut.controls;track $index) {
+        <mat-chip-row (removed)="removeTeachersOut($index)" [editable]="true" (edited)="editTeachersOut($event,$index)"
+          aria-description="press enter to edit">
+          {{teacherOut.value}}
+          <button matChipRemove aria-label="remove">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        }
+        <input placeholder="New Tearcher.." [matChipInputFor]="chipGridTeachersOut"
+          (matChipInputTokenEnd)="addTeachersOut($event)" />
+      </mat-chip-grid>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>排名</mat-label>
+      <input matInput type="text" formControlName="rank" placeholder="排名">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>期刊名称</mat-label>
+      <input matInput type="text" formControlName="journalName" placeholder="期刊名称">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>期刊级别</mat-label>
+      <input matInput type="text" formControlName="journalLevel" placeholder="期刊级别">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>发表时间</mat-label>
+      <input matInput [matDatepicker]="publishDatePicker" formControlName="publishDate" placeholder="发表时间">
+      <mat-datepicker-toggle matSuffix [for]="publishDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #publishDatePicker></mat-datepicker>
+    </mat-form-field>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="form-submit">
+    <button type="submit" mat-raised-button color="primary">
+      {{buttonLabel}}
+    </button>
+  </div>
+</form>

@@ -1,1 +1,12 @@
-<p>newsciresearch works!</p>
+<div class="container">
+  <div class="content-wrapper">
+    <div class="title">
+      <h2>新建科研项目</h2>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="content">
+      <app-sciresearchform [buttonLabel]="buttonLabel" [sciresearchForm]="sciResearchForm"
+        [teachersInOptions]="teachersInOptions" (submitForm)="createSciResearch"></app-sciresearchform>
+    </div>
+  </div>
+</div>

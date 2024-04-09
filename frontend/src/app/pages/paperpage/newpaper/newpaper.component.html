@@ -1,1 +1,12 @@
-<p>newpaper works!</p>
+<div class="container">
+  <div class="content-wrapper">
+    <div class="title">
+      <h2>新建论文记录</h2>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="content">
+      <app-paperform [buttonLabel]="buttonLabel" [paperForm]="paperForm" [teachersInOptions]="teachersInOptions"
+        (submitForm)="createPaper()"></app-paperform>
+    </div>
+  </div>
+</div>

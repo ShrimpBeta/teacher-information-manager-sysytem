@@ -1,1 +1,12 @@
-<p>newugpgguidance works!</p>
+<div class="container">
+  <div class="content-wrapper">
+    <div class="title">
+      <h2>新建毕设指导记录</h2>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="content">
+      <app-ugpgguidanceform [buttonLabel]="buttonLabel" [ugpgGuidanceForm]="ugpgGuidanceForm"
+        (submitForm)="createUgpgGuidance()"></app-ugpgguidanceform>
+    </div>
+  </div>
+</div>

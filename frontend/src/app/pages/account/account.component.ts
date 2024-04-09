@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivateUser, ActivateUserResponse, UpdateUser, User } from '../../models/models/user.model';
+import { ActivateUser, UpdateUser, User } from '../../models/models/user.model';
 import { Subject, takeUntil } from 'rxjs';
 import { AuthRepository } from '../../core/auth/auth.repository';
 import { MatDividerModule } from '@angular/material/divider';

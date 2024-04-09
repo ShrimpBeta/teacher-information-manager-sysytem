@@ -1,1 +1,12 @@
-<p>newcompguidance works!</p>
+<div class="container">
+  <div class="content-wrapper">
+    <div class="title">
+      <h2>新建竞赛指导</h2>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="content">
+      <app-compguidanceform [buttonLabel]="buttonLabel" [compGuidanceForm]="compGuidanceForm"
+        (submitForm)="createCompguidance()"></app-compguidanceform>
+    </div>
+  </div>
+</div>

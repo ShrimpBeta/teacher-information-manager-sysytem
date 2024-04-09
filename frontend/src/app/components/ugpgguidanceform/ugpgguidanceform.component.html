@@ -1,1 +1,62 @@
-<p>ugpgguidanceform works!</p>
+<form [formGroup]="ugpgGuidanceForm" (ngSubmit)="onSubmit()">
+  <div class="form-content">
+    <mat-form-field appearance="outline">
+      <mat-label>毕设主题</mat-label>
+      <input matInput type="text" formControlName="thesisTopic" placeholder="毕设主题">
+      @if(ugpgGuidanceForm.get('thesisTopic')!.touched && ugpgGuidanceForm.get('thesisTopic')!.errors){
+      <mat-error>毕设主题不能为空</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>学生名称</mat-label>
+      <input matInput type="text" formControlName="studentName" placeholder="学生名称">
+      @if(ugpgGuidanceForm.get('studentName')!.touched && ugpgGuidanceForm.get('studentName')!.errors){
+      <mat-error>学生名称不能为空</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>开题检查结果</mat-label>
+      <input matInput type="text" formControlName="openingCheckResult" placeholder="开题结果">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>开题检查日期</mat-label>
+      <input matInput [matDatepicker]="openingCheckPicker" formControlName="openingCheckDate" placeholder="开题检查日期">
+      <mat-datepicker-toggle matIconSuffix [for]="openingCheckPicker"></mat-datepicker-toggle>
+      <mat-datepicker #openingCheckPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>中期检查结果</mat-label>
+      <input matInput type="text" formControlName="midtermCheckResult" placeholder="中期检查结果">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>中期检查日期</mat-label>
+      <input matInput [matDatepicker]="midtermCheckPicker" formControlName="midtermCheckDate" placeholder="中期检查日期">
+      <mat-datepicker-toggle matIconSuffix [for]="midtermCheckPicker"></mat-datepicker-toggle>
+      <mat-datepicker #midtermCheckPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>最终结果</mat-label>
+      <input matInput type="text" formControlName="defenseResult" placeholder="最终结果">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>最终日期</mat-label>
+      <input matInput [matDatepicker]="defenseDatePicker" formControlName="defenseDate" placeholder="最终日期">
+      <mat-datepicker-toggle matIconSuffix [for]="defenseDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #defenseDatePicker></mat-datepicker>
+    </mat-form-field>
+
+  </div>
+  <mat-divider></mat-divider>
+  <div class="form-submit">
+    <button type="submit" mat-raised-button color="primary">
+      {{ buttonLabel }}
+    </button>
+  </div>
+</form>

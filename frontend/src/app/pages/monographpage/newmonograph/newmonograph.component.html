@@ -1,1 +1,12 @@
-<p>newmonograph works!</p>
+<div class="container">
+  <div class="content-wrapper">
+    <div class="title">
+      <h2>新建专著记录</h2>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="content">
+      <app-monographform [buttonLabel]="buttonLabel" [monographForm]="monographForm"
+        [teachersInOptions]="teachersInOptions" (submitForm)="createMonograph()"></app-monographform>
+    </div>
+  </div>
+</div>

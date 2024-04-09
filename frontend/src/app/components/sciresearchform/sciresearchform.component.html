@@ -1,1 +1,146 @@
-<p>sciresearchform works!</p>
+<form [formGroup]="sciresearchForm" (ngSubmit)="onSubmit()">
+  <div class="form-content">
+    <mat-form-field appearance="outline">
+      <mat-label>项目名称</mat-label>
+      <input matInput type="text" formControlName="title" placeholder="项目名称">
+      @if(sciresearchForm.get('title')!.touched && sciresearchForm.get('title')!.errors){
+      <mat-error>项目名称不能为空</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>项目编号</mat-label>
+      <input matInput type="text" formControlName="number" placeholder="项目编号">
+      @if(sciresearchForm.get('number')!.touched && sciresearchForm.get('number')!.errors){
+      <mat-error>项目编号不能为空</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>内部教师</mat-label>
+      <mat-chip-grid #chipGridTeachersIn aria-label="Fruit selection">
+        @for(teacherIn of teachersIn.controls;track $index) {
+        <mat-chip-row (removed)="removeTeachersIn($index)">
+          {{teacherIn.value.username}}
+          <button matChipRemove aria-label="remove">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        }
+      </mat-chip-grid>
+      <input placeholder="New Tearcher..." #teacherInInput [formControl]="teachersInCtrl"
+        [matChipInputFor]="chipGridTeachersIn" [matAutocomplete]="auto"
+        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="addTeachersIn($event)" />
+      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="teachersInSelected($event)">
+        @for(teacherInItem of teachersInOptions;track $index) {
+        <mat-option [value]="teacherInItem">
+          <div class="select-item">
+            <img [src]="teacherInItem.avatar" alt="Avatar" />
+            <div class="select-detail">
+              <span>{{teacherInItem.username}}</span>
+              <span>{{teacherInItem.email}}</span>
+            </div>
+          </div>
+        </mat-option>
+        }
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>外部教师</mat-label>
+      <mat-chip-grid #chipGridTeachersOut aria-label="Enter fruits">
+        @for(teacherOut of teachersOut.controls;track $index) {
+        <mat-chip-row (removed)="removeTeachersOut($index)" [editable]="true" (edited)="editTeachersOut($event,$index)"
+          aria-description="press enter to edit">
+          {{teacherOut.value}}
+          <button matChipRemove aria-label="remove">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        }
+        <input placeholder="New Tearcher.." [matChipInputFor]="chipGridTeachersOut"
+          (matChipInputTokenEnd)="addTeachersOut($event)" />
+      </mat-chip-grid>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>项目级别</mat-label>
+      <input matInput type="text" formControlName="level" placeholder="项目级别">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>项目排名</mat-label>
+      <input matInput type="text" formControlName="rank" placeholder="项目排名">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>项目获奖</mat-label>
+      <input matInput type="text" formControlName="achievement" placeholder="项目获奖">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>项目资金</mat-label>
+      <input matInput type="text" formControlName="fund" placeholder="项目资金">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>项目开始时间</mat-label>
+      <input matInput [matDatepicker]="startDatePicker" formControlName="startDate" placeholder="项目开始时间">
+      <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #startDatePicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>项目持续时间</mat-label>
+      <input matInput type="text" formControlName="duration" placeholder="项目持续时间">
+    </mat-form-field>
+  </div>
+
+  @for(awardRecord of awardRecords.controls;track $index) {
+  <mat-divider></mat-divider>
+  <div class="award-form" formArrayName="awardRecords">
+    <div class="title">
+      <div>获奖记录{{$index+1}}</div>
+      <button mat-mini-fab color="primary" aria-label="delete award" type="button" (click)="removeAwardRecord($index)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    <div class="form-content" [formGroupName]="$index">
+      <mat-form-field appearance="outline">
+        <mat-label>获奖名称</mat-label>
+        <input matInput type="text" formControlName="awardName" placeholder="获奖名称">
+        @if(awardRecord.get('awardName')!.touched && awardRecord.get('awardName')!.errors){
+        <mat-error>获奖名称不能为空</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>获奖等级</mat-label>
+        <input matInput type="text" formControlName="awardLevel" placeholder="获奖等级">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>获奖排名</mat-label>
+        <input matInput type="text" formControlName="awardRank" placeholder="获奖排名">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>获奖时间</mat-label>
+        <input matInput [matDatepicker]="awardDatePicker" formControlName="awardDate" placeholder="获奖时间">
+        <mat-datepicker-toggle matSuffix [for]="awardDatePicker"></mat-datepicker-toggle>
+        <mat-datepicker #awardDatePicker></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </div>
+  }
+  <mat-divider style="margin-top: 0;"></mat-divider>
+  <div class="form-submit">
+    <button mat-raised-button color="primary" (click)="addAwardRecord()" type="button">
+      <mat-icon>add</mat-icon>
+      <span>添加获奖记录</span>
+    </button>
+    <button type="submit" mat-raised-button color="primary">
+      {{buttonLabel}}
+    </button>
+  </div>
+</form>

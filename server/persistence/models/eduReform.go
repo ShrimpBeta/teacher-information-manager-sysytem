@@ -7,8 +7,8 @@ import (
 // 教改项目
 type EduReform struct {
 	ID          primitive.ObjectID   `bson:"_id"`
-	TeacherIn   []primitive.ObjectID `bson:"teachersIn"`
-	TeacherOut  []*string            `bson:"teachersOut,omitempty"`
+	TeachersIn  []primitive.ObjectID `bson:"teachersIn"`
+	TeachersOut []*string            `bson:"teachersOut,omitempty"`
 	Number      string               `bson:"number"`
 	Title       string               `bson:"title"`
 	StartDate   *primitive.DateTime  `bson:"startDate,omitempty"`

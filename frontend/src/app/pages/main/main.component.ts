@@ -28,10 +28,10 @@ export class MainComponent implements OnInit {
       links: [
         { path: '/main/password', name: '密码管理' },
         { path: '/main/classschedule', name: '课程表' },
-        { path: '/main/educationreform', name: '教改项目' },
         { path: '/main/mentorship', name: '导师制' },
         { path: '/main/competitionguidance', name: '竞赛指导' },
-        { path: '/main//ugpgguidance', name: '毕设指导' }
+        { path: '/main//ugpgguidance', name: '毕设指导' },
+        { path: '/main/educationreform', name: '教改项目' },
       ]
     },
     {
