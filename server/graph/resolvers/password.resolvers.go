@@ -101,7 +101,7 @@ func (r *queryResolver) PasswordTrue(ctx context.Context, id string) (*graphql_m
 		return nil, err
 	}
 
-	return r.PasswordService.GetPasswordById(id, user.MasterKey)
+	return r.PasswordService.GetPasswordTrueById(id, user.MasterKey)
 }
 
 // PasswordsByFilter is the resolver for the passwordsByFilter field.

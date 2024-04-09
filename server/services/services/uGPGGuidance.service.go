@@ -47,41 +47,7 @@ func (uGPGGuidanceService *UGPGGuidanceService) CreateUGPGGuidance(userId primit
 		return nil, err
 	}
 
-	uGPGGuidanceData, err := uGPGGuidanceService.Repo.GetUGPGGuidanceById(*objectId)
-	if err != nil {
-		return nil, err
-	}
-
-	var openingCheckDate *time.Time = nil
-	if uGPGGuidanceData.OpeningCheckDate != nil {
-		date := uGPGGuidanceData.OpeningCheckDate.Time()
-		openingCheckDate = &date
-	}
-	var midtermCheckDate *time.Time = nil
-	if uGPGGuidanceData.MidtermCheckDate != nil {
-		date := uGPGGuidanceData.MidtermCheckDate.Time()
-		midtermCheckDate = &date
-	}
-	var defenseDate *time.Time = nil
-	if uGPGGuidanceData.DefenseDate != nil {
-		date := uGPGGuidanceData.DefenseDate.Time()
-		defenseDate = &date
-	}
-
-	return &graphql_models.UGPGGuidance{
-		ID:                 uGPGGuidanceData.ID.Hex(),
-		StudentName:        uGPGGuidanceData.StudentName,
-		ThesisTopic:        uGPGGuidanceData.ThesisTopic,
-		OpeningCheckResult: uGPGGuidanceData.OpeningCheckResult,
-		MidtermCheckResult: uGPGGuidanceData.MidtermCheckResult,
-		DefenseResult:      uGPGGuidanceData.DefenseResult,
-		OpeningCheckDate:   openingCheckDate,
-		MidtermCheckDate:   midtermCheckDate,
-		DefenseDate:        defenseDate,
-		CreatedAt:          uGPGGuidanceData.CreatedAt.Time(),
-		UpdatedAt:          uGPGGuidanceData.UpdatedAt.Time(),
-	}, nil
-
+	return uGPGGuidanceService.GetUGPGGuidanceById(objectId.Hex())
 }
 
 func (uGPGGuidanceService *UGPGGuidanceService) UpdateUGPGGuidance(id string, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error) {
@@ -127,40 +93,7 @@ func (uGPGGuidanceService *UGPGGuidanceService) UpdateUGPGGuidance(id string, uG
 		return nil, err
 	}
 
-	uGPGGuidanceUpdate, err = uGPGGuidanceService.Repo.GetUGPGGuidanceById(objectId)
-	if err != nil {
-		return nil, err
-	}
-
-	var openingCheckDate *time.Time = nil
-	if uGPGGuidanceUpdate.OpeningCheckDate != nil {
-		date := uGPGGuidanceUpdate.OpeningCheckDate.Time()
-		openingCheckDate = &date
-	}
-	var midtermCheckDate *time.Time = nil
-	if uGPGGuidanceUpdate.MidtermCheckDate != nil {
-		date := uGPGGuidanceUpdate.MidtermCheckDate.Time()
-		midtermCheckDate = &date
-	}
-	var defenseDate *time.Time = nil
-	if uGPGGuidanceUpdate.DefenseDate != nil {
-		date := uGPGGuidanceUpdate.DefenseDate.Time()
-		defenseDate = &date
-	}
-
-	return &graphql_models.UGPGGuidance{
-		ID:                 uGPGGuidanceUpdate.ID.Hex(),
-		StudentName:        uGPGGuidanceUpdate.StudentName,
-		ThesisTopic:        uGPGGuidanceUpdate.ThesisTopic,
-		OpeningCheckResult: uGPGGuidanceUpdate.OpeningCheckResult,
-		MidtermCheckResult: uGPGGuidanceUpdate.MidtermCheckResult,
-		DefenseResult:      uGPGGuidanceUpdate.DefenseResult,
-		OpeningCheckDate:   openingCheckDate,
-		MidtermCheckDate:   midtermCheckDate,
-		DefenseDate:        defenseDate,
-		CreatedAt:          uGPGGuidanceUpdate.CreatedAt.Time(),
-		UpdatedAt:          uGPGGuidanceUpdate.UpdatedAt.Time(),
-	}, nil
+	return uGPGGuidanceService.GetUGPGGuidanceById(id)
 }
 
 func (uGPGGuidanceService *UGPGGuidanceService) DeleteUGPGGuidance(id string) (*graphql_models.UGPGGuidance, error) {

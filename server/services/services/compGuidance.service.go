@@ -36,27 +36,8 @@ func (compGuidanceService *CompGuidanceService) CreateCompGuidance(userId primit
 	if err != nil {
 		return nil, err
 	}
-	comGuidanceData, err := compGuidanceService.Repo.GetCompGuidanceById(*objectId)
-	if err != nil {
-		return nil, err
-	}
 
-	var guidanceDate *time.Time = nil
-	if comGuidanceData.GuidanceDate != nil {
-		date := comGuidanceData.GuidanceDate.Time()
-		guidanceDate = &date
-	}
-
-	return &graphql_models.CompGuidance{
-		ID:               comGuidanceData.ID.Hex(),
-		ProjectName:      comGuidanceData.ProjectName,
-		StudentNames:     newGuidanceData.StudentNames,
-		CompetitionScore: comGuidanceData.CompetitionScore,
-		GuidanceDate:     guidanceDate,
-		AwardStatus:      comGuidanceData.AwardStatus,
-		CreatedAt:        comGuidanceData.CreatedAt.Time(),
-		UpdatedAt:        comGuidanceData.UpdatedAt.Time(),
-	}, nil
+	return compGuidanceService.GetCompGuidanceById(objectId.Hex())
 }
 
 func (compGuidanceService *CompGuidanceService) UpdateCompGuidance(id string, compGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
@@ -87,27 +68,7 @@ func (compGuidanceService *CompGuidanceService) UpdateCompGuidance(id string, co
 		return nil, err
 	}
 
-	compGuidanceUpdate, err = compGuidanceService.Repo.GetCompGuidanceById(objectId)
-	if err != nil {
-		return nil, err
-	}
-
-	var guidanceDate *time.Time = nil
-	if compGuidanceUpdate.GuidanceDate != nil {
-		date := compGuidanceUpdate.GuidanceDate.Time()
-		guidanceDate = &date
-	}
-
-	return &graphql_models.CompGuidance{
-		ID:               compGuidanceUpdate.ID.Hex(),
-		ProjectName:      compGuidanceUpdate.ProjectName,
-		StudentNames:     compGuidanceUpdate.StudentNames,
-		CompetitionScore: compGuidanceUpdate.CompetitionScore,
-		GuidanceDate:     guidanceDate,
-		AwardStatus:      compGuidanceUpdate.AwardStatus,
-		CreatedAt:        compGuidanceUpdate.CreatedAt.Time(),
-		UpdatedAt:        compGuidanceUpdate.UpdatedAt.Time(),
-	}, nil
+	return compGuidanceService.GetCompGuidanceById(id)
 }
 
 func (compGuidanceService *CompGuidanceService) DeleteCompGuidance(id string) (*graphql_models.CompGuidance, error) {

@@ -47,32 +47,7 @@ func (monographService *MonographService) CreateMonograph(userId primitive.Objec
 		return nil, err
 	}
 
-	monographData, err := monographService.Repo.GetMonographById(*objectId)
-	if err != nil {
-		return nil, err
-	}
-
-	var publishDate *time.Time = nil
-	if monographData.PublishDate != nil {
-		date := monographData.PublishDate.Time()
-		publishDate = &date
-	}
-
-	usersInExport, err := userRepo.GetUsersExportByIds(teachersIn)
-	if err != nil {
-		return nil, err
-	}
-
-	return &graphql_models.Monograph{
-		ID:           monographData.ID.Hex(),
-		TeachersIn:   usersInExport,
-		TeachersOut:  monographData.TeachersOut,
-		Title:        monographData.Title,
-		PublishDate:  publishDate,
-		PublishLevel: monographData.PublishLevel,
-		Rank:         monographData.Rank,
-	}, nil
-
+	return monographService.GetMonographById(objectId.Hex(), userRepo)
 }
 
 func (monographService *MonographService) UpdateMonograph(id string, monographData graphql_models.MonographData, userRepo *repository.UserRepo) (*graphql_models.Monograph, error) {
@@ -114,31 +89,7 @@ func (monographService *MonographService) UpdateMonograph(id string, monographDa
 		return nil, err
 	}
 
-	monographUpdate, err = monographService.Repo.GetMonographById(objectId)
-	if err != nil {
-		return nil, err
-	}
-
-	usersInExport, err := userRepo.GetUsersExportByIds(monographUpdate.TeachersIn)
-	if err != nil {
-		return nil, err
-	}
-
-	var publishDate *time.Time = nil
-	if monographUpdate.PublishDate != nil {
-		date := monographUpdate.PublishDate.Time()
-		publishDate = &date
-	}
-
-	return &graphql_models.Monograph{
-		ID:           monographUpdate.ID.Hex(),
-		TeachersIn:   usersInExport,
-		TeachersOut:  monographUpdate.TeachersOut,
-		Title:        monographUpdate.Title,
-		PublishDate:  publishDate,
-		PublishLevel: monographUpdate.PublishLevel,
-		Rank:         monographUpdate.Rank,
-	}, nil
+	return monographService.GetMonographById(id, userRepo)
 }
 
 func (monographService *MonographService) DeleteMonograph(id string, userRepo *repository.UserRepo) (*graphql_models.Monograph, error) {

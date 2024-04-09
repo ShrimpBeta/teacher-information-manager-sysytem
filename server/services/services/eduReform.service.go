@@ -50,37 +50,7 @@ func (eduReformService *EduReformService) CreateEduReform(userId primitive.Objec
 		return nil, err
 	}
 
-	edureformData, err := eduReformService.Repo.GetEduReformById(*objectId)
-	if err != nil {
-		return nil, err
-	}
-
-	var startDate *time.Time = nil
-	if edureformData.StartDate != nil {
-		date := edureformData.StartDate.Time()
-		startDate = &date
-	}
-
-	usersInExport, err := userRepo.GetUsersExportByIds(teachersIn)
-	if err != nil {
-		return nil, err
-	}
-
-	return &graphql_models.EduReform{
-		ID:          edureformData.ID.Hex(),
-		TeachersIn:  usersInExport,
-		TeachersOut: edureformData.TeachersOut,
-		Title:       edureformData.Title,
-		Number:      edureformData.Number,
-		Duration:    edureformData.Duration,
-		Level:       edureformData.Level,
-		Rank:        edureformData.Rank,
-		Achievement: edureformData.Achievement,
-		Fund:        edureformData.Fund,
-		StartDate:   startDate,
-		CreatedAt:   edureformData.CreatedAt.Time(),
-		UpdatedAt:   edureformData.UpdatedAt.Time(),
-	}, nil
+	return eduReformService.GetEduReformById(objectId.Hex(), userRepo)
 }
 
 func (eduReformService *EduReformService) UpdateEduReform(id string, edureformData graphql_models.EduReformData, userRepo *repository.UserRepo) (*graphql_models.EduReform, error) {
@@ -126,37 +96,7 @@ func (eduReformService *EduReformService) UpdateEduReform(id string, edureformDa
 		return nil, err
 	}
 
-	eduReformUpdate, err = eduReformService.Repo.GetEduReformById(objectId)
-	if err != nil {
-		return nil, err
-	}
-
-	var startDate *time.Time = nil
-	if eduReformUpdate.StartDate != nil {
-		date := eduReformUpdate.StartDate.Time()
-		startDate = &date
-	}
-
-	usersInExport, err := userRepo.GetUsersExportByIds(eduReformUpdate.TeachersIn)
-	if err != nil {
-		return nil, err
-	}
-
-	return &graphql_models.EduReform{
-		ID:          eduReformUpdate.ID.Hex(),
-		TeachersIn:  usersInExport,
-		TeachersOut: eduReformUpdate.TeachersOut,
-		Title:       eduReformUpdate.Title,
-		Number:      eduReformUpdate.Number,
-		Duration:    eduReformUpdate.Duration,
-		Level:       eduReformUpdate.Level,
-		Rank:        eduReformUpdate.Rank,
-		Achievement: eduReformUpdate.Achievement,
-		Fund:        eduReformUpdate.Fund,
-		StartDate:   startDate,
-		CreatedAt:   eduReformUpdate.CreatedAt.Time(),
-		UpdatedAt:   eduReformUpdate.UpdatedAt.Time(),
-	}, nil
+	return eduReformService.GetEduReformById(id, userRepo)
 }
 
 func (eduReformService *EduReformService) DeleteEduReform(id string, userRepo *repository.UserRepo) (*graphql_models.EduReform, error) {

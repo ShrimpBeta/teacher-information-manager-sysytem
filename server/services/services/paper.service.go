@@ -47,34 +47,7 @@ func (paperService *PaperService) CreatePaper(userId primitive.ObjectID, newPape
 		return nil, err
 	}
 
-	paperData, err := paperService.Repo.GetPaperById(*objectId)
-	if err != nil {
-		return nil, err
-	}
-
-	var publishDate *time.Time = nil
-	if paperData.PublishDate != nil {
-		date := paperData.PublishDate.Time()
-		publishDate = &date
-	}
-
-	usersInExport, err := userRepo.GetUsersExportByIds(teachersIn)
-	if err != nil {
-		return nil, err
-	}
-
-	return &graphql_models.Paper{
-		ID:           paperData.ID.Hex(),
-		TeachersIn:   usersInExport,
-		TeachersOut:  paperData.TeachersOut,
-		Title:        paperData.Title,
-		PublishDate:  publishDate,
-		Rank:         paperData.Rank,
-		JournalName:  paperData.JournalName,
-		JournalLevel: paperData.JournalLevel,
-		CreatedAt:    paperData.CreatedAt.Time(),
-		UpdatedAt:    paperData.UpdatedAt.Time(),
-	}, nil
+	return paperService.GetPaperById(objectId.Hex(), userRepo)
 }
 
 func (paperService *PaperService) UpdatePaper(id string, userId primitive.ObjectID, paperData graphql_models.PaperData, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
@@ -117,34 +90,7 @@ func (paperService *PaperService) UpdatePaper(id string, userId primitive.Object
 		return nil, err
 	}
 
-	paperUpdate, err = paperService.Repo.GetPaperById(objectId)
-	if err != nil {
-		return nil, err
-	}
-
-	usersInExport, err := userRepo.GetUsersExportByIds(paperUpdate.TeachersIn)
-	if err != nil {
-		return nil, err
-	}
-
-	var publishDate *time.Time = nil
-	if paperUpdate.PublishDate != nil {
-		date := paperUpdate.PublishDate.Time()
-		publishDate = &date
-	}
-
-	return &graphql_models.Paper{
-		ID:           paperUpdate.ID.Hex(),
-		TeachersIn:   usersInExport,
-		TeachersOut:  paperUpdate.TeachersOut,
-		Title:        paperUpdate.Title,
-		PublishDate:  publishDate,
-		Rank:         paperUpdate.Rank,
-		JournalName:  paperUpdate.JournalName,
-		JournalLevel: paperUpdate.JournalLevel,
-		CreatedAt:    paperUpdate.CreatedAt.Time(),
-		UpdatedAt:    paperUpdate.UpdatedAt.Time(),
-	}, nil
+	return paperService.GetPaperById(id, userRepo)
 }
 
 func (paperService *PaperService) DeletePaper(id string, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {

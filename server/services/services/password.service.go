@@ -36,20 +36,7 @@ func (passwordService *PasswordService) CreatePassword(userID primitive.ObjectID
 		return nil, err
 	}
 
-	passwordData, err := passwordService.Repo.GetPasswordById(*objectId)
-	if err != nil {
-		return nil, err
-	}
-
-	return &graphql_models.Password{
-		ID:          passwordData.ID.Hex(),
-		URL:         passwordData.Url,
-		Account:     passwordData.Account,
-		AppName:     passwordData.AppName,
-		Description: passwordData.Description,
-		CreatedAt:   passwordData.CreatedAt.Time(),
-		UpdatedAt:   passwordData.UpdatedAt.Time(),
-	}, nil
+	return passwordService.GetPasswordById(objectId.Hex())
 }
 
 func (passwordService *PasswordService) UpdatePassword(id string, masterKey string, passwordData graphql_models.PasswordData) (*graphql_models.Password, error) {
@@ -80,22 +67,30 @@ func (passwordService *PasswordService) UpdatePassword(id string, masterKey stri
 		return nil, err
 	}
 
-	passwordUpdate, err = passwordService.Repo.GetPasswordById(objectId)
-	if err != nil {
-		return nil, err
-	}
-	return &graphql_models.Password{
-		ID:          passwordUpdate.ID.Hex(),
-		URL:         passwordUpdate.Url,
-		Account:     passwordUpdate.Account,
-		AppName:     passwordUpdate.AppName,
-		Description: passwordUpdate.Description,
-		CreatedAt:   passwordUpdate.CreatedAt.Time(),
-		UpdatedAt:   passwordUpdate.UpdatedAt.Time(),
-	}, nil
+	return passwordService.GetPasswordById(id)
 }
 
 func (passwordService *PasswordService) DeletePassword(id string) (*graphql_models.Password, error) {
+
+	passwordData, err := passwordService.GetPasswordById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+
+	err = passwordService.Repo.DeletePassword(objectId)
+	if err != nil {
+		return nil, err
+	}
+
+	return passwordData, nil
+}
+
+func (passwordService *PasswordService) GetPasswordById(id string) (*graphql_models.Password, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -104,10 +99,7 @@ func (passwordService *PasswordService) DeletePassword(id string) (*graphql_mode
 	if err != nil {
 		return nil, err
 	}
-	err = passwordService.Repo.DeletePassword(objectId)
-	if err != nil {
-		return nil, err
-	}
+
 	return &graphql_models.Password{
 		ID:          passwordData.ID.Hex(),
 		URL:         passwordData.Url,
@@ -119,7 +111,7 @@ func (passwordService *PasswordService) DeletePassword(id string) (*graphql_mode
 	}, nil
 }
 
-func (passwordService *PasswordService) GetPasswordById(id, masterKey string) (*graphql_models.PasswordTrue, error) {
+func (passwordService *PasswordService) GetPasswordTrueById(id, masterKey string) (*graphql_models.PasswordTrue, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
