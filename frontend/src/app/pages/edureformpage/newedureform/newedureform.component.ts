@@ -5,6 +5,10 @@ import { MatDividerModule } from '@angular/material/divider';
 import { UserService } from '../../../services/user.service';
 import { UserExport } from '../../../models/models/user.model';
 import { Subject, takeUntil } from 'rxjs';
+import { EditEduReform } from '../../../models/models/eduReform.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { EduReformService } from '../../../services/edureform.service';
 
 @Component({
   selector: 'app-newedureform',
@@ -20,12 +24,58 @@ export class NewedureformComponent implements OnInit, OnDestroy {
   teachersInOptions: UserExport[] = [];
   constructor(
     private userService: UserService,
+    private snackBar: MatSnackBar,
+    private router: Router,
+    private eduReformService: EduReformService
   ) {
 
   }
 
   createEduReform() {
     console.log(this.eduReformForm.value);
+    let newEduReform = new EditEduReform();
+    newEduReform.title = this.eduReformForm.get('title')?.value;
+    newEduReform.number = this.eduReformForm.get('number')?.value;
+    newEduReform.duration = this.eduReformForm.get('duration')?.value;
+    newEduReform.level = this.eduReformForm.get('level')?.value;
+    newEduReform.rank = this.eduReformForm.get('rank')?.value;
+    newEduReform.achievement = this.eduReformForm.get('achievement')?.value;
+    newEduReform.fund = this.eduReformForm.get('fund')?.value;
+    let teachersInControlArray = this.eduReformForm.get('teachersIn') as FormArray;
+    if (teachersInControlArray && teachersInControlArray.length > 0) {
+      newEduReform.teachersIn = teachersInControlArray.controls.map((control) => control.value.id);
+    }
+
+    let teachersOutControlArray = this.eduReformForm.get('teachersOut') as FormArray;
+    if (teachersOutControlArray && teachersOutControlArray.length > 0) {
+      newEduReform.teachersOut = teachersOutControlArray.controls.map((control) => control.value);
+    }
+
+    if (this.eduReformForm.get('startDate')?.value !== '') {
+      newEduReform.startDate = new Date(this.eduReformForm.get('startDate')?.value);
+    }
+
+    console.log(newEduReform);
+    this.eduReformService.createEduReform(newEduReform).pipe(takeUntil(this.$destroy)).subscribe({
+      next: (response) => {
+        if (response) {
+          this.snackBar.open('创建成功', '关闭', {
+            duration: 2000,
+          });
+          this.router.navigate(['/main/educationreform']);
+        } else {
+          this.snackBar.open('创建失败', '关闭', {
+            duration: 2000,
+          });
+        }
+      },
+      error: (error) => {
+        this.snackBar.open('创建失败', '关闭', {
+          duration: 2000,
+        });
+        console.error(error);
+      }
+    });
   }
 
   ngOnInit(): void {

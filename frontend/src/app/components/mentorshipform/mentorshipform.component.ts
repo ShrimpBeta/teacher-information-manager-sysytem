@@ -31,7 +31,11 @@ export class MentorshipformComponent {
 
   onSubmit() {
     if (this.mentorshipForm.invalid) {
-      this.snackBar.open('请检查表单', '关闭', { duration: 2000 });
+      if (this.mentorshipForm.get('studentNames')!.errors) {
+        this.snackBar.open('学生姓名不能为空', '关闭', { duration: 2000 });
+      } else {
+        this.snackBar.open('请检查表单', '关闭', { duration: 2000 });
+      }
       return;
     }
     this.submitForm.emit();

@@ -5,6 +5,10 @@ import { Subject, takeUntil } from 'rxjs';
 import { UserExport } from '../../../models/models/user.model';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
+import { MonographService } from '../../../services/monograph.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
+import { EditMonograph } from '../../../models/models/monograph.model';
 
 @Component({
   selector: 'app-newmonograph',
@@ -21,11 +25,54 @@ export class NewmonographComponent implements OnInit, OnDestroy {
 
   constructor(
     private userService: UserService,
+    private snackBar: MatSnackBar,
+    private router: Router,
+    private monographService: MonographService
   ) {
   }
 
   createMonograph() {
     console.log(this.monographForm.value);
+    let newMonograph = new EditMonograph();
+    newMonograph.title = this.monographForm.get('title')?.value;
+    newMonograph.publishLevel = this.monographForm.get('publishLevel')?.value;
+    newMonograph.rank = this.monographForm.get('rank')?.value;
+
+    let teachersInControlArray = this.monographForm.get('teachersIn') as FormArray;
+    if (teachersInControlArray && teachersInControlArray.length > 0) {
+      newMonograph.teachersIn = teachersInControlArray.controls.map((control) => control.value.id);
+    }
+
+    let teachersOutControlArray = this.monographForm.get('teachersOut') as FormArray;
+    if (teachersOutControlArray && teachersOutControlArray.length > 0) {
+      newMonograph.teachersOut = teachersOutControlArray.controls.map((control) => control.value);
+    }
+
+    if (this.monographForm.get('publishDate')?.value !== '') {
+      newMonograph.publishDate = new Date(this.monographForm.get('publishDate')?.value);
+    }
+    console.log(newMonograph);
+
+    this.monographService.createMonograph(newMonograph).pipe(takeUntil(this.$destroy)).subscribe({
+      next: (response) => {
+        if (response) {
+          this.snackBar.open('创建成功', '关闭', {
+            duration: 2000,
+          });
+          this.router.navigate(['/main/monograph']);
+        } else {
+          this.snackBar.open('创建失败', '关闭', {
+            duration: 2000,
+          });
+        }
+      },
+      error: (error) => {
+        console.error(error);
+        this.snackBar.open('创建失败', '关闭', {
+          duration: 2000,
+        });
+      }
+    });
   }
 
   ngOnInit(): void {

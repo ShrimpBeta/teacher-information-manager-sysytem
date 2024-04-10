@@ -9,13 +9,13 @@ import { createEduReformMutation } from "../models/graphql/mutation/edureform.mu
 @Injectable({
   providedIn: 'root'
 })
-export class EdureformService {
+export class EduReformService {
 
   constructor(
     private apollo: Apollo,
   ) { }
 
-  getEdureform(): Observable<EduReform | null> {
+  getEduReform(): Observable<EduReform | null> {
     return this.apollo.query({
       query: eduReformQuery,
       fetchPolicy: 'network-only'
@@ -30,7 +30,7 @@ export class EdureformService {
     );
   }
 
-  getEdureformsByFilter(eduReformFilter: EduReformFilter): Observable<EduReform[] | null> {
+  getEduReformsByFilter(eduReformFilter: EduReformFilter): Observable<EduReform[] | null> {
     return this.apollo.query({
       query: eduReformQuery,
       variables: {
@@ -48,7 +48,7 @@ export class EdureformService {
     );
   }
 
-  createEdureform(newEdureform: EditEduReform): Observable<EduReform | null> {
+  createEduReform(newEdureform: EditEduReform): Observable<EduReform | null> {
     return this.apollo.mutate({
       mutation: createEduReformMutation,
       variables: {
@@ -65,7 +65,7 @@ export class EdureformService {
     );
   }
 
-  updateEdureform(edureform: EditEduReform): Observable<EduReform | null> {
+  updateEduReform(edureform: EditEduReform): Observable<EduReform | null> {
     return this.apollo.mutate({
       mutation: createEduReformMutation,
       variables: {
@@ -82,7 +82,7 @@ export class EdureformService {
     );
   }
 
-  deleteEdureform(id: string): Observable<EduReform | null> {
+  deleteEduReform(id: string): Observable<EduReform | null> {
     return this.apollo.mutate({
       mutation: createEduReformMutation,
       variables: {

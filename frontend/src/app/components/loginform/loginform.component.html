@@ -3,10 +3,7 @@
   <mat-form-field>
     <mat-label>Email</mat-label>
     <input type="email" matInput formControlName="email" placeholder="Input your email Here">
-    <!-- 邮箱错误 -->
-    @if(signInForm.get('email')!.touched && signInForm.get('email')!.errors){
     <mat-error>邮箱错误</mat-error>
-    }
   </mat-form-field>
   <mat-form-field>
     <mat-label>Password</mat-label>
@@ -15,10 +12,7 @@
       [attr.aria-pressed]="hide">
       <mat-icon>{{hide? 'visibility_off' : 'visibility'}}</mat-icon>
     </button>
-    <!-- 密码至少8位，且至少包含字母和数字 -->
-    @if(signInForm.get('password')!.touched && signInForm.get('password')!.errors){
     <mat-error>密码至少8位，且至少包含字母和数字</mat-error>
-    }
   </mat-form-field>
   <button type="submit" class="sign-in-button" mat-raised-button color="primary" [disabled]="isSignin">登录</button>
 </form>

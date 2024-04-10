@@ -15,8 +15,11 @@ export class SciResearch {
   number: string = ""
   title: string = ""
   startDate?: Date
+  duration: string = ""
   level: string = ""
   rank: string = ""
+  achievement: string = ""
+  fund: string = ""
   isAward: boolean = false
   awards: AwardRecord[] = []
   createdAt: Date = new Date(0)
@@ -36,8 +39,11 @@ export class EditSciResearch {
   number: string | null = null
   title: string | null = null
   startDate: Date | null = null
+  duration: string | null = null
   level: string | null = null
   rank: string | null = null
+  achievement: string | null = null
+  fund: string | null = null
   isAward: boolean | null = null
   awards: EditAwardRecord[] | null = null
 }
@@ -46,8 +52,11 @@ export class SciResearchFilter {
   title: string | null = null
   teachersIn: string[] | null = null
   teachersOut: string[] | null = null
+  number: string | null = null
   level: string | null = null
   rank: string | null = null
+  achievement: string | null = null
+  fund: string | null = null
   startDateStart: Date | null = null
   startDateEnd: Date | null = null
   createdStart: Date | null = null

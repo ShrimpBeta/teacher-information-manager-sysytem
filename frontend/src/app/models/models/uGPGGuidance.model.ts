@@ -17,8 +17,8 @@ export class EditUGPGGuidance {
   thesisTopic: string = ""
   openingCheckDate: Date | null = null
   openingCheckResult: string | null = null
-  middleCheckDate: Date | null = null
-  midddleCheckResult: string | null = null
+  midtermCheckDate: Date | null = null
+  midtermCheckResult: string | null = null
   defenseDate: Date | null = null
   defenseResult: string | null = null
 }

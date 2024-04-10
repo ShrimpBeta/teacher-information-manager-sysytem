@@ -3,17 +3,13 @@
     <mat-form-field appearance="outline">
       <mat-label>毕设主题</mat-label>
       <input matInput type="text" formControlName="thesisTopic" placeholder="毕设主题">
-      @if(ugpgGuidanceForm.get('thesisTopic')!.touched && ugpgGuidanceForm.get('thesisTopic')!.errors){
       <mat-error>毕设主题不能为空</mat-error>
-      }
     </mat-form-field>
 
     <mat-form-field appearance="outline">
       <mat-label>学生名称</mat-label>
       <input matInput type="text" formControlName="studentName" placeholder="学生名称">
-      @if(ugpgGuidanceForm.get('studentName')!.touched && ugpgGuidanceForm.get('studentName')!.errors){
       <mat-error>学生名称不能为空</mat-error>
-      }
     </mat-form-field>
 
     <mat-form-field appearance="outline">
@@ -26,6 +22,7 @@
       <input matInput [matDatepicker]="openingCheckPicker" formControlName="openingCheckDate" placeholder="开题检查日期">
       <mat-datepicker-toggle matIconSuffix [for]="openingCheckPicker"></mat-datepicker-toggle>
       <mat-datepicker #openingCheckPicker></mat-datepicker>
+      <mat-error>开题检查日期格式错误</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
@@ -38,6 +35,7 @@
       <input matInput [matDatepicker]="midtermCheckPicker" formControlName="midtermCheckDate" placeholder="中期检查日期">
       <mat-datepicker-toggle matIconSuffix [for]="midtermCheckPicker"></mat-datepicker-toggle>
       <mat-datepicker #midtermCheckPicker></mat-datepicker>
+      <mat-error>中期检查日期格式错误</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline">
@@ -50,6 +48,7 @@
       <input matInput [matDatepicker]="defenseDatePicker" formControlName="defenseDate" placeholder="最终日期">
       <mat-datepicker-toggle matIconSuffix [for]="defenseDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #defenseDatePicker></mat-datepicker>
+      <mat-error>最终日期格式错误</mat-error>
     </mat-form-field>
 
   </div>

@@ -3,9 +3,7 @@
     <mat-form-field appearance="outline">
       <mat-label>题目</mat-label>
       <input matInput type="text" formControlName="title" placeholder="题目">
-      @if(paperForm.get('title')!.touched &&paperForm.get('title')!.errors) {
       <mat-error>题目不能为空</mat-error>
-      }
     </mat-form-field>
 
     <mat-form-field appearance="outline">
@@ -75,6 +73,7 @@
       <input matInput [matDatepicker]="publishDatePicker" formControlName="publishDate" placeholder="发表时间">
       <mat-datepicker-toggle matSuffix [for]="publishDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #publishDatePicker></mat-datepicker>
+      <mat-error>发表时间格式错误</mat-error>
     </mat-form-field>
   </div>
   <mat-divider></mat-divider>

@@ -8,12 +8,12 @@ import { createUGPGGuidanceMutation, deleteUGPGGuidanceMutation, updateUGPGGuida
 @Injectable({
   providedIn: 'root'
 })
-export class UgpgguidanceService {
+export class UGPGGuidanceService {
   constructor(
     private apollo: Apollo
   ) { }
 
-  getUgpgguidance(id: string): Observable<UGPGGuidance | null> {
+  getUGPGGuidance(id: string): Observable<UGPGGuidance | null> {
     return this.apollo.query({
       query: uGPUGGuidanceQuery,
       variables: {
@@ -30,7 +30,7 @@ export class UgpgguidanceService {
     );
   }
 
-  getUgpgguidancesByFilter(ugpgguidanceFilter: UGPGGuidanceFilter): Observable<UGPGGuidance[] | null> {
+  getUGPGGuidancesByFilter(ugpgguidanceFilter: UGPGGuidanceFilter): Observable<UGPGGuidance[] | null> {
     return this.apollo.query({
       query: uGPGGuidancesByFilterQuery,
       variables: {
@@ -47,7 +47,7 @@ export class UgpgguidanceService {
     );
   }
 
-  createUgpgguidance(newUgpgguidance: EditUGPGGuidance): Observable<UGPGGuidance | null> {
+  createUGPGGuidance(newUgpgguidance: EditUGPGGuidance): Observable<UGPGGuidance | null> {
     return this.apollo.mutate({
       mutation: createUGPGGuidanceMutation,
       variables: {
@@ -64,7 +64,7 @@ export class UgpgguidanceService {
     );
   }
 
-  updateUgpgguidance(id: string, updatedUgpgguidance: EditUGPGGuidance): Observable<UGPGGuidance | null> {
+  updateUGPGGuidance(id: string, updatedUgpgguidance: EditUGPGGuidance): Observable<UGPGGuidance | null> {
     return this.apollo.mutate({
       mutation: updateUGPGGuidanceMutation,
       variables: {
@@ -82,7 +82,7 @@ export class UgpgguidanceService {
     );
   }
 
-  deleteUgpgguidance(id: string): Observable<string | null> {
+  deleteUGPGGuidance(id: string): Observable<string | null> {
     return this.apollo.mutate({
       mutation: deleteUGPGGuidanceMutation,
       variables: {

@@ -3,9 +3,7 @@
     <mat-form-field appearance="outline">
       <mat-label>专著名称</mat-label>
       <input matInput type="text" formControlName="title" placeholder="项目名称">
-      @if(monographForm.get('title')!.touched&&monographForm.get('title')!.errors ){
       <mat-error>专著名称不能为空</mat-error>
-      }
     </mat-form-field>
 
     <mat-form-field appearance="outline">
@@ -70,6 +68,7 @@
       <input matInput [matDatepicker]="publishDatePicker" formControlName="publishDate" placeholder="出版时间">
       <mat-datepicker-toggle matSuffix [for]="publishDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #publishDatePicker></mat-datepicker>
+      <mat-error>出版时间格式错误</mat-error>
     </mat-form-field>
   </div>
   <mat-divider></mat-divider>
