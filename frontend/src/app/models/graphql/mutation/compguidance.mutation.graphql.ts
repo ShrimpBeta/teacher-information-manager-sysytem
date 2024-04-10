@@ -57,17 +57,3 @@ export const uploadCompGuidancesMutation = gql`
   }
 `;
 
-export const createCompGuidancesMutation = gql`
-  mutation createCompGuidances($compGuidancesData: [CompGuidanceData]!) {
-    createCompGuidances(compGuidancesData: $compGuidancesData) {
-      id
-      projectName
-      studentNames
-      competitionScore
-      guidanceDate
-      awardStatus
-      createdAt
-      updatedAt
-    }
-  }
-`;

@@ -68,10 +68,6 @@ export class OverviewsciresearchComponent implements OnInit, OnDestroy {
       awardRank: new FormControl(''),
       awardDateStart: new FormControl(''),
       awardDateEnd: new FormControl(''),
-      awardCreatedStart: new FormControl(''),
-      awardCreatedEnd: new FormControl(''),
-      awardUpdatedStart: new FormControl(''),
-      awardUpdatedEnd: new FormControl(''),
     });
 
     this.userService.userExports().pipe(takeUntil(this.$destroy)).subscribe({

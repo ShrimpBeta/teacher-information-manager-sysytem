@@ -33,7 +33,7 @@ func (r *mutationResolver) CreateSciResearch(ctx context.Context, sciResearchDat
 }
 
 // UpdateSciResearch is the resolver for the updateSciResearch field.
-func (r *mutationResolver) UpdateSciResearch(ctx context.Context, sciResearchID string, sciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error) {
+func (r *mutationResolver) UpdateSciResearch(ctx context.Context, id string, sciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -44,11 +44,11 @@ func (r *mutationResolver) UpdateSciResearch(ctx context.Context, sciResearchID 
 		return nil, err
 	}
 
-	return r.SciResearchService.UpdateSciResearch(sciResearchID, sciResearchData, r.UserService.Repo)
+	return r.SciResearchService.UpdateSciResearch(id, sciResearchData, r.UserService.Repo)
 }
 
 // DeleteSciResearch is the resolver for the deleteSciResearch field.
-func (r *mutationResolver) DeleteSciResearch(ctx context.Context, sciResearchID string) (*graphql_models.SciResearch, error) {
+func (r *mutationResolver) DeleteSciResearch(ctx context.Context, id string) (*graphql_models.SciResearch, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (r *mutationResolver) DeleteSciResearch(ctx context.Context, sciResearchID 
 		return nil, err
 	}
 
-	return r.SciResearchService.DeleteSciResearch(sciResearchID, r.UserService.Repo)
+	return r.SciResearchService.DeleteSciResearch(id, r.UserService.Repo)
 }
 
 // UploadSciResearchs is the resolver for the uploadSciResearchs field.

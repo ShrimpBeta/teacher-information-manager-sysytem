@@ -30,8 +30,14 @@ export class CompguidanceformComponent {
   ) { }
 
   onSubmit() {
+    console.log(this.compGuidanceForm);
+
     if (this.compGuidanceForm.invalid) {
-      this.snackBar.open('请检查表单', '关闭', { duration: 2000 });
+      if (this.compGuidanceForm.get('studentNames')!.errors) {
+        this.snackBar.open('请填写学生姓名', '关闭', { duration: 2000 });
+      } else {
+        this.snackBar.open('请检查表单', '关闭', { duration: 2000 });
+      }
       return;
     }
     this.submitForm.emit();

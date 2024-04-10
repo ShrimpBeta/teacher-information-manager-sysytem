@@ -88,23 +88,3 @@ export const uploadPapersMutation = gql`
     }
   }
 `;
-
-export const createPapersMutation = gql`
-  mutation  createPapers($papersData: [PaperData]!) {
-    createPapers(papersData: $papersData) {
-      teachersIn{
-        id
-        username
-        email
-        avatar
-        createdAt
-      }
-      teachersOut
-      title
-      publishDate
-      rank
-      journalName
-      journalLevel
-    }
-  }
-`;

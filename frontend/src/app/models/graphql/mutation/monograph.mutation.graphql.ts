@@ -86,21 +86,3 @@ export const uploadMonographsMutation = gql`
   }
 `;
 
-export const createMonographsMutation = gql`
-  mutation createMonographs($monographsData: [MonographData]!) {
-    createMonographs(monographsData: $monographsData) {
-      teachersIn{
-        id
-        username
-        email
-        avatar
-        createdAt
-      }
-      teachersOut
-      title
-      publishDate
-      publishLevel
-      rank
-    }
-  }
-`;

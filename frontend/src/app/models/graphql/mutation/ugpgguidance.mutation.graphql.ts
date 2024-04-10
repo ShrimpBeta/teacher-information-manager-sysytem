@@ -58,11 +58,3 @@ export const uploadUGPGGuidancesMutation = gql`
     }
   }
 `;
-
-export const createUGPGGuidancesMutation = gql`
-  mutation createUGPGGuidances( $uGPGGuidancesData: [UGPGGuidanceData!]!) {
-    createUGPGGuidances(uGPGGuidancesData: $uGPGGuidancesData) {
-      id
-    }
-  }
-`

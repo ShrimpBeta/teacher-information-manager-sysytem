@@ -25,10 +25,8 @@ export const createSciResearchMutation = gql`
         id
         awardName
         awardDate
-        awardlevel
+        awardLevel
         awardRank
-        createdAt
-        updatedAt
       }
       createdAt
       updatedAt
@@ -37,8 +35,8 @@ export const createSciResearchMutation = gql`
 `;
 
 export const updateSciResearchMutation = gql`
-  mutation updateSciResearch($sciResearchId:ID!,$sciResearchData: SciResearchData!) {
-    updateSciResearch(sciResearchId: $sciResearchId,sciResearchData: $sciResearchData) {
+  mutation updateSciResearch($id:ID!,$sciResearchData: SciResearchData!) {
+    updateSciResearch(id: $id,sciResearchData: $sciResearchData) {
       id
       teachersIn{
         id
@@ -61,10 +59,8 @@ export const updateSciResearchMutation = gql`
         id
         awardName
         awardDate
-        awardlevel
+        awardLevel
         awardRank
-        createdAt
-        updatedAt
       }
       createdAt
       updatedAt
@@ -73,32 +69,8 @@ export const updateSciResearchMutation = gql`
 `;
 
 export const deleteSciResearchMutation = gql`
-  mutation deleteSciResearch($sciResearchId:ID!) {
-    deleteSciResearch(sciResearchId: $sciResearchId){
-      id
-    }
-  }
-`;
-
-export const addAwardRecordMutation = gql`
-  mutation addAwardRecord($sciResearchId:ID!,$newAwardRecordData: AwardRecordData!) {
-    addAwardRecord(sciResearchId: $sciResearchId,awardRecordData: $newAwardRecordData) {
-      id
-    }
-  }
-`;
-
-export const updateAwardRecordMutation = gql`
- mutation updateAwardRecord($sciResearchId:ID!,$awardRecordId:ID!,$awardRecordData: AwardRecordData!) {
-    updateAwardRecord(sciResearchId: $sciResearchId,awardRecordId: $awardRecordId,awardRecordData: $awardRecordData) {
-      id
-    }
-  }
-`;
-
-export const deleteAwardRecordMutation = gql`
-  mutation removeAwardRecord($sciResearchId:ID!,$awardRecordId:ID!) {
-    removeAwardRecord(sciResearchId: $sciResearchId,awardRecordId: $awardRecordId){
+  mutation deleteSciResearch($id:ID!) {
+    deleteSciResearch(id: $id){
       id
     }
   }
@@ -127,45 +99,10 @@ export const uploadSciResearchsMutation = gql`
       awards{
         awardName
         awardDate
-        awardlevel
+        awardLevel
         awardRank
       }
     }
   }
 `;
 
-export const createSciResearchsMutation = gql`
-  mutation createSciResearchs($newSciResearchsData: [SciResearchData]!) {
-    createSciResearchs(sciResearchsData: $newSciResearchsData) {
-      id
-      teachersIn{
-        id
-        username
-        email
-        avatar
-        createdAt
-      }
-      teachersOut
-      number
-      title
-      startDate
-      duration
-      level
-      rank
-      achievement
-      fund
-      isAward
-      awards{
-        id
-        awardName
-        awardDate
-        awardlevel
-        awardRank
-        createdAt
-        updatedAt
-      }
-      createdAt
-      updatedAt
-    }
-  }
-`;

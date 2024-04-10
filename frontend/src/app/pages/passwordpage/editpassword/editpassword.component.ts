@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { PasswordTrue } from '../../../models/models/password.model';
 import { MatDividerModule } from '@angular/material/divider';
 import { PasswordformComponent } from '../../../components/passwordform/passwordform.component';
@@ -31,7 +31,6 @@ export class EditpasswordComponent implements OnInit, OnDestroy {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private router: Router,
     private passwordService: PasswordService,
     private snackBar: MatSnackBar
   ) { }
@@ -73,7 +72,6 @@ export class EditpasswordComponent implements OnInit, OnDestroy {
         next: (password) => {
           if (password) {
             this.snackBar.open('更新成功', '关闭', { duration: 3000 });
-            this.router.navigate(['/main/password']);
           }
         },
         error: (error: unknown) => {

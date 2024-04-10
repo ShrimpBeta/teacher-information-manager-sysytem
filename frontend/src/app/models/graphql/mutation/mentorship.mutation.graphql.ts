@@ -1,8 +1,8 @@
 import { gql } from "apollo-angular";
 
 export const createMentorshipMutation = gql`
-  mutation createMentorship($userId:ID!,$mentorshipData: MentorshipData!) {
-    createMentorship(userId: $userId,mentorshipData: $mentorshipData) {
+  mutation createMentorship($mentorshipData: MentorshipData!) {
+    createMentorship(mentorshipData: $mentorshipData) {
       id
       projectName
       studentNames
@@ -53,16 +53,3 @@ export const uploadMentorshipsMutation = gql`
   }
 `;
 
-export const createMentorshipsMutation = gql`
-  mutation createMentorships($mentorshipsData: [MentorshipData]!) {
-    createMentorships(mentorshipsData: $mentorshipsData) {
-      id
-      projectName
-      studentNames
-      grade
-      guidanceDate
-      createdAt
-      updatedAt
-    }
-  }
-`;

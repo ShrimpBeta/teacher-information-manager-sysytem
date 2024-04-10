@@ -12,6 +12,7 @@ import { Router, RouterLink } from '@angular/router';
 import { PasswordService } from '../../../services/password.service';
 import { Subject, takeUntil } from 'rxjs';
 import { DatePipe } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-overviewpassword',
   standalone: true,
@@ -23,12 +24,13 @@ import { DatePipe } from '@angular/common';
 export class OverviewpasswordComponent implements OnInit, OnDestroy {
 
   searchFormControl!: FormControl;
-  destroy$ = new Subject<boolean>();
+  private destroy$ = new Subject<boolean>();
   passwordList: Password[] = [];
 
   constructor(
     private passwordService: PasswordService,
     private router: Router,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit() {
@@ -49,7 +51,7 @@ export class OverviewpasswordComponent implements OnInit, OnDestroy {
       passwordFilter.account = this.searchFormControl.value;
       passwordFilter.url = this.searchFormControl.value;
     }
-    this.passwordService.getPasswords(passwordFilter).pipe(takeUntil(this.destroy$)).subscribe({
+    this.passwordService.getPasswordsByFilter(passwordFilter).pipe(takeUntil(this.destroy$)).subscribe({
       next: (passwords) => {
         if (passwords) {
           this.passwordList = passwords;
@@ -69,11 +71,17 @@ export class OverviewpasswordComponent implements OnInit, OnDestroy {
     this.passwordService.deletePassword(password.id).pipe(takeUntil(this.destroy$)).subscribe({
       next: (passwords) => {
         if (passwords) {
-
+          this.snackBar.open('Password deleted', '', {
+            duration: 2000
+          });
+          this.passwordList = this.passwordList.filter(p => p.id !== password.id);
         }
       },
       error: (error: unknown) => {
         console.error(error);
+        this.snackBar.open('Error deleting password', '', {
+          duration: 2000
+        });
       }
     });
   }

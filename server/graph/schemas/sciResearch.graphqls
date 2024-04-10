@@ -6,8 +6,6 @@ type AwardRecord {
   awardDate: Time
   awardLevel: String
   awardRank: String
-  createdAt: Time!
-  updatedAt: Time!
 }
 
 type SciResearch {
@@ -93,10 +91,6 @@ input SciResearchFilter {
   awardDateEnd: Time
   awardLevel: String
   awardRank: String
-  awardCreatedStart: Time
-  awardCreatedEnd: Time
-  awardUpdatedStart: Time
-  awardUpdatedEnd: Time
 }
 
 extend type Query {
@@ -107,10 +101,10 @@ extend type Query {
 extend type Mutation {
   createSciResearch(sciResearchData: SciResearchData!): SciResearch!
   updateSciResearch(
-    sciResearchId: ID!
+    id: ID!
     sciResearchData: SciResearchData!
   ): SciResearch!
-  deleteSciResearch(sciResearchId: ID!): SciResearch!
+  deleteSciResearch(id: ID!): SciResearch!
 
   uploadSciResearchs(file: Upload!): SciResearchPreview!
 }

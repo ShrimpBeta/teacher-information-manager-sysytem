@@ -26,8 +26,8 @@ export const academicTermQuery = gql`
 `;
 
 export const academicTermsQuery = gql`
-  query academicTermsQuery($userId:ID!) {
-    academicTerms(userId:$userId){
+  query academicTermsQuery {
+    academicTerms{
       id
       termName
       createdAt

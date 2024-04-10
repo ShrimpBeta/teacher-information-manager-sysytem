@@ -77,9 +77,7 @@ type ComplexityRoot struct {
 		AwardLevel func(childComplexity int) int
 		AwardName  func(childComplexity int) int
 		AwardRank  func(childComplexity int) int
-		CreatedAt  func(childComplexity int) int
 		ID         func(childComplexity int) int
-		UpdatedAt  func(childComplexity int) int
 	}
 
 	AwardRecordPreview struct {
@@ -231,7 +229,7 @@ type ComplexityRoot struct {
 		DeleteMonograph           func(childComplexity int, id string) int
 		DeletePaper               func(childComplexity int, id string) int
 		DeletePassword            func(childComplexity int, id string) int
-		DeleteSciResearch         func(childComplexity int, sciResearchID string) int
+		DeleteSciResearch         func(childComplexity int, id string) int
 		DeleteUGPGGuidance        func(childComplexity int, id string) int
 		GenerateResetPasswordCode func(childComplexity int, email string) int
 		RemoveWechatAuth          func(childComplexity int, userID string) int
@@ -246,7 +244,7 @@ type ComplexityRoot struct {
 		UpdateMonograph           func(childComplexity int, id string, monographData graphql_models.MonographData) int
 		UpdatePaper               func(childComplexity int, id string, paperData graphql_models.PaperData) int
 		UpdatePassword            func(childComplexity int, id string, passwordData graphql_models.PasswordData) int
-		UpdateSciResearch         func(childComplexity int, sciResearchID string, sciResearchData graphql_models.SciResearchData) int
+		UpdateSciResearch         func(childComplexity int, id string, sciResearchData graphql_models.SciResearchData) int
 		UpdateUGPGGuidance        func(childComplexity int, id string, uGPGGuidanceData graphql_models.UGPGGuidanceData) int
 		UpdateUser                func(childComplexity int, userID string, userData graphql_models.UpdateUser) int
 		UploadAcademicTerm        func(childComplexity int, file graphql.Upload) int
@@ -460,8 +458,8 @@ type MutationResolver interface {
 	DeletePassword(ctx context.Context, id string) (*graphql_models.Password, error)
 	UploadPasswords(ctx context.Context, file graphql.Upload) ([]*graphql_models.PasswordPreview, error)
 	CreateSciResearch(ctx context.Context, sciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error)
-	UpdateSciResearch(ctx context.Context, sciResearchID string, sciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error)
-	DeleteSciResearch(ctx context.Context, sciResearchID string) (*graphql_models.SciResearch, error)
+	UpdateSciResearch(ctx context.Context, id string, sciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error)
+	DeleteSciResearch(ctx context.Context, id string) (*graphql_models.SciResearch, error)
 	UploadSciResearchs(ctx context.Context, file graphql.Upload) (*graphql_models.SciResearchPreview, error)
 	CreateUGPGGuidance(ctx context.Context, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error)
 	UpdateUGPGGuidance(ctx context.Context, id string, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error)
@@ -633,26 +631,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AwardRecord.AwardRank(childComplexity), true
 
-	case "AwardRecord.createdAt":
-		if e.complexity.AwardRecord.CreatedAt == nil {
-			break
-		}
-
-		return e.complexity.AwardRecord.CreatedAt(childComplexity), true
-
 	case "AwardRecord.id":
 		if e.complexity.AwardRecord.ID == nil {
 			break
 		}
 
 		return e.complexity.AwardRecord.ID(childComplexity), true
-
-	case "AwardRecord.updatedAt":
-		if e.complexity.AwardRecord.UpdatedAt == nil {
-			break
-		}
-
-		return e.complexity.AwardRecord.UpdatedAt(childComplexity), true
 
 	case "AwardRecordPreview.awardDate":
 		if e.complexity.AwardRecordPreview.AwardDate == nil {
@@ -1537,7 +1521,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteSciResearch(childComplexity, args["sciResearchId"].(string)), true
+		return e.complexity.Mutation.DeleteSciResearch(childComplexity, args["id"].(string)), true
 
 	case "Mutation.deleteUGPGGuidance":
 		if e.complexity.Mutation.DeleteUGPGGuidance == nil {
@@ -1717,7 +1701,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateSciResearch(childComplexity, args["sciResearchId"].(string), args["sciResearchData"].(graphql_models.SciResearchData)), true
+		return e.complexity.Mutation.UpdateSciResearch(childComplexity, args["id"].(string), args["sciResearchData"].(graphql_models.SciResearchData)), true
 
 	case "Mutation.updateUGPGGuidance":
 		if e.complexity.Mutation.UpdateUGPGGuidance == nil {
@@ -3345,14 +3329,14 @@ func (ec *executionContext) field_Mutation_deleteSciResearch_args(ctx context.Co
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["sciResearchId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sciResearchId"))
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["sciResearchId"] = arg0
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -3660,14 +3644,14 @@ func (ec *executionContext) field_Mutation_updateSciResearch_args(ctx context.Co
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["sciResearchId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sciResearchId"))
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
 		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["sciResearchId"] = arg0
+	args["id"] = arg0
 	var arg1 graphql_models.SciResearchData
 	if tmp, ok := rawArgs["sciResearchData"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("sciResearchData"))
@@ -4982,94 +4966,6 @@ func (ec *executionContext) fieldContext_AwardRecord_awardRank(ctx context.Conte
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _AwardRecord_createdAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AwardRecord) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AwardRecord_createdAt(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.CreatedAt, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AwardRecord_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AwardRecord",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _AwardRecord_updatedAt(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AwardRecord) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_AwardRecord_updatedAt(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.UpdatedAt, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	fc.Result = res
-	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_AwardRecord_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "AwardRecord",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Time does not have child fields")
 		},
 	}
 	return fc, nil
@@ -11201,7 +11097,7 @@ func (ec *executionContext) _Mutation_updateSciResearch(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateSciResearch(rctx, fc.Args["sciResearchId"].(string), fc.Args["sciResearchData"].(graphql_models.SciResearchData))
+		return ec.resolvers.Mutation().UpdateSciResearch(rctx, fc.Args["id"].(string), fc.Args["sciResearchData"].(graphql_models.SciResearchData))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -11288,7 +11184,7 @@ func (ec *executionContext) _Mutation_deleteSciResearch(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteSciResearch(rctx, fc.Args["sciResearchId"].(string))
+		return ec.resolvers.Mutation().DeleteSciResearch(rctx, fc.Args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -16194,10 +16090,6 @@ func (ec *executionContext) fieldContext_SciResearch_awards(ctx context.Context,
 				return ec.fieldContext_AwardRecord_awardLevel(ctx, field)
 			case "awardRank":
 				return ec.fieldContext_AwardRecord_awardRank(ctx, field)
-			case "createdAt":
-				return ec.fieldContext_AwardRecord_createdAt(ctx, field)
-			case "updatedAt":
-				return ec.fieldContext_AwardRecord_updatedAt(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AwardRecord", field.Name)
 		},
@@ -21548,7 +21440,7 @@ func (ec *executionContext) unmarshalInputSciResearchFilter(ctx context.Context,
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"teachersIn", "teachersOut", "number", "title", "startDateStart", "startDateEnd", "level", "rank", "achievement", "fund", "createdStart", "createdEnd", "updatedStart", "updatedEnd", "isAward", "awardName", "awardDateStart", "awardDateEnd", "awardLevel", "awardRank", "awardCreatedStart", "awardCreatedEnd", "awardUpdatedStart", "awardUpdatedEnd"}
+	fieldsInOrder := [...]string{"teachersIn", "teachersOut", "number", "title", "startDateStart", "startDateEnd", "level", "rank", "achievement", "fund", "createdStart", "createdEnd", "updatedStart", "updatedEnd", "isAward", "awardName", "awardDateStart", "awardDateEnd", "awardLevel", "awardRank"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -21695,34 +21587,6 @@ func (ec *executionContext) unmarshalInputSciResearchFilter(ctx context.Context,
 				return it, err
 			}
 			it.AwardRank = data
-		case "awardCreatedStart":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("awardCreatedStart"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.AwardCreatedStart = data
-		case "awardCreatedEnd":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("awardCreatedEnd"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.AwardCreatedEnd = data
-		case "awardUpdatedStart":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("awardUpdatedStart"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.AwardUpdatedStart = data
-		case "awardUpdatedEnd":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("awardUpdatedEnd"))
-			data, err := ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.AwardUpdatedEnd = data
 		}
 	}
 
@@ -22276,16 +22140,6 @@ func (ec *executionContext) _AwardRecord(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = ec._AwardRecord_awardLevel(ctx, field, obj)
 		case "awardRank":
 			out.Values[i] = ec._AwardRecord_awardRank(ctx, field, obj)
-		case "createdAt":
-			out.Values[i] = ec._AwardRecord_createdAt(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "updatedAt":
-			out.Values[i] = ec._AwardRecord_updatedAt(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

@@ -98,29 +98,5 @@ export const uploadEduReformsMutation = gql`
   }
 `;
 
-export const createEduReformsMutation = gql`
-  mutation createEduReforms($eduReformsData: [EduReformData]!) {
-    createEduReforms(eduReformsData: $eduReformsData) {
-      id
-      teachersIn{
-        id
-        username
-        email
-        avatar
-        createdAt
-      }
-      teachersOut
-      title
-      startDate
-      duration
-      level
-      rank
-      achievement
-      fund
-      createdAt
-      updatedAt
-    }
-  }
-`;
 
 

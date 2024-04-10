@@ -25,10 +25,8 @@ export const sciResearchQuery = gql`
         id
         awardName
         awardDate
-        awardlevel
+        awardLevel
         awardRank
-        createdAt
-        updatedAt
       }
       createdAt
       updatedAt
@@ -61,10 +59,8 @@ export const sciResearchsByFilterQuery = gql`
         id
         awardName
         awardDate
-        awardlevel
+        awardLevel
         awardRank
-        createdAt
-        updatedAt
       }
       createdAt
       updatedAt

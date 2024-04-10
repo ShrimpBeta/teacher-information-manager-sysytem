@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { CompguidanceformComponent } from '../../../components/compguidanceform/compguidanceform.component';
+import { ArrayEmptyValidator } from '../../../shared/formvalidator/arrayempty.validator';
 
 @Component({
   selector: 'app-editcompguidance',
@@ -23,7 +24,7 @@ export class EditcompguidanceComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.compGuidanceForm = new FormGroup({
       projectName: new FormControl('', [Validators.required]),
-      studentNames: new FormArray([]),
+      studentNames: new FormArray([], [ArrayEmptyValidator()]),
       competitionScore: new FormControl(''),
       guidanceDate: new FormControl(''),
       awardStatus: new FormControl(''),

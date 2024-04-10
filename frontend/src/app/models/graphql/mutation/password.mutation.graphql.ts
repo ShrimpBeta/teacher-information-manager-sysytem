@@ -45,10 +45,3 @@ export const uploadPasswordsMutation = gql`
   }
 `;
 
-export const createPasswordsMutation = gql`
-  mutation createPasswords($newPasswordDatas: [PasswordData!]!) {
-    createPasswords(passwordsData: $newPasswordDatas) {
-      id
-    }
-  }
-`;

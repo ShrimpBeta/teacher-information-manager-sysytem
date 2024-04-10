@@ -61,3 +61,10 @@ export interface UpdatePasswordResponse {
     updatePassword: Password
   }
 }
+
+export interface DeletePasswordResponse {
+  error?: unknown;
+  data?: {
+    deletePassword: Password
+  }
+}

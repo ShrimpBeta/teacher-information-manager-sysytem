@@ -50,8 +50,6 @@ type AwardRecord struct {
 	AwardDate  *time.Time `json:"awardDate,omitempty"`
 	AwardLevel *string    `json:"awardLevel,omitempty"`
 	AwardRank  *string    `json:"awardRank,omitempty"`
-	CreatedAt  time.Time  `json:"createdAt"`
-	UpdatedAt  time.Time  `json:"updatedAt"`
 }
 
 type AwardRecordData struct {
@@ -442,30 +440,26 @@ type SciResearchData struct {
 }
 
 type SciResearchFilter struct {
-	TeachersIn        []*string  `json:"teachersIn"`
-	TeachersOut       []*string  `json:"teachersOut,omitempty"`
-	Number            *string    `json:"number,omitempty"`
-	Title             *string    `json:"title,omitempty"`
-	StartDateStart    *time.Time `json:"startDateStart,omitempty"`
-	StartDateEnd      *time.Time `json:"startDateEnd,omitempty"`
-	Level             *string    `json:"level,omitempty"`
-	Rank              *string    `json:"rank,omitempty"`
-	Achievement       *string    `json:"achievement,omitempty"`
-	Fund              *string    `json:"fund,omitempty"`
-	CreatedStart      *time.Time `json:"createdStart,omitempty"`
-	CreatedEnd        *time.Time `json:"createdEnd,omitempty"`
-	UpdatedStart      *time.Time `json:"updatedStart,omitempty"`
-	UpdatedEnd        *time.Time `json:"updatedEnd,omitempty"`
-	IsAward           *bool      `json:"isAward,omitempty"`
-	AwardName         *string    `json:"awardName,omitempty"`
-	AwardDateStart    *time.Time `json:"awardDateStart,omitempty"`
-	AwardDateEnd      *time.Time `json:"awardDateEnd,omitempty"`
-	AwardLevel        *string    `json:"awardLevel,omitempty"`
-	AwardRank         *string    `json:"awardRank,omitempty"`
-	AwardCreatedStart *time.Time `json:"awardCreatedStart,omitempty"`
-	AwardCreatedEnd   *time.Time `json:"awardCreatedEnd,omitempty"`
-	AwardUpdatedStart *time.Time `json:"awardUpdatedStart,omitempty"`
-	AwardUpdatedEnd   *time.Time `json:"awardUpdatedEnd,omitempty"`
+	TeachersIn     []*string  `json:"teachersIn"`
+	TeachersOut    []*string  `json:"teachersOut,omitempty"`
+	Number         *string    `json:"number,omitempty"`
+	Title          *string    `json:"title,omitempty"`
+	StartDateStart *time.Time `json:"startDateStart,omitempty"`
+	StartDateEnd   *time.Time `json:"startDateEnd,omitempty"`
+	Level          *string    `json:"level,omitempty"`
+	Rank           *string    `json:"rank,omitempty"`
+	Achievement    *string    `json:"achievement,omitempty"`
+	Fund           *string    `json:"fund,omitempty"`
+	CreatedStart   *time.Time `json:"createdStart,omitempty"`
+	CreatedEnd     *time.Time `json:"createdEnd,omitempty"`
+	UpdatedStart   *time.Time `json:"updatedStart,omitempty"`
+	UpdatedEnd     *time.Time `json:"updatedEnd,omitempty"`
+	IsAward        *bool      `json:"isAward,omitempty"`
+	AwardName      *string    `json:"awardName,omitempty"`
+	AwardDateStart *time.Time `json:"awardDateStart,omitempty"`
+	AwardDateEnd   *time.Time `json:"awardDateEnd,omitempty"`
+	AwardLevel     *string    `json:"awardLevel,omitempty"`
+	AwardRank      *string    `json:"awardRank,omitempty"`
 }
 
 type SciResearchPreview struct {

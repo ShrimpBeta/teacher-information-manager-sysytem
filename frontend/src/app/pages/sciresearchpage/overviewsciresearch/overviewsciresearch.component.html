@@ -178,37 +178,6 @@
           }
         </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>获奖创建时间</mat-label>
-          <mat-date-range-input [rangePicker]="awardCreatedPicker">
-            <input matStartDate formControlName="awardCreatedStart" placeholder="Start date">
-            <input matEndDate formControlName="awardCreatedEnd" placeholder="End date">
-          </mat-date-range-input>
-          <mat-datepicker-toggle matIconSuffix [for]="awardCreatedPicker"></mat-datepicker-toggle>
-          <mat-date-range-picker #awardCreatedPicker></mat-date-range-picker>
-          @if (SearchForm.controls['awardCreatedStart'].hasError('matStartDateInvalid')) {
-          <mat-error>Invalid start date</mat-error>
-          }
-          @if (SearchForm.controls['awardCreatedEnd'].hasError('matEndDateInvalid')) {
-          <mat-error>Invalid end date</mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>获奖更新时间</mat-label>
-          <mat-date-range-input [rangePicker]="awardUpdatedPicker">
-            <input matStartDate formControlName="awardUpdatedStart" placeholder="Start date">
-            <input matEndDate formControlName="awardUpdatedEnd" placeholder="End date">
-          </mat-date-range-input>
-          <mat-datepicker-toggle matIconSuffix [for]="awardUpdatedPicker"></mat-datepicker-toggle>
-          <mat-date-range-picker #awardUpdatedPicker></mat-date-range-picker>
-          @if (SearchForm.controls['awardUpdatedStart'].hasError('matStartDateInvalid')) {
-          <mat-error>Invalid start date</mat-error>
-          }
-          @if (SearchForm.controls['awardUpdatedEnd'].hasError('matEndDateInvalid')) {
-          <mat-error>Invalid end date</mat-error>
-          }
-        </mat-form-field>
       </div>
       <mat-divider></mat-divider>
       }
