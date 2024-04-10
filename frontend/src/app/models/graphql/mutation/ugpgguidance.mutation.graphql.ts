@@ -1,6 +1,6 @@
 import { gql } from "apollo-angular";
 
-export const createUgpgGuidanceMutation = gql`
+export const createUGPGGuidanceMutation = gql`
   mutation createUGPGGuidance($uGPGGuidanceData: UGPGGuidanceData!) {
     createUGPGGuidance(uGPGGuidanceData: $uGPGGuidanceData) {
       id
@@ -18,7 +18,7 @@ export const createUgpgGuidanceMutation = gql`
   }
 `;
 
-export const updateUGPGGidanceMutation = gql`
+export const updateUGPGGuidanceMutation = gql`
   mutation updateUGPGGidance($id:ID!,$uGPGGuidanceData: UGPGGuidanceData!){
     updateUGPGGuidance(id: $id, uGPGGuidanceData: $uGPGGuidanceData){
       id
