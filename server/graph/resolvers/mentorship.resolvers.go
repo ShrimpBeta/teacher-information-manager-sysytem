@@ -94,7 +94,7 @@ func (r *queryResolver) Mentorship(ctx context.Context, id string) (*graphql_mod
 }
 
 // MentorshipsByFilter is the resolver for the mentorshipsByFilter field.
-func (r *queryResolver) MentorshipsByFilter(ctx context.Context, filter graphql_models.MentorshipFilter) ([]*graphql_models.Mentorship, error) {
+func (r *queryResolver) MentorshipsByFilter(ctx context.Context, filter graphql_models.MentorshipFilter) (*graphql_models.MentorshipQuery, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -111,4 +111,9 @@ func (r *queryResolver) MentorshipsByFilter(ctx context.Context, filter graphql_
 	}
 
 	return r.MentorshipService.GetMentorshipsByFilter(user.ID, filter)
+}
+
+// Mentorships is the resolver for the mentorships field.
+func (r *queryResolver) Mentorships(ctx context.Context, ids []*string) ([]*graphql_models.Mentorship, error) {
+	panic(fmt.Errorf("not implemented: Mentorships - mentorships"))
 }

@@ -10,6 +10,11 @@ type CompGuidance {
   updatedAt: Time!
 }
 
+type CompGuidanceQuery {
+  totalCount: Int!
+  compGuidances: [CompGuidance]!
+}
+
 type CompGuidancePreview {
   projectName: String
   studentNames: [String]
@@ -41,7 +46,8 @@ input CompGuidanceFilter {
 extend type Query {
   compGuidance(id: ID!): CompGuidance!
 
-  compGuidancesByFilter(filter: CompGuidanceFilter!): [CompGuidance]!
+  compGuidancesByFilter(filter: CompGuidanceFilter!): CompGuidanceQuery!
+  compGuidances(ids: [ID]!): [CompGuidance]!
 }
 
 extend type Mutation {

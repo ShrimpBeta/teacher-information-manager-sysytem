@@ -6,6 +6,7 @@ package resolvers
 
 import (
 	"context"
+	"fmt"
 	graphql_models "server/graph/model"
 	"server/middlewares"
 
@@ -93,7 +94,7 @@ func (r *queryResolver) SciResearch(ctx context.Context, id string) (*graphql_mo
 }
 
 // SciResearchsByFilter is the resolver for the sciResearchsByFilter field.
-func (r *queryResolver) SciResearchsByFilter(ctx context.Context, filter graphql_models.SciResearchFilter) ([]*graphql_models.SciResearch, error) {
+func (r *queryResolver) SciResearchsByFilter(ctx context.Context, filter graphql_models.SciResearchFilter) (*graphql_models.SciResearchQuery, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -110,4 +111,9 @@ func (r *queryResolver) SciResearchsByFilter(ctx context.Context, filter graphql
 	}
 
 	return r.SciResearchService.GetSciResearchsByFilter(user.ID, filter, r.UserService.Repo)
+}
+
+// SciResearchs is the resolver for the sciResearchs field.
+func (r *queryResolver) SciResearchs(ctx context.Context, ids []*string) ([]*graphql_models.SciResearch, error) {
+	panic(fmt.Errorf("not implemented: SciResearchs - sciResearchs"))
 }

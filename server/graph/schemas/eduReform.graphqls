@@ -15,6 +15,11 @@ type EduReform {
   updatedAt: Time!
 }
 
+type EduReformQuery {
+  totalCount: Int!
+  eduReforms: [EduReform]!
+}
+
 type EduReformPreview {
   teachersIn: [UserExport]
   teachersOut: [String]
@@ -60,8 +65,9 @@ input EduReformFilter {
 
 extend type Query {
   eduReform(id: ID!): EduReform!
-  
-  eduReformsByFilter(filter: EduReformFilter!): [EduReform]!
+
+  eduReformsByFilter(filter: EduReformFilter!): EduReformQuery!
+  eduReforms(ids: [ID]!): [EduReform]!
 }
 
 extend type Mutation {

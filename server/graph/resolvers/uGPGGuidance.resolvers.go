@@ -94,7 +94,7 @@ func (r *queryResolver) UGPGGuidance(ctx context.Context, id string) (*graphql_m
 }
 
 // UGPGGuidancesByFilter is the resolver for the uGPGGuidancesByFilter field.
-func (r *queryResolver) UGPGGuidancesByFilter(ctx context.Context, filter graphql_models.UGPGGuidanceFilter) ([]*graphql_models.UGPGGuidance, error) {
+func (r *queryResolver) UGPGGuidancesByFilter(ctx context.Context, filter graphql_models.UGPGGuidanceFilter) (*graphql_models.UGPGGuidanceQuery, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -111,4 +111,9 @@ func (r *queryResolver) UGPGGuidancesByFilter(ctx context.Context, filter graphq
 	}
 
 	return r.UGPGGuidanceService.GetUGPGGuidancesByFilter(user.ID, filter)
+}
+
+// UGPGGuidances is the resolver for the uGPGGuidances field.
+func (r *queryResolver) UGPGGuidances(ctx context.Context, ids []*string) ([]*graphql_models.UGPGGuidance, error) {
+	panic(fmt.Errorf("not implemented: UGPGGuidances - uGPGGuidances"))
 }

@@ -158,7 +158,7 @@ func (eduReformService *EduReformService) GetEduReformById(id string, userRepo *
 	}, nil
 }
 
-func (eduReformService *EduReformService) GetEduReformsByFilter(userId primitive.ObjectID, filter graphql_models.EduReformFilter, userRepo *repository.UserRepo) ([]*graphql_models.EduReform, error) {
+func (eduReformService *EduReformService) GetEduReformsByFilter(userId primitive.ObjectID, filter graphql_models.EduReformFilter, userRepo *repository.UserRepo) (*graphql_models.EduReformQuery, error) {
 
 	TeachersInID := make([]primitive.ObjectID, len(filter.TeachersIn)+1)
 	TeachersInID[0] = userId
@@ -222,5 +222,8 @@ func (eduReformService *EduReformService) GetEduReformsByFilter(userId primitive
 		}
 	}
 
-	return edureformExport, nil
+	return &graphql_models.EduReformQuery{
+		TotalCount: len(edureformExport),
+		EduReforms: edureformExport,
+	}, nil
 }

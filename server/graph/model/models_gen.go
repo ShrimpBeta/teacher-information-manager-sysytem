@@ -11,7 +11,7 @@ import (
 type AcademicTerm struct {
 	ID        string    `json:"id"`
 	TermName  string    `json:"termName"`
-	Courses   []*Course `json:"courses"`
+	Courses   []*Course `json:"courses,omitempty"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -19,6 +19,11 @@ type AcademicTerm struct {
 type AcademicTermPreview struct {
 	TermName *string          `json:"termName,omitempty"`
 	Courses  []*CoursePreview `json:"courses,omitempty"`
+}
+
+type AcademicTermQuery struct {
+	TotalCount    int                  `json:"totalCount"`
+	AcademicTerms []*AcademicTermShort `json:"academicTerms"`
 }
 
 type AcademicTermShort struct {
@@ -120,6 +125,11 @@ type CompGuidancePreview struct {
 	AwardStatus      *string    `json:"awardStatus,omitempty"`
 }
 
+type CompGuidanceQuery struct {
+	TotalCount    int             `json:"totalCount"`
+	CompGuidances []*CompGuidance `json:"compGuidances"`
+}
+
 type Course struct {
 	ID             string       `json:"id"`
 	TeacherNames   string       `json:"teacherNames"`
@@ -213,6 +223,11 @@ type EduReformPreview struct {
 	Fund        *string       `json:"fund,omitempty"`
 }
 
+type EduReformQuery struct {
+	TotalCount int          `json:"totalCount"`
+	EduReforms []*EduReform `json:"eduReforms"`
+}
+
 type Mentorship struct {
 	ID           string     `json:"id"`
 	ProjectName  string     `json:"projectName"`
@@ -247,6 +262,11 @@ type MentorshipPreview struct {
 	StudentNames []*string  `json:"studentNames,omitempty"`
 	Grade        *string    `json:"grade,omitempty"`
 	GuidanceDate *time.Time `json:"guidanceDate,omitempty"`
+}
+
+type MentorshipQuery struct {
+	TotalCount  int           `json:"totalCount"`
+	Mentorships []*Mentorship `json:"mentorships"`
 }
 
 type Monograph struct {
@@ -293,12 +313,17 @@ type MonographPreview struct {
 	Rank         *string       `json:"rank,omitempty"`
 }
 
+type MonographQuery struct {
+	TotalCount int          `json:"totalCount"`
+	Monographs []*Monograph `json:"monographs"`
+}
+
 type Mutation struct {
 }
 
 type NewAcademicTerm struct {
 	TermName string        `json:"termName"`
-	Courses  []*CourseData `json:"courses"`
+	Courses  []*CourseData `json:"courses,omitempty"`
 }
 
 type NewUser struct {
@@ -354,6 +379,11 @@ type PaperPreview struct {
 	JournalLevel *string       `json:"journalLevel,omitempty"`
 }
 
+type PaperQuery struct {
+	TotalCount int      `json:"totalCount"`
+	Papers     []*Paper `json:"papers"`
+}
+
 type Password struct {
 	ID          string    `json:"id"`
 	URL         *string   `json:"url,omitempty"`
@@ -395,6 +425,11 @@ type PasswordTrue struct {
 	Description *string   `json:"description,omitempty"`
 	CreatedAt   time.Time `json:"createdAt"`
 	UpdatedAt   time.Time `json:"updatedAt"`
+}
+
+type PasswordsQuery struct {
+	TotalCount int         `json:"totalCount"`
+	Passwords  []*Password `json:"passwords"`
 }
 
 type Query struct {
@@ -477,6 +512,11 @@ type SciResearchPreview struct {
 	Awards      []*AwardRecordPreview `json:"awards,omitempty"`
 }
 
+type SciResearchQuery struct {
+	TotalCount   int            `json:"totalCount"`
+	SciResearchs []*SciResearch `json:"sciResearchs"`
+}
+
 type SigIn struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -532,6 +572,11 @@ type UGPGGuidancePreview struct {
 	MidtermCheckResult *string    `json:"midtermCheckResult,omitempty"`
 	DefenseDate        *time.Time `json:"defenseDate,omitempty"`
 	DefenseResult      *string    `json:"defenseResult,omitempty"`
+}
+
+type UGPGGuidanceQuery struct {
+	TotalCount    int             `json:"totalCount"`
+	UGPGGuidances []*UGPGGuidance `json:"uGPGGuidances"`
 }
 
 type UpdateAcademicTerm struct {

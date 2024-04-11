@@ -138,7 +138,7 @@ func (passwordService *PasswordService) GetPasswordTrueById(id, masterKey string
 	}, nil
 }
 
-func (passwordService *PasswordService) GetPasswordsByFilter(userId primitive.ObjectID, filter graphql_models.PasswordFilter) ([]*graphql_models.Password, error) {
+func (passwordService *PasswordService) GetPasswordsByFilter(userId primitive.ObjectID, filter graphql_models.PasswordFilter) (*graphql_models.PasswordsQuery, error) {
 	passwordsData, err := passwordService.Repo.GetPasswordsByParams(
 		repository.PasswordQueryParams{
 			UserId:  userId,
@@ -162,5 +162,8 @@ func (passwordService *PasswordService) GetPasswordsByFilter(userId primitive.Ob
 			UpdatedAt:   passwordData.UpdatedAt.Time(),
 		}
 	}
-	return passwords, nil
+	return &graphql_models.PasswordsQuery{
+		TotalCount: len(passwords),
+		Passwords:  passwords,
+	}, nil
 }

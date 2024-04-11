@@ -158,7 +158,7 @@ func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidanceById(id string) (
 	}, nil
 }
 
-func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidancesByFilter(userId primitive.ObjectID, filter graphql_models.UGPGGuidanceFilter) ([]*graphql_models.UGPGGuidance, error) {
+func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidancesByFilter(userId primitive.ObjectID, filter graphql_models.UGPGGuidanceFilter) (*graphql_models.UGPGGuidanceQuery, error) {
 	uGPGGuidanceData, err := uGPGGuidanceService.Repo.GetUGPGGuidancesByParams(
 		repository.UGPGGuidanceQueryParams{
 			UserId:           userId,
@@ -209,5 +209,8 @@ func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidancesByFilter(userId 
 		}
 	}
 
-	return uGPGGuidances, nil
+	return &graphql_models.UGPGGuidanceQuery{
+		TotalCount:    len(uGPGGuidances),
+		UGPGGuidances: uGPGGuidances,
+	}, nil
 }

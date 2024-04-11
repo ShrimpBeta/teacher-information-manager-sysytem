@@ -43,7 +43,7 @@ func (classScheduleService *ClassScheduleService) GetAcademicTermById(id string)
 	panic("not implemented")
 }
 
-func (classScheduleService *ClassScheduleService) GetAcademicTerms(userId primitive.ObjectID) ([]*graphql_models.AcademicTermShort, error) {
+func (classScheduleService *ClassScheduleService) GetAcademicTerms(userId primitive.ObjectID) (*graphql_models.AcademicTermQuery, error) {
 	AcademicTermsData, err := classScheduleService.Repo.GetAcademicTermsByUserId(userId)
 	if err != nil {
 		return nil, err
@@ -58,5 +58,8 @@ func (classScheduleService *ClassScheduleService) GetAcademicTerms(userId primit
 			UpdatedAt: academicterm.UpdatedAt.Time(),
 		}
 	}
-	return academicTerms, nil
+	return &graphql_models.AcademicTermQuery{
+		TotalCount:    len(academicTerms),
+		AcademicTerms: academicTerms,
+	}, nil
 }

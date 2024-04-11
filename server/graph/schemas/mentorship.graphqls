@@ -9,6 +9,11 @@ type Mentorship {
   updatedAt: Time!
 }
 
+type MentorshipQuery {
+  totalCount: Int!
+  mentorships: [Mentorship]!
+}
+
 type MentorshipPreview {
   projectName: String
   studentNames: [String]
@@ -37,7 +42,9 @@ input MentorshipFilter {
 
 extend type Query {
   mentorship(id: ID!): Mentorship!
-  mentorshipsByFilter(filter: MentorshipFilter!): [Mentorship]!
+  
+  mentorshipsByFilter(filter: MentorshipFilter!): MentorshipQuery!
+  mentorships(ids: [ID]!): [Mentorship]!
 }
 
 extend type Mutation {

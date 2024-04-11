@@ -105,7 +105,7 @@ func (r *queryResolver) PasswordTrue(ctx context.Context, id string) (*graphql_m
 }
 
 // PasswordsByFilter is the resolver for the passwordsByFilter field.
-func (r *queryResolver) PasswordsByFilter(ctx context.Context, filter graphql_models.PasswordFilter) ([]*graphql_models.Password, error) {
+func (r *queryResolver) PasswordsByFilter(ctx context.Context, filter graphql_models.PasswordFilter) (*graphql_models.PasswordsQuery, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -124,7 +124,7 @@ func (r *queryResolver) PasswordsByFilter(ctx context.Context, filter graphql_mo
 	return r.PasswordService.GetPasswordsByFilter(user.ID, filter)
 }
 
-// PasswordTrueByFilter is the resolver for the passwordTrueByFilter field.
-func (r *queryResolver) PasswordTrueByFilter(ctx context.Context, filter graphql_models.PasswordFilter) ([]*graphql_models.PasswordTrue, error) {
-	panic(fmt.Errorf("not implemented: PasswordTrueByFilter - passwordTrueByFilter"))
+// PasswordsTrue is the resolver for the passwordsTrue field.
+func (r *queryResolver) PasswordsTrue(ctx context.Context, ids []*string) ([]*graphql_models.PasswordTrue, error) {
+	panic(fmt.Errorf("not implemented: PasswordsTrue - passwordsTrue"))
 }

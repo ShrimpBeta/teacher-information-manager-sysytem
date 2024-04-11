@@ -212,7 +212,7 @@ func (s *SciResearchService) GetSciResearchById(sciResearchID string, userRepo *
 	}, nil
 }
 
-func (s *SciResearchService) GetSciResearchsByFilter(userId primitive.ObjectID, filter graphql_models.SciResearchFilter, userRepo *repository.UserRepo) ([]*graphql_models.SciResearch, error) {
+func (s *SciResearchService) GetSciResearchsByFilter(userId primitive.ObjectID, filter graphql_models.SciResearchFilter, userRepo *repository.UserRepo) (*graphql_models.SciResearchQuery, error) {
 	teachersInID := make([]primitive.ObjectID, len(filter.TeachersIn)+1)
 	teachersInID[0] = userId
 	for i, teacherIn := range filter.TeachersIn {
@@ -295,7 +295,10 @@ func (s *SciResearchService) GetSciResearchsByFilter(userId primitive.ObjectID, 
 		}
 
 	}
-	return sciResearchs, nil
+	return &graphql_models.SciResearchQuery{
+		TotalCount:   len(sciResearchs),
+		SciResearchs: sciResearchs,
+	}, nil
 }
 
 func (s *SciResearchService) UploadSciResearchs(file graphql.Upload, userRepo *repository.UserRepo) (*graphql_models.SciResearchPreview, error) {

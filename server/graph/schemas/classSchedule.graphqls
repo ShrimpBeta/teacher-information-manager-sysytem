@@ -21,7 +21,7 @@ type Course {
 type AcademicTerm {
   id: ID!
   termName: String!
-  courses: [Course]!
+  courses: [Course]
   createdAt: Time!
   updatedAt: Time!
 }
@@ -31,6 +31,11 @@ type AcademicTermShort {
   termName: String!
   createdAt: Time!
   updatedAt: Time!
+}
+
+type AcademicTermQuery {
+  totalCount: Int!
+  academicTerms: [AcademicTermShort]!
 }
 
 # 课程表学期预览，OCR识别结果
@@ -73,7 +78,7 @@ input CourseData {
 
 input NewAcademicTerm {
   termName: String!
-  courses: [CourseData]!
+  courses: [CourseData]
 }
 
 input UpdateAcademicTerm {
@@ -81,11 +86,10 @@ input UpdateAcademicTerm {
 }
 
 extend type Query {
-  # 查看一个学期
   academicTerm(id: ID!): AcademicTerm!
 
-  # 查看用户所有学期
-  academicTerms: [AcademicTermShort]!
+  academicTerms: AcademicTermQuery!
+  academicTermsId(ids: [ID]!): [AcademicTerm]!
 }
 
 extend type Mutation {

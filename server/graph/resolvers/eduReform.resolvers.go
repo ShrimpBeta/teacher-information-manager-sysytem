@@ -94,7 +94,7 @@ func (r *queryResolver) EduReform(ctx context.Context, id string) (*graphql_mode
 }
 
 // EduReformsByFilter is the resolver for the eduReformsByFilter field.
-func (r *queryResolver) EduReformsByFilter(ctx context.Context, filter graphql_models.EduReformFilter) ([]*graphql_models.EduReform, error) {
+func (r *queryResolver) EduReformsByFilter(ctx context.Context, filter graphql_models.EduReformFilter) (*graphql_models.EduReformQuery, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -111,4 +111,9 @@ func (r *queryResolver) EduReformsByFilter(ctx context.Context, filter graphql_m
 	}
 
 	return r.EduReformService.GetEduReformsByFilter(user.ID, filter, r.UserService.Repo)
+}
+
+// EduReforms is the resolver for the eduReforms field.
+func (r *queryResolver) EduReforms(ctx context.Context, ids []*string) ([]*graphql_models.EduReform, error) {
+	panic(fmt.Errorf("not implemented: EduReforms - eduReforms"))
 }

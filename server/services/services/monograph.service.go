@@ -144,7 +144,7 @@ func (monographService *MonographService) GetMonographById(id string, userRepo *
 	}, nil
 }
 
-func (monographService *MonographService) GetMonographsByFilter(userId primitive.ObjectID, filter graphql_models.MonographFilter, userRepo *repository.UserRepo) ([]*graphql_models.Monograph, error) {
+func (monographService *MonographService) GetMonographsByFilter(userId primitive.ObjectID, filter graphql_models.MonographFilter, userRepo *repository.UserRepo) (*graphql_models.MonographQuery, error) {
 
 	TeachersInID := make([]primitive.ObjectID, len(filter.TeachersIn)+1)
 	TeachersInID[0] = userId
@@ -198,7 +198,10 @@ func (monographService *MonographService) GetMonographsByFilter(userId primitive
 		}
 	}
 
-	return monographs, nil
+	return &graphql_models.MonographQuery{
+		TotalCount: len(monographs),
+		Monographs: monographs,
+	}, nil
 }
 
 func (monographService *MonographService) UploadMonographs(file graphql.Upload, userRepo *repository.UserRepo) ([]*graphql_models.MonographPreview, error) {

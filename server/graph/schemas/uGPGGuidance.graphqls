@@ -13,6 +13,11 @@ type UGPGGuidance {
   updatedAt: Time!
 }
 
+type UGPGGuidanceQuery {
+  totalCount: Int!
+  uGPGGuidances: [UGPGGuidance]!
+}
+
 type UGPGGuidancePreview {
   studentName: String
   thesisTopic: String
@@ -48,7 +53,9 @@ input UGPGGuidanceFilter {
 
 extend type Query {
   uGPGGuidance(id: ID!): UGPGGuidance!
-  uGPGGuidancesByFilter(filter: UGPGGuidanceFilter!): [UGPGGuidance]!
+
+  uGPGGuidancesByFilter(filter: UGPGGuidanceFilter!): UGPGGuidanceQuery!
+  uGPGGuidances(ids: [ID]!): [UGPGGuidance]!
 }
 
 extend type Mutation {

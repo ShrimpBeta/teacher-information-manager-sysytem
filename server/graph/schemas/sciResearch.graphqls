@@ -26,6 +26,11 @@ type SciResearch {
   updatedAt: Time!
 }
 
+type SciResearchQuery {
+  totalCount: Int!
+  sciResearchs: [SciResearch]!
+}
+
 type AwardRecordPreview {
   awardName: String
   awardDate: Time
@@ -95,15 +100,14 @@ input SciResearchFilter {
 
 extend type Query {
   sciResearch(id: ID!): SciResearch!
-  sciResearchsByFilter(filter: SciResearchFilter!): [SciResearch!]!
+
+  sciResearchsByFilter(filter: SciResearchFilter!): SciResearchQuery!
+  sciResearchs(ids: [ID]!): [SciResearch]!
 }
 
 extend type Mutation {
   createSciResearch(sciResearchData: SciResearchData!): SciResearch!
-  updateSciResearch(
-    id: ID!
-    sciResearchData: SciResearchData!
-  ): SciResearch!
+  updateSciResearch(id: ID!, sciResearchData: SciResearchData!): SciResearch!
   deleteSciResearch(id: ID!): SciResearch!
 
   uploadSciResearchs(file: Upload!): SciResearchPreview!

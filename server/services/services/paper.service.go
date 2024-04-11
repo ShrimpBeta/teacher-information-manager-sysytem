@@ -149,7 +149,7 @@ func (paperService *PaperService) GetPaperById(id string, userRepo *repository.U
 	}, nil
 }
 
-func (paperService *PaperService) GetPapersByFilter(userId primitive.ObjectID, filter graphql_models.PaperFilter, userRepo *repository.UserRepo) ([]*graphql_models.Paper, error) {
+func (paperService *PaperService) GetPapersByFilter(userId primitive.ObjectID, filter graphql_models.PaperFilter, userRepo *repository.UserRepo) (*graphql_models.PaperQuery, error) {
 
 	TeachersInID := make([]primitive.ObjectID, len(filter.TeachersIn)+1)
 	TeachersInID[0] = userId
@@ -208,5 +208,8 @@ func (paperService *PaperService) GetPapersByFilter(userId primitive.ObjectID, f
 		}
 	}
 
-	return papers, nil
+	return &graphql_models.PaperQuery{
+		TotalCount: len(papers),
+		Papers:     papers,
+	}, nil
 }

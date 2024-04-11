@@ -6,6 +6,7 @@ package resolvers
 
 import (
 	"context"
+	"fmt"
 	graphql_models "server/graph/model"
 	"server/middlewares"
 
@@ -93,7 +94,7 @@ func (r *queryResolver) Monograph(ctx context.Context, id string) (*graphql_mode
 }
 
 // MonographsByFilter is the resolver for the monographsByFilter field.
-func (r *queryResolver) MonographsByFilter(ctx context.Context, filter graphql_models.MonographFilter) ([]*graphql_models.Monograph, error) {
+func (r *queryResolver) MonographsByFilter(ctx context.Context, filter graphql_models.MonographFilter) (*graphql_models.MonographQuery, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -110,4 +111,9 @@ func (r *queryResolver) MonographsByFilter(ctx context.Context, filter graphql_m
 	}
 
 	return r.MonographService.GetMonographsByFilter(user.ID, filter, r.UserService.Repo)
+}
+
+// Monographs is the resolver for the monographs field.
+func (r *queryResolver) Monographs(ctx context.Context, ids []*string) ([]*graphql_models.Monograph, error) {
+	panic(fmt.Errorf("not implemented: Monographs - monographs"))
 }

@@ -12,6 +12,11 @@ type Paper {
   updatedAt: Time!
 }
 
+type PaperQuery {
+  totalCount: Int!
+  papers: [Paper]!
+}
+
 type PaperPreview {
   teachersIn: [UserExport]
   teachersOut: [String]
@@ -50,7 +55,8 @@ input PaperFilter {
 extend type Query {
   paper(id: ID!): Paper!
 
-  papersByFilter(filter: PaperFilter!): [Paper]!
+  papersByFilter(filter: PaperFilter!): PaperQuery!
+  papers(ids: [ID]!): [Paper]!
 }
 
 extend type Mutation {

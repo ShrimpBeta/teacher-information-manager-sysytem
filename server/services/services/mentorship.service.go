@@ -109,7 +109,7 @@ func (mentorshipService *MentorshipService) GetMentorshipById(id string) (*graph
 	}, nil
 }
 
-func (mentorshipService *MentorshipService) GetMentorshipsByFilter(userId primitive.ObjectID, filter graphql_models.MentorshipFilter) ([]*graphql_models.Mentorship, error) {
+func (mentorshipService *MentorshipService) GetMentorshipsByFilter(userId primitive.ObjectID, filter graphql_models.MentorshipFilter) (*graphql_models.MentorshipQuery, error) {
 	mentorshipsData, err := mentorshipService.Repo.GetMentorshipsByParams(
 		repository.MentorshipQueryParams{
 			UserId:            userId,
@@ -139,5 +139,8 @@ func (mentorshipService *MentorshipService) GetMentorshipsByFilter(userId primit
 			UpdatedAt:    mentorship.UpdatedAt.Time(),
 		}
 	}
-	return mentorships, nil
+	return &graphql_models.MentorshipQuery{
+		TotalCount:  len(mentorships),
+		Mentorships: mentorships,
+	}, nil
 }

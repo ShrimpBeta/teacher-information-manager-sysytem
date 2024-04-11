@@ -11,6 +11,11 @@ type Monograph {
   updatedAt: Time!
 }
 
+type MonographQuery {
+  totalCount: Int!
+  monographs: [Monograph]!
+}
+
 type MonographPreview {
   teachersIn: [UserExport]
   teachersOut: [String]
@@ -46,7 +51,8 @@ input MonographFilter {
 extend type Query {
   monograph(id: ID!): Monograph!
 
-  monographsByFilter(filter: MonographFilter!): [Monograph]!
+  monographsByFilter(filter: MonographFilter!): MonographQuery!
+  monographs(ids: [ID]!): [Monograph]!
 }
 
 extend type Mutation {

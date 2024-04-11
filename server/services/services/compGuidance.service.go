@@ -119,7 +119,7 @@ func (compGuidanceService *CompGuidanceService) GetCompGuidanceById(id string) (
 	}, nil
 }
 
-func (compGuidanceService *CompGuidanceService) GetCompGuidancesByFilter(userId primitive.ObjectID, filter graphql_models.CompGuidanceFilter) ([]*graphql_models.CompGuidance, error) {
+func (compGuidanceService *CompGuidanceService) GetCompGuidancesByFilter(userId primitive.ObjectID, filter graphql_models.CompGuidanceFilter) (*graphql_models.CompGuidanceQuery, error) {
 	compGuidancesData, err := compGuidanceService.Repo.GetCompGuidancesByParams(
 		repository.CompGuidanceQueryParams{
 			UserId:            userId,
@@ -154,5 +154,9 @@ func (compGuidanceService *CompGuidanceService) GetCompGuidancesByFilter(userId 
 			UpdatedAt:        compGuidanceData.UpdatedAt.Time(),
 		}
 	}
-	return compGuidances, nil
+
+	return &graphql_models.CompGuidanceQuery{
+		TotalCount:    len(compGuidances),
+		CompGuidances: compGuidances,
+	}, nil
 }
