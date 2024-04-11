@@ -35,35 +35,38 @@ export const sciResearchQuery = gql`
 `;
 
 export const sciResearchsByFilterQuery = gql`
-  query sciResearchsByFilter($filter: SciResearchFilter!) {
-    sciResearchsByFilter(filter: $filter){
-      id
-      teachersIn{
+  query sciResearchsByFilter($filter: SciResearchFilter!, $offset: Int!, $limit: Int!) {
+    sciResearchsByFilter(filter: $filter, offset: $offset, limit: $limit) {
+      totalCount
+      sciResearchs{
         id
-        username
-        email
-        avatar
+        teachersIn{
+          id
+          username
+          email
+          avatar
+          createdAt
+        }
+        teachersOut
+        number
+        title
+        startDate
+        duration
+        level
+        rank
+        achievement
+        fund
+        isAward
+        awards{
+          id
+          awardName
+          awardDate
+          awardLevel
+          awardRank
+        }
         createdAt
+        updatedAt
       }
-      teachersOut
-      number
-      title
-      startDate
-      duration
-      level
-      rank
-      achievement
-      fund
-      isAward
-      awards{
-        id
-        awardName
-        awardDate
-        awardLevel
-        awardRank
-      }
-      createdAt
-      updatedAt
     }
   }
 `;

@@ -94,7 +94,7 @@ func (r *queryResolver) Monograph(ctx context.Context, id string) (*graphql_mode
 }
 
 // MonographsByFilter is the resolver for the monographsByFilter field.
-func (r *queryResolver) MonographsByFilter(ctx context.Context, filter graphql_models.MonographFilter) (*graphql_models.MonographQuery, error) {
+func (r *queryResolver) MonographsByFilter(ctx context.Context, filter graphql_models.MonographFilter, offset int, limit int) (*graphql_models.MonographQuery, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (r *queryResolver) MonographsByFilter(ctx context.Context, filter graphql_m
 		return nil, err
 	}
 
-	return r.MonographService.GetMonographsByFilter(user.ID, filter, r.UserService.Repo)
+	return r.MonographService.GetMonographsByFilter(user.ID, filter, r.UserService.Repo, offset, limit)
 }
 
 // Monographs is the resolver for the monographs field.

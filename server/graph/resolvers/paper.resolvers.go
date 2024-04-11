@@ -96,7 +96,7 @@ func (r *queryResolver) Paper(ctx context.Context, id string) (*graphql_models.P
 }
 
 // PapersByFilter is the resolver for the papersByFilter field.
-func (r *queryResolver) PapersByFilter(ctx context.Context, filter graphql_models.PaperFilter) (*graphql_models.PaperQuery, error) {
+func (r *queryResolver) PapersByFilter(ctx context.Context, filter graphql_models.PaperFilter, offset int, limit int) (*graphql_models.PaperQuery, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -112,7 +112,7 @@ func (r *queryResolver) PapersByFilter(ctx context.Context, filter graphql_model
 		return nil, err
 	}
 
-	return r.PaperService.GetPapersByFilter(user.ID, filter, r.UserService.Repo)
+	return r.PaperService.GetPapersByFilter(user.ID, filter, r.UserService.Repo, offset, limit)
 }
 
 // Papers is the resolver for the papers field.

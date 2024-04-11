@@ -27,27 +27,30 @@ export const eduReformQuery = gql`
 `;
 
 export const eduReformsByFilterQuery = gql`
-  query eduReformsByFilter($filter: EduReformFilter!) {
-    eduReformsByFilter(filter: $filter){
-      id
-      teachersIn{
+  query eduReformsByFilter($filter: EduReformFilter!,$offset:Int!, $limit:Int!) {
+    eduReformsByFilter(filter: $filter, offset: $offset, limit: $limit) {
+      totalCount
+      eduReforms{
         id
-        username
-        email
-        avatar
+        teachersIn{
+          id
+          username
+          email
+          avatar
+          createdAt
+        }
+        teachersOut
+        number
+        title
+        startDate
+        duration
+        level
+        rank
+        achievement
+        fund
         createdAt
+        updatedAt
       }
-      teachersOut
-      number
-      title
-      startDate
-      duration
-      level
-      rank
-      achievement
-      fund
-      createdAt
-      updatedAt
     }
   }
 `;

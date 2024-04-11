@@ -99,7 +99,7 @@ func (r *queryResolver) CompGuidance(ctx context.Context, id string) (*graphql_m
 }
 
 // CompGuidancesByFilter is the resolver for the compGuidancesByFilter field.
-func (r *queryResolver) CompGuidancesByFilter(ctx context.Context, filter graphql_models.CompGuidanceFilter) (*graphql_models.CompGuidanceQuery, error) {
+func (r *queryResolver) CompGuidancesByFilter(ctx context.Context, filter graphql_models.CompGuidanceFilter, offset int, limit int) (*graphql_models.CompGuidanceQuery, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -116,7 +116,7 @@ func (r *queryResolver) CompGuidancesByFilter(ctx context.Context, filter graphq
 		return nil, err
 	}
 
-	return r.CompGuidanceService.GetCompGuidancesByFilter(user.ID, filter)
+	return r.CompGuidanceService.GetCompGuidancesByFilter(user.ID, filter, offset, limit)
 }
 
 // CompGuidances is the resolver for the compGuidances field.

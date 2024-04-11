@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"fmt"
 	graphql_models "server/graph/model"
 	"server/persistence/models"
@@ -212,7 +213,7 @@ func (s *SciResearchService) GetSciResearchById(sciResearchID string, userRepo *
 	}, nil
 }
 
-func (s *SciResearchService) GetSciResearchsByFilter(userId primitive.ObjectID, filter graphql_models.SciResearchFilter, userRepo *repository.UserRepo) (*graphql_models.SciResearchQuery, error) {
+func (s *SciResearchService) GetSciResearchsByFilter(userId primitive.ObjectID, filter graphql_models.SciResearchFilter, userRepo *repository.UserRepo, offset int, limit int) (*graphql_models.SciResearchQuery, error) {
 	teachersInID := make([]primitive.ObjectID, len(filter.TeachersIn)+1)
 	teachersInID[0] = userId
 	for i, teacherIn := range filter.TeachersIn {
@@ -247,8 +248,70 @@ func (s *SciResearchService) GetSciResearchsByFilter(userId primitive.ObjectID, 
 		return nil, err
 	}
 
-	sciResearchs := make([]*graphql_models.SciResearch, len(sciResearchsData))
-	for i, sciResearchData := range sciResearchsData {
+	// sciResearchs := make([]*graphql_models.SciResearch, len(sciResearchsData))
+	// for i, sciResearchData := range sciResearchsData {
+	// 	usersInExport, err := userRepo.GetUsersExportByIds(sciResearchData.TeachersIn)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+
+	// 	var startDate *time.Time = nil
+	// 	if sciResearchData.StartDate != nil {
+	// 		date := sciResearchData.StartDate.Time()
+	// 		startDate = &date
+	// 	}
+
+	// 	var awards []*graphql_models.AwardRecord = nil
+	// 	if sciResearchData.AwardRecords != nil {
+	// 		awards = make([]*graphql_models.AwardRecord, len(sciResearchData.AwardRecords))
+	// 		for i, award := range sciResearchData.AwardRecords {
+	// 			var awardDate *time.Time = nil
+	// 			if award.AwardDate != nil {
+	// 				date := award.AwardDate.Time()
+	// 				awardDate = &date
+	// 			}
+	// 			awards[i] = &graphql_models.AwardRecord{
+	// 				AwardName:  award.AwardName,
+	// 				AwardDate:  awardDate,
+	// 				AwardLevel: award.AwardLevel,
+	// 				AwardRank:  award.AwardRank,
+	// 			}
+	// 		}
+	// 	}
+
+	// 	sciResearchs[i] = &graphql_models.SciResearch{
+	// 		ID:          sciResearchData.ID.Hex(),
+	// 		TeachersIn:  usersInExport,
+	// 		TeachersOut: sciResearchData.TeachersOut,
+	// 		Title:       sciResearchData.Title,
+	// 		Number:      sciResearchData.Number,
+	// 		StartDate:   startDate,
+	// 		Duration:    sciResearchData.Duration,
+	// 		Level:       sciResearchData.Level,
+	// 		Rank:        sciResearchData.Rank,
+	// 		Achievement: sciResearchData.Achievement,
+	// 		Fund:        sciResearchData.Fund,
+	// 		IsAward:     sciResearchData.IsAward,
+	// 		Awards:      awards,
+	// 	}
+	// }
+
+	if offset >= len(sciResearchsData) || offset < 0 {
+		return nil, errors.New("offset out of range")
+	}
+
+	if limit <= 0 {
+		return nil, errors.New("limit must be greater than 0")
+	}
+
+	if offset+limit > len(sciResearchsData) {
+		limit = len(sciResearchsData) - offset
+	}
+
+	sciResearchs := make([]*graphql_models.SciResearch, limit)
+	for i := 0; i < limit; i++ {
+		sciResearchData := sciResearchsData[i+offset]
+
 		usersInExport, err := userRepo.GetUsersExportByIds(sciResearchData.TeachersIn)
 		if err != nil {
 			return nil, err
@@ -293,10 +356,10 @@ func (s *SciResearchService) GetSciResearchsByFilter(userId primitive.ObjectID, 
 			IsAward:     sciResearchData.IsAward,
 			Awards:      awards,
 		}
-
 	}
+
 	return &graphql_models.SciResearchQuery{
-		TotalCount:   len(sciResearchs),
+		TotalCount:   len(sciResearchsData),
 		SciResearchs: sciResearchs,
 	}, nil
 }

@@ -94,7 +94,7 @@ func (r *queryResolver) UGPGGuidance(ctx context.Context, id string) (*graphql_m
 }
 
 // UGPGGuidancesByFilter is the resolver for the uGPGGuidancesByFilter field.
-func (r *queryResolver) UGPGGuidancesByFilter(ctx context.Context, filter graphql_models.UGPGGuidanceFilter) (*graphql_models.UGPGGuidanceQuery, error) {
+func (r *queryResolver) UGPGGuidancesByFilter(ctx context.Context, filter graphql_models.UGPGGuidanceFilter, offset int, limit int) (*graphql_models.UGPGGuidanceQuery, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (r *queryResolver) UGPGGuidancesByFilter(ctx context.Context, filter graphq
 		return nil, err
 	}
 
-	return r.UGPGGuidanceService.GetUGPGGuidancesByFilter(user.ID, filter)
+	return r.UGPGGuidanceService.GetUGPGGuidancesByFilter(user.ID, filter, offset, limit)
 }
 
 // UGPGGuidances is the resolver for the uGPGGuidances field.

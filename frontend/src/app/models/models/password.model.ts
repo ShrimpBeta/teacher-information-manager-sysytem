@@ -8,6 +8,11 @@ export class Password {
   updatedAt: Date = new Date(0)
 }
 
+export class PasswordsPage {
+  totalCount: number = 0
+  passwords: Password[] = []
+}
+
 export class PasswordTrue {
   id: string = ""
   url: string = ""
@@ -44,7 +49,10 @@ export interface PasswordTrueResponse {
 export interface PasswordsByFilterResponse {
   error?: unknown;
   data?: {
-    passwordsByFilter: Password[]
+    passwordsByFilter: {
+      totalCount: number
+      passwords: Password[]
+    }
   }
 }
 

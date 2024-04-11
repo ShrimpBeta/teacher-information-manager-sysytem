@@ -46,7 +46,11 @@ input CompGuidanceFilter {
 extend type Query {
   compGuidance(id: ID!): CompGuidance!
 
-  compGuidancesByFilter(filter: CompGuidanceFilter!): CompGuidanceQuery!
+  compGuidancesByFilter(
+    filter: CompGuidanceFilter!
+    offset: Int!
+    limit: Int!
+  ): CompGuidanceQuery!
   compGuidances(ids: [ID]!): [CompGuidance]!
 }
 

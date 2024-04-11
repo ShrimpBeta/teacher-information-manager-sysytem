@@ -105,7 +105,7 @@ func (r *queryResolver) PasswordTrue(ctx context.Context, id string) (*graphql_m
 }
 
 // PasswordsByFilter is the resolver for the passwordsByFilter field.
-func (r *queryResolver) PasswordsByFilter(ctx context.Context, filter graphql_models.PasswordFilter) (*graphql_models.PasswordsQuery, error) {
+func (r *queryResolver) PasswordsByFilter(ctx context.Context, filter graphql_models.PasswordFilter, offset int, limit int) (*graphql_models.PasswordsQuery, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -121,7 +121,7 @@ func (r *queryResolver) PasswordsByFilter(ctx context.Context, filter graphql_mo
 		return nil, err
 	}
 
-	return r.PasswordService.GetPasswordsByFilter(user.ID, filter)
+	return r.PasswordService.GetPasswordsByFilter(user.ID, filter, offset, limit)
 }
 
 // PasswordsTrue is the resolver for the passwordsTrue field.

@@ -88,7 +88,7 @@ input UpdateAcademicTerm {
 extend type Query {
   academicTerm(id: ID!): AcademicTerm!
 
-  academicTerms: AcademicTermQuery!
+  academicTerms(offset: Int!, limit: Int!): AcademicTermQuery!
   academicTermsId(ids: [ID]!): [AcademicTerm]!
 }
 

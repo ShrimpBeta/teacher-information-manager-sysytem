@@ -101,7 +101,11 @@ input SciResearchFilter {
 extend type Query {
   sciResearch(id: ID!): SciResearch!
 
-  sciResearchsByFilter(filter: SciResearchFilter!): SciResearchQuery!
+  sciResearchsByFilter(
+    filter: SciResearchFilter!
+    offset: Int!
+    limit: Int!
+  ): SciResearchQuery!
   sciResearchs(ids: [ID]!): [SciResearch]!
 }
 

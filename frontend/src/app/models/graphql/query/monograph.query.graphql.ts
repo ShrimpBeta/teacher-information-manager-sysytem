@@ -23,23 +23,26 @@ export const monographQuery = gql`
 `;
 
 export const monographsByFilterQuery = gql`
-  query monographsByFilter($filter: MonographFilter!) {
-    monographsByFilter(filter: $filter){
-      id
-      teachersIn{
+  query monographsByFilter($filter: MonographFilter!, $offset: Int!, $limit: Int!) {
+    monographsByFilter(filter: $filter, offset: $offset, limit: $limit) {
+      totalCount
+      monographs{
         id
-        username
-        email
-        avatar
+        teachersIn{
+          id
+          username
+          email
+          avatar
+          createdAt
+        }
+        teachersOut
+        title
+        publishDate
+        publishLevel
+        rank
         createdAt
+        updatedAt
       }
-      teachersOut
-      title
-      publishDate
-      publishLevel
-      rank
-      createdAt
-      updatedAt
     }
   }
 `;

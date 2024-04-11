@@ -19,19 +19,22 @@ export const uGPUGGuidanceQuery = gql`
 `;
 
 export const uGPGGuidancesByFilterQuery = gql`
-  query uGPGGuidancesByFilter($filter: UGPGGuidanceFilter!) {
-    uGPGGuidancesByFilter(filter: $filter){
-      id
-      studentName
-      thesisTopic
-      openingCheckDate
-      openingCheckResult
-      midtermCheckDate
-      midtermCheckResult
-      defenseDate
-      defenseResult
-      createdAt
-      updatedAt
+  query uGPGGuidancesByFilter($filter: UGPGGuidanceFilter!, $offset: Int!, $limit: Int!) {
+    uGPGGuidancesByFilter(filter: $filter, offset: $offset, limit: $limit) {
+      totalCount
+      uGPGGuidances{
+        id
+        studentName
+        thesisTopic
+        openingCheckDate
+        openingCheckResult
+        midtermCheckDate
+        midtermCheckResult
+        defenseDate
+        defenseResult
+        createdAt
+        updatedAt
+      }
     }
   }
 `;

@@ -3,7 +3,7 @@ import { Apollo } from "apollo-angular";
 import { AuthRepository } from "../core/auth/auth.repository";
 import { passwordTrueQuery, passwordsByFilterQuery } from "../models/graphql/query/password.query.graphql";
 import { deletePasswordMutation, updatePasswordMutation, createPasswordMutation } from "../models/graphql/mutation/password.mutation.graphql";
-import { CreatePasswordResponse, DeletePasswordResponse, EditPassword, Password, PasswordFilter, PasswordsByFilterResponse, PasswordTrue, PasswordTrueResponse, UpdatePasswordResponse } from "../models/models/password.model";
+import { CreatePasswordResponse, DeletePasswordResponse, EditPassword, Password, PasswordFilter, PasswordsByFilterResponse, PasswordsPage, PasswordTrue, PasswordTrueResponse, UpdatePasswordResponse } from "../models/models/password.model";
 import { map, Observable } from "rxjs";
 
 @Injectable({
@@ -15,11 +15,13 @@ export class PasswordService {
     private authRepository: AuthRepository
   ) { }
 
-  getPasswordsByFilter(passwordFilter: PasswordFilter): Observable<Password[] | null> {
+  getPasswordsByFilter(passwordFilter: PasswordFilter, pageIndex: number, pageSize: number): Observable<PasswordsPage | null> {
     return this.apollo.query({
       query: passwordsByFilterQuery,
       variables: {
-        filter: passwordFilter
+        filter: passwordFilter,
+        offset: pageIndex * pageSize,
+        limit: pageSize
       },
       fetchPolicy: 'network-only'
     }).pipe(

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"server/persistence/repository"
@@ -158,8 +159,8 @@ func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidanceById(id string) (
 	}, nil
 }
 
-func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidancesByFilter(userId primitive.ObjectID, filter graphql_models.UGPGGuidanceFilter) (*graphql_models.UGPGGuidanceQuery, error) {
-	uGPGGuidanceData, err := uGPGGuidanceService.Repo.GetUGPGGuidancesByParams(
+func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidancesByFilter(userId primitive.ObjectID, filter graphql_models.UGPGGuidanceFilter, offset int, limit int) (*graphql_models.UGPGGuidanceQuery, error) {
+	uGPGGuidancesData, err := uGPGGuidanceService.Repo.GetUGPGGuidancesByParams(
 		repository.UGPGGuidanceQueryParams{
 			UserId:           userId,
 			StudentName:      filter.StudentName,
@@ -175,42 +176,89 @@ func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidancesByFilter(userId 
 		return nil, err
 	}
 
-	uGPGGuidances := make([]*graphql_models.UGPGGuidance, len(uGPGGuidanceData))
-	for i, uGPGGuidance := range uGPGGuidanceData {
+	// uGPGGuidances := make([]*graphql_models.UGPGGuidance, len(uGPGGuidanceData))
+	// for i, uGPGGuidance := range uGPGGuidanceData {
+
+	// 	var openingCheckDate *time.Time = nil
+	// 	if uGPGGuidance.OpeningCheckDate != nil {
+	// 		date := uGPGGuidance.OpeningCheckDate.Time()
+	// 		openingCheckDate = &date
+	// 	}
+	// 	var midtermCheckDate *time.Time = nil
+	// 	if uGPGGuidance.MidtermCheckDate != nil {
+	// 		date := uGPGGuidance.MidtermCheckDate.Time()
+	// 		midtermCheckDate = &date
+	// 	}
+	// 	var defenseDate *time.Time = nil
+	// 	if uGPGGuidance.DefenseDate != nil {
+	// 		date := uGPGGuidance.DefenseDate.Time()
+	// 		defenseDate = &date
+	// 	}
+
+	// 	uGPGGuidances[i] = &graphql_models.UGPGGuidance{
+	// 		ID:                 uGPGGuidance.ID.Hex(),
+	// 		StudentName:        uGPGGuidance.StudentName,
+	// 		ThesisTopic:        uGPGGuidance.ThesisTopic,
+	// 		OpeningCheckResult: uGPGGuidance.OpeningCheckResult,
+	// 		MidtermCheckResult: uGPGGuidance.MidtermCheckResult,
+	// 		DefenseResult:      uGPGGuidance.DefenseResult,
+	// 		OpeningCheckDate:   openingCheckDate,
+	// 		MidtermCheckDate:   midtermCheckDate,
+	// 		DefenseDate:        defenseDate,
+	// 		CreatedAt:          uGPGGuidance.CreatedAt.Time(),
+	// 		UpdatedAt:          uGPGGuidance.UpdatedAt.Time(),
+	// 	}
+	// }
+
+	if offset >= len(uGPGGuidancesData) || offset < 0 {
+		return nil, errors.New("offset out of range")
+	}
+
+	if limit <= 0 {
+		return nil, errors.New("limit must be greater than 0")
+	}
+
+	if limit+offset > len(uGPGGuidancesData) {
+		limit = len(uGPGGuidancesData) - offset
+	}
+
+	uGPGGuidances := make([]*graphql_models.UGPGGuidance, limit)
+	for i := 0; i < limit; i++ {
+		uGPGGuidanceData := uGPGGuidancesData[offset+i]
 
 		var openingCheckDate *time.Time = nil
-		if uGPGGuidance.OpeningCheckDate != nil {
-			date := uGPGGuidance.OpeningCheckDate.Time()
+		if uGPGGuidanceData.OpeningCheckDate != nil {
+			date := uGPGGuidanceData.OpeningCheckDate.Time()
 			openingCheckDate = &date
 		}
 		var midtermCheckDate *time.Time = nil
-		if uGPGGuidance.MidtermCheckDate != nil {
-			date := uGPGGuidance.MidtermCheckDate.Time()
+		if uGPGGuidanceData.MidtermCheckDate != nil {
+			date := uGPGGuidanceData.MidtermCheckDate.Time()
 			midtermCheckDate = &date
 		}
 		var defenseDate *time.Time = nil
-		if uGPGGuidance.DefenseDate != nil {
-			date := uGPGGuidance.DefenseDate.Time()
+		if uGPGGuidanceData.DefenseDate != nil {
+			date := uGPGGuidanceData.DefenseDate.Time()
 			defenseDate = &date
 		}
 
 		uGPGGuidances[i] = &graphql_models.UGPGGuidance{
-			ID:                 uGPGGuidance.ID.Hex(),
-			StudentName:        uGPGGuidance.StudentName,
-			ThesisTopic:        uGPGGuidance.ThesisTopic,
-			OpeningCheckResult: uGPGGuidance.OpeningCheckResult,
-			MidtermCheckResult: uGPGGuidance.MidtermCheckResult,
-			DefenseResult:      uGPGGuidance.DefenseResult,
+			ID:                 uGPGGuidanceData.ID.Hex(),
+			StudentName:        uGPGGuidanceData.StudentName,
+			ThesisTopic:        uGPGGuidanceData.ThesisTopic,
+			OpeningCheckResult: uGPGGuidanceData.OpeningCheckResult,
+			MidtermCheckResult: uGPGGuidanceData.MidtermCheckResult,
+			DefenseResult:      uGPGGuidanceData.DefenseResult,
 			OpeningCheckDate:   openingCheckDate,
 			MidtermCheckDate:   midtermCheckDate,
 			DefenseDate:        defenseDate,
-			CreatedAt:          uGPGGuidance.CreatedAt.Time(),
-			UpdatedAt:          uGPGGuidance.UpdatedAt.Time(),
+			CreatedAt:          uGPGGuidanceData.CreatedAt.Time(),
+			UpdatedAt:          uGPGGuidanceData.UpdatedAt.Time(),
 		}
 	}
 
 	return &graphql_models.UGPGGuidanceQuery{
-		TotalCount:    len(uGPGGuidances),
+		TotalCount:    len(uGPGGuidancesData),
 		UGPGGuidances: uGPGGuidances,
 	}, nil
 }

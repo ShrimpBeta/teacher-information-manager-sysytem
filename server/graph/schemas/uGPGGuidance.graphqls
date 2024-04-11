@@ -54,7 +54,11 @@ input UGPGGuidanceFilter {
 extend type Query {
   uGPGGuidance(id: ID!): UGPGGuidance!
 
-  uGPGGuidancesByFilter(filter: UGPGGuidanceFilter!): UGPGGuidanceQuery!
+  uGPGGuidancesByFilter(
+    filter: UGPGGuidanceFilter!
+    offset: Int!
+    limit: Int!
+  ): UGPGGuidanceQuery!
   uGPGGuidances(ids: [ID]!): [UGPGGuidance]!
 }
 

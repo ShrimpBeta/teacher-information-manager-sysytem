@@ -14,7 +14,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-overviewpassword',
@@ -29,7 +29,13 @@ export class OverviewpasswordComponent implements OnInit, OnDestroy {
 
   searchFormControl!: FormControl;
   private destroy$ = new Subject<boolean>();
+  // data
+  totalCount: number = 0;
   passwordList: Password[] = [];
+  // page
+  pageIndex: number = 0;
+  pageSize: number = 10;
+  pageSizeOptions: number[] = [6, 10, 24, 50, 100];
 
   constructor(
     private passwordService: PasswordService,
@@ -48,6 +54,13 @@ export class OverviewpasswordComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  onPageChange(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+
+    this.getPasswordList();
+  }
+
   getPasswordList() {
     let passwordFilter = new PasswordFilter();
     if (this.searchFormControl.value.length > 0) {
@@ -55,10 +68,11 @@ export class OverviewpasswordComponent implements OnInit, OnDestroy {
       passwordFilter.account = this.searchFormControl.value;
       passwordFilter.url = this.searchFormControl.value;
     }
-    this.passwordService.getPasswordsByFilter(passwordFilter).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (passwords) => {
-        if (passwords) {
-          this.passwordList = passwords;
+    this.passwordService.getPasswordsByFilter(passwordFilter, this.pageIndex, this.pageSize).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (passwordsPage) => {
+        if (passwordsPage) {
+          this.passwordList = passwordsPage.passwords;
+          this.totalCount = passwordsPage.totalCount;
         }
       },
       error: (error: unknown) => {

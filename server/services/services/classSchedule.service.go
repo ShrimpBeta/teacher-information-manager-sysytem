@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	graphql_models "server/graph/model"
 	"server/persistence/repository"
 
@@ -43,23 +44,47 @@ func (classScheduleService *ClassScheduleService) GetAcademicTermById(id string)
 	panic("not implemented")
 }
 
-func (classScheduleService *ClassScheduleService) GetAcademicTerms(userId primitive.ObjectID) (*graphql_models.AcademicTermQuery, error) {
+func (classScheduleService *ClassScheduleService) GetAcademicTerms(userId primitive.ObjectID, offset int, limit int) (*graphql_models.AcademicTermQuery, error) {
 	AcademicTermsData, err := classScheduleService.Repo.GetAcademicTermsByUserId(userId)
 	if err != nil {
 		return nil, err
 	}
 
-	academicTerms := make([]*graphql_models.AcademicTermShort, len(AcademicTermsData))
-	for i, academicterm := range AcademicTermsData {
+	// academicTerms := make([]*graphql_models.AcademicTermShort, len(AcademicTermsData))
+	// for i, academicterm := range AcademicTermsData {
+	// 	academicTerms[i] = &graphql_models.AcademicTermShort{
+	// 		ID:        academicterm.ID.Hex(),
+	// 		TermName:  academicterm.Name,
+	// 		CreatedAt: academicterm.CreatedAt.Time(),
+	// 		UpdatedAt: academicterm.UpdatedAt.Time(),
+	// 	}
+	// }
+
+	if offset >= len(AcademicTermsData) || offset < 0 {
+		return nil, errors.New("offset out of range")
+	}
+
+	if limit <= 0 {
+		return nil, errors.New("limit must be greater than 0")
+	}
+
+	if limit+offset > len(AcademicTermsData) {
+		limit = len(AcademicTermsData) - offset
+	}
+
+	academicTerms := make([]*graphql_models.AcademicTermShort, limit)
+	for i := 0; i < limit; i++ {
+		academictermData := AcademicTermsData[i+offset]
 		academicTerms[i] = &graphql_models.AcademicTermShort{
-			ID:        academicterm.ID.Hex(),
-			TermName:  academicterm.Name,
-			CreatedAt: academicterm.CreatedAt.Time(),
-			UpdatedAt: academicterm.UpdatedAt.Time(),
+			ID:        academictermData.ID.Hex(),
+			TermName:  academictermData.Name,
+			CreatedAt: academictermData.CreatedAt.Time(),
+			UpdatedAt: academictermData.UpdatedAt.Time(),
 		}
 	}
+
 	return &graphql_models.AcademicTermQuery{
-		TotalCount:    len(academicTerms),
+		TotalCount:    len(AcademicTermsData),
 		AcademicTerms: academicTerms,
 	}, nil
 }

@@ -51,7 +51,11 @@ input MonographFilter {
 extend type Query {
   monograph(id: ID!): Monograph!
 
-  monographsByFilter(filter: MonographFilter!): MonographQuery!
+  monographsByFilter(
+    filter: MonographFilter!
+    offset: Int!
+    limit: Int!
+  ): MonographQuery!
   monographs(ids: [ID]!): [Monograph]!
 }
 

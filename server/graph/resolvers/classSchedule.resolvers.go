@@ -147,7 +147,7 @@ func (r *queryResolver) AcademicTerm(ctx context.Context, id string) (*graphql_m
 }
 
 // Academicerms is the resolver for the academicerms field.
-func (r *queryResolver) AcademicTerms(ctx context.Context) (*graphql_models.AcademicTermQuery, error) {
+func (r *queryResolver) AcademicTerms(ctx context.Context, offset int, limit int) (*graphql_models.AcademicTermQuery, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -164,7 +164,7 @@ func (r *queryResolver) AcademicTerms(ctx context.Context) (*graphql_models.Acad
 		return nil, err
 	}
 
-	return r.ClassScheduleService.GetAcademicTerms(user.ID)
+	return r.ClassScheduleService.GetAcademicTerms(user.ID, offset, limit)
 }
 
 // AcademicTermsID is the resolver for the academicTermsId field.

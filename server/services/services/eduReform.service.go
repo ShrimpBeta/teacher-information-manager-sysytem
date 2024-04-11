@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"server/persistence/repository"
@@ -158,7 +159,7 @@ func (eduReformService *EduReformService) GetEduReformById(id string, userRepo *
 	}, nil
 }
 
-func (eduReformService *EduReformService) GetEduReformsByFilter(userId primitive.ObjectID, filter graphql_models.EduReformFilter, userRepo *repository.UserRepo) (*graphql_models.EduReformQuery, error) {
+func (eduReformService *EduReformService) GetEduReformsByFilter(userId primitive.ObjectID, filter graphql_models.EduReformFilter, userRepo *repository.UserRepo, offset int, limit int) (*graphql_models.EduReformQuery, error) {
 
 	TeachersInID := make([]primitive.ObjectID, len(filter.TeachersIn)+1)
 	TeachersInID[0] = userId
@@ -170,7 +171,7 @@ func (eduReformService *EduReformService) GetEduReformsByFilter(userId primitive
 		TeachersInID[i+1] = objectId
 	}
 
-	edureformData, err := eduReformService.Repo.GetEduReformsByParams(
+	eduReformsData, err := eduReformService.Repo.GetEduReformsByParams(
 		repository.EduReformQueryParams{
 			TeachersIn:     TeachersInID,
 			TeachersOut:    filter.TeachersOut,
@@ -192,38 +193,81 @@ func (eduReformService *EduReformService) GetEduReformsByFilter(userId primitive
 		return nil, err
 	}
 
-	edureformExport := make([]*graphql_models.EduReform, len(edureformData))
-	for i, edureform := range edureformData {
+	// edureformExport := make([]*graphql_models.EduReform, len(edureformData))
+	// for i, edureform := range edureformData {
+	// 	var startDate *time.Time = nil
+	// 	if edureform.StartDate != nil {
+	// 		date := edureform.StartDate.Time()
+	// 		startDate = &date
+	// 	}
+
+	// 	usersInExport, err := userRepo.GetUsersExportByIds(edureform.TeachersIn)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+
+	// 	edureformExport[i] = &graphql_models.EduReform{
+	// 		ID:          edureform.ID.Hex(),
+	// 		TeachersIn:  usersInExport,
+	// 		TeachersOut: edureform.TeachersOut,
+	// 		Title:       edureform.Title,
+	// 		Number:      edureform.Number,
+	// 		Duration:    edureform.Duration,
+	// 		Level:       edureform.Level,
+	// 		Rank:        edureform.Rank,
+	// 		Achievement: edureform.Achievement,
+	// 		Fund:        edureform.Fund,
+	// 		StartDate:   startDate,
+	// 		CreatedAt:   edureform.CreatedAt.Time(),
+	// 		UpdatedAt:   edureform.UpdatedAt.Time(),
+	// 	}
+	// }
+
+	if offset >= len(eduReformsData) || offset < 0 {
+		return nil, errors.New("offset out of range")
+	}
+
+	if limit <= 0 {
+		return nil, errors.New("limit must be greater than 0")
+	}
+
+	if limit+offset > len(eduReformsData) {
+		limit = len(eduReformsData) - offset
+	}
+
+	eduReforms := make([]*graphql_models.EduReform, limit)
+	for i := 0; i < limit; i++ {
+		edureformData := eduReformsData[i+offset]
 		var startDate *time.Time = nil
-		if edureform.StartDate != nil {
-			date := edureform.StartDate.Time()
+		if edureformData.StartDate != nil {
+			date := edureformData.StartDate.Time()
 			startDate = &date
 		}
 
-		usersInExport, err := userRepo.GetUsersExportByIds(edureform.TeachersIn)
+		usersInExport, err := userRepo.GetUsersExportByIds(edureformData.TeachersIn)
 		if err != nil {
 			return nil, err
 		}
 
-		edureformExport[i] = &graphql_models.EduReform{
-			ID:          edureform.ID.Hex(),
+		eduReforms[i] = &graphql_models.EduReform{
+			ID:          edureformData.ID.Hex(),
 			TeachersIn:  usersInExport,
-			TeachersOut: edureform.TeachersOut,
-			Title:       edureform.Title,
-			Number:      edureform.Number,
-			Duration:    edureform.Duration,
-			Level:       edureform.Level,
-			Rank:        edureform.Rank,
-			Achievement: edureform.Achievement,
-			Fund:        edureform.Fund,
+			TeachersOut: edureformData.TeachersOut,
+			Title:       edureformData.Title,
+			Number:      edureformData.Number,
+			Duration:    edureformData.Duration,
+			Level:       edureformData.Level,
+			Rank:        edureformData.Rank,
+			Achievement: edureformData.Achievement,
+			Fund:        edureformData.Fund,
 			StartDate:   startDate,
-			CreatedAt:   edureform.CreatedAt.Time(),
-			UpdatedAt:   edureform.UpdatedAt.Time(),
+			CreatedAt:   edureformData.CreatedAt.Time(),
+			UpdatedAt:   edureformData.UpdatedAt.Time(),
 		}
 	}
 
 	return &graphql_models.EduReformQuery{
-		TotalCount: len(edureformExport),
-		EduReforms: edureformExport,
+		TotalCount: len(eduReformsData),
+		EduReforms: eduReforms,
 	}, nil
 }

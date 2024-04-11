@@ -42,8 +42,12 @@ input MentorshipFilter {
 
 extend type Query {
   mentorship(id: ID!): Mentorship!
-  
-  mentorshipsByFilter(filter: MentorshipFilter!): MentorshipQuery!
+
+  mentorshipsByFilter(
+    filter: MentorshipFilter!
+    offset: Int!
+    limit: Int!
+  ): MentorshipQuery!
   mentorships(ids: [ID]!): [Mentorship]!
 }
 

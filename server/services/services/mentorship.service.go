@@ -1,9 +1,11 @@
 package services
 
 import (
+	"errors"
 	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"server/persistence/repository"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -97,19 +99,24 @@ func (mentorshipService *MentorshipService) GetMentorshipById(id string) (*graph
 		return nil, err
 	}
 
-	guidanceDate := mentorshipData.GuidanceDate.Time()
+	var guidanceDate *time.Time = nil
+	if mentorshipData.GuidanceDate != nil {
+		date := mentorshipData.GuidanceDate.Time()
+		guidanceDate = &date
+	}
+
 	return &graphql_models.Mentorship{
 		ID:           mentorshipData.ID.Hex(),
 		ProjectName:  mentorshipData.ProjectName,
 		StudentNames: mentorshipData.StudentNames,
 		Grade:        mentorshipData.Grade,
-		GuidanceDate: &guidanceDate,
+		GuidanceDate: guidanceDate,
 		CreatedAt:    mentorshipData.CreatedAt.Time(),
 		UpdatedAt:    mentorshipData.UpdatedAt.Time(),
 	}, nil
 }
 
-func (mentorshipService *MentorshipService) GetMentorshipsByFilter(userId primitive.ObjectID, filter graphql_models.MentorshipFilter) (*graphql_models.MentorshipQuery, error) {
+func (mentorshipService *MentorshipService) GetMentorshipsByFilter(userId primitive.ObjectID, filter graphql_models.MentorshipFilter, offset int, limit int) (*graphql_models.MentorshipQuery, error) {
 	mentorshipsData, err := mentorshipService.Repo.GetMentorshipsByParams(
 		repository.MentorshipQueryParams{
 			UserId:            userId,
@@ -126,21 +133,54 @@ func (mentorshipService *MentorshipService) GetMentorshipsByFilter(userId primit
 	if err != nil {
 		return nil, err
 	}
-	mentorships := make([]*graphql_models.Mentorship, len(mentorshipsData))
-	for i, mentorship := range mentorshipsData {
-		guidanceDate := mentorship.GuidanceDate.Time()
+
+	// mentorships := make([]*graphql_models.Mentorship, len(mentorshipsData))
+	// for i, mentorship := range mentorshipsData {
+	// 	guidanceDate := mentorship.GuidanceDate.Time()
+	// 	mentorships[i] = &graphql_models.Mentorship{
+	// 		ID:           mentorship.ID.Hex(),
+	// 		ProjectName:  mentorship.ProjectName,
+	// 		StudentNames: mentorship.StudentNames,
+	// 		Grade:        mentorship.Grade,
+	// 		GuidanceDate: &guidanceDate,
+	// 		CreatedAt:    mentorship.CreatedAt.Time(),
+	// 		UpdatedAt:    mentorship.UpdatedAt.Time(),
+	// 	}
+	// }
+
+	if offset >= len(mentorshipsData) || offset < 0 {
+		return nil, errors.New("offset out of range")
+	}
+
+	if limit <= 0 {
+		return nil, errors.New("limit must be greater than 0")
+	}
+
+	if limit+offset > len(mentorshipsData) {
+		limit = len(mentorshipsData) - offset
+	}
+
+	mentorships := make([]*graphql_models.Mentorship, limit)
+	for i := 0; i < limit; i++ {
+		mentorshipData := mentorshipsData[i+offset]
+		var guidanceDate *time.Time = nil
+		if mentorshipData.GuidanceDate != nil {
+			date := mentorshipData.GuidanceDate.Time()
+			guidanceDate = &date
+		}
 		mentorships[i] = &graphql_models.Mentorship{
-			ID:           mentorship.ID.Hex(),
-			ProjectName:  mentorship.ProjectName,
-			StudentNames: mentorship.StudentNames,
-			Grade:        mentorship.Grade,
-			GuidanceDate: &guidanceDate,
-			CreatedAt:    mentorship.CreatedAt.Time(),
-			UpdatedAt:    mentorship.UpdatedAt.Time(),
+			ID:           mentorshipData.ID.Hex(),
+			ProjectName:  mentorshipData.ProjectName,
+			StudentNames: mentorshipData.StudentNames,
+			Grade:        mentorshipData.Grade,
+			GuidanceDate: guidanceDate,
+			CreatedAt:    mentorshipData.CreatedAt.Time(),
+			UpdatedAt:    mentorshipData.UpdatedAt.Time(),
 		}
 	}
+
 	return &graphql_models.MentorshipQuery{
-		TotalCount:  len(mentorships),
+		TotalCount:  len(mentorshipsData),
 		Mentorships: mentorships,
 	}, nil
 }

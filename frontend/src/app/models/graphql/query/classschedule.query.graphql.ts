@@ -26,12 +26,15 @@ export const academicTermQuery = gql`
 `;
 
 export const academicTermsQuery = gql`
-  query academicTermsQuery {
-    academicTerms{
-      id
-      termName
-      createdAt
-      updatedAt
+  query academicTermsQuery($offset:Int!,$limit:Int!) {
+    academicTerms(offset: $offset, limit: $limit) {
+      totalCount
+      academicTerms{
+        id
+        termName
+        createdAt
+        updatedAt
+      }
     }
   }
 `;

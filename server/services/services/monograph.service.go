@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"server/persistence/repository"
@@ -144,7 +145,7 @@ func (monographService *MonographService) GetMonographById(id string, userRepo *
 	}, nil
 }
 
-func (monographService *MonographService) GetMonographsByFilter(userId primitive.ObjectID, filter graphql_models.MonographFilter, userRepo *repository.UserRepo) (*graphql_models.MonographQuery, error) {
+func (monographService *MonographService) GetMonographsByFilter(userId primitive.ObjectID, filter graphql_models.MonographFilter, userRepo *repository.UserRepo, offset int, limit int) (*graphql_models.MonographQuery, error) {
 
 	TeachersInID := make([]primitive.ObjectID, len(filter.TeachersIn)+1)
 	TeachersInID[0] = userId
@@ -156,7 +157,7 @@ func (monographService *MonographService) GetMonographsByFilter(userId primitive
 		TeachersInID[i+1] = objectId
 	}
 
-	monographData, err := monographService.Repo.GetMonographsByParams(
+	monographsData, err := monographService.Repo.GetMonographsByParams(
 		repository.MonoGraphParams{
 			TeachersIn:       TeachersInID,
 			TeachersOut:      filter.TeachersOut,
@@ -174,32 +175,70 @@ func (monographService *MonographService) GetMonographsByFilter(userId primitive
 		return nil, err
 	}
 
-	monographs := make([]*graphql_models.Monograph, len(monographData))
-	for i, monograph := range monographData {
-		usersInExport, err := userRepo.GetUsersExportByIds(monograph.TeachersIn)
+	// monographs := make([]*graphql_models.Monograph, len(monographsData))
+	// for i, monograph := range monographsData {
+	// 	usersInExport, err := userRepo.GetUsersExportByIds(monograph.TeachersIn)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+
+	// 	var publishDate *time.Time = nil
+	// 	if monograph.PublishDate != nil {
+	// 		date := monograph.PublishDate.Time()
+	// 		publishDate = &date
+	// 	}
+
+	// 	monographs[i] = &graphql_models.Monograph{
+	// 		ID:           monograph.ID.Hex(),
+	// 		TeachersIn:   usersInExport,
+	// 		TeachersOut:  monograph.TeachersOut,
+	// 		Title:        monograph.Title,
+	// 		PublishDate:  publishDate,
+	// 		PublishLevel: monograph.PublishLevel,
+	// 		Rank:         monograph.Rank,
+	// 	}
+	// }
+
+	if offset >= len(monographsData) || offset < 0 {
+		return nil, errors.New("offset out of range")
+	}
+
+	if limit <= 0 {
+		return nil, errors.New("limit must be greater than 0")
+	}
+
+	if limit+offset > len(monographsData) {
+		limit = len(monographsData) - offset
+	}
+
+	monographs := make([]*graphql_models.Monograph, limit)
+
+	for i := 0; i < limit; i++ {
+		monographData := monographsData[i+offset]
+		usersInExport, err := userRepo.GetUsersExportByIds(monographData.TeachersIn)
 		if err != nil {
 			return nil, err
 		}
 
 		var publishDate *time.Time = nil
-		if monograph.PublishDate != nil {
-			date := monograph.PublishDate.Time()
+		if monographData.PublishDate != nil {
+			date := monographData.PublishDate.Time()
 			publishDate = &date
 		}
 
 		monographs[i] = &graphql_models.Monograph{
-			ID:           monograph.ID.Hex(),
+			ID:           monographData.ID.Hex(),
 			TeachersIn:   usersInExport,
-			TeachersOut:  monograph.TeachersOut,
-			Title:        monograph.Title,
+			TeachersOut:  monographData.TeachersOut,
+			Title:        monographData.Title,
 			PublishDate:  publishDate,
-			PublishLevel: monograph.PublishLevel,
-			Rank:         monograph.Rank,
+			PublishLevel: monographData.PublishLevel,
+			Rank:         monographData.Rank,
 		}
 	}
 
 	return &graphql_models.MonographQuery{
-		TotalCount: len(monographs),
+		TotalCount: len(monographsData),
 		Monographs: monographs,
 	}, nil
 }

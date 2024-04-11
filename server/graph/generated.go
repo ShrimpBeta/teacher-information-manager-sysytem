@@ -347,33 +347,33 @@ type ComplexityRoot struct {
 
 	Query struct {
 		AcademicTerm          func(childComplexity int, id string) int
-		AcademicTerms         func(childComplexity int) int
+		AcademicTerms         func(childComplexity int, offset int, limit int) int
 		AcademicTermsID       func(childComplexity int, ids []*string) int
 		AdminSignIn           func(childComplexity int, adminSignInInput *graphql_models.AdminSignInInput) int
 		CompGuidance          func(childComplexity int, id string) int
 		CompGuidances         func(childComplexity int, ids []*string) int
-		CompGuidancesByFilter func(childComplexity int, filter graphql_models.CompGuidanceFilter) int
+		CompGuidancesByFilter func(childComplexity int, filter graphql_models.CompGuidanceFilter, offset int, limit int) int
 		EduReform             func(childComplexity int, id string) int
 		EduReforms            func(childComplexity int, ids []*string) int
-		EduReformsByFilter    func(childComplexity int, filter graphql_models.EduReformFilter) int
+		EduReformsByFilter    func(childComplexity int, filter graphql_models.EduReformFilter, offset int, limit int) int
 		Mentorship            func(childComplexity int, id string) int
 		Mentorships           func(childComplexity int, ids []*string) int
-		MentorshipsByFilter   func(childComplexity int, filter graphql_models.MentorshipFilter) int
+		MentorshipsByFilter   func(childComplexity int, filter graphql_models.MentorshipFilter, offset int, limit int) int
 		Monograph             func(childComplexity int, id string) int
 		Monographs            func(childComplexity int, ids []*string) int
-		MonographsByFilter    func(childComplexity int, filter graphql_models.MonographFilter) int
+		MonographsByFilter    func(childComplexity int, filter graphql_models.MonographFilter, offset int, limit int) int
 		Paper                 func(childComplexity int, id string) int
 		Papers                func(childComplexity int, ids []*string) int
-		PapersByFilter        func(childComplexity int, filter graphql_models.PaperFilter) int
+		PapersByFilter        func(childComplexity int, filter graphql_models.PaperFilter, offset int, limit int) int
 		PasswordTrue          func(childComplexity int, id string) int
-		PasswordsByFilter     func(childComplexity int, filter graphql_models.PasswordFilter) int
+		PasswordsByFilter     func(childComplexity int, filter graphql_models.PasswordFilter, offset int, limit int) int
 		PasswordsTrue         func(childComplexity int, ids []*string) int
 		SciResearch           func(childComplexity int, id string) int
 		SciResearchs          func(childComplexity int, ids []*string) int
-		SciResearchsByFilter  func(childComplexity int, filter graphql_models.SciResearchFilter) int
+		SciResearchsByFilter  func(childComplexity int, filter graphql_models.SciResearchFilter, offset int, limit int) int
 		UGPGGuidance          func(childComplexity int, id string) int
 		UGPGGuidances         func(childComplexity int, ids []*string) int
-		UGPGGuidancesByFilter func(childComplexity int, filter graphql_models.UGPGGuidanceFilter) int
+		UGPGGuidancesByFilter func(childComplexity int, filter graphql_models.UGPGGuidanceFilter, offset int, limit int) int
 		User                  func(childComplexity int, id string) int
 		UserExports           func(childComplexity int) int
 	}
@@ -531,31 +531,31 @@ type MutationResolver interface {
 type QueryResolver interface {
 	AdminSignIn(ctx context.Context, adminSignInInput *graphql_models.AdminSignInInput) (*graphql_models.AuthPayload, error)
 	AcademicTerm(ctx context.Context, id string) (*graphql_models.AcademicTerm, error)
-	AcademicTerms(ctx context.Context) (*graphql_models.AcademicTermQuery, error)
+	AcademicTerms(ctx context.Context, offset int, limit int) (*graphql_models.AcademicTermQuery, error)
 	AcademicTermsID(ctx context.Context, ids []*string) ([]*graphql_models.AcademicTerm, error)
 	CompGuidance(ctx context.Context, id string) (*graphql_models.CompGuidance, error)
-	CompGuidancesByFilter(ctx context.Context, filter graphql_models.CompGuidanceFilter) (*graphql_models.CompGuidanceQuery, error)
+	CompGuidancesByFilter(ctx context.Context, filter graphql_models.CompGuidanceFilter, offset int, limit int) (*graphql_models.CompGuidanceQuery, error)
 	CompGuidances(ctx context.Context, ids []*string) ([]*graphql_models.CompGuidance, error)
 	EduReform(ctx context.Context, id string) (*graphql_models.EduReform, error)
-	EduReformsByFilter(ctx context.Context, filter graphql_models.EduReformFilter) (*graphql_models.EduReformQuery, error)
+	EduReformsByFilter(ctx context.Context, filter graphql_models.EduReformFilter, offset int, limit int) (*graphql_models.EduReformQuery, error)
 	EduReforms(ctx context.Context, ids []*string) ([]*graphql_models.EduReform, error)
 	Mentorship(ctx context.Context, id string) (*graphql_models.Mentorship, error)
-	MentorshipsByFilter(ctx context.Context, filter graphql_models.MentorshipFilter) (*graphql_models.MentorshipQuery, error)
+	MentorshipsByFilter(ctx context.Context, filter graphql_models.MentorshipFilter, offset int, limit int) (*graphql_models.MentorshipQuery, error)
 	Mentorships(ctx context.Context, ids []*string) ([]*graphql_models.Mentorship, error)
 	Monograph(ctx context.Context, id string) (*graphql_models.Monograph, error)
-	MonographsByFilter(ctx context.Context, filter graphql_models.MonographFilter) (*graphql_models.MonographQuery, error)
+	MonographsByFilter(ctx context.Context, filter graphql_models.MonographFilter, offset int, limit int) (*graphql_models.MonographQuery, error)
 	Monographs(ctx context.Context, ids []*string) ([]*graphql_models.Monograph, error)
 	Paper(ctx context.Context, id string) (*graphql_models.Paper, error)
-	PapersByFilter(ctx context.Context, filter graphql_models.PaperFilter) (*graphql_models.PaperQuery, error)
+	PapersByFilter(ctx context.Context, filter graphql_models.PaperFilter, offset int, limit int) (*graphql_models.PaperQuery, error)
 	Papers(ctx context.Context, ids []*string) ([]*graphql_models.Paper, error)
 	PasswordTrue(ctx context.Context, id string) (*graphql_models.PasswordTrue, error)
-	PasswordsByFilter(ctx context.Context, filter graphql_models.PasswordFilter) (*graphql_models.PasswordsQuery, error)
+	PasswordsByFilter(ctx context.Context, filter graphql_models.PasswordFilter, offset int, limit int) (*graphql_models.PasswordsQuery, error)
 	PasswordsTrue(ctx context.Context, ids []*string) ([]*graphql_models.PasswordTrue, error)
 	SciResearch(ctx context.Context, id string) (*graphql_models.SciResearch, error)
-	SciResearchsByFilter(ctx context.Context, filter graphql_models.SciResearchFilter) (*graphql_models.SciResearchQuery, error)
+	SciResearchsByFilter(ctx context.Context, filter graphql_models.SciResearchFilter, offset int, limit int) (*graphql_models.SciResearchQuery, error)
 	SciResearchs(ctx context.Context, ids []*string) ([]*graphql_models.SciResearch, error)
 	UGPGGuidance(ctx context.Context, id string) (*graphql_models.UGPGGuidance, error)
-	UGPGGuidancesByFilter(ctx context.Context, filter graphql_models.UGPGGuidanceFilter) (*graphql_models.UGPGGuidanceQuery, error)
+	UGPGGuidancesByFilter(ctx context.Context, filter graphql_models.UGPGGuidanceFilter, offset int, limit int) (*graphql_models.UGPGGuidanceQuery, error)
 	UGPGGuidances(ctx context.Context, ids []*string) ([]*graphql_models.UGPGGuidance, error)
 	User(ctx context.Context, id string) (*graphql_models.User, error)
 	UserExports(ctx context.Context) ([]*graphql_models.UserExport, error)
@@ -2270,7 +2270,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.Query.AcademicTerms(childComplexity), true
+		args, err := ec.field_Query_academicTerms_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AcademicTerms(childComplexity, args["offset"].(int), args["limit"].(int)), true
 
 	case "Query.academicTermsId":
 		if e.complexity.Query.AcademicTermsID == nil {
@@ -2330,7 +2335,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.CompGuidancesByFilter(childComplexity, args["filter"].(graphql_models.CompGuidanceFilter)), true
+		return e.complexity.Query.CompGuidancesByFilter(childComplexity, args["filter"].(graphql_models.CompGuidanceFilter), args["offset"].(int), args["limit"].(int)), true
 
 	case "Query.eduReform":
 		if e.complexity.Query.EduReform == nil {
@@ -2366,7 +2371,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.EduReformsByFilter(childComplexity, args["filter"].(graphql_models.EduReformFilter)), true
+		return e.complexity.Query.EduReformsByFilter(childComplexity, args["filter"].(graphql_models.EduReformFilter), args["offset"].(int), args["limit"].(int)), true
 
 	case "Query.mentorship":
 		if e.complexity.Query.Mentorship == nil {
@@ -2402,7 +2407,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.MentorshipsByFilter(childComplexity, args["filter"].(graphql_models.MentorshipFilter)), true
+		return e.complexity.Query.MentorshipsByFilter(childComplexity, args["filter"].(graphql_models.MentorshipFilter), args["offset"].(int), args["limit"].(int)), true
 
 	case "Query.monograph":
 		if e.complexity.Query.Monograph == nil {
@@ -2438,7 +2443,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.MonographsByFilter(childComplexity, args["filter"].(graphql_models.MonographFilter)), true
+		return e.complexity.Query.MonographsByFilter(childComplexity, args["filter"].(graphql_models.MonographFilter), args["offset"].(int), args["limit"].(int)), true
 
 	case "Query.paper":
 		if e.complexity.Query.Paper == nil {
@@ -2474,7 +2479,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.PapersByFilter(childComplexity, args["filter"].(graphql_models.PaperFilter)), true
+		return e.complexity.Query.PapersByFilter(childComplexity, args["filter"].(graphql_models.PaperFilter), args["offset"].(int), args["limit"].(int)), true
 
 	case "Query.passwordTrue":
 		if e.complexity.Query.PasswordTrue == nil {
@@ -2498,7 +2503,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.PasswordsByFilter(childComplexity, args["filter"].(graphql_models.PasswordFilter)), true
+		return e.complexity.Query.PasswordsByFilter(childComplexity, args["filter"].(graphql_models.PasswordFilter), args["offset"].(int), args["limit"].(int)), true
 
 	case "Query.passwordsTrue":
 		if e.complexity.Query.PasswordsTrue == nil {
@@ -2546,7 +2551,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.SciResearchsByFilter(childComplexity, args["filter"].(graphql_models.SciResearchFilter)), true
+		return e.complexity.Query.SciResearchsByFilter(childComplexity, args["filter"].(graphql_models.SciResearchFilter), args["offset"].(int), args["limit"].(int)), true
 
 	case "Query.uGPGGuidance":
 		if e.complexity.Query.UGPGGuidance == nil {
@@ -2582,7 +2587,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.UGPGGuidancesByFilter(childComplexity, args["filter"].(graphql_models.UGPGGuidanceFilter)), true
+		return e.complexity.Query.UGPGGuidancesByFilter(childComplexity, args["filter"].(graphql_models.UGPGGuidanceFilter), args["offset"].(int), args["limit"].(int)), true
 
 	case "Query.user":
 		if e.complexity.Query.User == nil {
@@ -4175,6 +4180,30 @@ func (ec *executionContext) field_Query_academicTermsId_args(ctx context.Context
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_academicTerms_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg1
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_adminSignIn_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -4217,6 +4246,24 @@ func (ec *executionContext) field_Query_compGuidancesByFilter_args(ctx context.C
 		}
 	}
 	args["filter"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg1
+	var arg2 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg2, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg2
 	return args, nil
 }
 
@@ -4262,6 +4309,24 @@ func (ec *executionContext) field_Query_eduReformsByFilter_args(ctx context.Cont
 		}
 	}
 	args["filter"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg1
+	var arg2 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg2, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg2
 	return args, nil
 }
 
@@ -4307,6 +4372,24 @@ func (ec *executionContext) field_Query_mentorshipsByFilter_args(ctx context.Con
 		}
 	}
 	args["filter"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg1
+	var arg2 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg2, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg2
 	return args, nil
 }
 
@@ -4352,6 +4435,24 @@ func (ec *executionContext) field_Query_monographsByFilter_args(ctx context.Cont
 		}
 	}
 	args["filter"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg1
+	var arg2 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg2, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg2
 	return args, nil
 }
 
@@ -4397,6 +4498,24 @@ func (ec *executionContext) field_Query_papersByFilter_args(ctx context.Context,
 		}
 	}
 	args["filter"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg1
+	var arg2 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg2, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg2
 	return args, nil
 }
 
@@ -4442,6 +4561,24 @@ func (ec *executionContext) field_Query_passwordsByFilter_args(ctx context.Conte
 		}
 	}
 	args["filter"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg1
+	var arg2 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg2, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg2
 	return args, nil
 }
 
@@ -4487,6 +4624,24 @@ func (ec *executionContext) field_Query_sciResearchsByFilter_args(ctx context.Co
 		}
 	}
 	args["filter"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg1
+	var arg2 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg2, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg2
 	return args, nil
 }
 
@@ -4532,6 +4687,24 @@ func (ec *executionContext) field_Query_uGPGGuidancesByFilter_args(ctx context.C
 		}
 	}
 	args["filter"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg1
+	var arg2 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg2, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg2
 	return args, nil
 }
 
@@ -15064,7 +15237,7 @@ func (ec *executionContext) _Query_academicTerms(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().AcademicTerms(rctx)
+		return ec.resolvers.Query().AcademicTerms(rctx, fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15096,6 +15269,17 @@ func (ec *executionContext) fieldContext_Query_academicTerms(ctx context.Context
 			}
 			return nil, fmt.Errorf("no field named %q was found under type AcademicTermQuery", field.Name)
 		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_academicTerms_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -15254,7 +15438,7 @@ func (ec *executionContext) _Query_compGuidancesByFilter(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().CompGuidancesByFilter(rctx, fc.Args["filter"].(graphql_models.CompGuidanceFilter))
+		return ec.resolvers.Query().CompGuidancesByFilter(rctx, fc.Args["filter"].(graphql_models.CompGuidanceFilter), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15471,7 +15655,7 @@ func (ec *executionContext) _Query_eduReformsByFilter(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().EduReformsByFilter(rctx, fc.Args["filter"].(graphql_models.EduReformFilter))
+		return ec.resolvers.Query().EduReformsByFilter(rctx, fc.Args["filter"].(graphql_models.EduReformFilter), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15686,7 +15870,7 @@ func (ec *executionContext) _Query_mentorshipsByFilter(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MentorshipsByFilter(rctx, fc.Args["filter"].(graphql_models.MentorshipFilter))
+		return ec.resolvers.Query().MentorshipsByFilter(rctx, fc.Args["filter"].(graphql_models.MentorshipFilter), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15893,7 +16077,7 @@ func (ec *executionContext) _Query_monographsByFilter(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().MonographsByFilter(rctx, fc.Args["filter"].(graphql_models.MonographFilter))
+		return ec.resolvers.Query().MonographsByFilter(rctx, fc.Args["filter"].(graphql_models.MonographFilter), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -16106,7 +16290,7 @@ func (ec *executionContext) _Query_papersByFilter(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().PapersByFilter(rctx, fc.Args["filter"].(graphql_models.PaperFilter))
+		return ec.resolvers.Query().PapersByFilter(rctx, fc.Args["filter"].(graphql_models.PaperFilter), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -16317,7 +16501,7 @@ func (ec *executionContext) _Query_passwordsByFilter(ctx context.Context, field 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().PasswordsByFilter(rctx, fc.Args["filter"].(graphql_models.PasswordFilter))
+		return ec.resolvers.Query().PasswordsByFilter(rctx, fc.Args["filter"].(graphql_models.PasswordFilter), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -16538,7 +16722,7 @@ func (ec *executionContext) _Query_sciResearchsByFilter(ctx context.Context, fie
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().SciResearchsByFilter(rctx, fc.Args["filter"].(graphql_models.SciResearchFilter))
+		return ec.resolvers.Query().SciResearchsByFilter(rctx, fc.Args["filter"].(graphql_models.SciResearchFilter), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -16765,7 +16949,7 @@ func (ec *executionContext) _Query_uGPGGuidancesByFilter(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().UGPGGuidancesByFilter(rctx, fc.Args["filter"].(graphql_models.UGPGGuidanceFilter))
+		return ec.resolvers.Query().UGPGGuidancesByFilter(rctx, fc.Args["filter"].(graphql_models.UGPGGuidanceFilter), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

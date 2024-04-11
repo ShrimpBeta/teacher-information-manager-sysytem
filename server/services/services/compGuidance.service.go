@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"server/persistence/repository"
@@ -119,7 +120,7 @@ func (compGuidanceService *CompGuidanceService) GetCompGuidanceById(id string) (
 	}, nil
 }
 
-func (compGuidanceService *CompGuidanceService) GetCompGuidancesByFilter(userId primitive.ObjectID, filter graphql_models.CompGuidanceFilter) (*graphql_models.CompGuidanceQuery, error) {
+func (compGuidanceService *CompGuidanceService) GetCompGuidancesByFilter(userId primitive.ObjectID, filter graphql_models.CompGuidanceFilter, offset int, limit int) (*graphql_models.CompGuidanceQuery, error) {
 	compGuidancesData, err := compGuidanceService.Repo.GetCompGuidancesByParams(
 		repository.CompGuidanceQueryParams{
 			UserId:            userId,
@@ -136,8 +137,41 @@ func (compGuidanceService *CompGuidanceService) GetCompGuidancesByFilter(userId 
 	if err != nil {
 		return nil, err
 	}
-	compGuidances := make([]*graphql_models.CompGuidance, len(compGuidancesData))
-	for i, compGuidanceData := range compGuidancesData {
+
+	// compGuidances := make([]*graphql_models.CompGuidance, len(compGuidancesData))
+	// for i, compGuidanceData := range compGuidancesData {
+	// 	var guidanceDate *time.Time = nil
+	// 	if compGuidanceData.GuidanceDate != nil {
+	// 		date := compGuidanceData.GuidanceDate.Time()
+	// 		guidanceDate = &date
+	// 	}
+	// 	compGuidances[i] = &graphql_models.CompGuidance{
+	// 		ID:               compGuidanceData.ID.Hex(),
+	// 		ProjectName:      compGuidanceData.ProjectName,
+	// 		StudentNames:     compGuidanceData.StudentNames,
+	// 		CompetitionScore: compGuidanceData.CompetitionScore,
+	// 		GuidanceDate:     guidanceDate,
+	// 		AwardStatus:      compGuidanceData.AwardStatus,
+	// 		CreatedAt:        compGuidanceData.CreatedAt.Time(),
+	// 		UpdatedAt:        compGuidanceData.UpdatedAt.Time(),
+	// 	}
+	// }
+
+	if offset >= len(compGuidancesData) || offset < 0 {
+		return nil, errors.New("offset out of range")
+	}
+
+	if limit <= 0 {
+		return nil, errors.New("limit must be greater than 0")
+	}
+
+	if limit+offset > len(compGuidancesData) {
+		limit = len(compGuidancesData) - offset
+	}
+
+	compGuidances := make([]*graphql_models.CompGuidance, limit)
+	for i := 0; i < limit; i++ {
+		compGuidanceData := compGuidancesData[i+offset]
 		var guidanceDate *time.Time = nil
 		if compGuidanceData.GuidanceDate != nil {
 			date := compGuidanceData.GuidanceDate.Time()
@@ -156,7 +190,7 @@ func (compGuidanceService *CompGuidanceService) GetCompGuidancesByFilter(userId 
 	}
 
 	return &graphql_models.CompGuidanceQuery{
-		TotalCount:    len(compGuidances),
+		TotalCount:    len(compGuidancesData),
 		CompGuidances: compGuidances,
 	}, nil
 }

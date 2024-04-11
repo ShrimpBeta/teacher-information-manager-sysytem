@@ -94,7 +94,7 @@ func (r *queryResolver) SciResearch(ctx context.Context, id string) (*graphql_mo
 }
 
 // SciResearchsByFilter is the resolver for the sciResearchsByFilter field.
-func (r *queryResolver) SciResearchsByFilter(ctx context.Context, filter graphql_models.SciResearchFilter) (*graphql_models.SciResearchQuery, error) {
+func (r *queryResolver) SciResearchsByFilter(ctx context.Context, filter graphql_models.SciResearchFilter, offset int, limit int) (*graphql_models.SciResearchQuery, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (r *queryResolver) SciResearchsByFilter(ctx context.Context, filter graphql
 		return nil, err
 	}
 
-	return r.SciResearchService.GetSciResearchsByFilter(user.ID, filter, r.UserService.Repo)
+	return r.SciResearchService.GetSciResearchsByFilter(user.ID, filter, r.UserService.Repo, offset, limit)
 }
 
 // SciResearchs is the resolver for the sciResearchs field.

@@ -55,7 +55,7 @@ input PaperFilter {
 extend type Query {
   paper(id: ID!): Paper!
 
-  papersByFilter(filter: PaperFilter!): PaperQuery!
+  papersByFilter(filter: PaperFilter!, offset: Int!, limit: Int!): PaperQuery!
   papers(ids: [ID]!): [Paper]!
 }
 

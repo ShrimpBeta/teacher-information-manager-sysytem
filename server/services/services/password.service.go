@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"server/persistence/repository"
@@ -138,7 +139,7 @@ func (passwordService *PasswordService) GetPasswordTrueById(id, masterKey string
 	}, nil
 }
 
-func (passwordService *PasswordService) GetPasswordsByFilter(userId primitive.ObjectID, filter graphql_models.PasswordFilter) (*graphql_models.PasswordsQuery, error) {
+func (passwordService *PasswordService) GetPasswordsByFilter(userId primitive.ObjectID, filter graphql_models.PasswordFilter, offset int, limit int) (*graphql_models.PasswordsQuery, error) {
 	passwordsData, err := passwordService.Repo.GetPasswordsByParams(
 		repository.PasswordQueryParams{
 			UserId:  userId,
@@ -150,8 +151,35 @@ func (passwordService *PasswordService) GetPasswordsByFilter(userId primitive.Ob
 	if err != nil {
 		return nil, err
 	}
-	passwords := make([]*graphql_models.Password, len(passwordsData))
-	for i, passwordData := range passwordsData {
+
+	// passwords := make([]*graphql_models.Password, len(passwordsData))
+	// for i, passwordData := range passwordsData {
+	// 	passwords[i] = &graphql_models.Password{
+	// 		ID:          passwordData.ID.Hex(),
+	// 		URL:         passwordData.Url,
+	// 		Account:     passwordData.Account,
+	// 		AppName:     passwordData.AppName,
+	// 		Description: passwordData.Description,
+	// 		CreatedAt:   passwordData.CreatedAt.Time(),
+	// 		UpdatedAt:   passwordData.UpdatedAt.Time(),
+	// 	}
+	// }
+
+	if offset >= len(passwordsData) || offset < 0 {
+		return nil, errors.New("offset out of range")
+	}
+
+	if limit <= 0 {
+		return nil, errors.New("limit must be greater than 0")
+	}
+
+	if limit+offset > len(passwordsData) {
+		limit = len(passwordsData) - offset
+	}
+
+	passwords := make([]*graphql_models.Password, limit)
+	for i := 0; i < limit; i++ {
+		passwordData := passwordsData[offset+i]
 		passwords[i] = &graphql_models.Password{
 			ID:          passwordData.ID.Hex(),
 			URL:         passwordData.Url,
@@ -162,8 +190,9 @@ func (passwordService *PasswordService) GetPasswordsByFilter(userId primitive.Ob
 			UpdatedAt:   passwordData.UpdatedAt.Time(),
 		}
 	}
+
 	return &graphql_models.PasswordsQuery{
-		TotalCount: len(passwords),
+		TotalCount: len(passwordsData),
 		Passwords:  passwords,
 	}, nil
 }

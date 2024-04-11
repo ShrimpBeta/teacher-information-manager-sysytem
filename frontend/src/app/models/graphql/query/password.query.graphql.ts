@@ -1,15 +1,18 @@
 import { gql } from "apollo-angular";
 
 export const passwordsByFilterQuery = gql`
-  query passwordsByFilter($filter: PasswordFilter!) {
-    passwordsByFilter(filter: $filter) {
-      id
-      url
-      appName
-      account
-      description
-      updatedAt
-      createdAt
+  query passwordsByFilter($filter: PasswordFilter!,$offset:Int!, $limit:Int!) {
+    passwordsByFilter(filter: $filter, offset: $offset, limit: $limit) {
+      totalCount
+      passwords{
+        id
+        url
+        appName
+        account
+        description
+        updatedAt
+        createdAt
+      }
     }
   }
 `

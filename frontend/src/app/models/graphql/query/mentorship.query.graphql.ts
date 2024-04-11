@@ -15,15 +15,18 @@ export const mentorshipQuery = gql`
 `;
 
 export const mentorshipsByFilterQuery = gql`
-  query mentorshipsByFilter($filter: MentorshipFilter!) {
-    mentorshipsByFilter(filter: $filter){
-      id
-      projectName
-      studentNames
-      grade
-      guidanceDate
-      createdAt
-      updatedAt
+  query mentorshipsByFilter($filter: MentorshipFilter!, $offset: Int!, $limit: Int!) {
+    mentorshipsByFilter(filter: $filter, offset: $offset, limit: $limit) {
+      totalCount
+      mentorships{
+        id
+        projectName
+        studentNames
+        grade
+        guidanceDate
+        createdAt
+        updatedAt
+      }
     }
   }
 `;

@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"server/persistence/repository"
@@ -149,7 +150,7 @@ func (paperService *PaperService) GetPaperById(id string, userRepo *repository.U
 	}, nil
 }
 
-func (paperService *PaperService) GetPapersByFilter(userId primitive.ObjectID, filter graphql_models.PaperFilter, userRepo *repository.UserRepo) (*graphql_models.PaperQuery, error) {
+func (paperService *PaperService) GetPapersByFilter(userId primitive.ObjectID, filter graphql_models.PaperFilter, userRepo *repository.UserRepo, offset int, limit int) (*graphql_models.PaperQuery, error) {
 
 	TeachersInID := make([]primitive.ObjectID, len(filter.TeachersIn)+1)
 	TeachersInID[0] = userId
@@ -181,35 +182,75 @@ func (paperService *PaperService) GetPapersByFilter(userId primitive.ObjectID, f
 		return nil, err
 	}
 
-	papers := make([]*graphql_models.Paper, len(papersData))
-	for i, paper := range papersData {
-		usersInExport, err := userRepo.GetUsersExportByIds(paper.TeachersIn)
+	// papers := make([]*graphql_models.Paper, len(papersData))
+	// for i, paper := range papersData {
+	// 	usersInExport, err := userRepo.GetUsersExportByIds(paper.TeachersIn)
+	// 	if err != nil {
+	// 		return nil, err
+	// 	}
+
+	// 	var publishDate *time.Time = nil
+	// 	if paper.PublishDate != nil {
+	// 		date := paper.PublishDate.Time()
+	// 		publishDate = &date
+	// 	}
+
+	// 	papers[i] = &graphql_models.Paper{
+	// 		ID:           paper.ID.Hex(),
+	// 		TeachersIn:   usersInExport,
+	// 		TeachersOut:  paper.TeachersOut,
+	// 		Title:        paper.Title,
+	// 		PublishDate:  publishDate,
+	// 		Rank:         paper.Rank,
+	// 		JournalName:  paper.JournalName,
+	// 		JournalLevel: paper.JournalLevel,
+	// 		CreatedAt:    paper.CreatedAt.Time(),
+	// 		UpdatedAt:    paper.UpdatedAt.Time(),
+	// 	}
+	// }
+
+	if offset >= len(papersData) || offset < 0 {
+		return nil, errors.New("offset out of range")
+	}
+
+	if limit <= 0 {
+		return nil, errors.New("limit must be greater than 0")
+	}
+
+	if offset+limit > len(papersData) {
+		limit = len(papersData) - offset
+	}
+
+	papers := make([]*graphql_models.Paper, limit)
+	for i := 0; i < limit; i++ {
+		paperData := papersData[i+offset]
+		usersInExport, err := userRepo.GetUsersExportByIds(paperData.TeachersIn)
 		if err != nil {
 			return nil, err
 		}
 
 		var publishDate *time.Time = nil
-		if paper.PublishDate != nil {
-			date := paper.PublishDate.Time()
+		if paperData.PublishDate != nil {
+			date := paperData.PublishDate.Time()
 			publishDate = &date
 		}
 
 		papers[i] = &graphql_models.Paper{
-			ID:           paper.ID.Hex(),
+			ID:           paperData.ID.Hex(),
 			TeachersIn:   usersInExport,
-			TeachersOut:  paper.TeachersOut,
-			Title:        paper.Title,
+			TeachersOut:  paperData.TeachersOut,
+			Title:        paperData.Title,
 			PublishDate:  publishDate,
-			Rank:         paper.Rank,
-			JournalName:  paper.JournalName,
-			JournalLevel: paper.JournalLevel,
-			CreatedAt:    paper.CreatedAt.Time(),
-			UpdatedAt:    paper.UpdatedAt.Time(),
+			Rank:         paperData.Rank,
+			JournalName:  paperData.JournalName,
+			JournalLevel: paperData.JournalLevel,
+			CreatedAt:    paperData.CreatedAt.Time(),
+			UpdatedAt:    paperData.UpdatedAt.Time(),
 		}
 	}
 
 	return &graphql_models.PaperQuery{
-		TotalCount: len(papers),
+		TotalCount: len(papersData),
 		Papers:     papers,
 	}, nil
 }

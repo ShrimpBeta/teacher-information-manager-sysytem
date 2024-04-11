@@ -16,16 +16,19 @@ export const compGuidanceQuery = gql`
 `;
 
 export const compGuidancesByFilterQuery = gql`
-  query compGuidancesByFilter($filter: CompGuidanceFilter!) {
-    compGuidancesByFilter(filter: $filter){
-      id
-      projectName
-      studentNames
-      competitionScore
-      guidanceDate
-      awardStatus
-      createdAt
-      updatedAt
+  query compGuidancesByFilter($filter: CompGuidanceFilter!,$offset:Int!,$limit:Int!) {
+    compGuidancesByFilter(filter: $filter, offset: $offset, limit: $limit) {
+      totalCount
+      compGuidances{
+        id
+        projectName
+        studentNames
+        competitionScore
+        guidanceDate
+        awardStatus
+        createdAt
+        updatedAt
+      }
     }
   }
 `;
