@@ -13,11 +13,15 @@ import { PasswordService } from '../../../services/password.service';
 import { Subject, takeUntil } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule } from '@angular/material/paginator';
+
 @Component({
   selector: 'app-overviewpassword',
   standalone: true,
   imports: [MatDividerModule, MatInputModule, MatFormFieldModule, MatIconModule,
-    MatSelectModule, MatButtonModule, ReactiveFormsModule, RouterLink, MatCardModule, DatePipe],
+    MatSelectModule, MatButtonModule, ReactiveFormsModule, RouterLink, MatCardModule,
+    DatePipe, MatTooltipModule, MatPaginatorModule],
   templateUrl: './overviewpassword.component.html',
   styleUrl: './overviewpassword.component.scss'
 })
