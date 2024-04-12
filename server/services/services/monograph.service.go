@@ -199,6 +199,13 @@ func (monographService *MonographService) GetMonographsByFilter(userId primitive
 	// 	}
 	// }
 
+	if len(monographsData) == 0 {
+		return &graphql_models.MonographQuery{
+			TotalCount: 0,
+			Monographs: []*graphql_models.Monograph{},
+		}, nil
+	}
+
 	if offset >= len(monographsData) || offset < 0 {
 		return nil, errors.New("offset out of range")
 	}

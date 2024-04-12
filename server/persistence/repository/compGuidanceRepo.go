@@ -97,6 +97,8 @@ func (r *CompGuidanceRepo) GetCompGuidancesByParams(params CompGuidanceQueryPara
 		}
 	}
 
+	// fmt.Println(filter)
+
 	cursor, err := r.collection.Find(context.Background(), filter)
 	if err != nil {
 		return nil, err

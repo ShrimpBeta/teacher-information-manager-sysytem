@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
-import { CreateSciResearchResponse, DeleteSciResearchResponse, EditSciResearch, SciResearch, SciResearchFilter, SciResearchResponse, SciResearchsByFilterResponse, UpdateSciResearchResponse } from "../models/models/sciResearch.model";
+import { CreateSciResearchResponse, DeleteSciResearchResponse, EditSciResearch, SciResearch, SciResearchFilter, SciResearchPage, SciResearchResponse, SciResearchsByFilterResponse, UpdateSciResearchResponse } from "../models/models/sciResearch.model";
 import { map, Observable } from "rxjs";
 import { sciResearchQuery, sciResearchsByFilterQuery } from "../models/graphql/query/sciresearch.query.graphql";
 import { createSciResearchMutation, deleteSciResearchMutation, updateSciResearchMutation } from "../models/graphql/mutation/sciresearch.mutation.graphql";
@@ -31,15 +31,17 @@ export class SciResearchService {
     );
   }
 
-  getSciResearchsByFilter(sciResearchFilter: SciResearchFilter): Observable<SciResearch[] | null> {
+  getSciResearchsByFilter(sciResearchFilter: SciResearchFilter, pageIndex: number, pageSize: number): Observable<SciResearchPage | null> {
     return this.apollo.query({
       query: sciResearchsByFilterQuery,
       variables: {
-        filter: sciResearchFilter
+        filter: sciResearchFilter,
+        offset: pageIndex * pageSize,
+        limit: pageSize
       }
     }).pipe(
       map((response: unknown) => {
-        let sciResearchs = (response as SciResearchsByFilterResponse).data?.sciResearchsByFilter;
+        let sciResearchs = (response as SciResearchsByFilterResponse).data?.sciResearchsByFilter as SciResearchPage;
         if (typeof sciResearchs !== 'undefined' && sciResearchs !== null) {
           return sciResearchs;
         }

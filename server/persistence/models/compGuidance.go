@@ -13,6 +13,6 @@ type CompGuidance struct {
 	CompetitionScore *string             `bson:"competitionScore,omitempty"`
 	GuidanceDate     *primitive.DateTime `bson:"guidanceDate,omitempty"`
 	AwardStatus      *string             `bson:"awardStatus,omitempty"`
-	CreatedAt        primitive.DateTime  `bson:"createdAt "`
+	CreatedAt        primitive.DateTime  `bson:"createdAt"`
 	UpdatedAt        primitive.DateTime  `bson:"updatedAt"`
 }

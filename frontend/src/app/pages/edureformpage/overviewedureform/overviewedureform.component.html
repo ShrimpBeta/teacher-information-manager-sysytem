@@ -96,11 +96,16 @@
           </mat-date-range-input>
           <mat-datepicker-toggle matIconSuffix [for]="startDatePicker"></mat-datepicker-toggle>
           <mat-date-range-picker #startDatePicker></mat-date-range-picker>
-          @if (SearchForm.controls['startDateStart'].hasError('matStartDateInvalid')) {
-          <mat-error>Invalid start date</mat-error>
+          @if
+          (SearchForm.controls['startDateStart'].hasError('matStartDateInvalid')||SearchForm.controls['startDateEnd'].hasError('matEndDateInvalid'))
+          {
+          <mat-error>开始日期晚于结束日期</mat-error>
           }
-          @if (SearchForm.controls['startDateEnd'].hasError('matEndDateInvalid')) {
-          <mat-error>Invalid end date</mat-error>
+          @if(SearchForm.controls['startDateStart'].hasError('matDatepickerParse')) {
+          <mat-error>开始日期格式错误</mat-error>
+          }
+          @if(SearchForm.controls['startDateEnd'].hasError('matDatepickerParse')) {
+          <mat-error>结束日期格式错误</mat-error>
           }
         </mat-form-field>
 
@@ -112,11 +117,16 @@
           </mat-date-range-input>
           <mat-datepicker-toggle matIconSuffix [for]="createdPicker"></mat-datepicker-toggle>
           <mat-date-range-picker #createdPicker></mat-date-range-picker>
-          @if (SearchForm.controls['createdStart'].hasError('matStartDateInvalid')) {
-          <mat-error>Invalid start date</mat-error>
+          @if
+          (SearchForm.controls['createdStart'].hasError('matStartDateInvalid')||SearchForm.controls['createdEnd'].hasError('matEndDateInvalid'))
+          {
+          <mat-error>开始日期晚于结束日期</mat-error>
           }
-          @if (SearchForm.controls['createdEnd'].hasError('matEndDateInvalid')) {
-          <mat-error>Invalid end date</mat-error>
+          @if (SearchForm.controls['createdStart'].hasError('matDatepickerParse')) {
+          <mat-error>开始日期格式错误</mat-error>
+          }
+          @if (SearchForm.controls['createdEnd'].hasError('matDatepickerParse')) {
+          <mat-error>结束日期格式错误</mat-error>
           }
         </mat-form-field>
 
@@ -128,11 +138,16 @@
           </mat-date-range-input>
           <mat-datepicker-toggle matIconSuffix [for]="updatedPicker"></mat-datepicker-toggle>
           <mat-date-range-picker #updatedPicker></mat-date-range-picker>
-          @if (SearchForm.controls['updatedStart'].hasError('matStartDateInvalid')) {
-          <mat-error>Invalid start date</mat-error>
+          @if
+          (SearchForm.controls['updatedStart'].hasError('matStartDateInvalid')||SearchForm.controls['updatedEnd'].hasError('matEndDateInvalid'))
+          {
+          <mat-error>开始日期晚于结束日期</mat-error>
           }
-          @if (SearchForm.controls['updatedEnd'].hasError('matEndDateInvalid')) {
-          <mat-error>Invalid end date</mat-error>
+          @if (SearchForm.controls['updatedStart'].hasError('matDatepickerParse')) {
+          <mat-error>开始日期格式错误</mat-error>
+          }
+          @if (SearchForm.controls['updatedEnd'].hasError('matDatepickerParse')) {
+          <mat-error>结束日期格式错误</mat-error>
           }
         </mat-form-field>
       </div>
@@ -147,13 +162,16 @@
   </div>
 
   <div class="fab-container">
-    <a mat-fab color="primary" aria-label="create password" routerLink="/main/educationreform/new">
+    <a mat-fab color="primary" matTooltip="创建教改项目" matTooltipPosition="left" aria-label="create education reform"
+      routerLink="/main/educationreform/new">
       <mat-icon>add</mat-icon>
     </a>
-    <a mat-fab color="primary" aria-label="import password" routerLink="/main/password/new">
+    <a mat-fab color="primary" matTooltip="导入教改项目" matTooltipPosition="left" aria-label="import education reform"
+      routerLink="/main/password/new">
       <mat-icon>upload_2</mat-icon>
     </a>
-    <a mat-fab color="primary" aria-label="export password" routerLink="/main/educationreform/export">
+    <a mat-fab color="primary" matTooltip="导出教改项目" matTooltipPosition="left" aria-label="export education reform"
+      routerLink="/main/educationreform/export">
       <mat-icon>download_2</mat-icon>
     </a>
   </div>
@@ -163,7 +181,62 @@
       <h2>结果</h2>
     </div>
     <mat-divider></mat-divider>
-
+    <div class="result-content">
+      @if(isSearching){
+      <mat-spinner></mat-spinner>
+      }@else {
+      @for(eduReform of eduReformList;track $index){
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <h3>{{eduReform.title}}</h3>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <p>系统内教师:
+            @for(teacherIn of eduReform.teachersIn;track $index;let last = $last){
+            @if(last){
+            <span>{{teacherIn.username}}</span>
+            }@else {
+            <span>{{teacherIn.username}}, </span>
+            }
+            }
+          </p>
+          <p>系统外教师: {{eduReform.teachersOut}}</p>
+          <p>编号: {{eduReform.number}}</p>
+          <p>开始时间: {{eduReform.startDate| date:'YYYY年MM月dd日HH时'}}</p>
+          <p>持续时间: {{eduReform.duration}}</p>
+          <p>级别: {{eduReform.level}}</p>
+          <p>排名: {{eduReform.rank}}</p>
+          <p>成果: {{eduReform.achievement}}</p>
+          <p>基金: {{eduReform.fund}}</p>
+          <p>创建时间: {{eduReform.updatedAt| date:'YYYY年MM月dd日HH时'}}</p>
+          <p>更新时间: {{eduReform.updatedAt| date:'YYYY年MM月dd日HH时'}}</p>
+        </mat-card-content>
+        <mat-divider></mat-divider>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" routerLink="/main/educationreform/edit/{{eduReform.id}}">
+            <mat-icon>edit</mat-icon>
+            <span>编辑</span>
+          </button>
+          <button mat-raised-button color="warn" (click)="deleteEduReform(eduReform)">
+            <mat-icon>delete</mat-icon>
+            <span>删除</span>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+      }@empty {
+      <div>
+        <h3>暂无数据</h3>
+      </div>
+      }
+      }
+    </div>
+    <mat-divider></mat-divider>
+    <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)" aria-label="Select page">
+    </mat-paginator>
   </div>
 
 </div>

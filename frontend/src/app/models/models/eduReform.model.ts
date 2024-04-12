@@ -1,4 +1,3 @@
-import { S } from "@angular/cdk/keycodes"
 import { UserExport } from "./user.model"
 
 export class EduReform {
@@ -15,6 +14,11 @@ export class EduReform {
   fund: string = ""
   craetedAt: Date = new Date(0)
   updatedAt: Date = new Date(0)
+}
+
+export class EduReformPage {
+  eduReforms: EduReform[] = []
+  totalCount: number = 0
 }
 
 export class EditEduReform {
@@ -41,8 +45,8 @@ export class EduReformFilter {
   rank: string | null = null
   achievement: string | null = null
   fund: string | null = null
-  craetedStart: Date | null = null
-  craetedEnd: Date | null = null
+  createdStart: Date | null = null
+  createdEnd: Date | null = null
   updatedStart: Date | null = null
   updatedEnd: Date | null = null
 }
@@ -58,7 +62,10 @@ export interface EduReformResponse {
 export interface EduReformsByFilterResponse {
   error?: unknown;
   data?: {
-    eduReformsByFilter: EduReform[]
+    eduReformsByFilter: {
+      eduReforms: EduReform[],
+      totalCount: number
+    }
   }
 }
 

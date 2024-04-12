@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { map, Observable } from "rxjs";
-import { CreateEduReformResponse, DeleteEduReformResponse, EditEduReform, EduReform, EduReformFilter, EduReformResponse, EduReformsByFilterResponse, UpdateEduReformResponse } from "../models/models/eduReform.model";
-import { eduReformQuery } from "../models/graphql/query/edureform.query.graphql";
-import { createEduReformMutation } from "../models/graphql/mutation/edureform.mutation.graphql";
+import { CreateEduReformResponse, DeleteEduReformResponse, EditEduReform, EduReform, EduReformFilter, EduReformPage, EduReformResponse, EduReformsByFilterResponse, UpdateEduReformResponse } from "../models/models/eduReform.model";
+import { eduReformQuery, eduReformsByFilterQuery } from "../models/graphql/query/edureform.query.graphql";
+import { createEduReformMutation, deleteEduReformMutation, updateEduReformMutation } from "../models/graphql/mutation/edureform.mutation.graphql";
 
 
 @Injectable({
@@ -30,16 +30,18 @@ export class EduReformService {
     );
   }
 
-  getEduReformsByFilter(eduReformFilter: EduReformFilter): Observable<EduReform[] | null> {
+  getEduReformsByFilter(eduReformFilter: EduReformFilter, pageIndex: number, pageSize: number): Observable<EduReformPage | null> {
     return this.apollo.query({
-      query: eduReformQuery,
+      query: eduReformsByFilterQuery,
       variables: {
-        filter: eduReformFilter
+        filter: eduReformFilter,
+        offset: pageIndex * pageSize,
+        limit: pageSize
       },
       fetchPolicy: 'network-only'
     }).pipe(
       map((response: unknown) => {
-        let edureforms = (response as EduReformsByFilterResponse).data?.eduReformsByFilter;
+        let edureforms = (response as EduReformsByFilterResponse).data?.eduReformsByFilter as EduReformPage;
         if (typeof edureforms !== 'undefined' && edureforms !== null) {
           return edureforms;
         }
@@ -67,7 +69,7 @@ export class EduReformService {
 
   updateEduReform(edureform: EditEduReform): Observable<EduReform | null> {
     return this.apollo.mutate({
-      mutation: createEduReformMutation,
+      mutation: updateEduReformMutation,
       variables: {
         eduReformData: edureform
       }
@@ -84,7 +86,7 @@ export class EduReformService {
 
   deleteEduReform(id: string): Observable<EduReform | null> {
     return this.apollo.mutate({
-      mutation: createEduReformMutation,
+      mutation: deleteEduReformMutation,
       variables: {
         id: id
       }

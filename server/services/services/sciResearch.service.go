@@ -296,6 +296,13 @@ func (s *SciResearchService) GetSciResearchsByFilter(userId primitive.ObjectID, 
 	// 	}
 	// }
 
+	if len(sciResearchsData) == 0 {
+		return &graphql_models.SciResearchQuery{
+			TotalCount:   0,
+			SciResearchs: []*graphql_models.SciResearch{},
+		}, nil
+	}
+
 	if offset >= len(sciResearchsData) || offset < 0 {
 		return nil, errors.New("offset out of range")
 	}

@@ -10,6 +10,11 @@ export class CompGuidance {
   updatedAt: Date = new Date(0)
 }
 
+export class CompGuidancePage {
+  compGuidances: CompGuidance[] = []
+  totalCount: number = 0
+}
+
 export class EditCompGuidance {
   projectName: string = ""
   studentNames: string[] = []
@@ -41,7 +46,10 @@ export interface CompGuidanceResponse {
 export interface CompGuidancesByFilterResponse {
   error?: unknown;
   data?: {
-    compGuidancesByFilter: CompGuidance[]
+    compGuidancesByFilter: {
+      compGuidances: CompGuidance[],
+      totalCount: number
+    }
   }
 }
 

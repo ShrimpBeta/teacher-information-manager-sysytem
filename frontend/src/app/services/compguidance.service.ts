@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
-import { map, Observable } from "rxjs";
-import { CompGuidance, CompGuidanceFilter, CompGuidanceResponse, CompGuidancesByFilterResponse, CreateCompGuidanceResponse, DeleteCompGuidanceResponse, EditCompGuidance, UpdateCompGuidanceResponse } from "../models/models/compGuidance.model";
+import { map, Observable, of } from "rxjs";
+import { CompGuidance, CompGuidanceFilter, CompGuidancePage, CompGuidanceResponse, CompGuidancesByFilterResponse, CreateCompGuidanceResponse, DeleteCompGuidanceResponse, EditCompGuidance, UpdateCompGuidanceResponse } from "../models/models/compGuidance.model";
 import { compGuidanceQuery, compGuidancesByFilterQuery } from "../models/graphql/query/compguidance.query.graphql";
-import { createCompGuidanceMutation } from "../models/graphql/mutation/compguidance.mutation.graphql";
+import { createCompGuidanceMutation, deleteCompGuidanceMutation, updateCompGuidanceMutation } from "../models/graphql/mutation/compguidance.mutation.graphql";
 
 @Injectable({
   providedIn: 'root'
@@ -13,17 +13,19 @@ export class CompGuidanceService {
     private apollo: Apollo,
   ) { }
 
-  getCompGuidancesByFilter(compGuidanceFilter: CompGuidanceFilter): Observable<CompGuidance[] | null> {
+  getCompGuidancesByFilter(compGuidanceFilter: CompGuidanceFilter, pageIndex: number, pageSize: number): Observable<CompGuidancePage | null> {
     return this.apollo.query({
       query: compGuidancesByFilterQuery,
       variables: {
-        filter: compGuidanceFilter
+        filter: compGuidanceFilter,
+        offset: pageIndex * pageSize,
+        limit: pageSize
       },
       fetchPolicy: 'network-only'
     })
       .pipe(
         map((response: unknown) => {
-          let compGuidances = (response as CompGuidancesByFilterResponse).data?.compGuidancesByFilter;
+          let compGuidances = (response as CompGuidancesByFilterResponse).data?.compGuidancesByFilter as CompGuidancePage;
           if (typeof compGuidances !== 'undefined' && compGuidances !== null) {
             return compGuidances;
           }
@@ -70,7 +72,7 @@ export class CompGuidanceService {
 
   updateCompGuidance(id: string, updateCompGuidance: EditCompGuidance): Observable<CompGuidance | null> {
     return this.apollo.mutate({
-      mutation: createCompGuidanceMutation,
+      mutation: updateCompGuidanceMutation,
       variables: {
         id: id,
         compGuidanceData: updateCompGuidance
@@ -89,7 +91,7 @@ export class CompGuidanceService {
 
   deleteCompGuidance(id: string): Observable<CompGuidance | null> {
     return this.apollo.mutate({
-      mutation: createCompGuidanceMutation,
+      mutation: deleteCompGuidanceMutation,
       variables: {
         id: id
       }

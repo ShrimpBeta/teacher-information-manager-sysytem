@@ -28,18 +28,16 @@ export class NewcompguidanceComponent implements OnInit, OnDestroy {
 
   createCompguidance() {
     console.log(this.compGuidanceForm.value);
+
     let newCompguidance = new EditCompGuidance();
     newCompguidance.projectName = this.compGuidanceForm.get('projectName')?.value;
     newCompguidance.competitionScore = this.compGuidanceForm.get('competitionScore')?.value;
     newCompguidance.awardStatus = this.compGuidanceForm.get('awardStatus')?.value;
+    newCompguidance.guidanceDate = this.compGuidanceForm.get('guidanceDate')?.value;
 
     let studentNamesControlArray = this.compGuidanceForm.get('studentNames') as FormArray;
     if (studentNamesControlArray && studentNamesControlArray.length > 0) {
       newCompguidance.studentNames = studentNamesControlArray.controls.map((control) => control.value);
-    }
-
-    if (this.compGuidanceForm.get('guidanceDate')?.value !== '') {
-      newCompguidance.guidanceDate = new Date(this.compGuidanceForm.get('guidanceDate')?.value);
     }
 
     console.log(newCompguidance);
@@ -71,7 +69,7 @@ export class NewcompguidanceComponent implements OnInit, OnDestroy {
       projectName: new FormControl('', [Validators.required]),
       studentNames: new FormArray([], [ArrayEmptyValidator()]),
       competitionScore: new FormControl(''),
-      guidanceDate: new FormControl(''),
+      guidanceDate: new FormControl(null),
       awardStatus: new FormControl(''),
     });
   }

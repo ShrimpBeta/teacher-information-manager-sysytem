@@ -33,9 +33,11 @@ export class NewedureformComponent implements OnInit, OnDestroy {
 
   createEduReform() {
     console.log(this.eduReformForm.value);
+
     let newEduReform = new EditEduReform();
     newEduReform.title = this.eduReformForm.get('title')?.value;
     newEduReform.number = this.eduReformForm.get('number')?.value;
+    newEduReform.startDate = this.eduReformForm.get('startDate')?.value;
     newEduReform.duration = this.eduReformForm.get('duration')?.value;
     newEduReform.level = this.eduReformForm.get('level')?.value;
     newEduReform.rank = this.eduReformForm.get('rank')?.value;
@@ -51,9 +53,6 @@ export class NewedureformComponent implements OnInit, OnDestroy {
       newEduReform.teachersOut = teachersOutControlArray.controls.map((control) => control.value);
     }
 
-    if (this.eduReformForm.get('startDate')?.value !== '') {
-      newEduReform.startDate = new Date(this.eduReformForm.get('startDate')?.value);
-    }
 
     console.log(newEduReform);
     this.eduReformService.createEduReform(newEduReform).pipe(takeUntil(this.$destroy)).subscribe({
@@ -84,7 +83,7 @@ export class NewedureformComponent implements OnInit, OnDestroy {
       number: new FormControl('', [Validators.required]),
       teachersIn: new FormArray([]),
       teachersOut: new FormArray([]),
-      startDate: new FormControl(''),
+      startDate: new FormControl(null),
       duration: new FormControl(''),
       level: new FormControl(''),
       rank: new FormControl(''),

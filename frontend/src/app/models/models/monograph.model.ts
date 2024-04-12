@@ -12,6 +12,11 @@ export class Monograph {
   updatedAt: Date = new Date(0)
 }
 
+export class MonographPage {
+  monographs: Monograph[] = []
+  totalCount: number = 0
+}
+
 export class EditMonograph {
   teachersIn: string[] = []
   teachersOut: string[] | null = null
@@ -45,7 +50,10 @@ export interface MonographResponse {
 export interface MonographsByFilterResponse {
   error?: unknown;
   data?: {
-    monographsByFilter: Monograph[]
+    monographsByFilter: {
+      monographs: Monograph[],
+      totalCount: number
+    }
   }
 }
 

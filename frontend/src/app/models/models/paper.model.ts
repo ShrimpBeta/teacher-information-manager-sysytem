@@ -13,6 +13,11 @@ export class Paper {
   updatedAt: Date = new Date(0)
 }
 
+export class PaperPage {
+  papers: Paper[] = []
+  totalCount: number = 0
+}
+
 export class EditPaper {
   teachersIn: string[] = []
   teachersOut: string[] | null = null
@@ -49,7 +54,10 @@ export interface PaperResponse {
 export interface PapersByFilterResponse {
   error?: unknown;
   data?: {
-    papersByFilter: Paper[]
+    papersByFilter: {
+      papers: Paper[],
+      totalCount: number
+    }
   }
 }
 

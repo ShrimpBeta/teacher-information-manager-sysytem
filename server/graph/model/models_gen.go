@@ -181,7 +181,7 @@ type EduReform struct {
 }
 
 type EduReformData struct {
-	TeachersIn  []*string  `json:"teachersIn"`
+	TeachersIn  []*string  `json:"teachersIn,omitempty"`
 	TeachersOut []*string  `json:"teachersOut,omitempty"`
 	Number      string     `json:"number"`
 	Title       string     `json:"title"`
@@ -194,7 +194,7 @@ type EduReformData struct {
 }
 
 type EduReformFilter struct {
-	TeachersIn     []*string  `json:"teachersIn"`
+	TeachersIn     []*string  `json:"teachersIn,omitempty"`
 	TeachersOut    []*string  `json:"teachersOut,omitempty"`
 	Number         *string    `json:"number,omitempty"`
 	Title          *string    `json:"title,omitempty"`
@@ -282,7 +282,7 @@ type Monograph struct {
 }
 
 type MonographData struct {
-	TeachersIn   []*string  `json:"teachersIn"`
+	TeachersIn   []*string  `json:"teachersIn,omitempty"`
 	TeachersOut  []*string  `json:"teachersOut,omitempty"`
 	Title        string     `json:"title"`
 	PublishDate  *time.Time `json:"publishDate,omitempty"`
@@ -291,7 +291,7 @@ type MonographData struct {
 }
 
 type MonographFilter struct {
-	TeachersIn       []*string  `json:"teachersIn"`
+	TeachersIn       []*string  `json:"teachersIn,omitempty"`
 	TeachersOut      []*string  `json:"teachersOut,omitempty"`
 	Title            *string    `json:"title,omitempty"`
 	PublishDateStart *time.Time `json:"publishDateStart,omitempty"`
@@ -345,7 +345,7 @@ type Paper struct {
 }
 
 type PaperData struct {
-	TeachersIn   []*string  `json:"teachersIn"`
+	TeachersIn   []*string  `json:"teachersIn,omitempty"`
 	TeachersOut  []*string  `json:"teachersOut,omitempty"`
 	Title        string     `json:"title"`
 	PublishDate  *time.Time `json:"publishDate,omitempty"`
@@ -355,7 +355,7 @@ type PaperData struct {
 }
 
 type PaperFilter struct {
-	TeachersIn       []*string  `json:"teachersIn"`
+	TeachersIn       []*string  `json:"teachersIn,omitempty"`
 	TeachersOut      []*string  `json:"teachersOut,omitempty"`
 	Title            *string    `json:"title,omitempty"`
 	PublishDateStart *time.Time `json:"publishDateStart,omitempty"`
@@ -460,7 +460,7 @@ type SciResearch struct {
 }
 
 type SciResearchData struct {
-	TeachersIn  []*string          `json:"teachersIn"`
+	TeachersIn  []*string          `json:"teachersIn,omitempty"`
 	TeachersOut []*string          `json:"teachersOut,omitempty"`
 	Number      string             `json:"number"`
 	Title       string             `json:"title"`
@@ -475,7 +475,7 @@ type SciResearchData struct {
 }
 
 type SciResearchFilter struct {
-	TeachersIn     []*string  `json:"teachersIn"`
+	TeachersIn     []*string  `json:"teachersIn,omitempty"`
 	TeachersOut    []*string  `json:"teachersOut,omitempty"`
 	Number         *string    `json:"number,omitempty"`
 	Title          *string    `json:"title,omitempty"`

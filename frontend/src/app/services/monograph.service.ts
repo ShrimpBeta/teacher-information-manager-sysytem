@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { CreateMonographResponse, DeleteMonographResponse, EditMonograph, Monograph, MonographFilter, MonographResponse, MonographsByFilterResponse, UpdateMonographResponse } from "../models/models/monograph.model";
+import { CreateMonographResponse, DeleteMonographResponse, EditMonograph, Monograph, MonographFilter, MonographPage, MonographResponse, MonographsByFilterResponse, UpdateMonographResponse } from "../models/models/monograph.model";
 import { map, Observable } from "rxjs";
 import { Apollo } from "apollo-angular";
 import { monographQuery, monographsByFilterQuery } from "../models/graphql/query/monograph.query.graphql";
@@ -32,15 +32,17 @@ export class MonographService {
     );
   }
 
-  getMonographsByFilter(monographFilter: MonographFilter): Observable<Monograph[] | null> {
+  getMonographsByFilter(monographFilter: MonographFilter, pageIndex: number, pageSize: number): Observable<MonographPage | null> {
     return this.apollo.query({
       query: monographsByFilterQuery,
       variables: {
-        filter: monographFilter
+        filter: monographFilter,
+        offset: pageIndex * pageSize,
+        limit: pageSize
       }
     }).pipe(
       map((response: unknown) => {
-        let monographs = (response as MonographsByFilterResponse).data?.monographsByFilter;
+        let monographs = (response as MonographsByFilterResponse).data?.monographsByFilter as MonographPage;
         if (typeof monographs !== 'undefined' && monographs !== null) {
           return monographs;
         }

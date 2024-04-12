@@ -12,6 +12,11 @@ export class UGPGGuidance {
   updatedAt: Date = new Date(0)
 }
 
+export class UGPGGuidancePage {
+  uGPGGuidances: UGPGGuidance[] = []
+  totalCount: number = 0
+}
+
 export class EditUGPGGuidance {
   studentName: string = ""
   thesisTopic: string = ""
@@ -44,7 +49,10 @@ export interface UGPGGuidanceResponse {
 export interface UGPGGuidancesByFilterResponse {
   error?: unknown;
   data?: {
-    uGPGGuidancesByFilter: UGPGGuidance[]
+    uGPGGuidancesByFilter: {
+      uGPGGuidances: UGPGGuidance[],
+      totalCount: number
+    }
   }
 }
 

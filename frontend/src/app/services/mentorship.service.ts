@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
-import { CreateMentorshipResponse, DeleteMentorshipResponse, EditMentorship, Mentorship, MentorshipFilter, MentorshipResponse, MentorshipsByFilterResponse, UpdateMentorshipResponse } from "../models/models/mentorship.model";
+import { CreateMentorshipResponse, DeleteMentorshipResponse, EditMentorship, Mentorship, MentorshipFilter, MentorshipPage, MentorshipResponse, MentorshipsByFilterResponse, UpdateMentorshipResponse } from "../models/models/mentorship.model";
 import { Apollo } from "apollo-angular";
 import { mentorshipQuery, mentorshipsByFilterQuery } from "../models/graphql/query/mentorship.query.graphql";
 import { createMentorshipMutation, deleteMentorshipMutation, updateMentorshipMutation } from "../models/graphql/mutation/mentorship.mutation.graphql";
@@ -31,15 +31,17 @@ export class MentorshipService {
     );
   }
 
-  getMentorshipsByFilter(mentorshipFilter: MentorshipFilter): Observable<Mentorship[] | null> {
+  getMentorshipsByFilter(mentorshipFilter: MentorshipFilter, pageIndex: number, pageSize: number): Observable<MentorshipPage | null> {
     return this.apollo.query({
       query: mentorshipsByFilterQuery,
       variables: {
-        filter: mentorshipFilter
+        filter: mentorshipFilter,
+        offset: pageIndex * pageSize,
+        limit: pageSize
       },
     }).pipe(
       map((response: unknown) => {
-        let mentorships = (response as MentorshipsByFilterResponse).data?.mentorshipsByFilter;
+        let mentorships = (response as MentorshipsByFilterResponse).data?.mentorshipsByFilter as MentorshipPage;
         if (typeof mentorships !== 'undefined' && mentorships !== null) {
           return mentorships;
         }

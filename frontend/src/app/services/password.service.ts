@@ -26,7 +26,7 @@ export class PasswordService {
       fetchPolicy: 'network-only'
     }).pipe(
       map((response: unknown) => {
-        let passwords = (response as PasswordsByFilterResponse).data?.passwordsByFilter;
+        let passwords = (response as PasswordsByFilterResponse).data?.passwordsByFilter as PasswordsPage;
         if (typeof passwords !== 'undefined' && passwords !== null) {
           return passwords;
         }

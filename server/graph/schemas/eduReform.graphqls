@@ -34,7 +34,7 @@ type EduReformPreview {
 }
 
 input EduReformData {
-  teachersIn: [ID]!
+  teachersIn: [ID]
   teachersOut: [String]
   number: String!
   title: String!
@@ -47,7 +47,7 @@ input EduReformData {
 }
 
 input EduReformFilter {
-  teachersIn: [ID]!
+  teachersIn: [ID]
   teachersOut: [String]
   number: String
   title: String

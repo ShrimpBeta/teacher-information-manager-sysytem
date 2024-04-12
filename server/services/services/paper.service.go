@@ -209,6 +209,13 @@ func (paperService *PaperService) GetPapersByFilter(userId primitive.ObjectID, f
 	// 	}
 	// }
 
+	if len(papersData) == 0 {
+		return &graphql_models.PaperQuery{
+			TotalCount: 0,
+			Papers:     []*graphql_models.Paper{},
+		}, nil
+	}
+
 	if offset >= len(papersData) || offset < 0 {
 		return nil, errors.New("offset out of range")
 	}

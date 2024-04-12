@@ -157,6 +157,13 @@ func (compGuidanceService *CompGuidanceService) GetCompGuidancesByFilter(userId 
 	// 	}
 	// }
 
+	if len(compGuidancesData) == 0 {
+		return &graphql_models.CompGuidanceQuery{
+			TotalCount:    0,
+			CompGuidances: []*graphql_models.CompGuidance{},
+		}, nil
+	}
+
 	if offset >= len(compGuidancesData) || offset < 0 {
 		return nil, errors.New("offset out of range")
 	}

@@ -223,6 +223,13 @@ func (eduReformService *EduReformService) GetEduReformsByFilter(userId primitive
 	// 	}
 	// }
 
+	if len(eduReformsData) == 0 {
+		return &graphql_models.EduReformQuery{
+			TotalCount: 0,
+			EduReforms: []*graphql_models.EduReform{},
+		}, nil
+	}
+
 	if offset >= len(eduReformsData) || offset < 0 {
 		return nil, errors.New("offset out of range")
 	}

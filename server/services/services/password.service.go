@@ -165,6 +165,13 @@ func (passwordService *PasswordService) GetPasswordsByFilter(userId primitive.Ob
 	// 	}
 	// }
 
+	if len(passwordsData) == 0 {
+		return &graphql_models.PasswordsQuery{
+			TotalCount: 0,
+			Passwords:  []*graphql_models.Password{},
+		}, nil
+	}
+
 	if offset >= len(passwordsData) || offset < 0 {
 		return nil, errors.New("offset out of range")
 	}

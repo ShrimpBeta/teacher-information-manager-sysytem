@@ -15,6 +15,7 @@ export class UserExport {
   email: string = ""
   username: string = ""
   avatar: string = ""
+  createdAt: Date = new Date(0)
 }
 
 export class ResetUserPassword {

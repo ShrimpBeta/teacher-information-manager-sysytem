@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -62,7 +62,12 @@ export class SciresearchformComponent {
 
   teachersInSelected(event: MatAutocompleteSelectedEvent) {
     let selectedTeacherIn: UserExport = event.option.value;
-    this.teachersIn.push(new FormControl(selectedTeacherIn));
+    let index = this.teachersIn.controls.findIndex((control: AbstractControl) => {
+      return control.value.id === selectedTeacherIn.id;
+    });
+    if (index === -1) {
+      this.teachersIn.push(new FormControl(selectedTeacherIn));
+    }
     this.teachersInInput.nativeElement.value = '';
     this.teachersInCtrl.setValue(null);
   }
@@ -70,7 +75,15 @@ export class SciresearchformComponent {
   addTeachersIn(event: MatChipInputEvent) {
     let value = (event.value || '').trim();
     if (value) {
-      this.teachersIn.push(new FormControl(value));
+      let index = this.teachersInOptions.findIndex((teacher) => teacher.username === value);
+      if (index !== -1) {
+        let existIndex = this.teachersIn.controls.findIndex((control: AbstractControl) => {
+          return control.value.id === this.teachersInOptions[index].id;
+        });
+        if (existIndex === -1) {
+          this.teachersIn.push(new FormControl(this.teachersInOptions[index]));
+        }
+      }
     }
     event.chipInput!.clear();
     this.teachersInCtrl.setValue(null);
@@ -79,7 +92,12 @@ export class SciresearchformComponent {
   addTeachersOut(event: MatChipInputEvent) {
     let value = (event.value || '').trim();
     if (value) {
-      this.teachersOut.push(new FormControl(value));
+      let index = this.teachersOut.controls.findIndex((control: AbstractControl) => {
+        return control.value === value;
+      });
+      if (index === -1) {
+        this.teachersOut.push(new FormControl(value));
+      }
     }
     event.chipInput!.clear();
   }
@@ -108,7 +126,15 @@ export class SciresearchformComponent {
   editTeachersIn(event: MatChipEditedEvent, index: number) {
     let value = (event.value || '').trim();
     if (value) {
-      this.teachersIn.at(index).setValue(value);
+      let opntionIndex = this.teachersInOptions.findIndex((teacher) => teacher.username === value);
+      if (opntionIndex !== -1) {
+        let existIndex = this.teachersIn.controls.findIndex((control: AbstractControl) => {
+          return control.value.id === this.teachersInOptions[opntionIndex].id;
+        });
+        if (existIndex === -1) {
+          this.teachersIn.at(index).setValue(value);
+        }
+      }
     } else {
       this.teachersIn.removeAt(index);
     }
@@ -117,7 +143,12 @@ export class SciresearchformComponent {
   editTeachersOut(event: MatChipEditedEvent, index: number) {
     let value = (event.value || '').trim();
     if (value) {
-      this.teachersOut.at(index).setValue(value);
+      let existIndex = this.teachersOut.controls.findIndex((control: AbstractControl) => {
+        return control.value === value;
+      });
+      if (existIndex === -1) {
+        this.teachersOut.at(index).setValue(value);
+      }
     } else {
       this.teachersOut.removeAt(index);
     }

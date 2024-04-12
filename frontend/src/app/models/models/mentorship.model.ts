@@ -8,6 +8,11 @@ export class Mentorship {
   updatedAt: Date = new Date(0)
 }
 
+export class MentorshipPage {
+  mentorships: Mentorship[] = []
+  totalCount: number = 0
+}
+
 export class EditMentorship {
   projectName: string = ""
   studentNames: string[] = []
@@ -37,7 +42,10 @@ export interface MentorshipResponse {
 export interface MentorshipsByFilterResponse {
   error?: unknown;
   data?: {
-    mentorshipsByFilter: Mentorship[]
+    mentorshipsByFilter: {
+      mentorships: Mentorship[],
+      totalCount: number
+    }
   }
 }
 

@@ -61,7 +61,7 @@ input AwardRecordData {
 }
 
 input SciResearchData {
-  teachersIn: [ID]!
+  teachersIn: [ID]
   teachersOut: [String]
   number: String!
   title: String!
@@ -76,7 +76,7 @@ input SciResearchData {
 }
 
 input SciResearchFilter {
-  teachersIn: [ID]!
+  teachersIn: [ID]
   teachersOut: [String]
   number: String
   title: String

@@ -26,6 +26,11 @@ export class SciResearch {
   updatedAt: Date = new Date(0)
 }
 
+export class SciResearchPage {
+  sciResearchs: SciResearch[] = []
+  totalCount: number = 0
+}
+
 export class EditAwardRecord {
   awardName: string | null = null
   awardDate: Date | null = null
@@ -81,7 +86,10 @@ export interface SciResearchResponse {
 export interface SciResearchsByFilterResponse {
   error?: unknown;
   data?: {
-    sciResearchsByFilter: SciResearch[]
+    sciResearchsByFilter: {
+      sciResearchs: SciResearch[],
+      totalCount: number
+    }
   }
 }
 

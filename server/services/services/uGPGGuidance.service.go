@@ -210,6 +210,13 @@ func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidancesByFilter(userId 
 	// 	}
 	// }
 
+	if len(uGPGGuidancesData) == 0 {
+		return &graphql_models.UGPGGuidanceQuery{
+			TotalCount:    0,
+			UGPGGuidances: []*graphql_models.UGPGGuidance{},
+		}, nil
+	}
+
 	if offset >= len(uGPGGuidancesData) || offset < 0 {
 		return nil, errors.New("offset out of range")
 	}

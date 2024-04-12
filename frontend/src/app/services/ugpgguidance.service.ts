@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { map, Observable } from "rxjs";
 import { uGPGGuidancesByFilterQuery, uGPUGGuidanceQuery } from "../models/graphql/query/ugpgguidance.query.graphql";
-import { CreateUGPGGuidanceResponse, DeleteUGPGGuidanceResponse, EditUGPGGuidance, UGPGGuidance, UGPGGuidanceFilter, UGPGGuidanceResponse, UGPGGuidancesByFilterResponse, UpdateUGPGGuidanceResponse } from "../models/models/uGPGGuidance.model";
+import { CreateUGPGGuidanceResponse, DeleteUGPGGuidanceResponse, EditUGPGGuidance, UGPGGuidance, UGPGGuidanceFilter, UGPGGuidancePage, UGPGGuidanceResponse, UGPGGuidancesByFilterResponse, UpdateUGPGGuidanceResponse } from "../models/models/uGPGGuidance.model";
 import { createUGPGGuidanceMutation, deleteUGPGGuidanceMutation, updateUGPGGuidanceMutation } from "../models/graphql/mutation/ugpgguidance.mutation.graphql";
 
 @Injectable({
@@ -30,15 +30,17 @@ export class UGPGGuidanceService {
     );
   }
 
-  getUGPGGuidancesByFilter(ugpgguidanceFilter: UGPGGuidanceFilter): Observable<UGPGGuidance[] | null> {
+  getUGPGGuidancesByFilter(ugpgguidanceFilter: UGPGGuidanceFilter, pageIndex: number, pageSize: number): Observable<UGPGGuidancePage | null> {
     return this.apollo.query({
       query: uGPGGuidancesByFilterQuery,
       variables: {
-        filter: ugpgguidanceFilter
+        filter: ugpgguidanceFilter,
+        offset: pageIndex * pageSize,
+        limit: pageSize
       }
     }).pipe(
       map((response: unknown) => {
-        let ugpgguidances = (response as UGPGGuidancesByFilterResponse).data?.uGPGGuidancesByFilter;
+        let ugpgguidances = (response as UGPGGuidancesByFilterResponse).data?.uGPGGuidancesByFilter as UGPGGuidancePage;
         if (typeof ugpgguidances !== 'undefined' && ugpgguidances !== null) {
           return ugpgguidances;
         }

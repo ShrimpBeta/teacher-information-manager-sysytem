@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { map, Observable } from "rxjs";
-import { CreatePaperResponse, DeletePaperResponse, EditPaper, Paper, PaperFilter, PaperResponse, PapersByFilterResponse, UpdatePaperResponse } from "../models/models/paper.model";
+import { CreatePaperResponse, DeletePaperResponse, EditPaper, Paper, PaperFilter, PaperPage, PaperResponse, PapersByFilterResponse, UpdatePaperResponse } from "../models/models/paper.model";
 import { paperQuery, papersByFilterQuery } from "../models/graphql/query/paper.query.graphql";
 import { createPaperMutation, deletePaperMutation, updatePaperMutation } from "../models/graphql/mutation/paper.mutation.graphql";
 
@@ -33,17 +33,19 @@ export class PaperService {
       );
   }
 
-  getPapersByFilter(paperFilter: PaperFilter): Observable<Paper[] | null> {
+  getPapersByFilter(paperFilter: PaperFilter, pageIndex: number, pageSize: number): Observable<PaperPage | null> {
     return this.apollo.query({
       query: papersByFilterQuery,
       variables: {
-        filter: paperFilter
+        filter: paperFilter,
+        offset: pageIndex * pageSize,
+        limit: pageSize
       },
       fetchPolicy: 'network-only'
     })
       .pipe(
         map((response: unknown) => {
-          let papers = (response as PapersByFilterResponse).data?.papersByFilter;
+          let papers = (response as PapersByFilterResponse).data?.papersByFilter as PaperPage;
           if (typeof papers !== 'undefined' && papers !== null) {
             return papers;
           }

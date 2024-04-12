@@ -22511,7 +22511,7 @@ func (ec *executionContext) unmarshalInputEduReformData(ctx context.Context, obj
 		switch k {
 		case "teachersIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("teachersIn"))
-			data, err := ec.unmarshalNID2ᚕᚖstring(ctx, v)
+			data, err := ec.unmarshalOID2ᚕᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -22601,7 +22601,7 @@ func (ec *executionContext) unmarshalInputEduReformFilter(ctx context.Context, o
 		switch k {
 		case "teachersIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("teachersIn"))
-			data, err := ec.unmarshalNID2ᚕᚖstring(ctx, v)
+			data, err := ec.unmarshalOID2ᚕᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -22850,7 +22850,7 @@ func (ec *executionContext) unmarshalInputMonographData(ctx context.Context, obj
 		switch k {
 		case "teachersIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("teachersIn"))
-			data, err := ec.unmarshalNID2ᚕᚖstring(ctx, v)
+			data, err := ec.unmarshalOID2ᚕᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -22912,7 +22912,7 @@ func (ec *executionContext) unmarshalInputMonographFilter(ctx context.Context, o
 		switch k {
 		case "teachersIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("teachersIn"))
-			data, err := ec.unmarshalNID2ᚕᚖstring(ctx, v)
+			data, err := ec.unmarshalOID2ᚕᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -23077,7 +23077,7 @@ func (ec *executionContext) unmarshalInputPaperData(ctx context.Context, obj int
 		switch k {
 		case "teachersIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("teachersIn"))
-			data, err := ec.unmarshalNID2ᚕᚖstring(ctx, v)
+			data, err := ec.unmarshalOID2ᚕᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -23146,7 +23146,7 @@ func (ec *executionContext) unmarshalInputPaperFilter(ctx context.Context, obj i
 		switch k {
 		case "teachersIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("teachersIn"))
-			data, err := ec.unmarshalNID2ᚕᚖstring(ctx, v)
+			data, err := ec.unmarshalOID2ᚕᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -23387,7 +23387,7 @@ func (ec *executionContext) unmarshalInputSciResearchData(ctx context.Context, o
 		switch k {
 		case "teachersIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("teachersIn"))
-			data, err := ec.unmarshalNID2ᚕᚖstring(ctx, v)
+			data, err := ec.unmarshalOID2ᚕᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -23491,7 +23491,7 @@ func (ec *executionContext) unmarshalInputSciResearchFilter(ctx context.Context,
 		switch k {
 		case "teachersIn":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("teachersIn"))
-			data, err := ec.unmarshalNID2ᚕᚖstring(ctx, v)
+			data, err := ec.unmarshalOID2ᚕᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -29549,6 +29549,38 @@ func (ec *executionContext) marshalOEduReformPreview2ᚖserverᚋgraphᚋmodel�
 		return graphql.Null
 	}
 	return ec._EduReformPreview(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOID2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*string, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOID2ᚖstring(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOID2ᚕᚖstring(ctx context.Context, sel ast.SelectionSet, v []*string) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOID2ᚖstring(ctx, sel, v[i])
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOID2ᚖstring(ctx context.Context, v interface{}) (*string, error) {

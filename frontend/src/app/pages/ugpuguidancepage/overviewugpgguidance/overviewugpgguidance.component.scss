@@ -2,7 +2,6 @@
   width: 100%;
   box-sizing: border-box;
   padding: 20px;
-  padding-right: 5rem;
   gap: 20px;
   display: flex;
   flex-direction: column;
@@ -48,6 +47,7 @@
 .filter-box {
   display: flex;
   flex-wrap: wrap;
+
   mat-form-field {
     flex: 0 0 50%;
     box-sizing: border-box;
@@ -75,6 +75,7 @@
 
 .fab-container {
   position: fixed;
+  z-index: 1;
   bottom: 2rem;
   right: 2rem;
   display: flex;

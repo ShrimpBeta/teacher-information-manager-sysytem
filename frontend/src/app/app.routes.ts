@@ -82,7 +82,7 @@ export const routes: Routes = [
         path: 'classschedule', component: ClassscheduleComponent, title: 'Class Schedule', children: [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewclassscheduleComponent, title: 'Overview Class Schedule' },
-          { path: 'edit', component: EditclassscheduleComponent, title: 'Edit Class Schedule' },
+          { path: 'edit/:id', component: EditclassscheduleComponent, title: 'Edit Class Schedule' },
           { path: 'new', component: NewclassscheduleComponent, title: 'New Class Schedule' },
           { path: 'preview', component: PreviewclassscheduleComponent, title: 'Preview Class Schedule' },
           { path: 'export', component: ExportclassscheduleComponent, title: 'Export Class Schedule' },
@@ -92,7 +92,7 @@ export const routes: Routes = [
         path: 'educationreform', component: EdureformComponent, title: 'Education Reform', children: [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewedureformComponent, title: 'Overview Education Reform' },
-          { path: 'edit', component: EditedureformComponent, title: 'Edit Education Reform' },
+          { path: 'edit/:id', component: EditedureformComponent, title: 'Edit Education Reform' },
           { path: 'new', component: NewedureformComponent, title: 'New Education Reform' },
           { path: 'preview', component: PreviewedureformComponent, title: 'Preview Education Reform' },
           { path: 'export', component: ExportedureformComponent, title: 'Export Education Reform' },
@@ -102,7 +102,7 @@ export const routes: Routes = [
         path: 'competitionguidance', component: CompguidanceComponent, title: 'Competition Guidance', children: [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewcompguidanceComponent, title: 'Overview Competition Guidance' },
-          { path: 'edit', component: EditcompguidanceComponent, title: 'Edit Competition Guidance' },
+          { path: 'edit/:id', component: EditcompguidanceComponent, title: 'Edit Competition Guidance' },
           { path: 'new', component: NewcompguidanceComponent, title: 'New Competition Guidance' },
           { path: 'preview', component: PreviewcompguidanceComponent, title: 'Preview Competition Guidance' },
           { path: 'export', component: ExportcompguidanceComponent, title: 'Export Competition Guidance' },
@@ -112,7 +112,7 @@ export const routes: Routes = [
         path: 'ugpgguidance', component: UgpgguidanceComponent, title: 'UG/PG Guidance', children: [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewugpgguidanceComponent, title: 'Overview UG/PG Guidance' },
-          { path: 'edit', component: EditugpgguidanceComponent, title: 'Edit UG/PG Guidance' },
+          { path: 'edit/:id', component: EditugpgguidanceComponent, title: 'Edit UG/PG Guidance' },
           { path: 'new', component: NewugpgguidanceComponent, title: 'New UG/PG Guidance' },
           { path: 'preview', component: PreviewugpgguidanceComponent, title: 'Preview UG/PG Guidance' },
           { path: 'export', component: ExportugpgguidanceComponent, title: 'Export UG/PG Guidance' },
@@ -122,7 +122,7 @@ export const routes: Routes = [
         path: 'mentorship', component: MentorshipComponent, title: 'Mentorship', children: [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewmentorshipComponent, title: 'Overview Mentorship' },
-          { path: 'edit', component: EditmentorshipComponent, title: 'Edit Mentorship' },
+          { path: 'edit/:id', component: EditmentorshipComponent, title: 'Edit Mentorship' },
           { path: 'new', component: NewmentorshipComponent, title: 'New Mentorship' },
           { path: 'preview', component: PreviewmentorshipComponent, title: 'Preview Mentorship' },
           { path: 'export', component: ExportmentorshipComponent, title: 'Export Mentorship' },
@@ -132,7 +132,7 @@ export const routes: Routes = [
         path: 'monograph', component: MonographComponent, title: 'Monograph', children: [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewmonographComponent, title: 'Overview Monograph' },
-          { path: 'edit', component: EditmonographComponent, title: 'Edit Monograph' },
+          { path: 'edit/:id', component: EditmonographComponent, title: 'Edit Monograph' },
           { path: 'new', component: NewmonographComponent, title: 'New Monograph' },
           { path: 'preview', component: PreviewmonographComponent, title: 'Preview Monograph' },
           { path: 'export', component: ExportmonographComponent, title: 'Export Monograph' },
@@ -142,7 +142,7 @@ export const routes: Routes = [
         path: 'paper', component: PaperComponent, title: 'Paper', children: [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewpaperComponent, title: 'Overview Paper' },
-          { path: 'edit', component: EditpaperComponent, title: 'Edit Paper' },
+          { path: 'edit/:id', component: EditpaperComponent, title: 'Edit Paper' },
           { path: 'new', component: NewpaperComponent, title: 'New Paper' },
           { path: 'preview', component: PreviewpaperComponent, title: 'Preview Paper' },
           { path: 'export', component: ExportpaperComponent, title: 'Export Paper' },
@@ -152,7 +152,7 @@ export const routes: Routes = [
         path: 'scientificresearch', component: SciresearchComponent, title: 'Scientific Research', children: [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewsciresearchComponent, title: 'Overview Scientific Research' },
-          { path: 'edit', component: EditsciresearchComponent, title: 'Edit Scientific Research' },
+          { path: 'edit/:id', component: EditsciresearchComponent, title: 'Edit Scientific Research' },
           { path: 'new', component: NewsciresearchComponent, title: 'New Scientific Research' },
           { path: 'preview', component: PreviewsciresearchComponent, title: 'Preview Scientific Research' },
           { path: 'export', component: ExportsciresearchComponent, title: 'Export Scientific Research' },

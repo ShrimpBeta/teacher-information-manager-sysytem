@@ -14,5 +14,5 @@ type Password struct {
 	Password    string             `bson:"password"`
 	Description *string            `bson:"description,omitempty"`
 	CreatedAt   primitive.DateTime `bson:"createdAt"`
-	UpdatedAt   primitive.DateTime `bson:"updatedAT"`
+	UpdatedAt   primitive.DateTime `bson:"updatedAt"`
 }

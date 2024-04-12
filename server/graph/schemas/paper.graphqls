@@ -28,7 +28,7 @@ type PaperPreview {
 }
 
 input PaperData {
-  teachersIn: [ID]!
+  teachersIn: [ID]
   teachersOut: [String]
   title: String!
   publishDate: Time
@@ -38,7 +38,7 @@ input PaperData {
 }
 
 input PaperFilter {
-  teachersIn: [ID]!
+  teachersIn: [ID]
   teachersOut: [String]
   title: String
   publishDateStart: Time

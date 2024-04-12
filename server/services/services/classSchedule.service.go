@@ -60,6 +60,13 @@ func (classScheduleService *ClassScheduleService) GetAcademicTerms(userId primit
 	// 	}
 	// }
 
+	if len(AcademicTermsData) == 0 {
+		return &graphql_models.AcademicTermQuery{
+			TotalCount:    0,
+			AcademicTerms: []*graphql_models.AcademicTermShort{},
+		}, nil
+	}
+
 	if offset >= len(AcademicTermsData) || offset < 0 {
 		return nil, errors.New("offset out of range")
 	}

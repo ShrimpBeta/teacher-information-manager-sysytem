@@ -22,7 +22,6 @@ export const createEduReformMutation = gql`
       createdAt
       updatedAt
     }
-
   }
 `;
 

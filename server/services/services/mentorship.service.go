@@ -148,6 +148,13 @@ func (mentorshipService *MentorshipService) GetMentorshipsByFilter(userId primit
 	// 	}
 	// }
 
+	if len(mentorshipsData) == 0 {
+		return &graphql_models.MentorshipQuery{
+			TotalCount:  0,
+			Mentorships: []*graphql_models.Mentorship{},
+		}, nil
+	}
+
 	if offset >= len(mentorshipsData) || offset < 0 {
 		return nil, errors.New("offset out of range")
 	}

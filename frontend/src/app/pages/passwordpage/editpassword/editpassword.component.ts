@@ -8,24 +8,18 @@ import { PasswordService } from '../../../services/password.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, takeUntil } from 'rxjs';
 import { URLValidator } from '../../../shared/formvalidator/url.validator';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-editpassword',
   standalone: true,
-  imports: [MatDividerModule, PasswordformComponent],
+  imports: [MatDividerModule, PasswordformComponent, DatePipe],
   templateUrl: './editpassword.component.html',
   styleUrl: './editpassword.component.scss'
 })
 export class EditpasswordComponent implements OnInit, OnDestroy {
   password!: PasswordTrue;
-  passwordForm: FormGroup = new FormGroup({
-    url: new FormControl('', [URLValidator]),
-    appName: new FormControl(''),
-    account: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required]),
-    confirmPassword: new FormControl('', [Validators.required]),
-    description: new FormControl(''),
-  });
+  passwordForm!: FormGroup;
   buttonLabel = '更新';
   private destroy$ = new Subject<boolean>();
 
@@ -51,6 +45,8 @@ export class EditpasswordComponent implements OnInit, OnDestroy {
                 description: new FormControl(this.password?.description || ''),
               });
               this.snackBar.open('获取密码成功', '关闭', { duration: 3000 });
+            } else {
+              this.snackBar.open('获取密码失败', '关闭', { duration: 3000 });
             }
           },
           error: (error: unknown) => {
@@ -71,7 +67,13 @@ export class EditpasswordComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$)).subscribe({
         next: (password) => {
           if (password) {
+            let passwordUpdate = new PasswordTrue();
+            Object.assign(passwordUpdate, this.password);
+            passwordUpdate.updatedAt = password.updatedAt
+            this.password = passwordUpdate;
             this.snackBar.open('更新成功', '关闭', { duration: 3000 });
+          } else {
+            this.snackBar.open('更新失败', '关闭', { duration: 3000 });
           }
         },
         error: (error: unknown) => {

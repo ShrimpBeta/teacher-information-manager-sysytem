@@ -48,7 +48,10 @@ export class MentorshipformComponent {
   addStudentName(event: MatChipInputEvent) {
     let value = (event.value || '').trim();
     if (value) {
-      this.studentNames.push(new FormControl(value));
+      let index = this.studentNames.controls.findIndex((control) => control.value === value);
+      if (index === -1) {
+        this.studentNames.push(new FormControl(value));
+      }
     }
     event.chipInput!.clear();
   }
@@ -60,7 +63,10 @@ export class MentorshipformComponent {
   editStudentName(event: MatChipEditedEvent, index: number) {
     let value = (event.value || '').trim();
     if (value) {
-      this.studentNames.at(index).setValue(value);
+      let index = this.studentNames.controls.findIndex((control) => control.value === value);
+      if (index === -1) {
+        this.studentNames.at(index).setValue(value);
+      }
     } else {
       this.studentNames.removeAt(index);
     }

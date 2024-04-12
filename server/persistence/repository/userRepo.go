@@ -71,10 +71,11 @@ func (r *UserRepo) GetUsersExportByIds(ids []primitive.ObjectID) ([]*graphql_mod
 	usersExport := make([]*graphql_models.UserExport, len(usersIn))
 	for i, user := range usersIn {
 		usersExport[i] = &graphql_models.UserExport{
-			ID:       user.ID.Hex(),
-			Username: user.Username,
-			Email:    user.Email,
-			Avatar:   user.Avatar,
+			ID:        user.ID.Hex(),
+			Username:  user.Username,
+			Email:     user.Email,
+			Avatar:    user.Avatar,
+			CreatedAt: user.CreatedAt.Time(),
 		}
 	}
 	return usersExport, nil
