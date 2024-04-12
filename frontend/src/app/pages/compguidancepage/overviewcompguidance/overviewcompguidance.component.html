@@ -135,7 +135,7 @@
       @if(isSearching){
       <mat-spinner></mat-spinner>
       }@else{
-      @for( compGuidance of compGuidanceList;track $index) {
+      @for(compGuidance of compGuidanceList;track $index) {
       <mat-card>
         <mat-card-header>
           <mat-card-title>
@@ -163,6 +163,10 @@
           </button>
         </mat-card-actions>
       </mat-card>
+      }@empty {
+      <div>
+        <h3>暂无数据</h3>
+      </div>
       }
       }
     </div>

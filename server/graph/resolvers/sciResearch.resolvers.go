@@ -40,12 +40,17 @@ func (r *mutationResolver) UpdateSciResearch(ctx context.Context, id string, sci
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.SciResearchService.UpdateSciResearch(id, sciResearchData, r.UserService.Repo)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.SciResearchService.UpdateSciResearch(id, user.ID, sciResearchData, r.UserService.Repo)
 }
 
 // DeleteSciResearch is the resolver for the deleteSciResearch field.

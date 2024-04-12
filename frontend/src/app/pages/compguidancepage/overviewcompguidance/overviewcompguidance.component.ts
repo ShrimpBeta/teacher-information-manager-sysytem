@@ -26,7 +26,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   providers: [provideNativeDateAdapter()],
   imports: [MatDividerModule, MatInputModule, MatFormFieldModule, MatIconModule,
     MatSelectModule, MatButtonModule, ReactiveFormsModule, RouterLink, MatCardModule,
-    DatePipe, MatDatepickerModule, MatChipsModule, MatTooltipModule, MatPaginatorModule, MatProgressSpinnerModule],
+    DatePipe, MatDatepickerModule, MatChipsModule, MatTooltipModule, MatPaginatorModule,
+    MatProgressSpinnerModule],
   templateUrl: './overviewcompguidance.component.html',
   styleUrl: './overviewcompguidance.component.scss'
 })
@@ -34,8 +35,8 @@ export class OverviewcompguidanceComponent {
   SearchForm!: FormGroup;
   private destroy$ = new Subject<boolean>();
   compGuidanceList: CompGuidance[] = [];
-  totalCount: number = 0;
 
+  totalCount: number = 0;
   pageIndex: number = 0;
   pageSize: number = 10;
   pageSizeOptions: number[] = [6, 10, 24, 50, 100];
@@ -90,8 +91,7 @@ export class OverviewcompguidanceComponent {
       next: (result) => {
         if (result) {
           this.snackBar.open('删除竞赛记录成功', '关闭', { duration: 2000 });
-          this.compGuidanceList = this.compGuidanceList.filter(c => c.id !== compGuidance.id);
-          this.totalCount -= 1;
+          this.getCompGuidanceList();
         } else {
           this.snackBar.open('删除竞赛记录失败', '关闭', { duration: 2000 });
         }
@@ -130,22 +130,23 @@ export class OverviewcompguidanceComponent {
 
     this.isSearching = true;
     console.log(compGuidanceFilter);
-    this.compGuidanceService.getCompGuidancesByFilter(compGuidanceFilter, this.pageIndex, this.pageSize).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (compGuidancesPage) => {
-        if (compGuidancesPage) {
-          this.compGuidanceList = compGuidancesPage.compGuidances;
-          this.totalCount = compGuidancesPage.totalCount;
-        } else {
+    this.compGuidanceService.getCompGuidancesByFilter(compGuidanceFilter, this.pageIndex, this.pageSize)
+      .pipe(takeUntil(this.destroy$)).subscribe({
+        next: (compGuidancesPage) => {
+          if (compGuidancesPage) {
+            this.compGuidanceList = compGuidancesPage.compGuidances;
+            this.totalCount = compGuidancesPage.totalCount;
+          } else {
+            this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
+          }
+          this.isSearching = false;
+        },
+        error: (error) => {
+          console.error(error);
           this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
+          this.isSearching = false;
         }
-        this.isSearching = false;
-      },
-      error: (error) => {
-        console.error(error);
-        this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
-        this.isSearching = false;
-      }
-    });
+      });
   }
 
   get studentNames() {

@@ -54,7 +54,7 @@ func (eduReformService *EduReformService) CreateEduReform(userId primitive.Objec
 	return eduReformService.GetEduReformById(objectId.Hex(), userRepo)
 }
 
-func (eduReformService *EduReformService) UpdateEduReform(id string, edureformData graphql_models.EduReformData, userRepo *repository.UserRepo) (*graphql_models.EduReform, error) {
+func (eduReformService *EduReformService) UpdateEduReform(id string, userId primitive.ObjectID, edureformData graphql_models.EduReformData, userRepo *repository.UserRepo) (*graphql_models.EduReform, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -66,13 +66,13 @@ func (eduReformService *EduReformService) UpdateEduReform(id string, edureformDa
 	}
 
 	teachersIn := make([]primitive.ObjectID, len(edureformData.TeachersIn)+1)
-	teachersIn[0] = objectId
+	teachersIn[0] = userId
 	for i, teacher := range edureformData.TeachersIn {
-		objectId, err := primitive.ObjectIDFromHex(*teacher)
+		teacherObjectId, err := primitive.ObjectIDFromHex(*teacher)
 		if err != nil {
 			return nil, err
 		}
-		teachersIn[i+1] = objectId
+		teachersIn[i+1] = teacherObjectId
 	}
 
 	eduReformUpdate.TeachersIn = teachersIn

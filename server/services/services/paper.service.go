@@ -65,11 +65,11 @@ func (paperService *PaperService) UpdatePaper(id string, userId primitive.Object
 	teachersIn := make([]primitive.ObjectID, len(paperData.TeachersIn)+1)
 	teachersIn[0] = userId
 	for i, teacher := range paperData.TeachersIn {
-		objectId, err := primitive.ObjectIDFromHex(*teacher)
+		teacherObjectId, err := primitive.ObjectIDFromHex(*teacher)
 		if err != nil {
 			return nil, err
 		}
-		teachersIn[i+1] = objectId
+		teachersIn[i+1] = teacherObjectId
 	}
 
 	paperUpdate.TeachersIn = teachersIn

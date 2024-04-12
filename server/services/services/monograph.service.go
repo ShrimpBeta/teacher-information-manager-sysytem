@@ -51,7 +51,7 @@ func (monographService *MonographService) CreateMonograph(userId primitive.Objec
 	return monographService.GetMonographById(objectId.Hex(), userRepo)
 }
 
-func (monographService *MonographService) UpdateMonograph(id string, monographData graphql_models.MonographData, userRepo *repository.UserRepo) (*graphql_models.Monograph, error) {
+func (monographService *MonographService) UpdateMonograph(id string, userId primitive.ObjectID, monographData graphql_models.MonographData, userRepo *repository.UserRepo) (*graphql_models.Monograph, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -63,13 +63,13 @@ func (monographService *MonographService) UpdateMonograph(id string, monographDa
 	}
 
 	teachersIn := make([]primitive.ObjectID, len(monographData.TeachersIn)+1)
-	teachersIn[0] = objectId
+	teachersIn[0] = userId
 	for i, teacher := range monographData.TeachersIn {
-		objectId, err := primitive.ObjectIDFromHex(*teacher)
+		teacherObjectId, err := primitive.ObjectIDFromHex(*teacher)
 		if err != nil {
 			return nil, err
 		}
-		teachersIn[i+1] = objectId
+		teachersIn[i+1] = teacherObjectId
 	}
 
 	monographUpdate.TeachersIn = teachersIn

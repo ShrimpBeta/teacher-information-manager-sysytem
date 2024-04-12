@@ -1,12 +1,18 @@
+@if(mentorship){
 <div class="container">
   <div class="content-wrapper">
     <div class="title">
-      <h2>编辑导师制</h2>
+      <h2>导师制</h2>
+      <div style="padding-right: 1rem;">
+        <div>{{mentorship.createdAt| date:'YYYY年MM月dd日HH时'}}</div>
+        <div>{{mentorship.updatedAt| date:'YYYY年MM月dd日HH时'}}</div>
+      </div>
     </div>
     <mat-divider></mat-divider>
     <div class="content">
       <app-mentorshipform [buttonLabel]="buttonLabel" [mentorshipForm]="mentorshipForm"
-        (submitForm)="createMentorship()"></app-mentorshipform>
+        (submitForm)="updateMentorship()"></app-mentorshipform>
     </div>
   </div>
 </div>
+}

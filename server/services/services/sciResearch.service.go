@@ -73,7 +73,7 @@ func (s *SciResearchService) CreateSciResearch(userId primitive.ObjectID, newSci
 	return s.GetSciResearchById(objectId.Hex(), userRepo)
 }
 
-func (s *SciResearchService) UpdateSciResearch(sciResearchID string, sciResearchData graphql_models.SciResearchData, userRepo *repository.UserRepo) (*graphql_models.SciResearch, error) {
+func (s *SciResearchService) UpdateSciResearch(sciResearchID string, userId primitive.ObjectID, sciResearchData graphql_models.SciResearchData, userRepo *repository.UserRepo) (*graphql_models.SciResearch, error) {
 	objectId, err := primitive.ObjectIDFromHex(sciResearchID)
 	if err != nil {
 		return nil, err
@@ -85,13 +85,13 @@ func (s *SciResearchService) UpdateSciResearch(sciResearchID string, sciResearch
 	}
 
 	teachersIn := make([]primitive.ObjectID, len(sciResearchData.TeachersIn)+1)
-	teachersIn[0] = objectId
+	teachersIn[0] = userId
 	for i, teacher := range sciResearchData.TeachersIn {
-		objectId, err := primitive.ObjectIDFromHex(*teacher)
+		teacherObjectId, err := primitive.ObjectIDFromHex(*teacher)
 		if err != nil {
 			return nil, err
 		}
-		teachersIn[i+1] = objectId
+		teachersIn[i+1] = teacherObjectId
 	}
 
 	sciResearchUpdate.TeachersIn = teachersIn

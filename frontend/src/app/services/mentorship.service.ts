@@ -39,6 +39,7 @@ export class MentorshipService {
         offset: pageIndex * pageSize,
         limit: pageSize
       },
+      fetchPolicy: 'network-only'
     }).pipe(
       map((response: unknown) => {
         let mentorships = (response as MentorshipsByFilterResponse).data?.mentorshipsByFilter as MentorshipPage;

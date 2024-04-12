@@ -40,12 +40,17 @@ func (r *mutationResolver) UpdateMonograph(ctx context.Context, id string, monog
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.MonographService.UpdateMonograph(id, monographData, r.UserService.Repo)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.MonographService.UpdateMonograph(id, user.ID, monographData, r.UserService.Repo)
 }
 
 // DeleteMonograph is the resolver for the deleteMonograph field.

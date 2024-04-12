@@ -15,10 +15,12 @@ export class EduReformService {
     private apollo: Apollo,
   ) { }
 
-  getEduReform(): Observable<EduReform | null> {
+  getEduReform(id: string): Observable<EduReform | null> {
     return this.apollo.query({
       query: eduReformQuery,
-      fetchPolicy: 'network-only'
+      variables: {
+        id: id
+      }
     }).pipe(
       map((response: unknown) => {
         let edureform = (response as EduReformResponse).data?.eduReform;
@@ -67,10 +69,11 @@ export class EduReformService {
     );
   }
 
-  updateEduReform(edureform: EditEduReform): Observable<EduReform | null> {
+  updateEduReform(id: string, edureform: EditEduReform): Observable<EduReform | null> {
     return this.apollo.mutate({
       mutation: updateEduReformMutation,
       variables: {
+        id: id,
         eduReformData: edureform
       }
     }).pipe(

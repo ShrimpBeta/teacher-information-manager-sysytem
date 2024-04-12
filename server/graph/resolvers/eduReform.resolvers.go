@@ -40,12 +40,17 @@ func (r *mutationResolver) UpdateEduReform(ctx context.Context, id string, eduRe
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.EduReformService.UpdateEduReform(id, eduReformData, r.UserService.Repo)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.EduReformService.UpdateEduReform(id, user.ID, eduReformData, r.UserService.Repo)
 }
 
 // DeleteEduReform is the resolver for the deleteEduReform field.

@@ -43,6 +43,7 @@ export class NewedureformComponent implements OnInit, OnDestroy {
     newEduReform.rank = this.eduReformForm.get('rank')?.value;
     newEduReform.achievement = this.eduReformForm.get('achievement')?.value;
     newEduReform.fund = this.eduReformForm.get('fund')?.value;
+
     let teachersInControlArray = this.eduReformForm.get('teachersIn') as FormArray;
     if (teachersInControlArray && teachersInControlArray.length > 0) {
       newEduReform.teachersIn = teachersInControlArray.controls.map((control) => control.value.id);
@@ -53,28 +54,28 @@ export class NewedureformComponent implements OnInit, OnDestroy {
       newEduReform.teachersOut = teachersOutControlArray.controls.map((control) => control.value);
     }
 
-
     console.log(newEduReform);
-    this.eduReformService.createEduReform(newEduReform).pipe(takeUntil(this.$destroy)).subscribe({
-      next: (response) => {
-        if (response) {
-          this.snackBar.open('创建成功', '关闭', {
-            duration: 2000,
-          });
-          this.router.navigate(['/main/educationreform']);
-        } else {
+    this.eduReformService.createEduReform(newEduReform)
+      .pipe(takeUntil(this.$destroy)).subscribe({
+        next: (response) => {
+          if (response) {
+            this.snackBar.open('创建成功', '关闭', {
+              duration: 2000,
+            });
+            this.router.navigate(['/main/educationreform']);
+          } else {
+            this.snackBar.open('创建失败', '关闭', {
+              duration: 2000,
+            });
+          }
+        },
+        error: (error) => {
           this.snackBar.open('创建失败', '关闭', {
             duration: 2000,
           });
+          console.error(error);
         }
-      },
-      error: (error) => {
-        this.snackBar.open('创建失败', '关闭', {
-          duration: 2000,
-        });
-        console.error(error);
-      }
-    });
+      });
   }
 
   ngOnInit(): void {

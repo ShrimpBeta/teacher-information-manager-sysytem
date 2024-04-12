@@ -3,7 +3,7 @@ export class Mentorship {
   projectName: string = ""
   studentNames: string[] = []
   grade: string = ""
-  guidacneDate?: Date
+  guidanceDate?: Date
   createdAt: Date = new Date(0)
   updatedAt: Date = new Date(0)
 }
@@ -23,8 +23,8 @@ export class EditMentorship {
 export class MentorshipFilter {
   projectName: string | null = null
   studentNames: string[] | null = null
-  guidacneDateStart: Date | null = null
-  guidacneDateEnd: Date | null = null
+  guidanceDateStart: Date | null = null
+  guidanceDateEnd: Date | null = null
   grade: string | null = null
   createdStart: Date | null = null
   createdEnd: Date | null = null

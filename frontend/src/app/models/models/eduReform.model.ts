@@ -12,7 +12,7 @@ export class EduReform {
   rank: string = ""
   achievement: string = ""
   fund: string = ""
-  craetedAt: Date = new Date(0)
+  createdAt: Date = new Date(0)
   updatedAt: Date = new Date(0)
 }
 

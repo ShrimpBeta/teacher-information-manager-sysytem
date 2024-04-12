@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MentorshipService } from '../../../services/mentorship.service';
 import { EditMentorship } from '../../../models/models/mentorship.model';
+import { ArrayEmptyValidator } from '../../../shared/formvalidator/arrayempty.validator';
 
 @Component({
   selector: 'app-newmentorship',
@@ -55,6 +56,7 @@ export class NewmentorshipComponent implements OnInit, OnDestroy {
         }
       },
       error: (error) => {
+        console.error(error);
         this.snackBar.open('创建失败', '关闭', {
           duration: 2000,
         });
@@ -65,7 +67,7 @@ export class NewmentorshipComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.mentorshipForm = new FormGroup({
       projectName: new FormControl('', [Validators.required]),
-      studentNames: new FormArray([]),
+      studentNames: new FormArray([], [ArrayEmptyValidator()]),
       grade: new FormControl(''),
       guidanceDate: new FormControl(''),
     });
