@@ -80,13 +80,16 @@
   </div>
 
   <div class="fab-container">
-    <a mat-fab color="primary" aria-label="create password" routerLink="/main/ugpgguidance/new">
+    <a mat-fab color="primary" matTooltip="创建毕设记录" matTooltipPosition="left" aria-label="create password"
+      routerLink="/main/ugpgguidance/new">
       <mat-icon>add</mat-icon>
     </a>
-    <a mat-fab color="primary" aria-label="import password" routerLink="/main/ugpgguidance/new">
+    <a mat-fab color="primary" matTooltip="导入毕设记录" matTooltipPosition="left" aria-label="import password"
+      routerLink="/main/ugpgguidance/new">
       <mat-icon>upload_2</mat-icon>
     </a>
-    <a mat-fab color="primary" aria-label="export password" routerLink="/main/ugpgguidance/export">
+    <a mat-fab color="primary" matTooltip="导出毕设记录" matTooltipPosition="left" aria-label="export password"
+      routerLink="/main/ugpgguidance/export">
       <mat-icon>download_2</mat-icon>
     </a>
   </div>
@@ -96,7 +99,42 @@
       <h2>结果</h2>
     </div>
     <mat-divider></mat-divider>
+    <div class="result-content">
+      @if(isSearching){
+      <mat-spinner></mat-spinner>
+      }@else{
+      @for(uGPGGuidance of uGPGGuidanceList;track $index){
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <h3>{{uGPGGuidance.thesisTopic}}</h3>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>学生名称: {{uGPGGuidance.studentName}}</p>
+          <p>开题答辩结果:{{uGPGGuidance.openingCheckResult}}</p>
+          <p>开题答辩日期: {{uGPGGuidance.openingCheckDate| date:'YYYY年MM月dd日HH时'}}</p>
+          <p>中期检查结果: {{uGPGGuidance.midddleCheckResult}}</p>
+          <p>中期检查日期: {{uGPGGuidance.middleCheckDate| date:'YYYY年MM月dd日HH时'}}</p>
+          <p>最终答辩结果: {{uGPGGuidance.defenseResult}}</p>
+          <p>最终答辩日期: {{uGPGGuidance.defenseDate| date:'YYYY年MM月dd日HH时'}}</p>
+          <p>创建时间: {{uGPGGuidance.createdAt| date:'YYYY年MM月dd日HH时'}}</p>
+          <p>更新时间: {{uGPGGuidance.updatedAt| date:'YYYY年MM月dd日HH时'}}</p>
+        </mat-card-content>
+        <mat-card-actions>
+
+        </mat-card-actions>
+      </mat-card>
+      }@empty {
+      <div>
+        <h3>暂无数据</h3>
+      </div>
+      }
+      }
+      <mat-divider></mat-divider>
+      <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+        (page)="onPageChange($event)" aria-label="Select page">
+      </mat-paginator>
+    </div>
 
   </div>
-
-</div>

@@ -138,15 +138,17 @@
       @for(mentorship of mentorshipList;track $index) {
       <mat-card>
         <mat-card-header>
-          <mat-card-title><h3>{{mentorship.projectName}}</h3></mat-card-title>
+          <mat-card-title>
+            <h3>{{mentorship.projectName}}</h3>
+          </mat-card-title>
         </mat-card-header>
         <mat-divider></mat-divider>
         <mat-card-content>
           <p>学生姓名: {{mentorship.studentNames}}</p>
           <p>成绩: {{mentorship.grade}}</p>
-          <p>指导日期: {{mentorship.guidanceDate}}</p>
-          <p>创建日期: {{mentorship.createdAt}}</p>
-          <p>更新日期: {{mentorship.updatedAt}}</p>
+          <p>指导日期: {{mentorship.guidanceDate| date:'YYYY年MM月dd日HH时'}}</p>
+          <p>创建日期: {{mentorship.createdAt| date:'YYYY年MM月dd日HH时'}}</p>
+          <p>更新日期: {{mentorship.updatedAt| date:'YYYY年MM月dd日HH时'}}</p>
         </mat-card-content>
         <mat-divider></mat-divider>
         <mat-card-actions>

@@ -72,7 +72,7 @@ export class OverviewcompguidanceComponent {
 
   onSearch() {
     this.pageIndex = 0;
-    this.pageSize = 10;
+    // this.pageSize = 10;
     this.getCompGuidanceList();
   }
 

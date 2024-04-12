@@ -12,6 +12,13 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { RouterLink } from '@angular/router';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { Subject, takeUntil } from 'rxjs';
+import { UGPGGuidance, UGPGGuidanceFilter } from '../../../models/models/uGPGGuidance.model';
+import { UGPGGuidanceService } from '../../../services/ugpgguidance.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-overviewugpgguidance',
@@ -19,74 +26,95 @@ import { provideNativeDateAdapter } from '@angular/material/core';
   providers: [provideNativeDateAdapter()],
   imports: [MatDividerModule, MatInputModule, MatFormFieldModule, MatIconModule,
     MatSelectModule, MatButtonModule, ReactiveFormsModule, RouterLink, MatCardModule,
-    DatePipe, MatDatepickerModule, MatChipsModule],
+    DatePipe, MatDatepickerModule, MatChipsModule, MatTooltipModule, MatPaginatorModule,
+    MatProgressSpinnerModule],
   templateUrl: './overviewugpgguidance.component.html',
   styleUrl: './overviewugpgguidance.component.scss'
 })
 export class OverviewugpgguidanceComponent {
   SearchForm!: FormGroup;
-  constructor(
+  private destroy$ = new Subject<boolean>();
+  uGPGGuidanceList: UGPGGuidance[] = [];
 
+  totalCount: number = 0;
+  pageIndex: number = 0;
+  pageSize: number = 10;
+  pageSizeOptions: number[] = [6, 10, 24, 50, 100];
+
+  isSearching: boolean = false;
+
+  constructor(
+    private uGPGGuidanceService: UGPGGuidanceService,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit(): void {
     this.SearchForm = new FormGroup({
       thesisTopic: new FormControl(''),
-      studentName: new FormControl([]),
-      defenseDateStart: new FormControl(''),
-      defenseDateEnd: new FormControl(''),
-      createdStart: new FormControl(''),
-      createdEnd: new FormControl(''),
-      updatedStart: new FormControl(''),
-      updatedEnd: new FormControl(''),
+      studentName: new FormControl(''),
+      defenseDateStart: new FormControl(null),
+      defenseDateEnd: new FormControl(null),
+      createdStart: new FormControl(null),
+      createdEnd: new FormControl(null),
+      updatedStart: new FormControl(null),
+      updatedEnd: new FormControl(null),
     });
   }
 
   ngOnDestroy(): void {
-
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
-
-  get studentNames() {
-    return this.SearchForm.get('studentNames') as FormArray;
-  }
-
-  addStudentName(event: MatChipInputEvent) {
-    let value = (event.value || '').trim();
-    if (value) {
-      let index = this.studentNames.controls.findIndex((control) => control.value === value);
-      if (index === -1) {
-        this.studentNames.push(new FormControl(value));
-      }
-    }
-    event.chipInput!.clear();
-  }
-
-  removeStudentName(index: number) {
-    this.studentNames.removeAt(index);
-  }
-
-  editStudentName(event: MatChipEditedEvent, index: number) {
-    let value = (event.value || '').trim();
-    if (value) {
-      let index = this.studentNames.controls.findIndex((control) => control.value === value);
-      if (index === -1) {
-        this.studentNames.at(index).setValue(value);
-      }
-    } else {
-      this.studentNames.removeAt(index);
-    }
-  }
 
   onSearch() {
-    console.log(this.SearchForm.value);
+    this.pageIndex = 0;
+    // this.pageSize = 10;
+    this.getUGPGGuidanceList();
   }
 
   clearForm() {
     this.SearchForm.reset();
   }
 
+  onPageChange(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.getUGPGGuidanceList();
+  }
 
+  deleteUPGPGuidance(uGPGGuidance: UGPGGuidance) {
+    this.uGPGGuidanceService.deleteUGPGGuidance(uGPGGuidance.id)
+      .pipe(takeUntil(this.destroy$)).subscribe({
+        next: (result) => {
+          if (result) {
+            this.snackBar.open('删除成功', '关闭', { duration: 2000 });
+            this.getUGPGGuidanceList();
+          } else {
+            this.snackBar.open('删除失败', '关闭', { duration: 2000 });
+          }
+        },
+        error: (error) => {
+          console.error(error);
+          this.snackBar.open('删除失败', '关闭', { duration: 2000 });
+        }
+      });
+  }
+
+  getUGPGGuidanceList() {
+    console.log(this.SearchForm);
+    if (this.SearchForm.invalid) {
+      this.snackBar.open('请检查表单', '关闭', { duration: 2000 });
+      return;
+    }
+    let uGPGGuidanceFilter = new UGPGGuidanceFilter();
+    if (this.SearchForm.get('thesisTopic')?.value) {
+      uGPGGuidanceFilter.thesisTopic = this.SearchForm.get('thesisTopic')?.value;
+    }
+    if (this.SearchForm.get('studentName')?.value) {
+      uGPGGuidanceFilter.studentName = this.SearchForm.get('studentName')?.value;
+    }
+  }
 
 }
 
