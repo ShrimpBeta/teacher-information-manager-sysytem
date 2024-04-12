@@ -91,6 +91,9 @@ export class OverviewcompguidanceComponent {
       next: (result) => {
         if (result) {
           this.snackBar.open('删除竞赛记录成功', '关闭', { duration: 2000 });
+          if (this.compGuidanceList.length === 1 && this.pageIndex > 0) {
+            this.pageIndex--;
+          }
           this.getCompGuidanceList();
         } else {
           this.snackBar.open('删除竞赛记录失败', '关闭', { duration: 2000 });

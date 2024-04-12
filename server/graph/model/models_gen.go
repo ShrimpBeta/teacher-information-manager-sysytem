@@ -50,7 +50,6 @@ type AuthPayload struct {
 }
 
 type AwardRecord struct {
-	ID         string     `json:"id"`
 	AwardName  string     `json:"awardName"`
 	AwardDate  *time.Time `json:"awardDate,omitempty"`
 	AwardLevel *string    `json:"awardLevel,omitempty"`

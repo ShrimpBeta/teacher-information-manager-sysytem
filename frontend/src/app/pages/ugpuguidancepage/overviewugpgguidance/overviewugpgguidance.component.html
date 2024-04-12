@@ -29,11 +29,16 @@
           </mat-date-range-input>
           <mat-datepicker-toggle matIconSuffix [for]="defenseDatePicker"></mat-datepicker-toggle>
           <mat-date-range-picker #defenseDatePicker></mat-date-range-picker>
-          @if (SearchForm.controls['defenseDateStart'].hasError('matStartDateInvalid')) {
-          <mat-error>Invalid start date</mat-error>
+          @if
+          (SearchForm.controls['defenseDateStart'].hasError('matStartDateInvalid')||SearchForm.controls['defenseDateEnd'].hasError('matEndDateInvalid'))
+          {
+          <mat-error>开始日期晚于结束日期</mat-error>
           }
-          @if (SearchForm.controls['defenseDateEnd'].hasError('matEndDateInvalid')) {
-          <mat-error>Invalid end date</mat-error>
+          @if(SearchForm.controls['defenseDateStart'].hasError('matDatepickerParse')) {
+          <mat-error>开始日期格式错误</mat-error>
+          }
+          @if(SearchForm.controls['defenseDateEnd'].hasError('matDatepickerParse')){
+          <mat-error>结束日期格式错误</mat-error>
           }
         </mat-form-field>
 
@@ -45,11 +50,16 @@
           </mat-date-range-input>
           <mat-datepicker-toggle matIconSuffix [for]="createdPicker"></mat-datepicker-toggle>
           <mat-date-range-picker #createdPicker></mat-date-range-picker>
-          @if (SearchForm.controls['createdStart'].hasError('matStartDateInvalid')) {
-          <mat-error>Invalid start date</mat-error>
+          @if
+          (SearchForm.controls['createdStart'].hasError('matStartDateInvalid')||SearchForm.controls['createdEnd'].hasError('matEndDateInvalid'))
+          {
+          <mat-error>开始日期晚于结束日期</mat-error>
           }
-          @if (SearchForm.controls['createdEnd'].hasError('matEndDateInvalid')) {
-          <mat-error>Invalid end date</mat-error>
+          @if (SearchForm.controls['createdStart'].hasError('matDatepickerParse')) {
+          <mat-error>开始日期格式错误</mat-error>
+          }
+          @if (SearchForm.controls['createdEnd'].hasError('matDatepickerParse')) {
+          <mat-error>结束日期格式错误</mat-error>
           }
         </mat-form-field>
 
@@ -61,11 +71,16 @@
           </mat-date-range-input>
           <mat-datepicker-toggle matIconSuffix [for]="updatedPicker"></mat-datepicker-toggle>
           <mat-date-range-picker #updatedPicker></mat-date-range-picker>
-          @if (SearchForm.controls['updatedStart'].hasError('matStartDateInvalid')) {
-          <mat-error>Invalid start date</mat-error>
+          @if
+          (SearchForm.controls['updatedStart'].hasError('matStartDateInvalid')||SearchForm.controls['updatedEnd'].hasError('matEndDateInvalid'))
+          {
+          <mat-error>开始日期晚于结束日期</mat-error>
           }
-          @if (SearchForm.controls['updatedEnd'].hasError('matEndDateInvalid')) {
-          <mat-error>Invalid end date</mat-error>
+          @if (SearchForm.controls['updatedStart'].hasError('matDatepickerParse')) {
+          <mat-error>开始日期格式错误</mat-error>
+          }
+          @if (SearchForm.controls['updatedEnd'].hasError('matDatepickerParse')) {
+          <mat-error>结束日期格式错误</mat-error>
           }
         </mat-form-field>
       </div>
@@ -110,19 +125,28 @@
             <h3>{{uGPGGuidance.thesisTopic}}</h3>
           </mat-card-title>
         </mat-card-header>
+        <mat-divider></mat-divider>
         <mat-card-content>
           <p>学生名称: {{uGPGGuidance.studentName}}</p>
           <p>开题答辩结果:{{uGPGGuidance.openingCheckResult}}</p>
           <p>开题答辩日期: {{uGPGGuidance.openingCheckDate| date:'YYYY年MM月dd日HH时'}}</p>
-          <p>中期检查结果: {{uGPGGuidance.midddleCheckResult}}</p>
-          <p>中期检查日期: {{uGPGGuidance.middleCheckDate| date:'YYYY年MM月dd日HH时'}}</p>
+          <p>中期检查结果: {{uGPGGuidance.midtermCheckResult}}</p>
+          <p>中期检查日期: {{uGPGGuidance.midtermCheckDate| date:'YYYY年MM月dd日HH时'}}</p>
           <p>最终答辩结果: {{uGPGGuidance.defenseResult}}</p>
           <p>最终答辩日期: {{uGPGGuidance.defenseDate| date:'YYYY年MM月dd日HH时'}}</p>
           <p>创建时间: {{uGPGGuidance.createdAt| date:'YYYY年MM月dd日HH时'}}</p>
           <p>更新时间: {{uGPGGuidance.updatedAt| date:'YYYY年MM月dd日HH时'}}</p>
         </mat-card-content>
+        <mat-divider></mat-divider>
         <mat-card-actions>
-
+          <button mat-raised-button color="primary" routerLink="/main/ugpgguidance/edit/{{uGPGGuidance.id}}">
+            <mat-icon>edit</mat-icon>
+            <span>编辑</span>
+          </button>
+          <button mat-raised-button color="warn" (click)="deleteUGPGGuidance(uGPGGuidance)">
+            <mat-icon>delete</mat-icon>
+            <span>删除</span>
+          </button>
         </mat-card-actions>
       </mat-card>
       }@empty {
@@ -131,10 +155,10 @@
       </div>
       }
       }
-      <mat-divider></mat-divider>
-      <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
-        (page)="onPageChange($event)" aria-label="Select page">
-      </mat-paginator>
     </div>
-
+    <mat-divider></mat-divider>
+    <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)" aria-label="Select page">
+    </mat-paginator>
   </div>
+</div>

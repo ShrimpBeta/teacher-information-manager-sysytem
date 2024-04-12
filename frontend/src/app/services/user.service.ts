@@ -161,7 +161,8 @@ export class UserService {
 
   userExports(): Observable<UserExport[]> {
     return this.apollo.query({
-      query: userExportsQuery
+      query: userExportsQuery,
+      fetchPolicy: 'network-only'
     }).pipe(map((response: unknown) => {
       return (response as UserExportsResponse).data?.userExports || [];
     }),

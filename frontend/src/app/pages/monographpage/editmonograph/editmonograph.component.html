@@ -1,11 +1,18 @@
+@if(monograph){
 <div class="container">
   <div class="content-wrapper">
     <div class="title">
-      <h2>编辑专著记录</h2>
+      <h2>专著记录</h2>
+      <div style="padding-right: 1rem;">
+        <div>{{monograph.createdAt| date:'YYYY年MM月dd日HH时'}}</div>
+        <div>{{monograph.updatedAt| date:'YYYY年MM月dd日HH时'}}</div>
+      </div>
     </div>
     <mat-divider></mat-divider>
     <div class="content">
-      <app-monographform></app-monographform>
+      <app-monographform [buttonLabel]="buttonLabel" [monographForm]="monographForm"
+        (submitForm)="updateMonograph()"></app-monographform>
     </div>
   </div>
 </div>
+}

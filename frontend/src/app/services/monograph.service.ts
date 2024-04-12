@@ -39,7 +39,8 @@ export class MonographService {
         filter: monographFilter,
         offset: pageIndex * pageSize,
         limit: pageSize
-      }
+      },
+      fetchPolicy: 'network-only'
     }).pipe(
       map((response: unknown) => {
         let monographs = (response as MonographsByFilterResponse).data?.monographsByFilter as MonographPage;

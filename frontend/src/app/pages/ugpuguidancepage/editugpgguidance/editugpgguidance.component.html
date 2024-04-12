@@ -1,1 +1,18 @@
-<p>editugpgguidance works!</p>
+@if(uGPGGuidance){
+<div class="container">
+  <div class="content-wrapper">
+    <div class="title">
+      <h2>毕设指导</h2>
+      <div style="padding-right: 1rem;">
+        <div>创建时间: {{uGPGGuidance.createdAt| date:'YYYY年MM月dd日HH时'}}</div>
+        <div>更新时间: {{uGPGGuidance.updatedAt| date:'YYYY年MM月dd日HH时'}}</div>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="content">
+      <app-ugpgguidanceform [buttonLabel]="buttonLabel" [ugpgGuidanceForm]="uGPGGuidanceForm"
+        (submitForm)="updateUGPGGuidance()"></app-ugpgguidanceform>
+    </div>
+  </div>
+</div>
+}

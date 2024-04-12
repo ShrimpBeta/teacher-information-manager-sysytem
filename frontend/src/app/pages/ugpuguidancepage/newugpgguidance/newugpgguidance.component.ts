@@ -34,18 +34,9 @@ export class NewugpgguidanceComponent implements OnInit, OnDestroy {
     newUgpgGuidance.openingCheckResult = this.ugpgGuidanceForm.get('openingCheckResult')?.value;
     newUgpgGuidance.midtermCheckResult = this.ugpgGuidanceForm.get('midtermCheckResult')?.value;
     newUgpgGuidance.defenseResult = this.ugpgGuidanceForm.get('defenseResult')?.value;
-
-    if (this.ugpgGuidanceForm.get('openingCheckDate')?.value !== '') {
-      newUgpgGuidance.openingCheckDate = new Date(this.ugpgGuidanceForm.get('openingCheckDate')?.value);
-    }
-
-    if (this.ugpgGuidanceForm.get('midtermCheckDate')?.value !== '') {
-      newUgpgGuidance.midtermCheckDate = new Date(this.ugpgGuidanceForm.get('midtermCheckDate')?.value);
-    }
-
-    if (this.ugpgGuidanceForm.get('defenseDate')?.value !== '') {
-      newUgpgGuidance.defenseDate = new Date(this.ugpgGuidanceForm.get('defenseDate')?.value);
-    }
+    newUgpgGuidance.openingCheckDate = this.ugpgGuidanceForm.get('openingCheckDate')?.value;
+    newUgpgGuidance.midtermCheckDate = this.ugpgGuidanceForm.get('midtermCheckDate')?.value;
+    newUgpgGuidance.defenseDate = this.ugpgGuidanceForm.get('defenseDate')?.value;
 
     console.log(newUgpgGuidance);
 
@@ -75,11 +66,11 @@ export class NewugpgguidanceComponent implements OnInit, OnDestroy {
     this.ugpgGuidanceForm = new FormGroup({
       studentName: new FormControl('', [Validators.required]),
       thesisTopic: new FormControl('', [Validators.required]),
-      openingCheckDate: new FormControl(''),
+      openingCheckDate: new FormControl(null),
       openingCheckResult: new FormControl(''),
-      midtermCheckDate: new FormControl(''),
+      midtermCheckDate: new FormControl(null),
       midtermCheckResult: new FormControl(''),
-      defenseDate: new FormControl(''),
+      defenseDate: new FormControl(null),
       defenseResult: new FormControl(''),
     });
   }

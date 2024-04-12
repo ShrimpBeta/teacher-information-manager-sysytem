@@ -38,7 +38,8 @@ export class SciResearchService {
         filter: sciResearchFilter,
         offset: pageIndex * pageSize,
         limit: pageSize
-      }
+      },
+      fetchPolicy: 'network-only'
     }).pipe(
       map((response: unknown) => {
         let sciResearchs = (response as SciResearchsByFilterResponse).data?.sciResearchsByFilter as SciResearchPage;

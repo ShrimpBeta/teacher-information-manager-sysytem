@@ -81,11 +81,16 @@
           </mat-date-range-input>
           <mat-datepicker-toggle matIconSuffix [for]="publishDatePicker"></mat-datepicker-toggle>
           <mat-date-range-picker #publishDatePicker></mat-date-range-picker>
-          @if (SearchForm.controls['publishDateStart'].hasError('matStartDateInvalid')) {
-          <mat-error>Invalid start date</mat-error>
+          @if
+          (SearchForm.controls['publishDateStart'].hasError('matStartDateInvalid')||SearchForm.controls['publishDateEnd'].hasError('matEndDateInvalid'))
+          {
+          <mat-error>开始日期晚于结束日期</mat-error>
           }
-          @if (SearchForm.controls['publishDateEnd'].hasError('matEndDateInvalid')) {
-          <mat-error>Invalid end date</mat-error>
+          @if (SearchForm.controls['publishDateStart'].hasError('matDatepickerParse')) {
+          <mat-error>开始日期格式错误</mat-error>
+          }
+          @if(SearchForm.controls['publishDateEnd'].hasError('matDatepickerParse')){
+          <mat-error>结束日期格式错误</mat-error>
           }
         </mat-form-field>
 
@@ -97,11 +102,16 @@
           </mat-date-range-input>
           <mat-datepicker-toggle matIconSuffix [for]="createdPicker"></mat-datepicker-toggle>
           <mat-date-range-picker #createdPicker></mat-date-range-picker>
-          @if (SearchForm.controls['createdStart'].hasError('matStartDateInvalid')) {
-          <mat-error>Invalid start date</mat-error>
+          @if
+          (SearchForm.controls['createdStart'].hasError('matStartDateInvalid')||SearchForm.controls['createdEnd'].hasError('matEndDateInvalid'))
+          {
+          <mat-error>开始日期晚于结束日期</mat-error>
           }
-          @if (SearchForm.controls['createdEnd'].hasError('matEndDateInvalid')) {
-          <mat-error>Invalid end date</mat-error>
+          @if (SearchForm.controls['createdStart'].hasError('matDatepickerParse')) {
+          <mat-error>开始日期格式错误</mat-error>
+          }
+          @if (SearchForm.controls['createdEnd'].hasError('matDatepickerParse')) {
+          <mat-error>结束日期格式错误</mat-error>
           }
         </mat-form-field>
 
@@ -113,11 +123,16 @@
           </mat-date-range-input>
           <mat-datepicker-toggle matIconSuffix [for]="updatedPicker"></mat-datepicker-toggle>
           <mat-date-range-picker #updatedPicker></mat-date-range-picker>
-          @if (SearchForm.controls['updatedStart'].hasError('matStartDateInvalid')) {
-          <mat-error>Invalid start date</mat-error>
+          @if
+          (SearchForm.controls['updatedStart'].hasError('matStartDateInvalid')||SearchForm.controls['updatedEnd'].hasError('matEndDateInvalid'))
+          {
+          <mat-error>开始日期晚于结束日期</mat-error>
           }
-          @if (SearchForm.controls['updatedEnd'].hasError('matEndDateInvalid')) {
-          <mat-error>Invalid end date</mat-error>
+          @if (SearchForm.controls['updatedStart'].hasError('matDatepickerParse')) {
+          <mat-error>开始日期格式错误</mat-error>
+          }
+          @if (SearchForm.controls['updatedEnd'].hasError('matDatepickerParse')) {
+          <mat-error>结束日期格式错误</mat-error>
           }
         </mat-form-field>
       </div>
@@ -132,13 +147,16 @@
   </div>
 
   <div class="fab-container">
-    <a mat-fab color="primary" aria-label="create password" routerLink="/main/monograph/new">
+    <a mat-fab color="primary" matTooltip="创建专著记录" matTooltipPosition="left" aria-label="create password"
+      routerLink="/main/monograph/new">
       <mat-icon>add</mat-icon>
     </a>
-    <a mat-fab color="primary" aria-label="import password" routerLink="/main/password/new">
+    <a mat-fab color="primary" matTooltip="导入专著记录" matTooltipPosition="left" aria-label="import password"
+      routerLink="/main/password/new">
       <mat-icon>upload_2</mat-icon>
     </a>
-    <a mat-fab color="primary" aria-label="export password" routerLink="/main/monograph/export">
+    <a mat-fab color="primary" matTooltip="导出专著记录" matTooltipPosition="left" aria-label="export password"
+      routerLink="/main/monograph/export">
       <mat-icon>download_2</mat-icon>
     </a>
   </div>
@@ -148,7 +166,56 @@
       <h2>结果</h2>
     </div>
     <mat-divider></mat-divider>
-
+    <div class="result-content">
+      @if(isSearching) {
+      <mat-spinner></mat-spinner>
+      }@else{
+      @for(monograph of monographList;track $index){
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{monograph.title}}</mat-card-title>
+        </mat-card-header>
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <p>系统内教师:
+            @for(teacherIn of monograph.teachersIn;track $index;let last = $last){
+            @if(last){
+            {{teacherIn.username}}
+            }@else {
+            <span>{{teacherIn.username}}, </span>
+            }
+            }
+          </p>
+          <p>系统外教师: {{monograph.teachersOut}}</p>
+          <p>出版级别: {{monograph.publishLevel}}</p>
+          <p>出版时间: {{monograph.publishDate| date:'YYYY年MM月dd日HH时'}}</p>
+          <p>排名: {{monograph.rank}}</p>
+          <p>创建时间: {{monograph.createdAt| date:'YYYY年MM月dd日HH时'}}</p>
+          <p>更新时间: {{monograph.updatedAt| date:'YYYY年MM月dd日HH时'}}</p>
+        </mat-card-content>
+        <mat-divider></mat-divider>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" routerLink="/main/monograph/edit/{{monograph.id}}">
+            <mat-icon>edit</mat-icon>
+            <span>编辑</span>
+          </button>
+          <button mat-raised-button color="warn" (click)="deleteMonograph(monograph)">
+            <mat-icon>delete</mat-icon>
+            <span>删除</span>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+      }@empty{
+      <div>
+        <h3>暂无数据</h3>
+      </div>
+      }
+      }
+    </div>
+    <mat-divider></mat-divider>
+    <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)" aria-label="Select page">
+    </mat-paginator>
   </div>
 
 </div>

@@ -59,6 +59,8 @@ export class OverviewugpgguidanceComponent {
       updatedStart: new FormControl(null),
       updatedEnd: new FormControl(null),
     });
+
+    this.getUGPGGuidanceList();
   }
 
   ngOnDestroy(): void {
@@ -83,12 +85,15 @@ export class OverviewugpgguidanceComponent {
     this.getUGPGGuidanceList();
   }
 
-  deleteUPGPGuidance(uGPGGuidance: UGPGGuidance) {
+  deleteUGPGGuidance(uGPGGuidance: UGPGGuidance) {
     this.uGPGGuidanceService.deleteUGPGGuidance(uGPGGuidance.id)
       .pipe(takeUntil(this.destroy$)).subscribe({
         next: (result) => {
           if (result) {
             this.snackBar.open('删除成功', '关闭', { duration: 2000 });
+            if (this.uGPGGuidanceList.length === 1 && this.pageIndex > 0) {
+              this.pageIndex--;
+            }
             this.getUGPGGuidanceList();
           } else {
             this.snackBar.open('删除失败', '关闭', { duration: 2000 });
@@ -114,6 +119,34 @@ export class OverviewugpgguidanceComponent {
     if (this.SearchForm.get('studentName')?.value) {
       uGPGGuidanceFilter.studentName = this.SearchForm.get('studentName')?.value;
     }
+
+    uGPGGuidanceFilter.defenseDateStart = this.SearchForm.get('defenseDateStart')?.value;
+    uGPGGuidanceFilter.defenseDateEnd = this.SearchForm.get('defenseDateEnd')?.value;
+    uGPGGuidanceFilter.createdStart = this.SearchForm.get('createdStart')?.value;
+    uGPGGuidanceFilter.createdEnd = this.SearchForm.get('createdEnd')?.value;
+    uGPGGuidanceFilter.updatedStart = this.SearchForm.get('updatedStart')?.value;
+    uGPGGuidanceFilter.updatedEnd = this.SearchForm.get('updatedEnd')?.value;
+
+    console.log(uGPGGuidanceFilter);
+    this.isSearching = true;
+
+    this.uGPGGuidanceService.getUGPGGuidancesByFilter(uGPGGuidanceFilter, this.pageIndex, this.pageSize)
+      .pipe(takeUntil(this.destroy$)).subscribe({
+        next: (uGPGGuidancePage) => {
+          if (uGPGGuidancePage) {
+            this.uGPGGuidanceList = uGPGGuidancePage?.uGPGGuidances;
+            this.totalCount = uGPGGuidancePage.totalCount;
+          } else {
+            this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
+          }
+          this.isSearching = false;
+        },
+        error: (error) => {
+          console.error(error);
+          this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
+          this.isSearching = false;
+        }
+      });
   }
 
 }

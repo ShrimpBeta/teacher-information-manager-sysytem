@@ -6,7 +6,6 @@ import (
 
 // 科研获奖
 type AwardRecord struct {
-	ID         primitive.ObjectID  `bson:"_id"`
 	AwardName  string              `bson:"awardName"`
 	AwardDate  *primitive.DateTime `bson:"awardDate,omitempty"`
 	AwardLevel *string             `bson:"awardLevel,omitempty"`

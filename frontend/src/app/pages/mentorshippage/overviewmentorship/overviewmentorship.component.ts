@@ -71,7 +71,7 @@ export class OverviewmentorshipComponent implements OnInit, OnDestroy {
 
   onSearch() {
     this.pageIndex = 0;
-    this.pageSize = 10;
+    // this.pageSize = 10;
     this.getMenotrshipList();
   }
 
@@ -90,6 +90,9 @@ export class OverviewmentorshipComponent implements OnInit, OnDestroy {
       next: (result) => {
         if (result) {
           this.snackBar.open('删除导师制项目成功', '关闭', { duration: 2000 });
+          if (this.mentorshipList.length === 1 && this.pageIndex > 0) {
+            this.pageIndex--;
+          }
           this.getMenotrshipList();
         } else {
           this.snackBar.open('删除导师制项目失败', '关闭', { duration: 2000 });

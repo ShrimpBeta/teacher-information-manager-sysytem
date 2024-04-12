@@ -1,7 +1,5 @@
 # 科研项目管理
-
 type AwardRecord {
-  id: ID!
   awardName: String!
   awardDate: Time
   awardLevel: String

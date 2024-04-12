@@ -142,6 +142,8 @@ func (monographService *MonographService) GetMonographById(id string, userRepo *
 		PublishDate:  publishDate,
 		PublishLevel: monographData.PublishLevel,
 		Rank:         monographData.Rank,
+		CreatedAt:    monographData.CreatedAt.Time(),
+		UpdatedAt:    monographData.UpdatedAt.Time(),
 	}, nil
 }
 
@@ -241,6 +243,8 @@ func (monographService *MonographService) GetMonographsByFilter(userId primitive
 			PublishDate:  publishDate,
 			PublishLevel: monographData.PublishLevel,
 			Rank:         monographData.Rank,
+			CreatedAt:    monographData.CreatedAt.Time(),
+			UpdatedAt:    monographData.UpdatedAt.Time(),
 		}
 	}
 

@@ -179,12 +179,6 @@ func (r *SciResearchRepo) CreateSciResearch(sciResearch *models.SciResearch) (*p
 	sciResearch.CreatedAt = createdTime
 	sciResearch.UpdatedAt = createdTime
 
-	if sciResearch.AwardRecords != nil {
-		for _, awardRecord := range sciResearch.AwardRecords {
-			awardRecord.ID = primitive.NewObjectID()
-		}
-	}
-
 	result, err := r.collection.InsertOne(context.Background(), sciResearch)
 	if err != nil {
 		return nil, err

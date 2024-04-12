@@ -37,7 +37,8 @@ export class UGPGGuidanceService {
         filter: ugpgguidanceFilter,
         offset: pageIndex * pageSize,
         limit: pageSize
-      }
+      },
+      fetchPolicy: 'network-only'
     }).pipe(
       map((response: unknown) => {
         let ugpgguidances = (response as UGPGGuidancesByFilterResponse).data?.uGPGGuidancesByFilter as UGPGGuidancePage;
@@ -53,7 +54,7 @@ export class UGPGGuidanceService {
     return this.apollo.mutate({
       mutation: createUGPGGuidanceMutation,
       variables: {
-        ugpgguidanceData: newUgpgguidance
+        uGPGGuidanceData: newUgpgguidance
       }
     }).pipe(
       map((response: unknown) => {
@@ -71,7 +72,7 @@ export class UGPGGuidanceService {
       mutation: updateUGPGGuidanceMutation,
       variables: {
         id: id,
-        ugpgguidanceData: updatedUgpgguidance
+        uGPGGuidanceData: updatedUgpgguidance
       }
     }).pipe(
       map((response: unknown) => {

@@ -17,6 +17,12 @@ import { UserService } from '../../../services/user.service';
 import { UserExport } from '../../../models/models/user.model';
 import { Subject, takeUntil } from 'rxjs';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Monograph, MonographFilter } from '../../../models/models/monograph.model';
+import { MonographService } from '../../../services/monograph.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-overviewmonograph',
@@ -24,7 +30,8 @@ import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/ma
   providers: [provideNativeDateAdapter()],
   imports: [MatDividerModule, MatInputModule, MatFormFieldModule, MatIconModule,
     MatSelectModule, MatButtonModule, ReactiveFormsModule, RouterLink, MatCardModule,
-    DatePipe, MatDatepickerModule, MatChipsModule, MatAutocompleteModule],
+    DatePipe, MatDatepickerModule, MatChipsModule, MatAutocompleteModule, MatTooltipModule,
+    MatPaginatorModule, MatProgressSpinnerModule],
   templateUrl: './overviewmonograph.component.html',
   styleUrl: './overviewmonograph.component.scss'
 })
@@ -37,8 +44,20 @@ export class OverviewmonographComponent {
   @ViewChild('teacherInInput') teachersInInput!: ElementRef<HTMLInputElement>;
 
   $destroy: Subject<boolean> = new Subject<boolean>();
+
+  monographList: Monograph[] = []
+
+  totalCount: number = 0;
+  pageIndex: number = 0;
+  pageSize: number = 10;
+  pageSizeOptions: number[] = [6, 10, 24, 50, 100];
+
+  isSearching: boolean = false;
+
   constructor(
     private userService: UserService,
+    private monographService: MonographService,
+    private snackBar: MatSnackBar,
   ) { }
 
   ngOnInit(): void {
@@ -48,12 +67,12 @@ export class OverviewmonographComponent {
       teachersOut: new FormArray([]),
       publishLevel: new FormControl(''),
       rank: new FormControl(''),
-      publishDateStart: new FormControl(''),
-      publishDateEnd: new FormControl(''),
-      createdStart: new FormControl(''),
-      createdEnd: new FormControl(''),
-      updatedStart: new FormControl(''),
-      updatedEnd: new FormControl(''),
+      publishDateStart: new FormControl(null),
+      publishDateEnd: new FormControl(null),
+      createdStart: new FormControl(null),
+      createdEnd: new FormControl(null),
+      updatedStart: new FormControl(null),
+      updatedEnd: new FormControl(null),
     });
 
     this.userService.userExports().pipe(takeUntil(this.$destroy)).subscribe({
@@ -65,11 +84,115 @@ export class OverviewmonographComponent {
         console.log(error);
       }
     });
+
+    this.getMonoGraphList();
   }
 
   ngOnDestroy(): void {
     this.$destroy.next(true);
     this.$destroy.complete();
+  }
+
+
+  onSearch() {
+    this.pageIndex = 0;
+    this.getMonoGraphList();
+  }
+
+  clearForm() {
+    this.SearchForm.reset();
+  }
+
+  onPageChange(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.getMonoGraphList();
+  }
+
+  deleteMonograph(monograph: Monograph) {
+    this.monographService.deleteMonograph(monograph.id).subscribe({
+      next: (response) => {
+        if (response) {
+          this.snackBar.open('删除成功', '关闭', {
+            duration: 2000,
+          });
+          if (this.monographList.length === 1 && this.pageIndex > 0) {
+            this.pageIndex--;
+          }
+          this.getMonoGraphList();
+        } else {
+          this.snackBar.open('删除失败', '关闭', {
+            duration: 2000,
+          });
+        }
+      },
+      error: (error) => {
+        console.log(error);
+        this.snackBar.open('删除失败', '关闭', {
+          duration: 2000,
+        });
+      }
+    });
+  }
+
+  getMonoGraphList() {
+    console.log(this.SearchForm);
+    let monographFilter = new MonographFilter();
+
+    if (this.SearchForm.get('title')?.value) {
+      monographFilter.title = this.SearchForm.get('title')?.value;
+    }
+    if (this.SearchForm.get('publishLevel')?.value) {
+      monographFilter.publishLevel = this.SearchForm.get('publishLevel')?.value;
+    }
+    if (this.SearchForm.get('rank')?.value) {
+      monographFilter.rank = this.SearchForm.get('rank')?.value;
+    }
+
+    monographFilter.publishDateStart = this.SearchForm.get('publishDateStart')?.value;
+    monographFilter.publishDateEnd = this.SearchForm.get('publishDateEnd')?.value;
+    monographFilter.createdStart = this.SearchForm.get('createdStart')?.value;
+    monographFilter.createdEnd = this.SearchForm.get('createdEnd')?.value;
+    monographFilter.updatedStart = this.SearchForm.get('updatedStart')?.value;
+    monographFilter.updatedEnd = this.SearchForm.get('updatedEnd')?.value;
+
+    let teachersInControlArray = this.SearchForm.get('teachersIn') as FormArray;
+    if (teachersInControlArray && teachersInControlArray.length > 0) {
+      monographFilter.teachersIn = teachersInControlArray.controls.map((control: AbstractControl) => {
+        return control.value.id;
+      });
+    }
+
+    let teachersOutControlArray = this.SearchForm.get('teachersOut') as FormArray;
+    if (teachersOutControlArray && teachersOutControlArray.length > 0) {
+      monographFilter.teachersOut = teachersOutControlArray.controls.map((control: AbstractControl) => {
+        return control.value;
+      });
+    }
+
+    console.log(monographFilter);
+    this.isSearching = true;
+
+    this.monographService.getMonographsByFilter(monographFilter, this.pageIndex, this.pageSize).subscribe({
+      next: (response) => {
+        if (response) {
+          this.monographList = response.monographs;
+          this.totalCount = response.totalCount;
+        } else {
+          this.snackBar.open('获取数据失败', '关闭', {
+            duration: 2000,
+          });
+        }
+        this.isSearching = false;
+      },
+      error: (error) => {
+        console.log(error);
+        this.snackBar.open('获取数据失败', '关闭', {
+          duration: 2000,
+        });
+        this.isSearching = false;
+      }
+    });
   }
 
 
@@ -162,12 +285,4 @@ export class OverviewmonographComponent {
     }
   }
 
-
-  onSearch() {
-    console.log(this.SearchForm.value);
-  }
-
-  clearForm() {
-    this.SearchForm.reset();
-  }
 }

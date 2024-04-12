@@ -4,8 +4,8 @@ export class UGPGGuidance {
   thesisTopic: string = ""
   openingCheckDate?: Date
   openingCheckResult: string = ""
-  middleCheckDate?: Date
-  midddleCheckResult: string = ""
+  midtermCheckDate?: Date
+  midtermCheckResult: string = ""
   defenseDate?: Date
   defenseResult: string = ""
   createdAt: Date = new Date(0)

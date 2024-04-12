@@ -37,6 +37,7 @@ export class NewmonographComponent implements OnInit, OnDestroy {
     newMonograph.title = this.monographForm.get('title')?.value;
     newMonograph.publishLevel = this.monographForm.get('publishLevel')?.value;
     newMonograph.rank = this.monographForm.get('rank')?.value;
+    newMonograph.publishDate = this.monographForm.get('publishDate')?.value;
 
     let teachersInControlArray = this.monographForm.get('teachersIn') as FormArray;
     if (teachersInControlArray && teachersInControlArray.length > 0) {
@@ -48,9 +49,6 @@ export class NewmonographComponent implements OnInit, OnDestroy {
       newMonograph.teachersOut = teachersOutControlArray.controls.map((control) => control.value);
     }
 
-    if (this.monographForm.get('publishDate')?.value !== '') {
-      newMonograph.publishDate = new Date(this.monographForm.get('publishDate')?.value);
-    }
     console.log(newMonograph);
 
     this.monographService.createMonograph(newMonograph).pipe(takeUntil(this.$destroy)).subscribe({
@@ -80,7 +78,7 @@ export class NewmonographComponent implements OnInit, OnDestroy {
       title: new FormControl('', [Validators.required]),
       teachersIn: new FormArray([]),
       teachersOut: new FormArray([]),
-      publishDate: new FormControl(''),
+      publishDate: new FormControl(null),
       publishLevel: new FormControl(''),
       rank: new FormControl(''),
     });

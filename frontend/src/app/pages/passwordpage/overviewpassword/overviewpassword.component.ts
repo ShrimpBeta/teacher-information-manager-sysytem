@@ -60,7 +60,7 @@ export class OverviewpasswordComponent implements OnInit, OnDestroy {
   onSearch() {
     // reset page
     this.pageIndex = 0;
-    this.pageSize = 10;
+    // this.pageSize = 10;
     this.getPasswordList();
   }
 
@@ -108,8 +108,10 @@ export class OverviewpasswordComponent implements OnInit, OnDestroy {
           this.snackBar.open('删除密码成功', '关闭', {
             duration: 2000
           });
-          this.passwordList = this.passwordList.filter(p => p.id !== password.id);
-          this.totalCount -= 1;
+          if (this.passwordList.length === 1 && this.pageIndex > 0) {
+            this.pageIndex--;
+          }
+          this.getPasswordList();
         } else {
           this.snackBar.open('删除密码失败', '关闭', {
             duration: 2000

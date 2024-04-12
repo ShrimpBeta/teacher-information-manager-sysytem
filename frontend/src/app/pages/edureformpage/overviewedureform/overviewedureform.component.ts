@@ -101,9 +101,8 @@ export class OverviewedureformComponent implements OnInit, OnDestroy {
 
 
   onSearch() {
-    console.log(this.SearchForm.value);
     this.pageIndex = 0;
-    this.pageSize = 10;
+    // this.pageSize = 10;
     this.getEduReformList();
   }
 
@@ -189,8 +188,10 @@ export class OverviewedureformComponent implements OnInit, OnDestroy {
           this.snackBar.open('删除成功', '关闭', {
             duration: 2000
           });
-          this.eduReformList = this.eduReformList.filter((item) => item.id !== eduReform.id);
-          this.totalCount -= 1;
+          if (this.eduReformList.length === 1 && this.pageIndex > 0) {
+            this.pageIndex--;
+          }
+          this.getEduReformList();
         } else {
           this.snackBar.open('删除失败', '关闭', {
             duration: 2000
