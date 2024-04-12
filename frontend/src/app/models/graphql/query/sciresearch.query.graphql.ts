@@ -22,7 +22,6 @@ export const sciResearchQuery = gql`
       fund
       isAward
       awards{
-        id
         awardName
         awardDate
         awardLevel
@@ -58,7 +57,6 @@ export const sciResearchsByFilterQuery = gql`
         fund
         isAward
         awards{
-          id
           awardName
           awardDate
           awardLevel

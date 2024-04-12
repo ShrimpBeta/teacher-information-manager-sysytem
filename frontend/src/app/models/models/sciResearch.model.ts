@@ -1,11 +1,10 @@
 import { UserExport } from "./user.model"
 
 export class AwardRecord {
-  id: string = ""
   awardName: string = ""
   awardDate: Date | null = null
   awardLevel: string | null = null
-  rank: string | null = null
+  awardRank: string | null = null
 }
 
 export class SciResearch {
@@ -35,7 +34,7 @@ export class EditAwardRecord {
   awardName: string | null = null
   awardDate: Date | null = null
   awardLevel: string | null = null
-  rank: string | null = null
+  awardRank: string | null = null
 }
 
 export class EditSciResearch {
@@ -49,7 +48,6 @@ export class EditSciResearch {
   rank: string | null = null
   achievement: string | null = null
   fund: string | null = null
-  isAward: boolean | null = null
   awards: EditAwardRecord[] | null = null
 }
 

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { EditEduReform, EduReform } from '../../../models/models/eduReform.model';
 import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -9,6 +9,8 @@ import { AuthRepository } from '../../../core/auth/auth.repository';
 import { DatePipe } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { EdureformformComponent } from '../../../components/edureformform/edureformform.component';
+import { UserExport } from '../../../models/models/user.model';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-editedureform',
@@ -23,12 +25,14 @@ export class EditedureformComponent implements OnInit, OnDestroy {
   eduReform!: EduReform;
   userId!: string;
   private destroy$ = new Subject<boolean>();
+  teachersInOptions: UserExport[] = [];
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private eduReformService: EduReformService,
     private authRepositoy: AuthRepository,
     private snakBar: MatSnackBar,
+    private userService: UserService,
   ) { }
 
   updateEduReform() {
@@ -90,8 +94,8 @@ export class EditedureformComponent implements OnInit, OnDestroy {
               this.eduReform = edureform;
 
               this.eduReformForm = new FormGroup({
-                number: new FormControl(this.eduReform.number || ''),
-                title: new FormControl(this.eduReform.title || ''),
+                number: new FormControl(this.eduReform.number || '', [Validators.required]),
+                title: new FormControl(this.eduReform.title || '', [Validators.required]),
                 teachersIn: new FormArray([]),
                 teachersOut: new FormArray([]),
                 startDate: new FormControl(this.eduReform.startDate || null),
@@ -135,6 +139,15 @@ export class EditedureformComponent implements OnInit, OnDestroy {
         if (user) {
           this.userId = user.id;
         }
+      }
+    });
+
+    this.userService.userExports().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (users) => {
+        this.teachersInOptions = users;
+      },
+      error: (error) => {
+        console.error(error);
       }
     });
   }

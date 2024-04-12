@@ -17,6 +17,12 @@ import { Subject, takeUntil } from 'rxjs';
 import { UserExport } from '../../../models/models/user.model';
 import { UserService } from '../../../services/user.service';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
+import { SciResearch, SciResearchFilter } from '../../../models/models/sciResearch.model';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SciResearchService } from '../../../services/sciresearch.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-overviewsciresearch',
@@ -24,7 +30,8 @@ import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/ma
   providers: [provideNativeDateAdapter()],
   imports: [MatDividerModule, MatInputModule, MatFormFieldModule, MatIconModule,
     MatSelectModule, MatButtonModule, ReactiveFormsModule, RouterLink, MatCardModule,
-    DatePipe, MatDatepickerModule, MatChipsModule, MatAutocompleteModule],
+    DatePipe, MatDatepickerModule, MatChipsModule, MatAutocompleteModule, MatTooltipModule,
+    MatPaginatorModule, MatProgressSpinnerModule],
   templateUrl: './overviewsciresearch.component.html',
   styleUrl: './overviewsciresearch.component.scss'
 })
@@ -40,9 +47,19 @@ export class OverviewsciresearchComponent implements OnInit, OnDestroy {
 
   $destroy: Subject<boolean> = new Subject<boolean>();
 
+  sciResearchList: SciResearch[] = [];
+
+  totalCount: number = 0;
+  pageIndex: number = 0;
+  pageSize: number = 10;
+  pageSizeOptions: number[] = [6, 10, 24, 50, 100];
+
+  isSearching: boolean = false;
+
   constructor(
     private userService: UserService,
-
+    private snackBar: MatSnackBar,
+    private sciResearchService: SciResearchService
   ) {
 
   }
@@ -57,17 +74,17 @@ export class OverviewsciresearchComponent implements OnInit, OnDestroy {
       rank: new FormControl(''),
       achievement: new FormControl(''),
       fund: new FormControl(''),
-      startDateStart: new FormControl(''),
-      startDateEnd: new FormControl(''),
-      createdStart: new FormControl(''),
-      createdEnd: new FormControl(''),
-      updatedStart: new FormControl(''),
-      updatedEnd: new FormControl(''),
+      startDateStart: new FormControl(null),
+      startDateEnd: new FormControl(null),
+      createdStart: new FormControl(null),
+      createdEnd: new FormControl(null),
+      updatedStart: new FormControl(null),
+      updatedEnd: new FormControl(null),
       awardName: new FormControl(''),
       awardlevel: new FormControl(''),
       awardRank: new FormControl(''),
-      awardDateStart: new FormControl(''),
-      awardDateEnd: new FormControl(''),
+      awardDateStart: new FormControl(null),
+      awardDateEnd: new FormControl(null),
     });
 
     this.userService.userExports().pipe(takeUntil(this.$destroy)).subscribe({
@@ -79,6 +96,8 @@ export class OverviewsciresearchComponent implements OnInit, OnDestroy {
         console.log(error);
       }
     });
+
+    this.getSciResearchList();
   }
 
   ngOnDestroy(): void {
@@ -86,6 +105,122 @@ export class OverviewsciresearchComponent implements OnInit, OnDestroy {
     this.$destroy.complete();
   }
 
+
+  onSearch() {
+    this.pageIndex = 0;
+    this.getSciResearchList();
+  }
+
+  clearForm() {
+    this.SearchForm.reset();
+  }
+
+  onPageChange(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.getSciResearchList();
+  }
+
+  getSciResearchList() {
+    console.log(this.SearchForm);
+    if (this.SearchForm.invalid) {
+      this.snackBar.open('请检查表单', '关闭', { duration: 2000 });
+      return;
+    }
+    let sciResearchFilter = new SciResearchFilter();
+    if (this.SearchForm.get('title')?.value !== '') {
+      sciResearchFilter.title = this.SearchForm.get('title')?.value;
+    }
+    if (this.SearchForm.get('number')?.value !== '') {
+      sciResearchFilter.number = this.SearchForm.get('number')?.value;
+    }
+    if (this.SearchForm.get('teachersOut')?.value.length > 0) {
+      sciResearchFilter.teachersOut = this.SearchForm.get('teachersOut')?.value;
+    }
+    if (this.SearchForm.get('level')?.value !== '') {
+      sciResearchFilter.level = this.SearchForm.get('level')?.value;
+    }
+    if (this.SearchForm.get('rank')?.value !== '') {
+      sciResearchFilter.rank = this.SearchForm.get('rank')?.value;
+    }
+    if (this.SearchForm.get('achievement')?.value !== '') {
+      sciResearchFilter.achievement = this.SearchForm.get('achievement')?.value;
+    }
+    if (this.SearchForm.get('fund')?.value !== '') {
+      sciResearchFilter.fund = this.SearchForm.get('fund')?.value;
+    }
+
+    sciResearchFilter.startDateStart = this.SearchForm.get('startDateStart')?.value;
+    sciResearchFilter.startDateEnd = this.SearchForm.get('startDateEnd')?.value;
+    sciResearchFilter.createdStart = this.SearchForm.get('createdStart')?.value;
+    sciResearchFilter.createdEnd = this.SearchForm.get('createdEnd')?.value;
+    sciResearchFilter.updatedStart = this.SearchForm.get('updatedStart')?.value;
+    sciResearchFilter.updatedEnd = this.SearchForm.get('updatedEnd')?.value;
+
+    let teachersInControlArray = this.SearchForm.get('teachersIn') as FormArray;
+    if (teachersInControlArray && teachersInControlArray.length > 0) {
+      sciResearchFilter.teachersIn = teachersInControlArray.controls.map((control: AbstractControl) => {
+        return control.value.id;
+      });
+    }
+
+    if (this.isawardCtrl.value === 'true') {
+      sciResearchFilter.isAward = true;
+      if (this.SearchForm.get('awardName')?.value !== '') {
+        sciResearchFilter.awardName = this.SearchForm.get('awardName')?.value;
+      }
+      if (this.SearchForm.get('awardlevel')?.value !== '') {
+        sciResearchFilter.awardLevel = this.SearchForm.get('awardlevel')?.value;
+      }
+      if (this.SearchForm.get('awardRank')?.value !== '') {
+        sciResearchFilter.rank = this.SearchForm.get('awardRank')?.value;
+      }
+      sciResearchFilter.awardDateStart = this.SearchForm.get('awardDateStart')?.value;
+      sciResearchFilter.awardDateEnd = this.SearchForm.get('awardDateEnd')?.value;
+
+    } else if (this.isawardCtrl.value === 'false') {
+      sciResearchFilter.isAward = false;
+    }
+
+    console.log(sciResearchFilter);
+    this.isSearching = true;
+
+    this.sciResearchService.getSciResearchsByFilter(sciResearchFilter, this.pageIndex, this.pageSize).pipe(takeUntil(this.$destroy)).subscribe({
+      next: (response) => {
+        if (response) {
+          this.sciResearchList = response.sciResearchs;
+          this.totalCount = response.totalCount;
+        } else {
+          this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
+        }
+        this.isSearching = false;
+      },
+      error: (error) => {
+        console.log(error);
+        this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
+        this.isSearching = false;
+      }
+    });
+
+  }
+
+  deleteSciResearch(sciResearch: SciResearch) {
+    this.sciResearchService.deleteSciResearch(sciResearch.id)
+      .pipe(takeUntil(this.$destroy)).subscribe({
+        next: (response) => {
+          if (response) {
+            this.snackBar.open('删除成功', '关闭', { duration: 2000 });
+            this.getSciResearchList();
+          } else {
+            this.snackBar.open('删除失败', '关闭', { duration: 2000 });
+          }
+        },
+        error: (error) => {
+          console.log(error);
+          this.snackBar.open('删除失败', '关闭', { duration: 2000 });
+        }
+      });
+  }
 
   get teachersIn() {
     return this.SearchForm.get('teachersIn') as FormArray;
@@ -174,14 +309,6 @@ export class OverviewsciresearchComponent implements OnInit, OnDestroy {
     } else {
       this.teachersOut.removeAt(index);
     }
-  }
-
-  onSearch() {
-    console.log(this.SearchForm.value);
-  }
-
-  clearForm() {
-    this.SearchForm.reset();
   }
 
 }

@@ -1,1 +1,18 @@
-<p>editsciresearch works!</p>
+@if(sciResearch){
+<div class="container">
+  <div class="content-wrapper">
+    <div class="title">
+      <h2>教改项目</h2>
+      <div style="padding-right: 1rem;">
+        <div>创建时间: {{sciResearch.createdAt| date:'YYYY年MM月dd日HH时'}}</div>
+        <div>更新时间: {{sciResearch.updatedAt| date:'YYYY年MM月dd日HH时'}}</div>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="content">
+      <app-sciresearchform [buttonLabel]="buttonLabel" [sciresearchForm]="sciResearchForm"
+        (submitForm)="updateSciResearch()" [teachersInOptions]="teachersInOptions"></app-sciresearchform>
+    </div>
+  </div>
+</div>
+}

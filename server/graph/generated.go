@@ -23324,7 +23324,7 @@ func (ec *executionContext) unmarshalInputSciResearchData(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"teachersIn", "teachersOut", "number", "title", "startDate", "duration", "level", "rank", "achievement", "fund", "isAward", "awards"}
+	fieldsInOrder := [...]string{"teachersIn", "teachersOut", "number", "title", "startDate", "duration", "level", "rank", "achievement", "fund", "awards"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -23401,13 +23401,6 @@ func (ec *executionContext) unmarshalInputSciResearchData(ctx context.Context, o
 				return it, err
 			}
 			it.Fund = data
-		case "isAward":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isAward"))
-			data, err := ec.unmarshalNBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.IsAward = data
 		case "awards":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("awards"))
 			data, err := ec.unmarshalOAwardRecordData2ᚕᚖserverᚋgraphᚋmodelᚐAwardRecordData(ctx, v)

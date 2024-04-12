@@ -17,6 +17,12 @@ import { Subject, takeUntil } from 'rxjs';
 import { UserExport } from '../../../models/models/user.model';
 import { UserService } from '../../../services/user.service';
 import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Paper, PaperFilter } from '../../../models/models/paper.model';
+import { PaperService } from '../../../services/paper.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-overviewpaper',
@@ -24,7 +30,8 @@ import { MatAutocompleteSelectedEvent, MatAutocompleteModule } from '@angular/ma
   providers: [provideNativeDateAdapter()],
   imports: [MatDividerModule, MatInputModule, MatFormFieldModule, MatIconModule,
     MatSelectModule, MatButtonModule, ReactiveFormsModule, RouterLink, MatCardModule,
-    DatePipe, MatDatepickerModule, MatChipsModule, MatAutocompleteModule],
+    DatePipe, MatDatepickerModule, MatChipsModule, MatAutocompleteModule, MatTooltipModule,
+    MatPaginatorModule, MatProgressSpinnerModule],
   templateUrl: './overviewpaper.component.html',
   styleUrl: './overviewpaper.component.scss'
 })
@@ -38,8 +45,19 @@ export class OverviewpaperComponent implements OnInit, OnDestroy {
 
   $destroy: Subject<boolean> = new Subject<boolean>();
 
+  paperList: Paper[] = [];
+
+  totalCount: number = 0;
+  pageIndex: number = 0;
+  pageSize: number = 10;
+  pageSizeOptions: number[] = [6, 10, 24, 50, 100];
+
+  isSearching: boolean = false;
+
   constructor(
     private userService: UserService,
+    private paperService: PaperService,
+    private snackBar: MatSnackBar,
 
   ) { }
 
@@ -51,12 +69,12 @@ export class OverviewpaperComponent implements OnInit, OnDestroy {
       rank: new FormControl(''),
       journalName: new FormControl(''),
       journalLevel: new FormControl(''),
-      publishDateStart: new FormControl(''),
-      publishDateEnd: new FormControl(''),
-      createdStart: new FormControl(''),
-      createdEnd: new FormControl(''),
-      updatedStart: new FormControl(''),
-      updatedEnd: new FormControl(''),
+      publishDateStart: new FormControl(null),
+      publishDateEnd: new FormControl(null),
+      createdStart: new FormControl(null),
+      createdEnd: new FormControl(null),
+      updatedStart: new FormControl(null),
+      updatedEnd: new FormControl(null),
     });
 
     this.userService.userExports().pipe(takeUntil(this.$destroy)).subscribe({
@@ -68,6 +86,8 @@ export class OverviewpaperComponent implements OnInit, OnDestroy {
         console.log(error);
       }
     });
+
+    this.getPaperList();
   }
 
   ngOnDestroy(): void {
@@ -75,6 +95,95 @@ export class OverviewpaperComponent implements OnInit, OnDestroy {
     this.$destroy.complete();
   }
 
+  onSearch() {
+    this.pageIndex = 0;
+    this.getPaperList();
+  }
+
+  clearForm() {
+    this.SearchForm.reset();
+  }
+
+  onPageChange(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.getPaperList();
+  }
+
+  deletePaper(paper: Paper) {
+    this.paperService.deletePaper(paper.id).pipe(takeUntil(this.$destroy)).subscribe({
+      next: (result) => {
+        if (result) {
+          this.snackBar.open('删除成功', '关闭', { duration: 2000 });
+          if (this.paperList.length === 1 && this.pageIndex > 0) {
+            this.pageIndex--;
+          }
+          this.getPaperList();
+        } else {
+          this.snackBar.open('删除失败', '关闭', { duration: 2000 });
+        }
+      },
+      error: (error) => {
+        console.error(error);
+        this.snackBar.open('删除失败', '关闭', { duration: 2000 });
+      }
+    });
+  }
+
+  getPaperList() {
+    console.log(this.SearchForm);
+    if (this.SearchForm.invalid) {
+      this.snackBar.open('请检查表单', '关闭', { duration: 2000 });
+      return;
+    }
+
+    let paperFilter = new PaperFilter();
+
+    if (this.SearchForm.get('title')?.value) {
+      paperFilter.title = this.SearchForm.get('title')?.value;
+    }
+    if (this.SearchForm.get('teachersOut')?.value.length > 0) {
+      paperFilter.teachersOut = this.SearchForm.get('teachersOut')?.value;
+    }
+    if (this.SearchForm.get('rank')?.value) {
+      paperFilter.rank = this.SearchForm.get('rank')?.value;
+    }
+    if (this.SearchForm.get('journalName')?.value) {
+      paperFilter.journalName = this.SearchForm.get('journalName')?.value;
+    }
+    if (this.SearchForm.get('journalLevel')?.value) {
+      paperFilter.journalLevel = this.SearchForm.get('journalLevel')?.value;
+    }
+
+    paperFilter.publishDateStart = this.SearchForm.get('publishDateStart')?.value;
+    paperFilter.publishDateEnd = this.SearchForm.get('publishDateEnd')?.value;
+
+    let teachesInContorlArray = this.SearchForm.get('teachersIn') as FormArray;
+    if (teachesInContorlArray && teachesInContorlArray.controls.length > 0) {
+      paperFilter.teachersIn = teachesInContorlArray.controls.map((control) => control.value.id);
+    }
+
+    console.log(paperFilter);
+    this.isSearching = true;
+
+    this.paperService.getPapersByFilter(paperFilter, this.pageIndex, this.pageSize)
+      .pipe(takeUntil(this.$destroy)).subscribe({
+        next: (response) => {
+          if (response) {
+            this.paperList = response.papers;
+            this.totalCount = response.totalCount;
+            this.isSearching = false;
+          } else {
+            this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
+          }
+        },
+        error: (error) => {
+          console.error(error);
+          this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
+          this.isSearching = false;
+        }
+      });
+  }
 
   get teachersIn() {
     return this.SearchForm.get('teachersIn') as FormArray;
@@ -163,13 +272,5 @@ export class OverviewpaperComponent implements OnInit, OnDestroy {
     } else {
       this.teachersOut.removeAt(index);
     }
-  }
-
-  onSearch() {
-    console.log(this.SearchForm.value);
-  }
-
-  clearForm() {
-    this.SearchForm.reset();
   }
 }

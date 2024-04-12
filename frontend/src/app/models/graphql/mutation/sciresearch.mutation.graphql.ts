@@ -22,7 +22,6 @@ export const createSciResearchMutation = gql`
       fund
       isAward
       awards{
-        id
         awardName
         awardDate
         awardLevel
@@ -56,7 +55,6 @@ export const updateSciResearchMutation = gql`
       fund
       isAward
       awards{
-        id
         awardName
         awardDate
         awardLevel

@@ -107,7 +107,7 @@ export class SciresearchformComponent {
       awardName: new FormControl('', [Validators.required]),
       awardLevel: new FormControl(''),
       awardRank: new FormControl(''),
-      awardDate: new FormControl(''),
+      awardDate: new FormControl(null),
     }));
   }
 

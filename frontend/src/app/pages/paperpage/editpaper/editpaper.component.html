@@ -1,1 +1,18 @@
-<p>editpaper works!</p>
+@if(paper){
+<div class="container">
+  <div class="content-wrapper">
+    <div class="title">
+      <h2>论文</h2>
+      <div style="padding-right: 1rem;">
+        <div>创建时间: {{paper.createdAt| date:'YYYY年MM月dd日HH时'}}</div>
+        <div>更新时间: {{paper.updatedAt| date:'YYYY年MM月dd日HH时'}}</div>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="content">
+      <app-paperform [buttonLabel]="buttonLabel" [paperForm]="paperForm" (submitForm)="updatePaper()"
+        [teachersInOptions]="teachersInOptions"></app-paperform>
+    </div>
+  </div>
+</div>
+}

@@ -9,7 +9,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute } from '@angular/router';
 import { AuthRepository } from '../../../core/auth/auth.repository';
 import { MonographService } from '../../../services/monograph.service';
-import { E } from '@angular/cdk/keycodes';
+import { UserExport } from '../../../models/models/user.model';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-editmonograph',
@@ -24,12 +25,14 @@ export class EditmonographComponent implements OnInit, OnDestroy {
   monographForm!: FormGroup;
   userId!: string;
   private destroy$ = new Subject<boolean>();
+  teachersInOptions: UserExport[] = [];
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private monographService: MonographService,
     private authRepository: AuthRepository,
     private snackBar: MatSnackBar,
+    private userService: UserService,
   ) {
 
   }
@@ -116,6 +119,23 @@ export class EditmonographComponent implements OnInit, OnDestroy {
           }
 
         });
+    });
+
+    this.authRepository.$user.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (user) => {
+        if (user) {
+          this.userId = user.id;
+        }
+      }
+    });
+
+    this.userService.userExports().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (result) => {
+        this.teachersInOptions = result;
+      },
+      error: (error) => {
+        console.error(error);
+      }
     });
   }
 

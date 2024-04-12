@@ -31,6 +31,11 @@ func (s *SciResearchService) CreateSciResearch(userId primitive.ObjectID, newSci
 		teachersIn[i+1] = objectId
 	}
 
+	isAward := false
+	if newSciResearchData.Awards != nil && len(newSciResearchData.Awards) > 0 {
+		isAward = true
+	}
+
 	newSciResearch := models.SciResearch{
 		TeachersIn:  teachersIn,
 		TeachersOut: newSciResearchData.TeachersOut,
@@ -41,7 +46,7 @@ func (s *SciResearchService) CreateSciResearch(userId primitive.ObjectID, newSci
 		Level:       newSciResearchData.Level,
 		Achievement: newSciResearchData.Achievement,
 		Fund:        newSciResearchData.Fund,
-		IsAward:     newSciResearchData.IsAward,
+		IsAward:     isAward,
 	}
 
 	if newSciResearchData.StartDate != nil {
@@ -94,6 +99,11 @@ func (s *SciResearchService) UpdateSciResearch(sciResearchID string, userId prim
 		teachersIn[i+1] = teacherObjectId
 	}
 
+	isAward := false
+	if sciResearchData.Awards != nil && len(sciResearchData.Awards) > 0 {
+		isAward = true
+	}
+
 	sciResearchUpdate.TeachersIn = teachersIn
 	sciResearchUpdate.TeachersOut = sciResearchData.TeachersOut
 	sciResearchUpdate.Title = sciResearchData.Title
@@ -103,7 +113,7 @@ func (s *SciResearchService) UpdateSciResearch(sciResearchID string, userId prim
 	sciResearchUpdate.Level = sciResearchData.Level
 	sciResearchUpdate.Achievement = sciResearchData.Achievement
 	sciResearchUpdate.Fund = sciResearchData.Fund
-	sciResearchUpdate.IsAward = sciResearchData.IsAward
+	sciResearchUpdate.IsAward = isAward
 
 	if sciResearchData.StartDate == nil {
 		sciResearchUpdate.StartDate = nil
@@ -210,6 +220,8 @@ func (s *SciResearchService) GetSciResearchById(sciResearchID string, userRepo *
 		Fund:        sciResearchData.Fund,
 		IsAward:     sciResearchData.IsAward,
 		Awards:      awards,
+		CreatedAt:   sciResearchData.CreatedAt.Time(),
+		UpdatedAt:   sciResearchData.UpdatedAt.Time(),
 	}, nil
 }
 
@@ -362,6 +374,8 @@ func (s *SciResearchService) GetSciResearchsByFilter(userId primitive.ObjectID, 
 			Fund:        sciResearchData.Fund,
 			IsAward:     sciResearchData.IsAward,
 			Awards:      awards,
+			CreatedAt:   sciResearchData.CreatedAt.Time(),
+			UpdatedAt:   sciResearchData.UpdatedAt.Time(),
 		}
 	}
 

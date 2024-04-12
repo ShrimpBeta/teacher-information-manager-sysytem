@@ -43,6 +43,7 @@ export class NewsciresearchComponent implements OnInit, OnDestroy {
     newSciResearch.rank = this.sciResearchForm.get('rank')?.value;
     newSciResearch.achievement = this.sciResearchForm.get('achievement')?.value;
     newSciResearch.fund = this.sciResearchForm.get('fund')?.value;
+    newSciResearch.startDate = this.sciResearchForm.get('startDate')?.value;
 
     let teachersInControlArray = this.sciResearchForm.get('teachersIn') as FormArray;
     if (teachersInControlArray && teachersInControlArray.length > 0) {
@@ -52,24 +53,42 @@ export class NewsciresearchComponent implements OnInit, OnDestroy {
     if (teachersOutControlArray && teachersOutControlArray.length > 0) {
       newSciResearch.teachersOut = teachersOutControlArray.controls.map((control) => control.value);
     }
-    if (this.sciResearchForm.get('startDate')?.value !== '') {
-      newSciResearch.startDate = new Date(this.sciResearchForm.get('startDate')?.value);
-    }
+
     let awardRecordsControlArray = this.sciResearchForm.get('awardRecords') as FormArray;
     if (awardRecordsControlArray && awardRecordsControlArray.length > 0) {
       newSciResearch.awards = awardRecordsControlArray.controls.map((control) => {
         let newAwardRecord = new EditAwardRecord();
         newAwardRecord.awardName = control.get('awardName')?.value;
         newAwardRecord.awardLevel = control.get('awardLevel')?.value;
-        newAwardRecord.rank = control.get('awardRank')?.value;
-        if (control.get('awardDate')?.value !== '') {
-          newAwardRecord.awardDate = new Date(control.get('awardDate')?.value);
-        }
+        newAwardRecord.awardRank = control.get('awardRank')?.value;
+        newAwardRecord.awardDate = control.get('awardDate')?.value;
         return newAwardRecord;
       });
     }
 
     console.log(newSciResearch);
+
+    this.sciResearchService.createSciResearch(newSciResearch)
+      .pipe(takeUntil(this.$destroy)).subscribe({
+        next: (res) => {
+          if (res) {
+            this.snackBar.open('创建成功', '关闭', {
+              duration: 2000,
+            });
+            this.router.navigate(['/main/scientificresearch']);
+          } else {
+            this.snackBar.open('创建失败', '关闭', {
+              duration: 2000,
+            });
+          }
+        },
+        error: (err) => {
+          console.error(err);
+          this.snackBar.open('创建失败', '关闭', {
+            duration: 2000,
+          });
+        }
+      });
   }
 
   ngOnInit(): void {
@@ -78,7 +97,7 @@ export class NewsciresearchComponent implements OnInit, OnDestroy {
       number: new FormControl('', Validators.required),
       teachersIn: new FormArray([]),
       teachersOut: new FormArray([]),
-      startDate: new FormControl(''),
+      startDate: new FormControl(null),
       duration: new FormControl(''),
       level: new FormControl(''),
       rank: new FormControl(''),

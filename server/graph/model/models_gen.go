@@ -469,7 +469,6 @@ type SciResearchData struct {
 	Rank        *string            `json:"rank,omitempty"`
 	Achievement *string            `json:"achievement,omitempty"`
 	Fund        *string            `json:"fund,omitempty"`
-	IsAward     bool               `json:"isAward"`
 	Awards      []*AwardRecordData `json:"awards,omitempty"`
 }
 

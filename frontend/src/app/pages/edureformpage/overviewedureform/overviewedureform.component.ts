@@ -163,7 +163,6 @@ export class OverviewedureformComponent implements OnInit, OnDestroy {
     this.eduReformService.getEduReformsByFilter(eduReformFilter, this.pageIndex, this.pageSize).pipe(takeUntil(this.$destroy)).subscribe({
       next: (response) => {
         if (response) {
-          console.log(response);
           this.eduReformList = response.eduReforms;
           this.totalCount = response.totalCount;
           this.isSearching = false;

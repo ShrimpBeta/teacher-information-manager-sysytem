@@ -69,7 +69,6 @@ input SciResearchData {
   rank: String
   achievement: String
   fund: String
-  isAward: Boolean!
   awards: [AwardRecordData]
 }
 
