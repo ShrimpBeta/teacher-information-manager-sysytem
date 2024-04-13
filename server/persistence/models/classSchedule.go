@@ -1,15 +1,14 @@
 package models
 
 import (
-	"time"
-
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // 课程时间
 type ClassTime struct {
-	DayOfWeek time.Weekday `bson:"dayOfWeek"`
-	TimeSlot  string       `bson:"timeSlot"`
+	DayOfWeek uint `bson:"dayOfWeek"`
+	Start     uint `bson:"start"`
+	End       uint `bson:"end"`
 }
 
 // 课程表
@@ -19,9 +18,9 @@ type Course struct {
 	Name         string             `bson:"name"`
 	Location     *string            `bson:"location,omitempty"`
 	Type         *string            `bson:"type,omitempty"`
-	Weeks        []*string          `bson:"weeks"`
+	Weeks        []*int             `bson:"weeks"`
 	ClassTimes   []*ClassTime       `bson:"classTimes"`
-	StudentCount *uint16            `bson:"studentCount,omitempty"`
+	StudentCount *uint              `bson:"studentCount,omitempty"`
 	Color        *string            `bson:"color,omitempty"`
 }
 
@@ -30,6 +29,8 @@ type AcademicTerm struct {
 	ID        primitive.ObjectID `bson:"_id"`
 	UserId    primitive.ObjectID `bson:"userId"`
 	Name      string             `bson:"name"`
+	StartDate primitive.DateTime `bson:"startDate"`
+	WeekCount uint               `bson:"weekCount"`
 	Courses   []*Course          `bson:"courses,omitempty"`
 	CreatedAt primitive.DateTime `bson:"createdAt"`
 	UpdatedAt primitive.DateTime `bson:"updatedAt"`

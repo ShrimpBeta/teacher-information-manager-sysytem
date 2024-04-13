@@ -79,22 +79,23 @@ export class OverviewpasswordComponent implements OnInit, OnDestroy {
       passwordFilter.url = this.searchFormControl.value;
     }
     this.isSearching = true;
-    this.passwordService.getPasswordsByFilter(passwordFilter, this.pageIndex, this.pageSize).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (passwordsPage) => {
-        if (passwordsPage) {
-          this.passwordList = passwordsPage.passwords;
-          this.totalCount = passwordsPage.totalCount;
+    this.passwordService.getPasswordsByFilter(passwordFilter, this.pageIndex, this.pageSize)
+      .pipe(takeUntil(this.destroy$)).subscribe({
+        next: (passwordsPage) => {
+          if (passwordsPage) {
+            this.passwordList = passwordsPage.passwords;
+            this.totalCount = passwordsPage.totalCount;
+          }
+          this.isSearching = false;
+        },
+        error: (error: unknown) => {
+          console.error(error);
+          this.snackBar.open('Error getting passwords', '', {
+            duration: 2000
+          });
+          this.isSearching = false;
         }
-        this.isSearching = false;
-      },
-      error: (error: unknown) => {
-        console.error(error);
-        this.snackBar.open('Error getting passwords', '', {
-          duration: 2000
-        });
-        this.isSearching = false;
-      }
-    });
+      });
   }
 
   editPassword(password: Password) {

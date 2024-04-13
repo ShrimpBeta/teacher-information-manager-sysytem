@@ -14,6 +14,11 @@ type ClassScheduleRepo struct {
 	collection *mongo.Collection
 }
 
+type ClassScheduleQueryParams struct {
+	UserId   primitive.ObjectID
+	TermName *string
+}
+
 func NewClassScheduleRepo(db *mongo.Database) *ClassScheduleRepo {
 	return &ClassScheduleRepo{
 		collection: db.Collection("ClassSchedule"),
@@ -29,9 +34,16 @@ func (r *ClassScheduleRepo) GetAcademicTermById(id primitive.ObjectID) (*models.
 	return &academicTerm, nil
 }
 
-func (r *ClassScheduleRepo) GetAcademicTermsByUserId(userId primitive.ObjectID) ([]models.AcademicTerm, error) {
+func (r *ClassScheduleRepo) GetAcademicTermsByParams(params ClassScheduleQueryParams) ([]models.AcademicTerm, error) {
 	academicTerms := []models.AcademicTerm{}
-	cursor, err := r.collection.Find(context.Background(), bson.M{"userId": userId})
+
+	filter := bson.M{"userId": params.UserId}
+
+	if params.TermName != nil {
+		filter["name"] = bson.M{"$regex": primitive.Regex{Pattern: *params.TermName, Options: "i"}}
+	}
+
+	cursor, err := r.collection.Find(context.Background(), filter)
 	if err != nil {
 		return nil, err
 	}
@@ -67,12 +79,17 @@ func (r *ClassScheduleRepo) CreateAcademicTerm(academicTerm *models.AcademicTerm
 	return &newAcademicTermId, nil
 }
 
-func (r *ClassScheduleRepo) UpdateAcademicTermName(termId primitive.ObjectID, name string) error {
+func (r *ClassScheduleRepo) UpdateAcademicTerm(academicTerm *models.AcademicTerm) error {
 	_, err := r.collection.UpdateOne(
 		context.Background(),
-		bson.M{"_id": termId},
+		bson.M{"_id": academicTerm.ID},
 		bson.M{
-			"$set": bson.M{"name": name, "updatedAt": primitive.NewDateTimeFromTime(time.Now())},
+			"$set": bson.M{
+				"name":      academicTerm.Name,
+				"startDate": academicTerm.StartDate,
+				"weekCount": academicTerm.WeekCount,
+				"updatedAt": primitive.NewDateTimeFromTime(time.Now()),
+			},
 		},
 	)
 	return err
@@ -125,4 +142,21 @@ func (r *ClassScheduleRepo) DeleteCourse(termId primitive.ObjectID, courseId pri
 		},
 	)
 	return err
+}
+
+func (r *ClassScheduleRepo) GetCourseById(termId primitive.ObjectID, courseId primitive.ObjectID) (*models.Course, error) {
+	academicTerm := models.AcademicTerm{}
+	err := r.collection.FindOne(
+		context.Background(),
+		bson.M{"_id": termId, "courses._id": courseId},
+	).Decode(&academicTerm)
+	if err != nil {
+		return nil, err
+	}
+	for _, course := range academicTerm.Courses {
+		if course.ID == courseId {
+			return course, nil
+		}
+	}
+	return nil, nil
 }

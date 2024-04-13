@@ -20,7 +20,6 @@ import { EditpasswordComponent } from './pages/passwordpage/editpassword/editpas
 import { NewpasswordComponent } from './pages/passwordpage/newpassword/newpassword.component';
 import { OverviewclassscheduleComponent } from './pages/classschedulepage/overviewclassschedule/overviewclassschedule.component';
 import { EditclassscheduleComponent } from './pages/classschedulepage/editclassschedule/editclassschedule.component';
-import { NewclassscheduleComponent } from './pages/classschedulepage/newclassschedule/newclassschedule.component';
 import { OverviewedureformComponent } from './pages/edureformpage/overviewedureform/overviewedureform.component';
 import { EditedureformComponent } from './pages/edureformpage/editedureform/editedureform.component';
 import { NewedureformComponent } from './pages/edureformpage/newedureform/newedureform.component';
@@ -83,7 +82,6 @@ export const routes: Routes = [
           { path: '', redirectTo: 'overview', pathMatch: 'full' },
           { path: 'overview', component: OverviewclassscheduleComponent, title: 'Overview Class Schedule' },
           { path: 'edit/:id', component: EditclassscheduleComponent, title: 'Edit Class Schedule' },
-          { path: 'new', component: NewclassscheduleComponent, title: 'New Class Schedule' },
           { path: 'preview', component: PreviewclassscheduleComponent, title: 'Preview Class Schedule' },
           { path: 'export', component: ExportclassscheduleComponent, title: 'Export Class Schedule' },
         ]

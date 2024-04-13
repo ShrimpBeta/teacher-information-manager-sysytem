@@ -52,8 +52,10 @@ type ComplexityRoot struct {
 		Courses   func(childComplexity int) int
 		CreatedAt func(childComplexity int) int
 		ID        func(childComplexity int) int
+		StartDate func(childComplexity int) int
 		TermName  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
+		WeekCount func(childComplexity int) int
 	}
 
 	AcademicTermPreview struct {
@@ -69,8 +71,10 @@ type ComplexityRoot struct {
 	AcademicTermShort struct {
 		CreatedAt func(childComplexity int) int
 		ID        func(childComplexity int) int
+		StartDate func(childComplexity int) int
 		TermName  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
+		WeekCount func(childComplexity int) int
 	}
 
 	AuthPayload struct {
@@ -93,12 +97,14 @@ type ComplexityRoot struct {
 
 	ClassTime struct {
 		DayOfWeek func(childComplexity int) int
-		TimeSlot  func(childComplexity int) int
+		End       func(childComplexity int) int
+		Start     func(childComplexity int) int
 	}
 
 	ClassTimePreview struct {
 		DayOfWeek func(childComplexity int) int
-		TimeSlot  func(childComplexity int) int
+		End       func(childComplexity int) int
+		Start     func(childComplexity int) int
 	}
 
 	CompGuidance struct {
@@ -346,7 +352,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		AcademicTerm          func(childComplexity int, id string) int
-		AcademicTerms         func(childComplexity int, offset int, limit int) int
+		AcademicTermsByFilter func(childComplexity int, filter graphql_models.AcademicTermFilter, offset int, limit int) int
 		AcademicTermsID       func(childComplexity int, ids []*string) int
 		AdminSignIn           func(childComplexity int, adminSignInInput *graphql_models.AdminSignInInput) int
 		CompGuidance          func(childComplexity int, id string) int
@@ -530,7 +536,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	AdminSignIn(ctx context.Context, adminSignInInput *graphql_models.AdminSignInInput) (*graphql_models.AuthPayload, error)
 	AcademicTerm(ctx context.Context, id string) (*graphql_models.AcademicTerm, error)
-	AcademicTerms(ctx context.Context, offset int, limit int) (*graphql_models.AcademicTermQuery, error)
+	AcademicTermsByFilter(ctx context.Context, filter graphql_models.AcademicTermFilter, offset int, limit int) (*graphql_models.AcademicTermQuery, error)
 	AcademicTermsID(ctx context.Context, ids []*string) ([]*graphql_models.AcademicTerm, error)
 	CompGuidance(ctx context.Context, id string) (*graphql_models.CompGuidance, error)
 	CompGuidancesByFilter(ctx context.Context, filter graphql_models.CompGuidanceFilter, offset int, limit int) (*graphql_models.CompGuidanceQuery, error)
@@ -600,6 +606,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AcademicTerm.ID(childComplexity), true
 
+	case "AcademicTerm.startDate":
+		if e.complexity.AcademicTerm.StartDate == nil {
+			break
+		}
+
+		return e.complexity.AcademicTerm.StartDate(childComplexity), true
+
 	case "AcademicTerm.termName":
 		if e.complexity.AcademicTerm.TermName == nil {
 			break
@@ -613,6 +626,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AcademicTerm.UpdatedAt(childComplexity), true
+
+	case "AcademicTerm.weekCount":
+		if e.complexity.AcademicTerm.WeekCount == nil {
+			break
+		}
+
+		return e.complexity.AcademicTerm.WeekCount(childComplexity), true
 
 	case "AcademicTermPreview.courses":
 		if e.complexity.AcademicTermPreview.Courses == nil {
@@ -656,6 +676,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.AcademicTermShort.ID(childComplexity), true
 
+	case "AcademicTermShort.startDate":
+		if e.complexity.AcademicTermShort.StartDate == nil {
+			break
+		}
+
+		return e.complexity.AcademicTermShort.StartDate(childComplexity), true
+
 	case "AcademicTermShort.termName":
 		if e.complexity.AcademicTermShort.TermName == nil {
 			break
@@ -669,6 +696,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AcademicTermShort.UpdatedAt(childComplexity), true
+
+	case "AcademicTermShort.weekCount":
+		if e.complexity.AcademicTermShort.WeekCount == nil {
+			break
+		}
+
+		return e.complexity.AcademicTermShort.WeekCount(childComplexity), true
 
 	case "AuthPayload.token":
 		if e.complexity.AuthPayload.Token == nil {
@@ -740,12 +774,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ClassTime.DayOfWeek(childComplexity), true
 
-	case "ClassTime.timeSlot":
-		if e.complexity.ClassTime.TimeSlot == nil {
+	case "ClassTime.end":
+		if e.complexity.ClassTime.End == nil {
 			break
 		}
 
-		return e.complexity.ClassTime.TimeSlot(childComplexity), true
+		return e.complexity.ClassTime.End(childComplexity), true
+
+	case "ClassTime.start":
+		if e.complexity.ClassTime.Start == nil {
+			break
+		}
+
+		return e.complexity.ClassTime.Start(childComplexity), true
 
 	case "ClassTimePreview.dayOfWeek":
 		if e.complexity.ClassTimePreview.DayOfWeek == nil {
@@ -754,12 +795,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ClassTimePreview.DayOfWeek(childComplexity), true
 
-	case "ClassTimePreview.timeSlot":
-		if e.complexity.ClassTimePreview.TimeSlot == nil {
+	case "ClassTimePreview.end":
+		if e.complexity.ClassTimePreview.End == nil {
 			break
 		}
 
-		return e.complexity.ClassTimePreview.TimeSlot(childComplexity), true
+		return e.complexity.ClassTimePreview.End(childComplexity), true
+
+	case "ClassTimePreview.start":
+		if e.complexity.ClassTimePreview.Start == nil {
+			break
+		}
+
+		return e.complexity.ClassTimePreview.Start(childComplexity), true
 
 	case "CompGuidance.awardStatus":
 		if e.complexity.CompGuidance.AwardStatus == nil {
@@ -2257,17 +2305,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AcademicTerm(childComplexity, args["id"].(string)), true
 
-	case "Query.academicTerms":
-		if e.complexity.Query.AcademicTerms == nil {
+	case "Query.academicTermsByFilter":
+		if e.complexity.Query.AcademicTermsByFilter == nil {
 			break
 		}
 
-		args, err := ec.field_Query_academicTerms_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_academicTermsByFilter_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.AcademicTerms(childComplexity, args["offset"].(int), args["limit"].(int)), true
+		return e.complexity.Query.AcademicTermsByFilter(childComplexity, args["filter"].(graphql_models.AcademicTermFilter), args["offset"].(int), args["limit"].(int)), true
 
 	case "Query.academicTermsId":
 		if e.complexity.Query.AcademicTermsID == nil {
@@ -3084,6 +3132,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputAcademicTermFilter,
 		ec.unmarshalInputActivateUser,
 		ec.unmarshalInputAdminSignInInput,
 		ec.unmarshalInputAwardRecordData,
@@ -4157,6 +4206,39 @@ func (ec *executionContext) field_Query_academicTerm_args(ctx context.Context, r
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_academicTermsByFilter_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 graphql_models.AcademicTermFilter
+	if tmp, ok := rawArgs["filter"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
+		arg0, err = ec.unmarshalNAcademicTermFilter2serverᚋgraphᚋmodelᚐAcademicTermFilter(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["offset"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["offset"] = arg1
+	var arg2 int
+	if tmp, ok := rawArgs["limit"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
+		arg2, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg2
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_academicTermsId_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -4169,30 +4251,6 @@ func (ec *executionContext) field_Query_academicTermsId_args(ctx context.Context
 		}
 	}
 	args["ids"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_academicTerms_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["offset"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("offset"))
-		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["offset"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["limit"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("limit"))
-		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["limit"] = arg1
 	return args, nil
 }
 
@@ -4856,6 +4914,94 @@ func (ec *executionContext) fieldContext_AcademicTerm_termName(ctx context.Conte
 	return fc, nil
 }
 
+func (ec *executionContext) _AcademicTerm_startDate(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AcademicTerm) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicTerm_startDate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StartDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AcademicTerm_startDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AcademicTerm",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AcademicTerm_weekCount(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AcademicTerm) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicTerm_weekCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.WeekCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AcademicTerm_weekCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AcademicTerm",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _AcademicTerm_courses(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AcademicTerm) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_AcademicTerm_courses(ctx, field)
 	if err != nil {
@@ -5192,6 +5338,10 @@ func (ec *executionContext) fieldContext_AcademicTermQuery_academicTerms(ctx con
 				return ec.fieldContext_AcademicTermShort_id(ctx, field)
 			case "termName":
 				return ec.fieldContext_AcademicTermShort_termName(ctx, field)
+			case "startDate":
+				return ec.fieldContext_AcademicTermShort_startDate(ctx, field)
+			case "weekCount":
+				return ec.fieldContext_AcademicTermShort_weekCount(ctx, field)
 			case "createdAt":
 				return ec.fieldContext_AcademicTermShort_createdAt(ctx, field)
 			case "updatedAt":
@@ -5286,6 +5436,94 @@ func (ec *executionContext) fieldContext_AcademicTermShort_termName(ctx context.
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AcademicTermShort_startDate(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AcademicTermShort) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicTermShort_startDate(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StartDate, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AcademicTermShort_startDate(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AcademicTermShort",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AcademicTermShort_weekCount(ctx context.Context, field graphql.CollectedField, obj *graphql_models.AcademicTermShort) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicTermShort_weekCount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.WeekCount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AcademicTermShort_weekCount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AcademicTermShort",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -5798,8 +6036,8 @@ func (ec *executionContext) fieldContext_ClassTime_dayOfWeek(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _ClassTime_timeSlot(ctx context.Context, field graphql.CollectedField, obj *graphql_models.ClassTime) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ClassTime_timeSlot(ctx, field)
+func (ec *executionContext) _ClassTime_start(ctx context.Context, field graphql.CollectedField, obj *graphql_models.ClassTime) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ClassTime_start(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -5812,7 +6050,7 @@ func (ec *executionContext) _ClassTime_timeSlot(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.TimeSlot, nil
+		return obj.Start, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5824,19 +6062,63 @@ func (ec *executionContext) _ClassTime_timeSlot(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_ClassTime_timeSlot(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_ClassTime_start(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "ClassTime",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ClassTime_end(ctx context.Context, field graphql.CollectedField, obj *graphql_models.ClassTime) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ClassTime_end(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.End, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ClassTime_end(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ClassTime",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -5883,8 +6165,8 @@ func (ec *executionContext) fieldContext_ClassTimePreview_dayOfWeek(ctx context.
 	return fc, nil
 }
 
-func (ec *executionContext) _ClassTimePreview_timeSlot(ctx context.Context, field graphql.CollectedField, obj *graphql_models.ClassTimePreview) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ClassTimePreview_timeSlot(ctx, field)
+func (ec *executionContext) _ClassTimePreview_start(ctx context.Context, field graphql.CollectedField, obj *graphql_models.ClassTimePreview) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ClassTimePreview_start(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -5897,7 +6179,7 @@ func (ec *executionContext) _ClassTimePreview_timeSlot(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.TimeSlot, nil
+		return obj.Start, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -5906,19 +6188,60 @@ func (ec *executionContext) _ClassTimePreview_timeSlot(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_ClassTimePreview_timeSlot(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_ClassTimePreview_start(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "ClassTimePreview",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ClassTimePreview_end(ctx context.Context, field graphql.CollectedField, obj *graphql_models.ClassTimePreview) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ClassTimePreview_end(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.End, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ClassTimePreview_end(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ClassTimePreview",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -6818,9 +7141,9 @@ func (ec *executionContext) _Course_courseWeeks(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*string)
+	res := resTmp.([]*int)
 	fc.Result = res
-	return ec.marshalNString2ᚕᚖstring(ctx, field.Selections, res)
+	return ec.marshalNInt2ᚕᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Course_courseWeeks(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -6830,7 +7153,7 @@ func (ec *executionContext) fieldContext_Course_courseWeeks(ctx context.Context,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -6877,8 +7200,10 @@ func (ec *executionContext) fieldContext_Course_classTimes(ctx context.Context, 
 			switch field.Name {
 			case "dayOfWeek":
 				return ec.fieldContext_ClassTime_dayOfWeek(ctx, field)
-			case "timeSlot":
-				return ec.fieldContext_ClassTime_timeSlot(ctx, field)
+			case "start":
+				return ec.fieldContext_ClassTime_start(ctx, field)
+			case "end":
+				return ec.fieldContext_ClassTime_end(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ClassTime", field.Name)
 		},
@@ -7155,9 +7480,9 @@ func (ec *executionContext) _CoursePreview_courseWeeks(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*string)
+	res := resTmp.([]*int)
 	fc.Result = res
-	return ec.marshalOString2ᚕᚖstring(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚕᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_CoursePreview_courseWeeks(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -7167,7 +7492,7 @@ func (ec *executionContext) fieldContext_CoursePreview_courseWeeks(ctx context.C
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -7211,8 +7536,10 @@ func (ec *executionContext) fieldContext_CoursePreview_classTimes(ctx context.Co
 			switch field.Name {
 			case "dayOfWeek":
 				return ec.fieldContext_ClassTimePreview_dayOfWeek(ctx, field)
-			case "timeSlot":
-				return ec.fieldContext_ClassTimePreview_timeSlot(ctx, field)
+			case "start":
+				return ec.fieldContext_ClassTimePreview_start(ctx, field)
+			case "end":
+				return ec.fieldContext_ClassTimePreview_end(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ClassTimePreview", field.Name)
 		},
@@ -10064,6 +10391,10 @@ func (ec *executionContext) fieldContext_Mutation_createAcademicTerm(ctx context
 				return ec.fieldContext_AcademicTerm_id(ctx, field)
 			case "termName":
 				return ec.fieldContext_AcademicTerm_termName(ctx, field)
+			case "startDate":
+				return ec.fieldContext_AcademicTerm_startDate(ctx, field)
+			case "weekCount":
+				return ec.fieldContext_AcademicTerm_weekCount(ctx, field)
 			case "courses":
 				return ec.fieldContext_AcademicTerm_courses(ctx, field)
 			case "createdAt":
@@ -10131,6 +10462,10 @@ func (ec *executionContext) fieldContext_Mutation_updateAcademicTerm(ctx context
 				return ec.fieldContext_AcademicTerm_id(ctx, field)
 			case "termName":
 				return ec.fieldContext_AcademicTerm_termName(ctx, field)
+			case "startDate":
+				return ec.fieldContext_AcademicTerm_startDate(ctx, field)
+			case "weekCount":
+				return ec.fieldContext_AcademicTerm_weekCount(ctx, field)
 			case "courses":
 				return ec.fieldContext_AcademicTerm_courses(ctx, field)
 			case "createdAt":
@@ -10198,6 +10533,10 @@ func (ec *executionContext) fieldContext_Mutation_deleteAcademicTerm(ctx context
 				return ec.fieldContext_AcademicTerm_id(ctx, field)
 			case "termName":
 				return ec.fieldContext_AcademicTerm_termName(ctx, field)
+			case "startDate":
+				return ec.fieldContext_AcademicTerm_startDate(ctx, field)
+			case "weekCount":
+				return ec.fieldContext_AcademicTerm_weekCount(ctx, field)
 			case "courses":
 				return ec.fieldContext_AcademicTerm_courses(ctx, field)
 			case "createdAt":
@@ -15147,6 +15486,10 @@ func (ec *executionContext) fieldContext_Query_academicTerm(ctx context.Context,
 				return ec.fieldContext_AcademicTerm_id(ctx, field)
 			case "termName":
 				return ec.fieldContext_AcademicTerm_termName(ctx, field)
+			case "startDate":
+				return ec.fieldContext_AcademicTerm_startDate(ctx, field)
+			case "weekCount":
+				return ec.fieldContext_AcademicTerm_weekCount(ctx, field)
 			case "courses":
 				return ec.fieldContext_AcademicTerm_courses(ctx, field)
 			case "createdAt":
@@ -15171,8 +15514,8 @@ func (ec *executionContext) fieldContext_Query_academicTerm(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_academicTerms(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_academicTerms(ctx, field)
+func (ec *executionContext) _Query_academicTermsByFilter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_academicTermsByFilter(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -15185,7 +15528,7 @@ func (ec *executionContext) _Query_academicTerms(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().AcademicTerms(rctx, fc.Args["offset"].(int), fc.Args["limit"].(int))
+		return ec.resolvers.Query().AcademicTermsByFilter(rctx, fc.Args["filter"].(graphql_models.AcademicTermFilter), fc.Args["offset"].(int), fc.Args["limit"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15202,7 +15545,7 @@ func (ec *executionContext) _Query_academicTerms(ctx context.Context, field grap
 	return ec.marshalNAcademicTermQuery2ᚖserverᚋgraphᚋmodelᚐAcademicTermQuery(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_academicTerms(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_academicTermsByFilter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -15225,7 +15568,7 @@ func (ec *executionContext) fieldContext_Query_academicTerms(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_academicTerms_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_academicTermsByFilter_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -15275,6 +15618,10 @@ func (ec *executionContext) fieldContext_Query_academicTermsId(ctx context.Conte
 				return ec.fieldContext_AcademicTerm_id(ctx, field)
 			case "termName":
 				return ec.fieldContext_AcademicTerm_termName(ctx, field)
+			case "startDate":
+				return ec.fieldContext_AcademicTerm_startDate(ctx, field)
+			case "weekCount":
+				return ec.fieldContext_AcademicTerm_weekCount(ctx, field)
 			case "courses":
 				return ec.fieldContext_AcademicTerm_courses(ctx, field)
 			case "createdAt":
@@ -22063,6 +22410,33 @@ func (ec *executionContext) fieldContext___Type_specifiedByURL(ctx context.Conte
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputAcademicTermFilter(ctx context.Context, obj interface{}) (graphql_models.AcademicTermFilter, error) {
+	var it graphql_models.AcademicTermFilter
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"termName"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "termName":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("termName"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TermName = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputActivateUser(ctx context.Context, obj interface{}) (graphql_models.ActivateUser, error) {
 	var it graphql_models.ActivateUser
 	asMap := map[string]interface{}{}
@@ -22200,7 +22574,7 @@ func (ec *executionContext) unmarshalInputClassTimeData(ctx context.Context, obj
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"dayOfWeek", "timeSlot"}
+	fieldsInOrder := [...]string{"dayOfWeek", "start", "end"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -22214,13 +22588,20 @@ func (ec *executionContext) unmarshalInputClassTimeData(ctx context.Context, obj
 				return it, err
 			}
 			it.DayOfWeek = data
-		case "timeSlot":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("timeSlot"))
-			data, err := ec.unmarshalNString2string(ctx, v)
+		case "start":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("start"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.TimeSlot = data
+			it.Start = data
+		case "end":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("end"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.End = data
 		}
 	}
 
@@ -22381,7 +22762,7 @@ func (ec *executionContext) unmarshalInputCourseData(ctx context.Context, obj in
 		switch k {
 		case "teacherNames":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("teacherNames"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -22409,7 +22790,7 @@ func (ec *executionContext) unmarshalInputCourseData(ctx context.Context, obj in
 			it.CourseType = data
 		case "courseWeeks":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseWeeks"))
-			data, err := ec.unmarshalNString2ᚕᚖstring(ctx, v)
+			data, err := ec.unmarshalNInt2ᚕᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -22946,7 +23327,7 @@ func (ec *executionContext) unmarshalInputNewAcademicTerm(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"termName", "courses"}
+	fieldsInOrder := [...]string{"termName", "startDate", "weekCount", "courses"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -22960,6 +23341,20 @@ func (ec *executionContext) unmarshalInputNewAcademicTerm(ctx context.Context, o
 				return it, err
 			}
 			it.TermName = data
+		case "startDate":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("startDate"))
+			data, err := ec.unmarshalNTime2timeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StartDate = data
+		case "weekCount":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("weekCount"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.WeekCount = data
 		case "courses":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courses"))
 			data, err := ec.unmarshalOCourseData2ᚕᚖserverᚋgraphᚋmodelᚐCourseData(ctx, v)
@@ -23767,7 +24162,7 @@ func (ec *executionContext) unmarshalInputUpdateAcademicTerm(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"termName"}
+	fieldsInOrder := [...]string{"termName", "startDate", "weekCount"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -23781,6 +24176,20 @@ func (ec *executionContext) unmarshalInputUpdateAcademicTerm(ctx context.Context
 				return it, err
 			}
 			it.TermName = data
+		case "startDate":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("startDate"))
+			data, err := ec.unmarshalNTime2timeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StartDate = data
+		case "weekCount":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("weekCount"))
+			data, err := ec.unmarshalNInt2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.WeekCount = data
 		}
 	}
 
@@ -23925,6 +24334,16 @@ func (ec *executionContext) _AcademicTerm(ctx context.Context, sel ast.Selection
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "startDate":
+			out.Values[i] = ec._AcademicTerm_startDate(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "weekCount":
+			out.Values[i] = ec._AcademicTerm_weekCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "courses":
 			out.Values[i] = ec._AcademicTerm_courses(ctx, field, obj)
 		case "createdAt":
@@ -24060,6 +24479,16 @@ func (ec *executionContext) _AcademicTermShort(ctx context.Context, sel ast.Sele
 			}
 		case "termName":
 			out.Values[i] = ec._AcademicTermShort_termName(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "startDate":
+			out.Values[i] = ec._AcademicTermShort_startDate(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "weekCount":
+			out.Values[i] = ec._AcademicTermShort_weekCount(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -24238,8 +24667,13 @@ func (ec *executionContext) _ClassTime(ctx context.Context, sel ast.SelectionSet
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "timeSlot":
-			out.Values[i] = ec._ClassTime_timeSlot(ctx, field, obj)
+		case "start":
+			out.Values[i] = ec._ClassTime_start(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "end":
+			out.Values[i] = ec._ClassTime_end(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -24279,8 +24713,10 @@ func (ec *executionContext) _ClassTimePreview(ctx context.Context, sel ast.Selec
 			out.Values[i] = graphql.MarshalString("ClassTimePreview")
 		case "dayOfWeek":
 			out.Values[i] = ec._ClassTimePreview_dayOfWeek(ctx, field, obj)
-		case "timeSlot":
-			out.Values[i] = ec._ClassTimePreview_timeSlot(ctx, field, obj)
+		case "start":
+			out.Values[i] = ec._ClassTimePreview_start(ctx, field, obj)
+		case "end":
+			out.Values[i] = ec._ClassTimePreview_end(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -25884,7 +26320,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "academicTerms":
+		case "academicTermsByFilter":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -25893,7 +26329,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_academicTerms(ctx, field)
+				res = ec._Query_academicTermsByFilter(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -27484,6 +27920,11 @@ func (ec *executionContext) marshalNAcademicTerm2ᚖserverᚋgraphᚋmodelᚐAca
 	return ec._AcademicTerm(ctx, sel, v)
 }
 
+func (ec *executionContext) unmarshalNAcademicTermFilter2serverᚋgraphᚋmodelᚐAcademicTermFilter(ctx context.Context, v interface{}) (graphql_models.AcademicTermFilter, error) {
+	res, err := ec.unmarshalInputAcademicTermFilter(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalNAcademicTermPreview2serverᚋgraphᚋmodelᚐAcademicTermPreview(ctx context.Context, sel ast.SelectionSet, v graphql_models.AcademicTermPreview) graphql.Marshaler {
 	return ec._AcademicTermPreview(ctx, sel, &v)
 }
@@ -27940,6 +28381,32 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) unmarshalNInt2ᚕᚖint(ctx context.Context, v interface{}) ([]*int, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*int, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOInt2ᚖint(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalNInt2ᚕᚖint(ctx context.Context, sel ast.SelectionSet, v []*int) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOInt2ᚖint(ctx, sel, v[i])
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalNMentorship2serverᚋgraphᚋmodelᚐMentorship(ctx context.Context, sel ast.SelectionSet, v graphql_models.Mentorship) graphql.Marshaler {
@@ -29531,6 +29998,38 @@ func (ec *executionContext) marshalOID2ᚖstring(ctx context.Context, sel ast.Se
 	}
 	res := graphql.MarshalID(*v)
 	return res
+}
+
+func (ec *executionContext) unmarshalOInt2ᚕᚖint(ctx context.Context, v interface{}) ([]*int, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*int, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOInt2ᚖint(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+func (ec *executionContext) marshalOInt2ᚕᚖint(ctx context.Context, sel ast.SelectionSet, v []*int) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	for i := range v {
+		ret[i] = ec.marshalOInt2ᚖint(ctx, sel, v[i])
+	}
+
+	return ret
 }
 
 func (ec *executionContext) unmarshalOInt2ᚖint(ctx context.Context, v interface{}) (*int, error) {

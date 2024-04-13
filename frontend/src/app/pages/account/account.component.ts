@@ -285,7 +285,10 @@ export class AccountComponent implements OnInit, OnDestroy {
   }
 
   openDeleteDialog() {
-    const dialogRef = this.dialog.open(DeleteuserdialogComponent);
+    const dialogRef = this.dialog.open(DeleteuserdialogComponent,{
+      width: '300px',
+      height: '200px',
+    });
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         let userId = this.user?.id;

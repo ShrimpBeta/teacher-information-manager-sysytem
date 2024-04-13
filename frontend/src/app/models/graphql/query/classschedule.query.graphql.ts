@@ -14,7 +14,8 @@ export const academicTermQuery = gql`
         courseWeeks
         classTimes{
           dayOfWeek
-          timeSlot
+          start
+          end
         }
         studentCount
         color
@@ -25,13 +26,15 @@ export const academicTermQuery = gql`
   }
 `;
 
-export const academicTermsQuery = gql`
-  query academicTermsQuery($offset:Int!,$limit:Int!) {
-    academicTerms(offset: $offset, limit: $limit) {
+export const academicTermsShortByFilterQuery = gql`
+  query academicTermsQuery($filter:AcademicTermFilter!,$offset:Int!,$limit:Int!) {
+    academicTermsByFilter(filter: $filter,offset: $offset, limit: $limit) {
       totalCount
       academicTerms{
         id
         termName
+        startDate
+        weekCount
         createdAt
         updatedAt
       }

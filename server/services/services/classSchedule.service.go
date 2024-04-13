@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	graphql_models "server/graph/model"
+	"server/persistence/models"
 	"server/persistence/repository"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -17,35 +18,335 @@ func NewClassScheduleService(classScheduleRepo *repository.ClassScheduleRepo) *C
 }
 
 func (classScheduleService *ClassScheduleService) CreateAcademicTerm(userId primitive.ObjectID, termData graphql_models.NewAcademicTerm) (*graphql_models.AcademicTerm, error) {
-	panic("not implemented")
+
+	newCourses := make([]*models.Course, len(termData.Courses))
+	if termData.Courses != nil && len(termData.Courses) > 0 {
+		for i, courseData := range termData.Courses {
+
+			if courseData.ClassTimes == nil || len(courseData.ClassTimes) == 0 {
+				return nil, errors.New("classTimes is required")
+			}
+
+			newClassTimes := make([]models.ClassTime, len(courseData.ClassTimes))
+			for j, classTimeData := range courseData.ClassTimes {
+				newClassTimes[j] = models.ClassTime{
+					DayOfWeek: uint(classTimeData.DayOfWeek),
+					Start:     uint(classTimeData.Start),
+					End:       uint(classTimeData.End),
+				}
+			}
+
+			var studentCount *uint = nil
+			if courseData.StudentCount != nil {
+				studentCount = new(uint)
+				*studentCount = uint(*courseData.StudentCount)
+			}
+
+			newCourses[i] = &models.Course{
+				TeacherNames: courseData.TeacherNames,
+				Name:         courseData.CourseName,
+				Location:     courseData.CourseLocation,
+				Type:         courseData.CourseType,
+				Weeks:        courseData.CourseWeeks,
+				StudentCount: studentCount,
+				Color:        courseData.Color,
+			}
+		}
+	}
+
+	newAcademicTerm := models.AcademicTerm{
+		UserId:    userId,
+		Name:      termData.TermName,
+		StartDate: primitive.NewDateTimeFromTime(termData.StartDate),
+		WeekCount: uint(termData.WeekCount),
+		Courses:   newCourses,
+	}
+
+	objectId, err := classScheduleService.Repo.CreateAcademicTerm(&newAcademicTerm)
+	if err != nil {
+		return nil, err
+	}
+
+	return classScheduleService.GetAcademicTermById(objectId.Hex())
+
 }
 
 func (classScheduleService *ClassScheduleService) UpdateAcademicTerm(termID string, termData graphql_models.UpdateAcademicTerm) (*graphql_models.AcademicTerm, error) {
-	panic("not implemented")
+
+	objectId, err := primitive.ObjectIDFromHex(termID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = classScheduleService.Repo.UpdateAcademicTerm(&models.AcademicTerm{
+		ID:        objectId,
+		Name:      termData.TermName,
+		StartDate: primitive.NewDateTimeFromTime(termData.StartDate),
+		WeekCount: uint(termData.WeekCount),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return classScheduleService.GetAcademicTermById(termID)
 }
 
 func (classScheduleService *ClassScheduleService) DeleteAcademicTerm(termID string) (*graphql_models.AcademicTerm, error) {
-	panic("not implemented")
+
+	objectId, err := primitive.ObjectIDFromHex(termID)
+	if err != nil {
+		return nil, err
+	}
+
+	academicTermData, err := classScheduleService.GetAcademicTermById(termID)
+	if err != nil {
+		return nil, err
+	}
+
+	err = classScheduleService.Repo.DeleteAcademicTerm(objectId)
+	if err != nil {
+		return nil, err
+	}
+
+	return academicTermData, nil
 }
 
 func (classScheduleService *ClassScheduleService) CreateCourese(termID string, courseData graphql_models.CourseData) (*graphql_models.Course, error) {
-	panic("not implemented")
+
+	objectId, err := primitive.ObjectIDFromHex(termID)
+	if err != nil {
+		return nil, err
+	}
+
+	if courseData.ClassTimes == nil || len(courseData.ClassTimes) == 0 {
+		return nil, errors.New("classTimes is required")
+	}
+
+	newClassTimes := make([]*models.ClassTime, len(courseData.ClassTimes))
+	for i, classTimeData := range courseData.ClassTimes {
+		newClassTimes[i] = &models.ClassTime{
+			DayOfWeek: uint(classTimeData.DayOfWeek),
+			Start:     uint(classTimeData.Start),
+			End:       uint(classTimeData.End),
+		}
+	}
+
+	var studentCount *uint = nil
+	if courseData.StudentCount != nil {
+		studentCount = new(uint)
+		*studentCount = uint(*courseData.StudentCount)
+	}
+
+	newCourseData := models.Course{
+		TeacherNames: courseData.TeacherNames,
+		Name:         courseData.CourseName,
+		Location:     courseData.CourseLocation,
+		Type:         courseData.CourseType,
+		Weeks:        courseData.CourseWeeks,
+		ClassTimes:   newClassTimes,
+		StudentCount: studentCount,
+		Color:        courseData.Color,
+	}
+
+	courseId, err := classScheduleService.Repo.CreateCourse(objectId, &newCourseData)
+	if err != nil {
+		return nil, err
+	}
+
+	return classScheduleService.GetCourseById(termID, courseId.Hex())
 }
 
 func (classScheduleService *ClassScheduleService) UpdateCourse(termID string, courseID string, courseData graphql_models.CourseData) (*graphql_models.Course, error) {
-	panic("not implemented")
+	termObjectId, err := primitive.ObjectIDFromHex(termID)
+	if err != nil {
+		return nil, err
+	}
+
+	courseObjectId, err := primitive.ObjectIDFromHex(courseID)
+	if err != nil {
+		return nil, err
+	}
+
+	if courseData.ClassTimes == nil || len(courseData.ClassTimes) == 0 {
+		return nil, errors.New("classTimes is required")
+	}
+
+	updateClassTimes := make([]*models.ClassTime, len(courseData.ClassTimes))
+	for i, classTimeData := range courseData.ClassTimes {
+		updateClassTimes[i] = &models.ClassTime{
+			DayOfWeek: uint(classTimeData.DayOfWeek),
+			Start:     uint(classTimeData.Start),
+			End:       uint(classTimeData.End),
+		}
+	}
+
+	var studentCount *uint = nil
+	if courseData.StudentCount != nil {
+		studentCount = new(uint)
+		*studentCount = uint(*courseData.StudentCount)
+	}
+
+	courseUpdate, err := classScheduleService.Repo.GetCourseById(termObjectId, courseObjectId)
+	if err != nil {
+		return nil, err
+	}
+
+	if courseUpdate == nil {
+		return nil, errors.New("course not found")
+	}
+
+	courseUpdate.TeacherNames = courseData.TeacherNames
+	courseUpdate.Name = courseData.CourseName
+	courseUpdate.Location = courseData.CourseLocation
+	courseUpdate.Type = courseData.CourseType
+	courseUpdate.Weeks = courseData.CourseWeeks
+	courseUpdate.ClassTimes = updateClassTimes
+	courseUpdate.StudentCount = studentCount
+	courseUpdate.Color = courseData.Color
+
+	err = classScheduleService.Repo.UpdateCourse(termObjectId, courseUpdate)
+	if err != nil {
+		return nil, err
+	}
+
+	return classScheduleService.GetCourseById(termID, courseID)
 }
 
 func (classScheduleService *ClassScheduleService) DeleteCourse(termID string, courseID string) (*graphql_models.Course, error) {
-	panic("not implemented")
+	termObjectId, err := primitive.ObjectIDFromHex(termID)
+	if err != nil {
+		return nil, err
+	}
+
+	courseObjectId, err := primitive.ObjectIDFromHex(courseID)
+	if err != nil {
+		return nil, err
+	}
+
+	courseData, err := classScheduleService.GetCourseById(termID, courseID)
+	if err != nil {
+		return nil, err
+	}
+
+	if courseData == nil {
+		return nil, errors.New("course not found")
+	}
+
+	err = classScheduleService.Repo.DeleteCourse(termObjectId, courseObjectId)
+	if err != nil {
+		return nil, err
+	}
+
+	return courseData, nil
+}
+
+func (classScheduleService *ClassScheduleService) GetCourseById(termId, courseID string) (*graphql_models.Course, error) {
+	termObjectId, err := primitive.ObjectIDFromHex(courseID)
+	if err != nil {
+		return nil, err
+	}
+
+	courseObjectId, err := primitive.ObjectIDFromHex(courseID)
+	if err != nil {
+		return nil, err
+	}
+
+	courseData, err := classScheduleService.Repo.GetCourseById(termObjectId, courseObjectId)
+	if err != nil {
+		return nil, err
+	}
+
+	if courseData == nil {
+		return nil, errors.New("course not found")
+	}
+
+	classTimes := make([]*graphql_models.ClassTime, len(courseData.ClassTimes))
+	for i, classTimeData := range courseData.ClassTimes {
+		classTimes[i] = &graphql_models.ClassTime{
+			DayOfWeek: int(classTimeData.DayOfWeek),
+			Start:     int(classTimeData.Start),
+			End:       int(classTimeData.End),
+		}
+	}
+
+	var studentCount *int = nil
+	if courseData.StudentCount != nil {
+		studentCount = new(int)
+		*studentCount = int(*courseData.StudentCount)
+	}
+
+	return &graphql_models.Course{
+		ID:             courseData.ID.Hex(),
+		TeacherNames:   courseData.TeacherNames,
+		CourseName:     courseData.Name,
+		CourseLocation: courseData.Location,
+		CourseType:     courseData.Type,
+		CourseWeeks:    courseData.Weeks,
+		StudentCount:   studentCount,
+		Color:          courseData.Color,
+		ClassTimes:     classTimes,
+	}, nil
 }
 
 func (classScheduleService *ClassScheduleService) GetAcademicTermById(id string) (*graphql_models.AcademicTerm, error) {
-	panic("not implemented")
+	objectId, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
+	academicTermData, err := classScheduleService.Repo.GetAcademicTermById(objectId)
+	if err != nil {
+		return nil, err
+	}
+
+	courses := make([]*graphql_models.Course, len(academicTermData.Courses))
+	for i, courseData := range academicTermData.Courses {
+		classTimes := make([]*graphql_models.ClassTime, len(courseData.ClassTimes))
+		for j, classTimeData := range courseData.ClassTimes {
+			classTimes[j] = &graphql_models.ClassTime{
+				DayOfWeek: int(classTimeData.DayOfWeek),
+				Start:     int(classTimeData.Start),
+				End:       int(classTimeData.End),
+			}
+		}
+
+		var studentCount *int = nil
+		if courseData.StudentCount != nil {
+			studentCount = new(int)
+			*studentCount = int(*courseData.StudentCount)
+		}
+
+		courses[i] = &graphql_models.Course{
+			ID:             courseData.ID.Hex(),
+			TeacherNames:   courseData.TeacherNames,
+			CourseName:     courseData.Name,
+			CourseLocation: courseData.Location,
+			CourseType:     courseData.Type,
+			CourseWeeks:    courseData.Weeks,
+			StudentCount:   studentCount,
+			Color:          courseData.Color,
+			ClassTimes:     classTimes,
+		}
+	}
+
+	return &graphql_models.AcademicTerm{
+		ID:        academicTermData.ID.Hex(),
+		TermName:  academicTermData.Name,
+		StartDate: academicTermData.StartDate.Time(),
+		WeekCount: int(academicTermData.WeekCount),
+		Courses:   courses,
+		CreatedAt: academicTermData.CreatedAt.Time(),
+		UpdatedAt: academicTermData.UpdatedAt.Time(),
+	}, nil
 }
 
-func (classScheduleService *ClassScheduleService) GetAcademicTerms(userId primitive.ObjectID, offset int, limit int) (*graphql_models.AcademicTermQuery, error) {
-	AcademicTermsData, err := classScheduleService.Repo.GetAcademicTermsByUserId(userId)
+func (classScheduleService *ClassScheduleService) GetAcademicTermsByFilter(userId primitive.ObjectID, filter graphql_models.AcademicTermFilter, offset int, limit int) (*graphql_models.AcademicTermQuery, error) {
+
+	AcademicTermsData, err := classScheduleService.Repo.GetAcademicTermsByParams(
+		repository.ClassScheduleQueryParams{
+			UserId:   userId,
+			TermName: filter.TermName,
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -85,6 +386,8 @@ func (classScheduleService *ClassScheduleService) GetAcademicTerms(userId primit
 		academicTerms[i] = &graphql_models.AcademicTermShort{
 			ID:        academictermData.ID.Hex(),
 			TermName:  academictermData.Name,
+			StartDate: academictermData.StartDate.Time(),
+			WeekCount: int(academictermData.WeekCount),
 			CreatedAt: academictermData.CreatedAt.Time(),
 			UpdatedAt: academictermData.UpdatedAt.Time(),
 		}

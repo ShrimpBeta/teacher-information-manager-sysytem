@@ -1,7 +1,8 @@
 # 课程时间
 type ClassTime {
   dayOfWeek: Int!
-  timeSlot: String!
+  start: Int!
+  end: Int!
 }
 
 # 单个课程
@@ -11,7 +12,7 @@ type Course {
   courseName: String!
   courseLocation: String
   courseType: String
-  courseWeeks: [String]!
+  courseWeeks: [Int]!
   classTimes: [ClassTime]!
   studentCount: Int
   color: String
@@ -21,6 +22,8 @@ type Course {
 type AcademicTerm {
   id: ID!
   termName: String!
+  startDate: Time!
+  weekCount: Int!
   courses: [Course]
   createdAt: Time!
   updatedAt: Time!
@@ -29,6 +32,8 @@ type AcademicTerm {
 type AcademicTermShort {
   id: ID!
   termName: String!
+  startDate: Time!
+  weekCount: Int!
   createdAt: Time!
   updatedAt: Time!
 }
@@ -41,7 +46,8 @@ type AcademicTermQuery {
 # 课程表学期预览，OCR识别结果
 type ClassTimePreview {
   dayOfWeek: Int
-  timeSlot: String
+  start: Int
+  end: Int
 }
 
 type CoursePreview {
@@ -49,7 +55,7 @@ type CoursePreview {
   courseName: String
   courseLocation: String
   courseType: String
-  courseWeeks: [String]
+  courseWeeks: [Int]
   classTimes: [ClassTimePreview]
   studentCount: Int
   color: String
@@ -62,15 +68,16 @@ type AcademicTermPreview {
 
 input ClassTimeData {
   dayOfWeek: Int!
-  timeSlot: String!
+  start: Int!
+  end: Int!
 }
 
 input CourseData {
-  teacherNames: String
+  teacherNames: String!
   courseName: String!
   courseLocation: String
   courseType: String
-  courseWeeks: [String]!
+  courseWeeks: [Int]!
   classTimes: [ClassTimeData]!
   studentCount: Int
   color: String
@@ -78,17 +85,29 @@ input CourseData {
 
 input NewAcademicTerm {
   termName: String!
+  startDate: Time!
+  weekCount: Int!
   courses: [CourseData]
 }
 
 input UpdateAcademicTerm {
   termName: String!
+  startDate: Time!
+  weekCount: Int!
+}
+
+input AcademicTermFilter {
+  termName: String
 }
 
 extend type Query {
   academicTerm(id: ID!): AcademicTerm!
 
-  academicTerms(offset: Int!, limit: Int!): AcademicTermQuery!
+  academicTermsByFilter(
+    filter: AcademicTermFilter!
+    offset: Int!
+    limit: Int!
+  ): AcademicTermQuery!
   academicTermsId(ids: [ID]!): [AcademicTerm]!
 }
 

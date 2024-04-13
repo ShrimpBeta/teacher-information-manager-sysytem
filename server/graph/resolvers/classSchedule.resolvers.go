@@ -146,8 +146,8 @@ func (r *queryResolver) AcademicTerm(ctx context.Context, id string) (*graphql_m
 	return r.ClassScheduleService.GetAcademicTermById(id)
 }
 
-// Academicerms is the resolver for the academicerms field.
-func (r *queryResolver) AcademicTerms(ctx context.Context, offset int, limit int) (*graphql_models.AcademicTermQuery, error) {
+// AcademicTermsByFilter is the resolver for the academicTermsByFilter field.
+func (r *queryResolver) AcademicTermsByFilter(ctx context.Context, filter graphql_models.AcademicTermFilter, offset int, limit int) (*graphql_models.AcademicTermQuery, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -164,10 +164,26 @@ func (r *queryResolver) AcademicTerms(ctx context.Context, offset int, limit int
 		return nil, err
 	}
 
-	return r.ClassScheduleService.GetAcademicTerms(user.ID, offset, limit)
+	return r.ClassScheduleService.GetAcademicTermsByFilter(user.ID, filter, offset, limit)
 }
 
 // AcademicTermsID is the resolver for the academicTermsId field.
 func (r *queryResolver) AcademicTermsID(ctx context.Context, ids []*string) ([]*graphql_models.AcademicTerm, error) {
+	// ginContext, err := middlewares.GinContextFromContext(ctx)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// // if no token found, return an error
+	// account, err := middlewares.ForContext(ginContext)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
 	panic(fmt.Errorf("not implemented: AcademicTermsID - academicTermsId"))
 }

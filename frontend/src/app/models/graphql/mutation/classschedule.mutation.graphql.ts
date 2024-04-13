@@ -5,6 +5,8 @@ export const createAcademicTermMutation = gql`
     createAcademicTerm(termData: $termData) {
       id
       termName
+      startDate
+      weekCount
       courses{
         id
         teacherNames
@@ -14,7 +16,8 @@ export const createAcademicTermMutation = gql`
         courseWeeks
         classTimes{
           dayOfWeek
-          timeSlot
+          start
+          end
         }
         studentCount
         color
@@ -30,6 +33,8 @@ export const updateAcademicTerm = gql`
     updateAcademicTerm(termId: $termId,termData: $termData){
       id
       termName
+      startDate
+      weekCount
       courses{
         id
         teacherNames
@@ -39,7 +44,8 @@ export const updateAcademicTerm = gql`
         courseWeeks
         classTimes{
           dayOfWeek
-          timeSlot
+          start
+          end
         }
         studentCount
         color
@@ -54,6 +60,26 @@ export const deleteAcademicTermMutation = gql`
   mutation deleteAcademicTerm($termId:ID!){
     deleteAcademicTerm(termId: $termId){
       id
+      termName
+      startDate
+      weekCount
+      courses{
+        id
+        teacherNames
+        courseName
+        courseLocation
+        courseType
+        courseWeeks
+        classTimes{
+          dayOfWeek
+          start
+          end
+        }
+        studentCount
+        color
+      }
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -69,7 +95,8 @@ export const createCourseMutation = gql`
       courseWeeks
       classTimes{
         dayOfWeek
-        timeSlot
+        start
+        end
       }
       studentCount
       color
@@ -81,6 +108,18 @@ export const updateCourseMutation = gql`
   mutation updateCourse($termId:ID!,$courseId:ID!,$courseData:CourseData!){
     updateCourse(termId: $termId,courseId: $courseId,courseData: $courseData){
       id
+      teacherNames
+      courseName
+      courseLocation
+      courseType
+      courseWeeks
+      classTimes{
+        dayOfWeek
+        start
+        end
+      }
+      studentCount
+      color
     }
   }
 `;
@@ -89,6 +128,18 @@ export const deleteCourseMutation = gql`
   mutation deleteCourse($termId:ID!,$courseId:ID!){
     deleteCourse(termId: $termId,courseId: $courseId){
       id
+      teacherNames
+      courseName
+      courseLocation
+      courseType
+      courseWeeks
+      classTimes{
+        dayOfWeek
+        start
+        end
+      }
+      studentCount
+      color
     }
   }
 `;
@@ -105,7 +156,8 @@ export const uploadAcademicTermMutation = gql`
         courseWeeks
         classTimes{
           dayOfWeek
-          timeSlot
+          start
+          end
         }
         studentCount
         color

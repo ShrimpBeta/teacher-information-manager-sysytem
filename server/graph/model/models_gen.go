@@ -11,9 +11,15 @@ import (
 type AcademicTerm struct {
 	ID        string    `json:"id"`
 	TermName  string    `json:"termName"`
+	StartDate time.Time `json:"startDate"`
+	WeekCount int       `json:"weekCount"`
 	Courses   []*Course `json:"courses,omitempty"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type AcademicTermFilter struct {
+	TermName *string `json:"termName,omitempty"`
 }
 
 type AcademicTermPreview struct {
@@ -29,6 +35,8 @@ type AcademicTermQuery struct {
 type AcademicTermShort struct {
 	ID        string    `json:"id"`
 	TermName  string    `json:"termName"`
+	StartDate time.Time `json:"startDate"`
+	WeekCount int       `json:"weekCount"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -71,18 +79,21 @@ type AwardRecordPreview struct {
 }
 
 type ClassTime struct {
-	DayOfWeek int    `json:"dayOfWeek"`
-	TimeSlot  string `json:"timeSlot"`
+	DayOfWeek int `json:"dayOfWeek"`
+	Start     int `json:"start"`
+	End       int `json:"end"`
 }
 
 type ClassTimeData struct {
-	DayOfWeek int    `json:"dayOfWeek"`
-	TimeSlot  string `json:"timeSlot"`
+	DayOfWeek int `json:"dayOfWeek"`
+	Start     int `json:"start"`
+	End       int `json:"end"`
 }
 
 type ClassTimePreview struct {
-	DayOfWeek *int    `json:"dayOfWeek,omitempty"`
-	TimeSlot  *string `json:"timeSlot,omitempty"`
+	DayOfWeek *int `json:"dayOfWeek,omitempty"`
+	Start     *int `json:"start,omitempty"`
+	End       *int `json:"end,omitempty"`
 }
 
 type CompGuidance struct {
@@ -135,18 +146,18 @@ type Course struct {
 	CourseName     string       `json:"courseName"`
 	CourseLocation *string      `json:"courseLocation,omitempty"`
 	CourseType     *string      `json:"courseType,omitempty"`
-	CourseWeeks    []*string    `json:"courseWeeks"`
+	CourseWeeks    []*int       `json:"courseWeeks"`
 	ClassTimes     []*ClassTime `json:"classTimes"`
 	StudentCount   *int         `json:"studentCount,omitempty"`
 	Color          *string      `json:"color,omitempty"`
 }
 
 type CourseData struct {
-	TeacherNames   *string          `json:"teacherNames,omitempty"`
+	TeacherNames   string           `json:"teacherNames"`
 	CourseName     string           `json:"courseName"`
 	CourseLocation *string          `json:"courseLocation,omitempty"`
 	CourseType     *string          `json:"courseType,omitempty"`
-	CourseWeeks    []*string        `json:"courseWeeks"`
+	CourseWeeks    []*int           `json:"courseWeeks"`
 	ClassTimes     []*ClassTimeData `json:"classTimes"`
 	StudentCount   *int             `json:"studentCount,omitempty"`
 	Color          *string          `json:"color,omitempty"`
@@ -157,7 +168,7 @@ type CoursePreview struct {
 	CourseName     *string             `json:"courseName,omitempty"`
 	CourseLocation *string             `json:"courseLocation,omitempty"`
 	CourseType     *string             `json:"courseType,omitempty"`
-	CourseWeeks    []*string           `json:"courseWeeks,omitempty"`
+	CourseWeeks    []*int              `json:"courseWeeks,omitempty"`
 	ClassTimes     []*ClassTimePreview `json:"classTimes,omitempty"`
 	StudentCount   *int                `json:"studentCount,omitempty"`
 	Color          *string             `json:"color,omitempty"`
@@ -321,8 +332,10 @@ type Mutation struct {
 }
 
 type NewAcademicTerm struct {
-	TermName string        `json:"termName"`
-	Courses  []*CourseData `json:"courses,omitempty"`
+	TermName  string        `json:"termName"`
+	StartDate time.Time     `json:"startDate"`
+	WeekCount int           `json:"weekCount"`
+	Courses   []*CourseData `json:"courses,omitempty"`
 }
 
 type NewUser struct {
@@ -578,7 +591,9 @@ type UGPGGuidanceQuery struct {
 }
 
 type UpdateAcademicTerm struct {
-	TermName string `json:"termName"`
+	TermName  string    `json:"termName"`
+	StartDate time.Time `json:"startDate"`
+	WeekCount int       `json:"weekCount"`
 }
 
 type UpdatePassword struct {
