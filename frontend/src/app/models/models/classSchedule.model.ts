@@ -56,8 +56,8 @@ export class ClassScheduleFilter {
 }
 
 export class ClassSchedulePage {
-  total: number = 0;
-  classSchedules: ClassSchedule[] = [];
+  totalCount: number = 0;
+  academicTerms: ClassSchedule[] = [];
 }
 
 export class NewClassScheduleData {

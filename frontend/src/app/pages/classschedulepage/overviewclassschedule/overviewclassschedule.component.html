@@ -3,6 +3,22 @@
     <h1>课程表管理</h1>
   </div>
 
+  <div class="filter">
+    <div class="sub-title">
+      <h2>搜索</h2>
+    </div>
+    <mat-divider></mat-divider>
+    <form [formGroup]="SearchForm" (ngSubmit)="onSearch()" class="filter-content">
+      <mat-form-field appearance="outline">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput type="text" formControlName="name" placeholder="搜索课程表名称">
+      </mat-form-field>
+      <button mat-raised-button color="primary" style="margin-bottom: 20px;" [disabled]="isSearching" type="submit">
+        <span>搜索</span>
+      </button>
+    </form>
+  </div>
+
   <div class="fab-container">
     <a mat-fab color="primary" aria-label="create password" (click)="openCreateDialog()">
       <mat-icon>add</mat-icon>
@@ -15,7 +31,47 @@
     </a>
   </div>
 
-  <div>
-
+  <div class="search-result">
+    <div class="sub-title">
+      <h2>结果</h2>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="result-content">
+      @if(isSearching){
+      <mat-spinner></mat-spinner>
+      } @else {
+      @for(classSchedule of classScheduleList;track $index){
+      <mat-card class="class-schedule-card">
+        <mat-card-header>
+          <mat-card-title>
+            <h3>{{classSchedule.termName}}</h3>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>创建时间: {{classSchedule.createdAt | date: 'yyyy-MM-dd HH:mm:ss'}}</p>
+          <p>更新时间: {{classSchedule.updatedAt | date: 'yyyy-MM-dd HH:mm:ss'}}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-raised-button color="primary" (click)="editClassSchedule(classSchedule)">
+            <mat-icon>edit</mat-icon>
+            <span>编辑</span>
+          </button>
+          <button mat-raised-button color="warn" (click)="deleteClassSchedule(classSchedule)">
+            <mat-icon>delete</mat-icon>
+            <span>删除</span>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+      }@empty{
+      <div>
+        <h3>暂无数据</h3>
+      </div>
+      }
+      }
+    </div>
+    <mat-divider></mat-divider>
+    <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)" aria-label="Select page">
+    </mat-paginator>
   </div>
 </div>

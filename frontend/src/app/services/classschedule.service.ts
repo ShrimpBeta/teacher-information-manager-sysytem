@@ -42,6 +42,7 @@ export class ClassScheduleService {
       fetchPolicy: 'network-only'
     }).pipe(
       map(result => {
+        console.log(result);
         let classSchedulePage = (result as AcademicTermsByFilterResponse).data?.academicTermsByFilter;
         if (typeof classSchedulePage === 'undefined' || classSchedulePage === null) {
           return null;

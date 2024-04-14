@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Password, PasswordFilter } from '../../../models/models/password.model';
 import { Router, RouterLink } from '@angular/router';
 import { PasswordService } from '../../../services/password.service';
@@ -28,7 +28,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 })
 export class OverviewpasswordComponent implements OnInit, OnDestroy {
 
-  searchFormControl!: FormControl;
+  SearchForm!: FormGroup;
   private destroy$ = new Subject<boolean>();
   // data
   passwordList: Password[] = [];
@@ -47,7 +47,9 @@ export class OverviewpasswordComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.searchFormControl = new FormControl('');
+    this.SearchForm = new FormGroup({
+      keyword: new FormControl('')
+    });
 
     this.getPasswordList();
   }
@@ -73,10 +75,10 @@ export class OverviewpasswordComponent implements OnInit, OnDestroy {
 
   getPasswordList() {
     let passwordFilter = new PasswordFilter();
-    if (this.searchFormControl.value.length > 0) {
-      passwordFilter.appName = this.searchFormControl.value;
-      passwordFilter.account = this.searchFormControl.value;
-      passwordFilter.url = this.searchFormControl.value;
+    if (this.SearchForm.get('keyword')?.value !== '') {
+      passwordFilter.appName = this.SearchForm.get('keyword')?.value;
+      passwordFilter.account = this.SearchForm.get('keyword')?.value;
+      passwordFilter.url = this.SearchForm.get('keyword')?.value;
     }
     this.isSearching = true;
     this.passwordService.getPasswordsByFilter(passwordFilter, this.pageIndex, this.pageSize)
@@ -85,12 +87,16 @@ export class OverviewpasswordComponent implements OnInit, OnDestroy {
           if (passwordsPage) {
             this.passwordList = passwordsPage.passwords;
             this.totalCount = passwordsPage.totalCount;
+          } else {
+            this.snackBar.open('获取数据失败', '关闭', {
+              duration: 2000
+            });
           }
           this.isSearching = false;
         },
         error: (error: unknown) => {
           console.error(error);
-          this.snackBar.open('Error getting passwords', '', {
+          this.snackBar.open('获取数据失败', '关闭', {
             duration: 2000
           });
           this.isSearching = false;

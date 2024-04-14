@@ -5,6 +5,8 @@ export const academicTermQuery = gql`
     academicTerm(id: $id) {
       id
       termName
+      startDate
+      weekCount
       courses{
         id
         teacherNames
