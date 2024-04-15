@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>创建课程表</h2>
+<div mat-dialog-content class="content">
+  <div [formGroup]="courseForm" class="form">
+    <mat-form-field appearance="outline">
+      <mat-label>课程名称</mat-label>
+      <input matInput placeholder="课程名称" formControlName="name">
+      <mat-error>课程名称不能为空</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>授课教师</mat-label>
+      <input matInput placeholder="授课教师" formControlName="teacherNames">
+      <mat-error>授课教师不能为空</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>上课地点</mat-label>
+      <input matInput placeholder="上课地点" formControlName="courseLocation">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>课程类型</mat-label>
+      <input matInput placeholder="课程类型" formControlName="courseType">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>学生人数</mat-label>
+      <input matInput type="number" placeholder="学生人数" formControlName="studentCount">
+    </mat-form-field>
+
+    <mat-label>背景色</mat-label>
+    <div
+      style="display: flex; flex-direction: row; gap: 10px; height: 30px; justify-content: center; align-items: center;">
+      <color-hue-picker [color]="this.courseForm.get('color')?.value"
+        (onChangeComplete)="changeColor($event)"></color-hue-picker>
+      <div style="width: 30px; height: 30px; border-radius: 50%;"
+        [style.background]="this.courseForm.get('color')?.value"></div>
+    </div>
+
+    <mat-label>上课周</mat-label>
+    <mat-chip-listbox multiple>
+      @for(week of weeks;track $index){
+      <mat-chip-option color="primary" [selected]="courseWeeks.value.includes(week)"
+        (click)="toggleCourseWeek(week)">{{week}}</mat-chip-option>
+      }
+    </mat-chip-listbox>
+  </div>
+</div>
+<div mat-dialog-actions
+  style="display:flex;flex-direction:row; gap:20px; justify-content:center; margin-bottom:0.5rem;">
+  <button mat-raised-button mat-dialog-close>取消</button>
+  <button mat-raised-button color="primary" [disabled]="courseForm.invalid" (click)="save()">{{buttonLabel}}</button>
+</div>

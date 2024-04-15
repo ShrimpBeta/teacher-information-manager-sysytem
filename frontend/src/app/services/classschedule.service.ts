@@ -74,7 +74,11 @@ export class ClassScheduleService {
       mutation: updateAcademicTerm,
       variables: {
         termId: termId,
-        termData: updatedClassSchedule
+        termData: {
+          termName: updatedClassSchedule.termName,
+          startDate: updatedClassSchedule.startDate,
+          weekCount: updatedClassSchedule.weekCount
+        }
       }
     }).pipe(
       map(result => {

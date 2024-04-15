@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -17,25 +17,25 @@ import { NewClassScheduleData } from '../../models/models/classSchedule.model';
   template: `
     <h2 mat-dialog-title>创建课程表</h2>
     <div mat-dialog-content style="width: 100%;">
-      <form [formGroup]="classScheduleForm" style="margin-top: 20px;">
-          <mat-form-field appearance="outline" style="width: 100%;">
+      <div [formGroup]="classScheduleForm" style="margin-top: 20px;">
+        <mat-form-field appearance="outline" style="width: 100%;">
           <mat-label>课程表名称</mat-label>
           <input matInput placeholder="课程表名称" formControlName="nameControl">
           <mat-error>课程表名称不能为空</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" style="width: 100%;">
           <mat-label>开始日期</mat-label>
-          <input matInput [matDatepicker]="picker" formControlName="startDate">
+          <input matInput [matDatepicker]="picker" formControlName="startDate" placeholder="开始日期">
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
           <mat-error>开始日期不能为空</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" style="width: 100%;">
           <mat-label>学期周数</mat-label>
-          <input matInput type="number" formControlName="weekCount">
+          <input matInput type="number" formControlName="weekCount" placeholder="学期周数">
           <mat-error>周数不能为空</mat-error>
         </mat-form-field>
-      </form>
+      </div>
     </div>
     <div mat-dialog-actions style="display:flex;flex-direction:row; gap:20px; justify-content:center; margin-bottom:0.5rem;">
       <button mat-raised-button mat-dialog-close>取消</button>

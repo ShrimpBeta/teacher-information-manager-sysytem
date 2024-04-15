@@ -2,14 +2,24 @@
 {
 <div class="container">
   <div class="header">
-    <div class="title">
-      <h2>{{classSchedule.termName}}</h2>
-    </div>
-    <div class="action">
-      <div></div>
-      <div>
-        <button (click)="edit()">编辑</button>
+    <div style="display: flex; flex-direction: column; align-items: center;">
+      <div style="display: flex; flex-direction: row; gap: 1rem; align-items: center;">
+        <button mat-icon-button color="primary" [disabled]="currentWeek<=1" (click)="currentWeek=currentWeek-1">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div>第 {{currentWeek}} 周</div>
+        <button mat-icon-button color="primary" [disabled]="currentWeek>=classSchedule.weekCount"
+          (click)="currentWeek=currentWeek+1">
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
       </div>
+      @if(currentWeek!==nowWeek){
+      <div>当前第 {{nowWeek}} 周</div>
+      }
+    </div>
+    <div style="font-size:larger;">{{classSchedule.termName}}</div>
+    <div>
+      <button mat-raised-button color="primary" (click)="openEditDrawer()">编辑</button>
     </div>
   </div>
   <div style="padding: 10px 40px; box-sizing: border-box; width: 100%; height: 100%;">
@@ -29,25 +39,24 @@
           @if(dayIndex === 0){
           <td>{{period}}</td>
           }
-          <td>
-            @for(course of classSchedule.courses;track $index){
-            <div>
-              @for(classtime of course.courseTimes;track $index){
-              <div>
-                @if(classtime.dayOfWeek === dayIndex && classtime.start<= periodIndex && classtime.end>= periodIndex)
-                  {
-                  {{course.courseName}}
-                  {{course.teacherNames}}
-                  {{classtime.start}}-{{classtime.end}}
-                  {{course.courseLocation}}
-                  {{course.courseType}}
-                  {{course.studentCount}}
-                  }
-              </div>
-              }
+          @if(classScheduleMatrix[dayIndex][periodIndex]!==null&&classScheduleMatrix[dayIndex][periodIndex]!==undefined){
+          @if(classScheduleMatrix[dayIndex][periodIndex].start!-1===periodIndex &&
+          classScheduleMatrix[dayIndex][periodIndex].courseWeeks!.includes(currentWeek)){
+          <td
+            [rowSpan]="classScheduleMatrix[dayIndex][periodIndex].end!-classScheduleMatrix[dayIndex][periodIndex].start!+1"
+            [style.background-color]="classScheduleMatrix[dayIndex][periodIndex].color">
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+              <div>{{classScheduleMatrix[dayIndex][periodIndex].courseName}}</div>
+              <div>{{classScheduleMatrix[dayIndex][periodIndex].teacherNames}}</div>
+              <div>{{classScheduleMatrix[dayIndex][periodIndex].courseType}}</div>
+              <div>{{classScheduleMatrix[dayIndex][periodIndex].courseLocation}}</div>
+              <div>{{classScheduleMatrix[dayIndex][periodIndex].studentCount}}</div>
             </div>
-            }
           </td>
+          }
+          }@else {
+          <td></td>
+          }
           }
         </tr>
         }
@@ -55,4 +64,49 @@
     </table>
   </div>
 </div>
+@if(editDrawer){
+<div class="drawer">
+  <div class="action">
+    <button mat-icon-button (click)="editDrawer=false" color="primary">
+      <mat-icon>close</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" (click)="createCourse()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+  <div class="classScheduleItem" [formGroup]="classScheduleForm">
+    <mat-form-field appearance="outline">
+      <mat-label>课程表名称</mat-label>
+      <input matInput placeholder="课程表名称" formControlName="name">
+      <mat-error>课程表名称不能为空</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>开始日期</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="startDate" placeholder="开始日期">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error>开始日期不能为空</mat-error>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>学期周数</mat-label>
+      <input matInput type="number" formControlName="weekCount" placeholder="学期周数">
+      <mat-error>周数不能为空</mat-error>
+    </mat-form-field>
+    <button mat-raised-button color="primary" [disabled]="classScheduleForm.invalid" (click)="updateClassSchedule()">
+      更新
+    </button>
+  </div>
+
+  <div class="courseList">
+    @for(course of classSchedule.courses;track $index){
+    <div class="courseItem" (click)="openEditCourse(course)">
+      <div>{{course.courseName}}</div>
+      <div>{{course.teacherNames}}</div>
+    </div>
+    }@empty {
+    <div>暂无课程</div>
+    }
+  </div>
+</div>
+}
 }
