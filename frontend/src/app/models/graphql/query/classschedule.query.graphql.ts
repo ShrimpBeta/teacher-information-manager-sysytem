@@ -14,7 +14,7 @@ export const academicTermQuery = gql`
         courseLocation
         courseType
         courseWeeks
-        classTimes{
+        courseTimes{
           dayOfWeek
           start
           end

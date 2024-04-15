@@ -23,12 +23,12 @@ func (classScheduleService *ClassScheduleService) CreateAcademicTerm(userId prim
 	if termData.Courses != nil && len(termData.Courses) > 0 {
 		for i, courseData := range termData.Courses {
 
-			if courseData.ClassTimes == nil || len(courseData.ClassTimes) == 0 {
+			if courseData.CourseTimes == nil || len(courseData.CourseTimes) == 0 {
 				return nil, errors.New("classTimes is required")
 			}
 
-			newClassTimes := make([]models.ClassTime, len(courseData.ClassTimes))
-			for j, classTimeData := range courseData.ClassTimes {
+			newClassTimes := make([]models.ClassTime, len(courseData.CourseTimes))
+			for j, classTimeData := range courseData.CourseTimes {
 				newClassTimes[j] = models.ClassTime{
 					DayOfWeek: uint(classTimeData.DayOfWeek),
 					Start:     uint(classTimeData.Start),
@@ -118,12 +118,12 @@ func (classScheduleService *ClassScheduleService) CreateCourese(termID string, c
 		return nil, err
 	}
 
-	if courseData.ClassTimes == nil || len(courseData.ClassTimes) == 0 {
+	if courseData.CourseTimes == nil || len(courseData.CourseTimes) == 0 {
 		return nil, errors.New("classTimes is required")
 	}
 
-	newClassTimes := make([]*models.ClassTime, len(courseData.ClassTimes))
-	for i, classTimeData := range courseData.ClassTimes {
+	newClassTimes := make([]*models.ClassTime, len(courseData.CourseTimes))
+	for i, classTimeData := range courseData.CourseTimes {
 		newClassTimes[i] = &models.ClassTime{
 			DayOfWeek: uint(classTimeData.DayOfWeek),
 			Start:     uint(classTimeData.Start),
@@ -167,12 +167,12 @@ func (classScheduleService *ClassScheduleService) UpdateCourse(termID string, co
 		return nil, err
 	}
 
-	if courseData.ClassTimes == nil || len(courseData.ClassTimes) == 0 {
+	if courseData.CourseTimes == nil || len(courseData.CourseTimes) == 0 {
 		return nil, errors.New("classTimes is required")
 	}
 
-	updateClassTimes := make([]*models.ClassTime, len(courseData.ClassTimes))
-	for i, classTimeData := range courseData.ClassTimes {
+	updateClassTimes := make([]*models.ClassTime, len(courseData.CourseTimes))
+	for i, classTimeData := range courseData.CourseTimes {
 		updateClassTimes[i] = &models.ClassTime{
 			DayOfWeek: uint(classTimeData.DayOfWeek),
 			Start:     uint(classTimeData.Start),
@@ -241,7 +241,7 @@ func (classScheduleService *ClassScheduleService) DeleteCourse(termID string, co
 }
 
 func (classScheduleService *ClassScheduleService) GetCourseById(termId, courseID string) (*graphql_models.Course, error) {
-	termObjectId, err := primitive.ObjectIDFromHex(courseID)
+	termObjectId, err := primitive.ObjectIDFromHex(termId)
 	if err != nil {
 		return nil, err
 	}
@@ -284,7 +284,7 @@ func (classScheduleService *ClassScheduleService) GetCourseById(termId, courseID
 		CourseWeeks:    courseData.Weeks,
 		StudentCount:   studentCount,
 		Color:          courseData.Color,
-		ClassTimes:     classTimes,
+		CourseTimes:    classTimes,
 	}, nil
 }
 
@@ -324,7 +324,7 @@ func (classScheduleService *ClassScheduleService) GetAcademicTermById(id string)
 			CourseWeeks:    courseData.Weeks,
 			StudentCount:   studentCount,
 			Color:          courseData.Color,
-			ClassTimes:     classTimes,
+			CourseTimes:    classTimes,
 		}
 	}
 

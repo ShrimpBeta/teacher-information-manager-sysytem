@@ -22,6 +22,7 @@
     <mat-form-field appearance="outline">
       <mat-label>学生人数</mat-label>
       <input matInput type="number" placeholder="学生人数" formControlName="studentCount">
+      <mat-error>学生人数错误</mat-error>
     </mat-form-field>
 
     <mat-label>背景色</mat-label>
@@ -40,10 +41,37 @@
         (click)="toggleCourseWeek(week)">{{week}}</mat-chip-option>
       }
     </mat-chip-listbox>
+
+    <mat-label>上课时间</mat-label>
+    @for(courseTime of courseTimes.controls;track $index){
+    <div formArrayName="courseTimes" style="margin-top: 1rem;">
+      <div [formGroupName]="$index" style="display: flex; flex-direction: row; gap: 20px; align-items: center;">
+        <mat-form-field appearance="outline">
+          <mat-label>上课星期</mat-label>
+          <input matInput type="number" min="1" max="7" step="1" formControlName="dayOfWeek" placeholder="上课星期">
+          <mat-error>上课星期错误</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>上课节次</mat-label>
+          <input matInput type="number" min="1" [max]="periodLength" step="1" formControlName="start"
+            placeholder="上课节次">
+          <mat-error>上课节次错误</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>下课节次</mat-label>
+          <input matInput type="number" min="1" [max]="periodLength" step="1" formControlName="end" placeholder="下课节次">
+          <mat-error>下课节次错误</mat-error>
+        </mat-form-field>
+        <button mat-mini-fab matTooltip="删除上课时间" color="warn"
+          (click)="removeCourseTime($index)"><mat-icon>delete</mat-icon></button>
+      </div>
+    </div>
+    }
+    <button mat-mini-fab matTooltip="新建上课时间" color="primary" (click)="addCourseTime()"><mat-icon>add</mat-icon></button>
   </div>
 </div>
 <div mat-dialog-actions
   style="display:flex;flex-direction:row; gap:20px; justify-content:center; margin-bottom:0.5rem;">
   <button mat-raised-button mat-dialog-close>取消</button>
-  <button mat-raised-button color="primary" [disabled]="courseForm.invalid" (click)="save()">{{buttonLabel}}</button>
+  <button mat-raised-button color="primary" (click)="save()">{{buttonLabel}}</button>
 </div>

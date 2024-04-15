@@ -106,7 +106,7 @@ func (r *ClassScheduleRepo) DeleteAcademicTerm(id primitive.ObjectID) error {
 func (r *ClassScheduleRepo) CreateCourse(termId primitive.ObjectID, course *models.Course) (*primitive.ObjectID, error) {
 	course.ID = primitive.NewObjectID()
 	createdTime := primitive.NewDateTimeFromTime(time.Now())
-	result, err := r.collection.UpdateOne(
+	_, err := r.collection.UpdateOne(
 		context.Background(),
 		bson.M{"_id": termId},
 		bson.M{
@@ -117,8 +117,8 @@ func (r *ClassScheduleRepo) CreateCourse(termId primitive.ObjectID, course *mode
 	if err != nil {
 		return nil, err
 	}
-	newCourseId := result.UpsertedID.(primitive.ObjectID)
-	return &newCourseId, nil
+
+	return &course.ID, nil
 }
 
 func (r *ClassScheduleRepo) UpdateCourse(termId primitive.ObjectID, course *models.Course) error {
@@ -148,7 +148,7 @@ func (r *ClassScheduleRepo) GetCourseById(termId primitive.ObjectID, courseId pr
 	academicTerm := models.AcademicTerm{}
 	err := r.collection.FindOne(
 		context.Background(),
-		bson.M{"_id": termId, "courses._id": courseId},
+		bson.M{"_id": termId},
 	).Decode(&academicTerm)
 	if err != nil {
 		return nil, err

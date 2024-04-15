@@ -14,7 +14,7 @@ export const createAcademicTermMutation = gql`
         courseLocation
         courseType
         courseWeeks
-        classTimes{
+        courseTimes{
           dayOfWeek
           start
           end
@@ -42,7 +42,7 @@ export const updateAcademicTerm = gql`
         courseLocation
         courseType
         courseWeeks
-        classTimes{
+        courseTimes{
           dayOfWeek
           start
           end
@@ -70,7 +70,7 @@ export const deleteAcademicTermMutation = gql`
         courseLocation
         courseType
         courseWeeks
-        classTimes{
+        courseTimes{
           dayOfWeek
           start
           end
@@ -93,7 +93,7 @@ export const createCourseMutation = gql`
       courseLocation
       courseType
       courseWeeks
-      classTimes{
+      courseTimes{
         dayOfWeek
         start
         end
@@ -113,7 +113,7 @@ export const updateCourseMutation = gql`
       courseLocation
       courseType
       courseWeeks
-      classTimes{
+      courseTimes{
         dayOfWeek
         start
         end
@@ -133,7 +133,7 @@ export const deleteCourseMutation = gql`
       courseLocation
       courseType
       courseWeeks
-      classTimes{
+      courseTimes{
         dayOfWeek
         start
         end
@@ -154,7 +154,7 @@ export const uploadAcademicTermMutation = gql`
         courseLocation
         courseType
         courseWeeks
-        classTimes{
+        courseTimes{
           dayOfWeek
           start
           end

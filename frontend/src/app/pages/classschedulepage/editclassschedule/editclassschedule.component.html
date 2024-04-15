@@ -37,7 +37,7 @@
         <tr>
           @for(day of daysOfWeek;track dayIndex;let dayIndex= $index){
           @if(dayIndex === 0){
-          <td>{{period}}</td>
+          <td style="color: black;">{{period}}</td>
           }
           @if(classScheduleMatrix[dayIndex][periodIndex]!==null&&classScheduleMatrix[dayIndex][periodIndex]!==undefined){
           @if(classScheduleMatrix[dayIndex][periodIndex].start!-1===periodIndex &&
@@ -53,6 +53,8 @@
               <div>{{classScheduleMatrix[dayIndex][periodIndex].studentCount}}</div>
             </div>
           </td>
+          }@else if(!classScheduleMatrix[dayIndex][periodIndex].courseWeeks!.includes(currentWeek)){
+          <td></td>
           }
           }@else {
           <td></td>
@@ -99,9 +101,15 @@
 
   <div class="courseList">
     @for(course of classSchedule.courses;track $index){
-    <div class="courseItem" (click)="openEditCourse(course)">
-      <div>{{course.courseName}}</div>
-      <div>{{course.teacherNames}}</div>
+    <div class="card" [style.background]="course.color">
+      <div class="content">
+        <div>{{course.courseName}}</div>
+        <div>{{course.teacherNames}}</div>
+      </div>
+      <div class="course-action">
+        <button mat-raised-button color="primary" (click)="openEditCourse(course)">编辑</button>
+        <button mat-raised-button color="warn" (click)="deleteCourse(course)">删除</button>
+      </div>
     </div>
     }@empty {
     <div>暂无课程</div>

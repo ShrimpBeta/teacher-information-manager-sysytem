@@ -13,7 +13,7 @@ type Course {
   courseLocation: String
   courseType: String
   courseWeeks: [Int]!
-  classTimes: [ClassTime]!
+  courseTimes: [ClassTime]!
   studentCount: Int
   color: String
 }
@@ -56,7 +56,7 @@ type CoursePreview {
   courseLocation: String
   courseType: String
   courseWeeks: [Int]
-  classTimes: [ClassTimePreview]
+  courseTimes: [ClassTimePreview]
   studentCount: Int
   color: String
 }
@@ -78,7 +78,7 @@ input CourseData {
   courseLocation: String
   courseType: String
   courseWeeks: [Int]!
-  classTimes: [ClassTimeData]!
+  courseTimes: [ClassTimeData]!
   studentCount: Int
   color: String
 }

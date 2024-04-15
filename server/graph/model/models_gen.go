@@ -147,7 +147,7 @@ type Course struct {
 	CourseLocation *string      `json:"courseLocation,omitempty"`
 	CourseType     *string      `json:"courseType,omitempty"`
 	CourseWeeks    []*int       `json:"courseWeeks"`
-	ClassTimes     []*ClassTime `json:"classTimes"`
+	CourseTimes    []*ClassTime `json:"courseTimes"`
 	StudentCount   *int         `json:"studentCount,omitempty"`
 	Color          *string      `json:"color,omitempty"`
 }
@@ -158,7 +158,7 @@ type CourseData struct {
 	CourseLocation *string          `json:"courseLocation,omitempty"`
 	CourseType     *string          `json:"courseType,omitempty"`
 	CourseWeeks    []*int           `json:"courseWeeks"`
-	ClassTimes     []*ClassTimeData `json:"classTimes"`
+	CourseTimes    []*ClassTimeData `json:"courseTimes"`
 	StudentCount   *int             `json:"studentCount,omitempty"`
 	Color          *string          `json:"color,omitempty"`
 }
@@ -169,7 +169,7 @@ type CoursePreview struct {
 	CourseLocation *string             `json:"courseLocation,omitempty"`
 	CourseType     *string             `json:"courseType,omitempty"`
 	CourseWeeks    []*int              `json:"courseWeeks,omitempty"`
-	ClassTimes     []*ClassTimePreview `json:"classTimes,omitempty"`
+	CourseTimes    []*ClassTimePreview `json:"courseTimes,omitempty"`
 	StudentCount   *int                `json:"studentCount,omitempty"`
 	Color          *string             `json:"color,omitempty"`
 }

@@ -31,7 +31,7 @@ type AcademicTerm struct {
 	Name      string             `bson:"name"`
 	StartDate primitive.DateTime `bson:"startDate"`
 	WeekCount uint               `bson:"weekCount"`
-	Courses   []*Course          `bson:"courses,omitempty"`
+	Courses   []*Course          `bson:"courses"`
 	CreatedAt primitive.DateTime `bson:"createdAt"`
 	UpdatedAt primitive.DateTime `bson:"updatedAt"`
 }

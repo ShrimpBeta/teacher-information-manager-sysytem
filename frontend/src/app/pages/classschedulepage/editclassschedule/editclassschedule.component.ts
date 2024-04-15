@@ -1,9 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ClassScheduleService } from '../../../services/classschedule.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, takeUntil } from 'rxjs';
-import { ClassSchedule, Course, EditClassSchedule } from '../../../models/models/classSchedule.model';
+import { ClassSchedule, Course, EditClassSchedule, EditCourse } from '../../../models/models/classSchedule.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -45,7 +45,8 @@ export class EditclassscheduleComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     private classScheduleService: ClassScheduleService,
     private snackBar: MatSnackBar,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private changeDetectorRef: ChangeDetectorRef
   ) { }
 
 
@@ -105,12 +106,171 @@ export class EditclassscheduleComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(CoursedialogComponent, {
       width: '600px',
       height: '500px',
-      data: { course: null, buttonLabel: '创建', weekCount: this.classSchedule?.weekCount }
+      data: { course: null, buttonLabel: '创建', weekCount: this.classSchedule?.weekCount, periodLength: this.periods.length }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log(result);
+        let newCourse = new EditCourse();
+        newCourse.courseName = result.name;
+        newCourse.teacherNames = result.teacherNames;
+        newCourse.courseLocation = result.courseLocation;
+        newCourse.courseType = result.courseType;
+        newCourse.courseWeeks = result.courseWeeks;
+        newCourse.studentCount = result.studentCount;
+        newCourse.color = result.color;
+
+        result.courseTimes.forEach((courseTime: any) => {
+          newCourse.courseTimes.push({
+            dayOfWeek: courseTime.dayOfWeek,
+            start: courseTime.start,
+            end: courseTime.end
+          });
+        });
+
+        console.log(newCourse);
+
+        if (this.timeConflict(newCourse.courseTimes, newCourse.courseWeeks, this.classSchedule!.courses)) {
+          this.snackBar.open('课程时间冲突', '关闭', { duration: 2000 });
+          return;
+        }
+
+        this.classScheduleService.createCourse(this.classSchedule!.id, newCourse)
+          .pipe(takeUntil(this.destory$)).subscribe({
+            next: (course) => {
+              if (course) {
+                let classSchedule = Object.assign({}, this.classSchedule);
+                classSchedule.courses = Array.from(classSchedule.courses);
+                classSchedule.courses.push(course);
+                this.classSchedule = classSchedule;
+                this.classScheduleMatrix = this.convertToMatrix(this.classSchedule);
+                this.changeDetectorRef.detectChanges();
+                console.log(this.classScheduleMatrix);
+                this.snackBar.open('创建课程成功', '关闭', { duration: 2000 });
+              } else {
+                this.snackBar.open('创建课程失败', '关闭', {
+                  duration: 2000,
+                });
+              }
+            },
+            error: (error) => {
+              console.error(error);
+              this.snackBar.open('创建课程失败', '关闭', {
+                duration: 2000,
+              });
+            }
+          });
+      }
     });
   }
 
-  openEditCourse(course: Course) {
+  timeConflict(newCourseTimes: any[], newCourseWeeks: number[], existingCourses: Course[]): boolean {
+    for (let newCourseTime of newCourseTimes) {
+      for (let existingCourse of existingCourses) {
+        // 检查课程周数是否有交集
+        const weeksIntersection = newCourseWeeks.some(week => existingCourse.courseWeeks.includes(week));
+        if (!weeksIntersection) continue;
 
+        for (let existingCourseTime of existingCourse.courseTimes) {
+          if (newCourseTime.dayOfWeek === existingCourseTime.dayOfWeek &&
+            ((newCourseTime.start >= existingCourseTime.start && newCourseTime.start < existingCourseTime.end) ||
+              (newCourseTime.end > existingCourseTime.start && newCourseTime.end <= existingCourseTime.end) ||
+              (newCourseTime.start <= existingCourseTime.start && newCourseTime.end >= existingCourseTime.end))) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  openEditCourse(course: Course) {
+    const dialogRef = this.dialog.open(CoursedialogComponent, {
+      width: '600px',
+      height: '500px',
+      data: { course: course, buttonLabel: '更新', weekCount: this.classSchedule?.weekCount, periodLength: this.periods.length }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log(result);
+        let updateCourse = new EditCourse();
+        updateCourse.courseName = result.name;
+        updateCourse.teacherNames = result.teacherNames;
+        updateCourse.courseLocation = result.courseLocation;
+        updateCourse.courseType = result.courseType;
+        updateCourse.courseWeeks = result.courseWeeks;
+        updateCourse.studentCount = result.studentCount;
+        updateCourse.color = result.color;
+
+        result.courseTimes.forEach((courseTime: any) => {
+          updateCourse.courseTimes.push({
+            dayOfWeek: courseTime.dayOfWeek,
+            start: courseTime.start,
+            end: courseTime.end
+          });
+        });
+
+        console.log(updateCourse);
+
+        if (this.timeConflict(updateCourse.courseTimes, updateCourse.courseWeeks, this.classSchedule!.courses.filter(c => c.id !== course.id))) {
+          this.snackBar.open('课程时间冲突', '关闭', { duration: 2000 });
+          return;
+        }
+
+        this.classScheduleService.updateCourse(this.classSchedule!.id, course.id, updateCourse)
+          .pipe(takeUntil(this.destory$)).subscribe({
+            next: (result) => {
+              if (result) {
+                let classSchedule = Object.assign({}, this.classSchedule);
+                classSchedule.courses = Array.from(classSchedule.courses);
+                let index = classSchedule.courses.findIndex(c => c.id === course.id);
+                classSchedule.courses[index] = result;
+                this.classSchedule = classSchedule;
+                this.classScheduleMatrix = this.convertToMatrix(this.classSchedule);
+                this.snackBar.open('更新课程成功', '关闭', { duration: 2000 });
+              } else {
+                this.snackBar.open('更新课程失败', '关闭', {
+                  duration: 2000,
+                });
+              }
+            },
+            error: (error) => {
+              console.error(error);
+              this.snackBar.open('更新课程失败', '关闭', {
+                duration: 2000,
+              });
+            }
+          });
+      }
+    });
+  }
+
+  deleteCourse(course: Course) {
+    this.classScheduleService.deleteCourse(this.classSchedule!.id, course.id)
+      .pipe(takeUntil(this.destory$)).subscribe({
+        next: (result) => {
+          if (result) {
+            let classSchedule = Object.assign({}, this.classSchedule);
+            classSchedule.courses = Array.from(classSchedule.courses);
+            classSchedule.courses = classSchedule.courses.filter(c => c.id !== course.id);
+            this.classSchedule = classSchedule;
+            this.classScheduleMatrix = this.convertToMatrix(this.classSchedule);
+            this.snackBar.open('删除课程成功', '关闭', { duration: 2000 });
+          } else {
+            this.snackBar.open('删除课程失败', '关闭', {
+              duration: 2000,
+            });
+          }
+        },
+        error: (error) => {
+          console.error(error);
+          this.snackBar.open('删除课程失败', '关闭', {
+            duration: 2000,
+          });
+        }
+      });
   }
 
   openEditDrawer(): void {
@@ -129,7 +289,8 @@ export class EditclassscheduleComponent implements OnInit, OnDestroy {
 
     for (let course of classSchedule.courses) {
       for (let courseTime of course.courseTimes) {
-        let dayOfWeek = courseTime.dayOfWeek
+        let dayOfWeek = courseTime.dayOfWeek;
+
         let courseCell = new CourseCell();
         courseCell.couresId = course.id
         courseCell.start = courseTime.start
@@ -140,9 +301,10 @@ export class EditclassscheduleComponent implements OnInit, OnDestroy {
         courseCell.courseLocation = course.courseLocation
         courseCell.studentCount = course.studentCount
         courseCell.color = course.color
+        courseCell.courseWeeks = course.courseWeeks
 
         for (let i = courseTime.start - 1; i < courseTime.end; i++) {
-          matrix[dayOfWeek][i] = courseCell;
+          matrix[dayOfWeek - 1][i] = courseCell;
         }
       }
     }
@@ -170,6 +332,7 @@ export class EditclassscheduleComponent implements OnInit, OnDestroy {
             if (result) {
               this.classSchedule = result;
               this.classScheduleMatrix = this.convertToMatrix(this.classSchedule);
+              console.log(this.classScheduleMatrix);
               this.nowWeek = this.getWeekNumber(this.classSchedule.startDate);
               if (this.nowWeek > this.classSchedule.weekCount) {
                 this.currentWeek = this.classSchedule.weekCount;

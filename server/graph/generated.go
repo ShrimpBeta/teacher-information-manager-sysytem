@@ -132,10 +132,10 @@ type ComplexityRoot struct {
 	}
 
 	Course struct {
-		ClassTimes     func(childComplexity int) int
 		Color          func(childComplexity int) int
 		CourseLocation func(childComplexity int) int
 		CourseName     func(childComplexity int) int
+		CourseTimes    func(childComplexity int) int
 		CourseType     func(childComplexity int) int
 		CourseWeeks    func(childComplexity int) int
 		ID             func(childComplexity int) int
@@ -144,10 +144,10 @@ type ComplexityRoot struct {
 	}
 
 	CoursePreview struct {
-		ClassTimes     func(childComplexity int) int
 		Color          func(childComplexity int) int
 		CourseLocation func(childComplexity int) int
 		CourseName     func(childComplexity int) int
+		CourseTimes    func(childComplexity int) int
 		CourseType     func(childComplexity int) int
 		CourseWeeks    func(childComplexity int) int
 		StudentCount   func(childComplexity int) int
@@ -914,13 +914,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.CompGuidanceQuery.TotalCount(childComplexity), true
 
-	case "Course.classTimes":
-		if e.complexity.Course.ClassTimes == nil {
-			break
-		}
-
-		return e.complexity.Course.ClassTimes(childComplexity), true
-
 	case "Course.color":
 		if e.complexity.Course.Color == nil {
 			break
@@ -941,6 +934,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Course.CourseName(childComplexity), true
+
+	case "Course.courseTimes":
+		if e.complexity.Course.CourseTimes == nil {
+			break
+		}
+
+		return e.complexity.Course.CourseTimes(childComplexity), true
 
 	case "Course.courseType":
 		if e.complexity.Course.CourseType == nil {
@@ -977,13 +977,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Course.TeacherNames(childComplexity), true
 
-	case "CoursePreview.classTimes":
-		if e.complexity.CoursePreview.ClassTimes == nil {
-			break
-		}
-
-		return e.complexity.CoursePreview.ClassTimes(childComplexity), true
-
 	case "CoursePreview.color":
 		if e.complexity.CoursePreview.Color == nil {
 			break
@@ -1004,6 +997,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.CoursePreview.CourseName(childComplexity), true
+
+	case "CoursePreview.courseTimes":
+		if e.complexity.CoursePreview.CourseTimes == nil {
+			break
+		}
+
+		return e.complexity.CoursePreview.CourseTimes(childComplexity), true
 
 	case "CoursePreview.courseType":
 		if e.complexity.CoursePreview.CourseType == nil {
@@ -5050,8 +5050,8 @@ func (ec *executionContext) fieldContext_AcademicTerm_courses(ctx context.Contex
 				return ec.fieldContext_Course_courseType(ctx, field)
 			case "courseWeeks":
 				return ec.fieldContext_Course_courseWeeks(ctx, field)
-			case "classTimes":
-				return ec.fieldContext_Course_classTimes(ctx, field)
+			case "courseTimes":
+				return ec.fieldContext_Course_courseTimes(ctx, field)
 			case "studentCount":
 				return ec.fieldContext_Course_studentCount(ctx, field)
 			case "color":
@@ -5238,8 +5238,8 @@ func (ec *executionContext) fieldContext_AcademicTermPreview_courses(ctx context
 				return ec.fieldContext_CoursePreview_courseType(ctx, field)
 			case "courseWeeks":
 				return ec.fieldContext_CoursePreview_courseWeeks(ctx, field)
-			case "classTimes":
-				return ec.fieldContext_CoursePreview_classTimes(ctx, field)
+			case "courseTimes":
+				return ec.fieldContext_CoursePreview_courseTimes(ctx, field)
 			case "studentCount":
 				return ec.fieldContext_CoursePreview_studentCount(ctx, field)
 			case "color":
@@ -7159,8 +7159,8 @@ func (ec *executionContext) fieldContext_Course_courseWeeks(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Course_classTimes(ctx context.Context, field graphql.CollectedField, obj *graphql_models.Course) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Course_classTimes(ctx, field)
+func (ec *executionContext) _Course_courseTimes(ctx context.Context, field graphql.CollectedField, obj *graphql_models.Course) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Course_courseTimes(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7173,7 +7173,7 @@ func (ec *executionContext) _Course_classTimes(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ClassTimes, nil
+		return obj.CourseTimes, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7190,7 +7190,7 @@ func (ec *executionContext) _Course_classTimes(ctx context.Context, field graphq
 	return ec.marshalNClassTime2ᚕᚖserverᚋgraphᚋmodelᚐClassTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Course_classTimes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Course_courseTimes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Course",
 		Field:      field,
@@ -7498,8 +7498,8 @@ func (ec *executionContext) fieldContext_CoursePreview_courseWeeks(ctx context.C
 	return fc, nil
 }
 
-func (ec *executionContext) _CoursePreview_classTimes(ctx context.Context, field graphql.CollectedField, obj *graphql_models.CoursePreview) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_CoursePreview_classTimes(ctx, field)
+func (ec *executionContext) _CoursePreview_courseTimes(ctx context.Context, field graphql.CollectedField, obj *graphql_models.CoursePreview) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CoursePreview_courseTimes(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -7512,7 +7512,7 @@ func (ec *executionContext) _CoursePreview_classTimes(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ClassTimes, nil
+		return obj.CourseTimes, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7526,7 +7526,7 @@ func (ec *executionContext) _CoursePreview_classTimes(ctx context.Context, field
 	return ec.marshalOClassTimePreview2ᚕᚖserverᚋgraphᚋmodelᚐClassTimePreview(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_CoursePreview_classTimes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_CoursePreview_courseTimes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "CoursePreview",
 		Field:      field,
@@ -10174,8 +10174,8 @@ func (ec *executionContext) fieldContext_Mutation_createCourse(ctx context.Conte
 				return ec.fieldContext_Course_courseType(ctx, field)
 			case "courseWeeks":
 				return ec.fieldContext_Course_courseWeeks(ctx, field)
-			case "classTimes":
-				return ec.fieldContext_Course_classTimes(ctx, field)
+			case "courseTimes":
+				return ec.fieldContext_Course_courseTimes(ctx, field)
 			case "studentCount":
 				return ec.fieldContext_Course_studentCount(ctx, field)
 			case "color":
@@ -10249,8 +10249,8 @@ func (ec *executionContext) fieldContext_Mutation_updateCourse(ctx context.Conte
 				return ec.fieldContext_Course_courseType(ctx, field)
 			case "courseWeeks":
 				return ec.fieldContext_Course_courseWeeks(ctx, field)
-			case "classTimes":
-				return ec.fieldContext_Course_classTimes(ctx, field)
+			case "courseTimes":
+				return ec.fieldContext_Course_courseTimes(ctx, field)
 			case "studentCount":
 				return ec.fieldContext_Course_studentCount(ctx, field)
 			case "color":
@@ -10324,8 +10324,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteCourse(ctx context.Conte
 				return ec.fieldContext_Course_courseType(ctx, field)
 			case "courseWeeks":
 				return ec.fieldContext_Course_courseWeeks(ctx, field)
-			case "classTimes":
-				return ec.fieldContext_Course_classTimes(ctx, field)
+			case "courseTimes":
+				return ec.fieldContext_Course_courseTimes(ctx, field)
 			case "studentCount":
 				return ec.fieldContext_Course_studentCount(ctx, field)
 			case "color":
@@ -22753,7 +22753,7 @@ func (ec *executionContext) unmarshalInputCourseData(ctx context.Context, obj in
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"teacherNames", "courseName", "courseLocation", "courseType", "courseWeeks", "classTimes", "studentCount", "color"}
+	fieldsInOrder := [...]string{"teacherNames", "courseName", "courseLocation", "courseType", "courseWeeks", "courseTimes", "studentCount", "color"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -22795,13 +22795,13 @@ func (ec *executionContext) unmarshalInputCourseData(ctx context.Context, obj in
 				return it, err
 			}
 			it.CourseWeeks = data
-		case "classTimes":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("classTimes"))
+		case "courseTimes":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courseTimes"))
 			data, err := ec.unmarshalNClassTimeData2ᚕᚖserverᚋgraphᚋmodelᚐClassTimeData(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.ClassTimes = data
+			it.CourseTimes = data
 		case "studentCount":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("studentCount"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
@@ -24928,8 +24928,8 @@ func (ec *executionContext) _Course(ctx context.Context, sel ast.SelectionSet, o
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "classTimes":
-			out.Values[i] = ec._Course_classTimes(ctx, field, obj)
+		case "courseTimes":
+			out.Values[i] = ec._Course_courseTimes(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -24981,8 +24981,8 @@ func (ec *executionContext) _CoursePreview(ctx context.Context, sel ast.Selectio
 			out.Values[i] = ec._CoursePreview_courseType(ctx, field, obj)
 		case "courseWeeks":
 			out.Values[i] = ec._CoursePreview_courseWeeks(ctx, field, obj)
-		case "classTimes":
-			out.Values[i] = ec._CoursePreview_classTimes(ctx, field, obj)
+		case "courseTimes":
+			out.Values[i] = ec._CoursePreview_courseTimes(ctx, field, obj)
 		case "studentCount":
 			out.Values[i] = ec._CoursePreview_studentCount(ctx, field, obj)
 		case "color":
