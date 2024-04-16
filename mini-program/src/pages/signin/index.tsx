@@ -18,6 +18,7 @@ const Signin = (props: PropsWithChildren) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [hidePassword, setHidePassword] = useState(true);
   const dispatch = useDispatch();
 
   const [signIn] = useMutation(signInMutation);
@@ -67,11 +68,13 @@ const Signin = (props: PropsWithChildren) => {
 
   return (
     <View className='w-full h-screen flex justify-center items-center'>
-      <View className='w-full px-5 py-2'>
-        <Form>
-          <Input type='email' value={email} onInput={(e) => setEmail(e.detail.value)} placeholder='Email' />
-          <Input type='password' password value={password} onInput={(e) => setPassword(e.detail.value)} placeholder='Password' />
-          <Button type='submit' onClick={() => handleSignIn()}>Sign In</Button>
+      <View className='w-full px-10 py-2'>
+        <Form className='flex flex-col gap-4'>
+          <Input type='text' className='h-14 pl-5 bg-slate-100' value={email} onInput={(e) => setEmail(e.detail.value)} placeholder='邮箱' focus />
+          <Input type='text' className='h-14 mt-6 pl-5 bg-slate-100' password={hidePassword} value={password} onInput={(e) => setPassword(e.detail.value)} placeholder='密码' />
+          <View className='flex flex-col justify-center items-center mt-6'>
+            <Button type='primary' className='' formType='submit' onClick={() => handleSignIn()}>登录</Button>
+          </View>
         </Form>
       </View>
     </View>

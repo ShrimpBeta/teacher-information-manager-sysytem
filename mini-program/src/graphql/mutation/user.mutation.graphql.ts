@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const signInMutation = gql`
-  mutation signIn($email: String!, $password: String!){
-    signIn(email: $email, password: $password) {
+  mutation signIn($signInData: SigIn!){
+    signIn(signInData:$signInData) {
       token
       user {
         id
@@ -17,7 +17,7 @@ export const signInMutation = gql`
       }
     }
   }
-`
+`;
 
 export const updateUserMutation = gql`
   mutation updateUser($userId: ID!, $userData: UpdateUser!){
@@ -33,7 +33,7 @@ export const updateUserMutation = gql`
       updatedAt
     }
   }
-`
+`;
 
 export const activateUserMutation = gql`
   mutation activateUser($userId: ID!, $userData: ActivateUser!){
@@ -49,17 +49,35 @@ export const activateUserMutation = gql`
       updatedAt
     }
   }
-`
+`;
 
 export const updateUserPasswordMutation = gql`
-  mutation updateUserPassword($userId: ID!, $passwordData: ChangePassword!){
-    updateAccountPassword(userId: $userId, passwordData:$passwordData)
+  mutation updateUserPassword($userId: ID!, $passwordData: UpdatePassword!){
+    updateAccountPassword(userId: $userId, updatePasswordData:$passwordData)
   }
-`
+`;
 
-// export const removeWechatAuthMutation = gql`
-//   mutation removeWechatAuth($userId: ID!){
+export const fetchCodeMutation = gql`
+  mutation fetchCode($email:String!){
+    generateResetPasswordCode(email:$email)
+  }
+`;
 
-//   }
-// `
+export const resetUserPasswordMutation = gql`
+  mutation resetUserPassword($resetPasswordData: ResetPassword!){
+    resetAccountPassword(resetPasswordData: $resetPasswordData)
+  }
+`;
 
+
+export const removeWechatAuthMutation = gql`
+  mutation removeWechatAuth($userId: ID!){
+    removeWechatAuth(userId: $userId)
+  }
+`;
+
+export const deleteUserMutation = gql`
+  mutation deleteUser($userId: ID!){
+    deleteAccount(userId: $userId)
+  }
+`;

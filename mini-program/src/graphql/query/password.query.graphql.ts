@@ -1,23 +1,25 @@
-import { gql } from "@apollo/client";
+import { gql } from "@apollo/client"
 
-export const passwordsQuery = gql`
-  query passwords($userId: ID!) {
-    passwords(userId: $userId) {
-      id
-      url
-      appName
-      account
-      password
-      description
-      updatedAt
-      createdAt
+export const passwordsByFilterQuery = gql`
+  query passwordsByFilter($filter: PasswordFilter!,$offset:Int!, $limit:Int!) {
+    passwordsByFilter(filter: $filter, offset: $offset, limit: $limit) {
+      totalCount
+      passwords{
+        id
+        url
+        appName
+        account
+        description
+        updatedAt
+        createdAt
+      }
     }
   }
 `
 
-export const passwordQuery = gql`
-  query password($id: ID!) {
-    password(id: $id) {
+export const passwordTrueQuery = gql`
+  query passwordTrue($id: ID!) {
+    passwordTrue(id: $id) {
       id
       url
       appName
