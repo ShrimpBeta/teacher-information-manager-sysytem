@@ -1,4 +1,5 @@
 import { UnifiedWebpackPluginV5 } from 'weapp-tailwindcss/webpack'
+import * as path from 'path';
 
 const config = {
   projectName: 'mini-program',
@@ -75,12 +76,15 @@ const config = {
       },
     },
     webpackChain(chain, webpack) {
+      chain.resolve.alias.set('@', path.resolve(__dirname, '../src'));
+
       chain.merge({
         plugin: {
           install: {
             plugin: UnifiedWebpackPluginV5,
             args: [{
-              appType: 'taro'
+              appType: 'taro',
+              injectAdditionalCssVarScope: true, // 配置此字段为 true 即可
             }]
           }
         }

@@ -88,6 +88,13 @@ export interface ResetUserPasswordResponse {
   }
 }
 
+export interface AddWechatAuthResponse {
+  error?: unknown;
+  data?: {
+    addWechatAuth: boolean
+  }
+}
+
 export interface RemoveWechatAuthResponse {
   error?: unknown;
   data?: {

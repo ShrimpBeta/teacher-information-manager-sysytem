@@ -631,8 +631,3 @@ type UserExport struct {
 	Avatar    string    `json:"avatar"`
 	CreatedAt time.Time `json:"createdAt"`
 }
-
-type WechatAuth struct {
-	OpenID     string `json:"openId"`
-	SessionKey string `json:"sessionKey"`
-}

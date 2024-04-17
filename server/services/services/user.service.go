@@ -1,9 +1,11 @@
 package services
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"math/rand"
+	"net/http"
 	"server/environment"
 	graphql_models "server/graph/model"
 	"server/persistence/repository"
@@ -371,4 +373,130 @@ func (userService *UserService) SendEmailCode(receiverEmail string, code string)
 		return false, err
 	}
 	return true, nil
+}
+
+type WechatSessionResponse struct {
+	OpenID     string `json:"openid"`
+	SessionKey string `json:"session_key"`
+	UnionID    string `json:"unionid"`
+	ErrCode    int    `json:"errcode"`
+	ErrMsg     string `json:"errmsg"`
+}
+
+func (userService *UserService) AddWechatAuth(userId, code string) (bool, error) {
+	url := fmt.Sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", environment.AppID, environment.AppSecret, code)
+
+	response, err := http.Get(url)
+	if err != nil {
+		return false, err
+	}
+	defer response.Body.Close()
+
+	var wechatSession WechatSessionResponse
+	err = json.NewDecoder(response.Body).Decode(&wechatSession)
+	if err != nil {
+		return false, err
+	}
+
+	if wechatSession.ErrCode != 0 {
+		return false, fmt.Errorf(wechatSession.ErrMsg)
+	}
+
+	objectID, err := primitive.ObjectIDFromHex(userId)
+	if err != nil {
+		return false, err
+	}
+
+	userData, err := userService.Repo.GetUserById(objectID)
+	if err != nil {
+		return false, err
+	}
+
+	userData.WechatOpenId = &wechatSession.OpenID
+	userData.WechatSessionKey = &wechatSession.SessionKey
+
+	err = userService.Repo.UpdateUser(userData)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+func (userService *UserService) RemoveWechatAuth(userId string) (bool, error) {
+	objectID, err := primitive.ObjectIDFromHex(userId)
+	if err != nil {
+		return false, err
+	}
+
+	userData, err := userService.Repo.GetUserById(objectID)
+	if err != nil {
+		return false, err
+	}
+
+	userData.WechatOpenId = nil
+	userData.WechatSessionKey = nil
+
+	err = userService.Repo.UpdateUser(userData)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+func (userService *UserService) WechatLogin(code string) (*graphql_models.SignInResponse, error) {
+
+	url := fmt.Sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", environment.AppID, environment.AppSecret, code)
+
+	response, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	var wechatSession WechatSessionResponse
+	err = json.NewDecoder(response.Body).Decode(&wechatSession)
+	if err != nil {
+		return nil, err
+	}
+
+	if wechatSession.ErrCode != 0 {
+		return nil, fmt.Errorf(wechatSession.ErrMsg)
+	}
+
+	opneId := wechatSession.OpenID
+
+	userData, err := userService.Repo.GetUserByOpenId(opneId)
+	if err != nil {
+		return nil, err
+	}
+
+	if userData == nil {
+		return nil, fmt.Errorf("user not found")
+	}
+
+	// generate token
+	token, err := jwt.GenerateToken(userData.Email, environment.UserTokenExpireTime)
+	if err != nil {
+		return nil, err
+	}
+
+	// check wechat auth
+	wechatAuth := true
+
+	return &graphql_models.SignInResponse{
+		Token: token,
+		User: &graphql_models.User{
+			ID:          userData.ID.Hex(),
+			Username:    userData.Username,
+			Email:       userData.Email,
+			PhoneNumber: userData.Phone,
+			WechatAuth:  wechatAuth,
+			Avatar:      environment.ServeURL + "/avatars/" + userData.Avatar,
+			Activate:    userData.Activate,
+			CreatedAt:   userData.CreatedAt.Time(),
+			UpdatedAt:   userData.UpdatedAt.Time(),
+		},
+	}, nil
 }

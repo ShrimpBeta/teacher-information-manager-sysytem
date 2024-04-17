@@ -47,11 +47,6 @@ input UpdateUser {
   phoneNumber: String
 }
 
-input WechatAuth {
-  openId: String!
-  sessionKey: String!
-}
-
 input ActivateUser {
   username: String!
   password: String!
@@ -78,6 +73,7 @@ extend type Mutation {
   updateUser(userId: ID!, userData: UpdateUser!): User!
   activateUser(userId: ID!, userData: ActivateUser!): User!
 
-  addWechatAuth(userId: ID!, wechatAuthData: WechatAuth!): Boolean!
+  wechatLogin(code: String!): SignInResponse!
+  addWechatAuth(userId: ID!, code: String!): Boolean!
   removeWechatAuth(userId: ID!): Boolean!
 }

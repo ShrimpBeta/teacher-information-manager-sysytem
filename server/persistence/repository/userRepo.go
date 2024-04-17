@@ -44,6 +44,15 @@ func (r *UserRepo) GetUserById(id primitive.ObjectID) (*models.User, error) {
 	return &user, nil
 }
 
+func (r *UserRepo) GetUserByOpenId(openId string) (*models.User, error) {
+	user := models.User{}
+	err := r.collection.FindOne(context.Background(), bson.M{"wechatOpenId": openId}).Decode(&user)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
 func (r *UserRepo) GetUsersByIds(ids []primitive.ObjectID) ([]models.User, error) {
 	users := []models.User{}
 	cursor, err := r.collection.Find(context.Background(), bson.M{"_id": bson.M{"$in": ids}})

@@ -15,12 +15,17 @@
     "sourceMap": true,
     "baseUrl": ".",
     "rootDir": ".",
+    "paths": {
+      "@/*": ["src/*"],
+    },
     "jsx": "react-jsx",
     "allowJs": true,
     "resolveJsonModule": true,
     "typeRoots": [
       "node_modules/@types"
-    ]
+    ],
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
   },
   "include": ["./src", "./types"],
   "compileOnSave": false

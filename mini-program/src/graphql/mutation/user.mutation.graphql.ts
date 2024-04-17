@@ -69,6 +69,11 @@ export const resetUserPasswordMutation = gql`
   }
 `;
 
+export const addWechatAuthMutation = gql`
+  mutation addWechatAuth($userId:ID!,$code:String!){
+    addWechatAuth(userId:$userId,code:$code)
+  }
+`;
 
 export const removeWechatAuthMutation = gql`
   mutation removeWechatAuth($userId: ID!){

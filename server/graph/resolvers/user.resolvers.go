@@ -7,7 +7,6 @@ package resolvers
 import (
 	"context"
 	"errors"
-	"fmt"
 	"server/environment"
 	graphql_models "server/graph/model"
 	"server/middlewares"
@@ -137,8 +136,13 @@ func (r *mutationResolver) ActivateUser(ctx context.Context, userID string, user
 	return r.UserService.ActivateUser(userID, userData)
 }
 
+// WechatLogin is the resolver for the wechatLogin field.
+func (r *mutationResolver) WechatLogin(ctx context.Context, code string) (*graphql_models.SignInResponse, error) {
+	return r.UserService.WechatLogin(code)
+}
+
 // AddWechatAuth is the resolver for the addWechatAuth field.
-func (r *mutationResolver) AddWechatAuth(ctx context.Context, userID string, wechatAuthData graphql_models.WechatAuth) (bool, error) {
+func (r *mutationResolver) AddWechatAuth(ctx context.Context, userID string, code string) (bool, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return false, err
@@ -149,7 +153,7 @@ func (r *mutationResolver) AddWechatAuth(ctx context.Context, userID string, wec
 		return false, err
 	}
 
-	panic(fmt.Errorf("not implemented: AddWechatAuth - addWechatAuth"))
+	return r.UserService.AddWechatAuth(userID, code)
 }
 
 // RemoveWechatAuth is the resolver for the removeWechatAuth field.
@@ -164,7 +168,7 @@ func (r *mutationResolver) RemoveWechatAuth(ctx context.Context, userID string) 
 		return false, err
 	}
 
-	panic(fmt.Errorf("not implemented: RemoveWechatAuth - removeWechatAuth"))
+	return r.UserService.RemoveWechatAuth(userID)
 }
 
 // User is the resolver for the user field.

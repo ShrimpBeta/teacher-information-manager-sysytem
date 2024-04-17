@@ -1,0 +1,42 @@
+.container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-container {
+  width: 100%;
+  padding: 20rpx 40rpx;
+  box-sizing: border-box;
+  border-radius: 10rpx;
+  box-shadow: 0 0 10rpx 0 rgba(0, 0, 0, 0.1);
+
+  .password-input {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.bottom-container {
+  position: fixed;
+  bottom: 80rpx;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    height: 90rpx;
+    width: 90rpx;
+    border-radius: 50%;
+  }
+
+  Text {
+    font-size: 30rpx;
+    color: gray;
+  }
+}
