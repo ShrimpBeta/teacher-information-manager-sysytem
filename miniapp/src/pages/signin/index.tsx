@@ -89,7 +89,7 @@ const Signin = (props: PropsWithChildren) => {
         if (pages.length > 1) {
           Taro.navigateBack();
         } else {
-          Taro.redirectTo({ url: '/pages/index/index' });
+          Taro.navigateTo({ url: '/pages/index/index' });
         }
       }
     }).catch((error) => {

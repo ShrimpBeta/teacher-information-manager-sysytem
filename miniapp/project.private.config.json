@@ -9,8 +9,8 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/account/index",
-          "pathName": "pages/account/index",
+          "name": "test",
+          "pathName": "pages/sectionone/index",
           "query": "",
           "launchMode": "default",
           "scene": null

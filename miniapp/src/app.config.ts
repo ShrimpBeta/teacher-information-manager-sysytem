@@ -7,6 +7,8 @@ export default {
     'pages/sectiontwo/index',
     'pages/updateuserinfo/index',
     'pages/updateuserpassword/index',
+    'pages/createpassword/index',
+    'pages/editpassword/index',
   ],
   tabBar: {
     custom: true,

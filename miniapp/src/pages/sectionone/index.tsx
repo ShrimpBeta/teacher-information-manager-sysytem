@@ -26,7 +26,10 @@ const Sectionone = (props: PropsWithChildren) => {
         onChange={(value) => {
           setTabvalue(value)
         }}
-        activeType="button">
+        activeType="button"
+        // autoHeight
+        style={{ height: '100%' }}
+      >
         <Tabs.TabPane title="密码管理"> <OverviewPassword /> </Tabs.TabPane>
         <Tabs.TabPane title="课程表"> <OverviewClassSchedule /> </Tabs.TabPane>
         <Tabs.TabPane title="导师制"> <OverviewMentorship /> </Tabs.TabPane>

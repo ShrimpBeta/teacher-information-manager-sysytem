@@ -44,7 +44,7 @@ const Index = (props: PropsWithChildren) => {
   return (
     <>
       <View className='container'>
-        <Empty description="无数据" style={{ marginTop: '10px' }} />
+        <Empty description="无数据" />
       </View>
     </>
   )
