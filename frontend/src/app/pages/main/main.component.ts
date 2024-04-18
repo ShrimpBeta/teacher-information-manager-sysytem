@@ -37,8 +37,8 @@ export class MainComponent implements OnInit {
     {
       title: '科研工作管理',
       links: [
-        { path: '/main/monograph', name: '专著' },
-        { path: '/main/paper', name: '论文' },
+        { path: '/main/monograph', name: '专著管理' },
+        { path: '/main/paper', name: '论文管理' },
         { path: '/main/scientificresearch', name: '科研项目' },
       ]
     },

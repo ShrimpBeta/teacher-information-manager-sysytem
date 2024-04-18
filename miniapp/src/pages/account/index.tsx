@@ -86,7 +86,6 @@ const Account = (props: PropsWithChildren) => {
 
   return (
     <View className='container'>
-
       <View className='header'>
         <View className='avatar'>
           <Avatar size="large" src={user?.avatar} alt='头像' />
@@ -97,7 +96,7 @@ const Account = (props: PropsWithChildren) => {
           <Text>邮箱: {user?.email}</Text>
           {user?.phoneNumber && <>
             <Divider />
-            <Text>{user.phoneNumber}</Text>
+            <Text>手机号码: {user.phoneNumber}</Text>
           </>}
         </View>
       </View>

@@ -38,7 +38,6 @@ const Signin = (props: PropsWithChildren) => {
       return true;
     }
     return /\d/.test(value) && /[a-zA-Z]/.test(value);
-
   }
 
   const emailValidator = (rule: FormItemRuleWithoutValidator, value: string) => {
@@ -103,12 +102,13 @@ const Signin = (props: PropsWithChildren) => {
           });
           return;
         }
+      } else {
+        Taro.showToast({
+          title: '网络错误，请重试',
+          icon: 'error',
+          duration: 2000,
+        });
       }
-      Taro.showToast({
-        title: '网络错误，请重试',
-        icon: 'error',
-        duration: 2000,
-      });
     });
 
   }
@@ -194,9 +194,11 @@ const Signin = (props: PropsWithChildren) => {
               { required: true, message: '请输入邮箱' },
               { validator: emailValidator, message: '邮箱格式错误' },
             ]}
+            validateTrigger='onBlur'
           >
             <Input placeholder='请输入邮箱' type='email' />
           </Form.Item>
+
           <Form.Item
             label='密码'
             name='password'
@@ -205,15 +207,11 @@ const Signin = (props: PropsWithChildren) => {
               { min: 8, message: '密码长度至少8位' },
               { validator: passwordValidator, message: '密码格式错误' },
             ]}
+            validateTrigger='onBlur'
           >
-            {/* <View className='password-input'> */}
-            <Input placeholder='请输入密码' type={hidePassword ? 'password' : 'text'} />
-            {/* {hidePassword ?
-                <Eye onClick={() => setHidePassword(false)} />
-                :
-                <Marshalling onClick={() => setHidePassword(true)} />
-              }
-            </View> */}
+            <Input placeholder='请输入密码' type={hidePassword ? 'password' : 'text'}
+              onFocus={() => setHidePassword(false)} onBlur={() => setHidePassword(true)} />
+
           </Form.Item>
         </Form>
       </View>

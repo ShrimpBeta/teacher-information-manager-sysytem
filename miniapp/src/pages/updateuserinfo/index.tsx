@@ -57,12 +57,13 @@ const Updateuserinfo = (props: PropsWithChildren) => {
           icon: 'success',
           duration: 2000
         });
+      } else {
+        Taro.showToast({
+          title: '更新失败',
+          icon: 'error',
+          duration: 2000
+        });
       }
-      Taro.showToast({
-        title: '更新失败',
-        icon: 'error',
-        duration: 2000
-      });
     }
     ).catch((err) => {
       console.log(err)
@@ -72,9 +73,6 @@ const Updateuserinfo = (props: PropsWithChildren) => {
         duration: 2000
       });
     })
-
-
-
   }
 
   const phonenumberValidator = (rule: FormItemRuleWithoutValidator, value: string) => {
@@ -86,7 +84,7 @@ const Updateuserinfo = (props: PropsWithChildren) => {
   }
 
   return (
-    <View className='w-full h-screen flex flex-col items-center'>
+    <View className=''>
       <Form
         divider
         initialValues={{ username: user?.username, phonenumber: user?.phoneNumber }}

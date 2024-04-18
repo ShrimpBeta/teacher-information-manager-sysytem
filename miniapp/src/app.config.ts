@@ -3,7 +3,6 @@ export default {
     'pages/index/index',
     'pages/signin/index',
     'pages/account/index',
-    'pages/report/index',
     'pages/sectionone/index',
     'pages/sectiontwo/index',
     'pages/updateuserinfo/index',
@@ -33,12 +32,12 @@ export default {
         selectedIconPath: 'assets/images/science-fill.png',
         iconPath: 'assets/images/science.png',
       },
-      {
-        pagePath: 'pages/report/index',
-        text: '报告',
-        selectedIconPath: 'assets/images/analytics-fill.png',
-        iconPath: 'assets/images/analytics.png',
-      },
+      // {
+      //   pagePath: 'pages/report/index',
+      //   text: '报告',
+      //   selectedIconPath: 'assets/images/analytics-fill.png',
+      //   iconPath: 'assets/images/analytics.png',
+      // },
       {
         pagePath: 'pages/account/index',
         text: '我的',

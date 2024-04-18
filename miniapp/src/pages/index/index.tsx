@@ -4,12 +4,9 @@ import Taro, { useDidHide, useDidShow } from '@tarojs/taro'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation } from '@apollo/client'
 import { ApolloError } from '@apollo/client/errors'
-import { Tabbar } from '@nutui/nutui-react-taro'
-import { User, Receipt } from '@nutui/icons-react-taro'
+import { Empty } from '@nutui/nutui-react-taro'
 import { RootState } from '@/store/slices/reducers'
-import { userSlice } from '@/store/slices/userSlice'
 import { JWT } from '@/auth/jwt'
-import CustomTabbar from '@/custom-tab-bar/index'
 
 import './index.scss'
 
@@ -44,15 +41,10 @@ const Index = (props: PropsWithChildren) => {
 
   useDidHide(() => { });
 
-
-
-
   return (
     <>
-      <View className='index'>
-        <Text>Hello</Text>
-        <Text>{user?.email}</Text>
-        <Text>{user?.username}</Text>
+      <View className='container'>
+        <Empty description="无数据" style={{ marginTop: '10px' }} />
       </View>
     </>
   )
