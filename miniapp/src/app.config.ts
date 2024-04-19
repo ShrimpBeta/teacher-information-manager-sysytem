@@ -9,6 +9,7 @@ export default {
     'pages/updateuserpassword/index',
     'pages/createpassword/index',
     'pages/editpassword/index',
+    'pages/editclassschedule/index',
   ],
   tabBar: {
     custom: true,

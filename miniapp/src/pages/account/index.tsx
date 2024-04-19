@@ -3,12 +3,13 @@ import { View, Text } from '@tarojs/components'
 import Taro, { useDidHide, useDidShow } from '@tarojs/taro'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/store/slices/reducers'
-import { Divider, Button, Avatar } from '@nutui/nutui-react-taro';
+import { Divider, Button, Avatar, Cell } from '@nutui/nutui-react-taro';
 import { useMutation } from '@apollo/client'
 import { addWechatAuthMutation, removeWechatAuthMutation } from '@/graphql/mutation/user.mutation.graphql'
 
 import './index.scss';
 import { userSlice } from '@/store/slices/userSlice'
+import { ArrowRight } from '@nutui/icons-react-taro'
 
 const Account = (props: PropsWithChildren) => {
   const user = useSelector((state: RootState) => state.userData.user);
@@ -102,17 +103,13 @@ const Account = (props: PropsWithChildren) => {
       </View>
 
       <View className='actions'>
-        <Button block fill='none' onClick={() => Taro.navigateTo({ url: '/pages/updateuserinfo/index' })}>
-          修改用户信息
-        </Button>
-        <Divider />
-        <Button block fill='none' onClick={() => Taro.navigateTo({ url: '/pages/updateuserpassword/index' })}>
-          修改用户密码
-        </Button>
-        <Divider />
+        <Cell title='修改用户信息' extra={<ArrowRight />} onClick={() => Taro.navigateTo({ url: '/pages/updateuserinfo/index' })} />
+        {/* <Divider /> */}
+        <Cell title='修改用户密码' extra={<ArrowRight />} onClick={() => Taro.navigateTo({ url: '/pages/updateuserpassword/index' })} />
+        {/* <Divider /> */}
         {user?.wechatAuth ?
-          <Button block fill='none' onClick={RemoveWechatAuth}>解除微信认证</Button>
-          : <Button block fill='none' onClick={AddWechatAuth}>绑定微信认证</Button>
+          <Cell title='解除微信认证' extra={<ArrowRight />} onClick={RemoveWechatAuth} />
+          : <Cell title='绑定微信认证' extra={<ArrowRight />} onClick={AddWechatAuth} />
         }
       </View>
 

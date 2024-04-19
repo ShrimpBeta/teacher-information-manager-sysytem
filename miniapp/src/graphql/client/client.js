@@ -3,6 +3,7 @@ import { onError } from "@apollo/client/link/error";
 import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
 import Taro from "@tarojs/taro";
 import qs from "qs";
+import { JWT } from "@/auth/jwt";
 
 const httpUrl = 'http://localhost:8080/graphql'
 const ENDPOINT = 'http://localhost:8080'
@@ -65,7 +66,11 @@ export const createClient = (store) => {
   const authMiddleware = new ApolloLink((operation, forward) => {
     operation.setContext((context) => {
       let headers = context.headers || {}
-      const token = store.getState().userData.token;
+      let token = store.getState().userData.token;
+      if (JWT.getTokenExpiration(token)) {
+        store.dispatch({ type: 'userData/logout' })
+        token = null;
+      }
       return {
         headers: {
           ...headers,

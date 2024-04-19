@@ -2,13 +2,13 @@ import { Text, View } from '@tarojs/components';
 import { PropsWithChildren, useEffect, useState } from 'react'
 import { SearchBar, Pagination, Empty, Skeleton, Button } from '@nutui/nutui-react-taro';
 import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro'
-import { Password, PasswordFilter, PasswordsByFilterResponse } from '@/models/models/password.model';
+import { Password, PasswordFilter } from '@/models/models/password.model';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { passwordsByFilterQuery } from '@/graphql/query/password.query.graphql';
 import Taro, { useDidShow } from '@tarojs/taro';
-import { get } from 'http';
 import { deletePasswordMutation } from '@/graphql/mutation/password.mutation.graphql';
-import { set } from 'react-hook-form';
+
+import './index.scss'
 
 const OverviewPassword = (props: PropsWithChildren) => {
 
