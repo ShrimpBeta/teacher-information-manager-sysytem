@@ -96,7 +96,6 @@ func (r *queryResolver) PasswordTrue(ctx context.Context, id string) (*graphql_m
 	}
 
 	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
-
 	if err != nil {
 		return nil, err
 	}
@@ -126,5 +125,21 @@ func (r *queryResolver) PasswordsByFilter(ctx context.Context, filter graphql_mo
 
 // PasswordsTrue is the resolver for the passwordsTrue field.
 func (r *queryResolver) PasswordsTrue(ctx context.Context, ids []*string) ([]*graphql_models.PasswordTrue, error) {
-	panic(fmt.Errorf("not implemented: PasswordsTrue - passwordsTrue"))
+
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.PasswordService.GetPasswordsByIds(ids, user.MasterKey)
 }

@@ -24,11 +24,11 @@ export class ExportclassscheduleComponent implements OnInit, OnDestroy, AfterVie
   private destory$ = new Subject<boolean>();
 
   classScheduleList: ClassSchedule[] = [];
-  classScheduleTables: ClassScheduleTable[] = [];
+  classSchedulesTable: ClassScheduleTable[] = [];
   totalCount: number = 0;
   displayedColumns: string[] = ['select', 'termName', 'startDate', 'weekCount', 'createdAt', 'updatedAt'];
 
-  dataSource = new MatTableDataSource<ClassScheduleTable>(this.classScheduleTables);
+  dataSource!: MatTableDataSource<ClassScheduleTable>;
   @ViewChild(MatSort) sort!: MatSort;
   selection = new SelectionModel<ClassScheduleTable>(true, []);
 
@@ -89,7 +89,7 @@ export class ExportclassscheduleComponent implements OnInit, OnDestroy, AfterVie
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
+    // this.dataSource.sort = this.sort;s
   }
 
   constructor(
@@ -119,8 +119,9 @@ export class ExportclassscheduleComponent implements OnInit, OnDestroy, AfterVie
                 };
                 tempTable.push(classScheduleTable);
               }
-              this.classScheduleTables = tempTable;
-              this.dataSource = new MatTableDataSource<ClassScheduleTable>(this.classScheduleTables);
+              this.classSchedulesTable = tempTable;
+              this.dataSource = new MatTableDataSource<ClassScheduleTable>(this.classSchedulesTable);
+              this.dataSource.sort = this.sort;
             }
           },
           error: (error) => {

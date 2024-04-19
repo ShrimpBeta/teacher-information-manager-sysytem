@@ -7,3 +7,10 @@
   padding: 20px 40px;
   gap: 20px;
 }
+
+.cdk-header-row {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: white;
+}

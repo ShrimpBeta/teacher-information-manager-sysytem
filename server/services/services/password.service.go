@@ -203,3 +203,39 @@ func (passwordService *PasswordService) GetPasswordsByFilter(userId primitive.Ob
 		Passwords:  passwords,
 	}, nil
 }
+
+func (passwordService *PasswordService) GetPasswordsByIds(ids []*string, masterKey string) ([]*graphql_models.PasswordTrue, error) {
+	objectIds := make([]primitive.ObjectID, len(ids))
+	for _, id := range ids {
+		objectId, err := primitive.ObjectIDFromHex(*id)
+		if err != nil {
+			return nil, err
+		}
+		objectIds = append(objectIds, objectId)
+	}
+
+	passwordsData, err := passwordService.Repo.GetPasswordsByIds(objectIds)
+	if err != nil {
+		return nil, err
+	}
+
+	passwords := make([]*graphql_models.PasswordTrue, len(passwordsData))
+	for i, passwordData := range passwordsData {
+		passwordDecrypt, err := passwordencrypt.Decrypt(masterKey, passwordData.Password)
+		if err != nil {
+			return nil, err
+		}
+		passwords[i] = &graphql_models.PasswordTrue{
+			ID:          passwordData.ID.Hex(),
+			URL:         passwordData.Url,
+			Account:     passwordData.Account,
+			AppName:     passwordData.AppName,
+			Password:    passwordDecrypt,
+			Description: passwordData.Description,
+			CreatedAt:   passwordData.CreatedAt.Time(),
+			UpdatedAt:   passwordData.UpdatedAt.Time(),
+		}
+	}
+
+	return passwords, nil
+}

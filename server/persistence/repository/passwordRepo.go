@@ -36,6 +36,26 @@ func (r *PasswordRepo) GetPasswordById(id primitive.ObjectID) (*models.Password,
 	return &password, nil
 }
 
+func (r *PasswordRepo) GetPasswordsByIds(ids []primitive.ObjectID) ([]models.Password, error) {
+	passwords := []models.Password{}
+	cursor, err := r.collection.Find(context.Background(), bson.M{"_id": bson.M{"$in": ids}})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+
+	for cursor.Next(context.Background()) {
+		password := models.Password{}
+		err := cursor.Decode(&password)
+		if err != nil {
+			return nil, err
+		}
+		passwords = append(passwords, password)
+	}
+
+	return passwords, nil
+}
+
 func (r *PasswordRepo) GetPasswordsByParams(params PasswordQueryParams) ([]models.Password, error) {
 	passwords := []models.Password{}
 
