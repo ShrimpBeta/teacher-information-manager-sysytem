@@ -1,14 +1,16 @@
 import { Text, View } from '@tarojs/components';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import Taro, { useDidShow } from '@tarojs/taro';
 import { PropsWithChildren, useEffect, useState } from 'react'
 
-import './index.scss'
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { Button, Empty, Pagination, Skeleton } from '@nutui/nutui-react-taro';
+import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro';
+
 import { deleteEduReformMutation } from '@/graphql/mutation/edureform.mutation.graphql';
 import { eduReformsByFilterQuery } from '@/graphql/query/edureform.query.graphql';
 import { EduReform, EduReformFilter } from '@/models/models/eduReform.model';
-import Taro, { useDidShow } from '@tarojs/taro';
-import { Button, Empty, Pagination, Skeleton } from '@nutui/nutui-react-taro';
-import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro';
+
+import './index.scss'
 
 const OverviewEduReform = (props: PropsWithChildren) => {
 
@@ -135,7 +137,7 @@ const OverviewEduReform = (props: PropsWithChildren) => {
                         justifyContent: 'center',
                         gap: '40rpx'
                       }}>
-                      <Button onClick={() => { Taro.navigateTo({ url: `/pages/editedureform/index?id=${item.id}` }) }}>编辑</Button>
+                      <Button onClick={() => { Taro.navigateTo({ url: `/pages/updateedureform/index?id=${item.id}` }) }}>编辑</Button>
                       <Button type="primary" onClick={() => onDelete(item.id)}>删除</Button>
                     </View>
                   </View>

@@ -6,11 +6,11 @@ import { RootState } from '@/store/slices/reducers'
 import { Divider, Button, Avatar, Cell } from '@nutui/nutui-react-taro';
 import { useMutation } from '@apollo/client'
 import { addWechatAuthMutation, removeWechatAuthMutation } from '@/graphql/mutation/user.mutation.graphql'
-
-import './index.scss';
 import { userSlice } from '@/store/slices/userSlice'
 import { ArrowRight } from '@nutui/icons-react-taro'
 import { JWT } from '@/auth/jwt'
+
+import './index.scss'
 
 const Account = (props: PropsWithChildren) => {
   const user = useSelector((state: RootState) => state.userData.user);

@@ -1,15 +1,16 @@
 import { Text, View } from '@tarojs/components';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import Taro, { useDidShow } from '@tarojs/taro';
 import { PropsWithChildren, useEffect, useState } from 'react'
 
-import './index.scss'
-import { useDidShow } from '@tarojs/taro';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { Button, Empty, Pagination, Skeleton } from '@nutui/nutui-react-taro';
+import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro';
+
 import { compGuidancesByFilterQuery } from '@/graphql/query/compguidance.query.graphql';
 import { deleteCompGuidanceMutation } from '@/graphql/mutation/compguidance.mutation.graphql';
 import { CompGuidance, CompGuidanceFilter } from '@/models/models/compGuidance.model';
-import Taro from '@tarojs/taro';
-import { Button, Empty, Pagination, Skeleton } from '@nutui/nutui-react-taro';
-import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro';
+
+import './index.scss'
 
 const OverviewCompGuidance = (props: PropsWithChildren) => {
 
@@ -129,7 +130,7 @@ const OverviewCompGuidance = (props: PropsWithChildren) => {
                           justifyContent: 'center',
                           gap: '40rpx'
                         }}>
-                        <Button onClick={() => { Taro.navigateTo({ url: `/pages/editcompguidance/index?id=${item.id}` }) }}>编辑</Button>
+                        <Button onClick={() => { Taro.navigateTo({ url: `/pages/updatecompguidance/index?id=${item.id}` }) }}>编辑</Button>
                         <Button type="primary" onClick={() => onDelete(item.id)}>删除</Button>
                       </View>
                     </View>

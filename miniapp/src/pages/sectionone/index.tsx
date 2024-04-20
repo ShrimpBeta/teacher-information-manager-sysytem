@@ -1,21 +1,23 @@
 import { PropsWithChildren, useEffect, useState } from 'react'
-import { View, Text } from '@tarojs/components'
+import { View } from '@tarojs/components'
 import { useDidHide, useDidShow } from '@tarojs/taro'
 import { Tabs } from '@nutui/nutui-react-taro'
-import './index.scss'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/store/slices/reducers'
+import Taro from '@tarojs/taro'
+import { JWT } from '@/auth/jwt'
+
 import OverviewClassSchedule from '@/components/overviewclassschedule'
 import OverviewPassword from '@/components/overviewpassword'
 import OverviewMentorship from '@/components/overviewmentorship'
 import OverviewCompGuidance from '@/components/overviewcompguidance'
 import OverviewUGPGGuidance from '@/components/overviewugpgguidance'
 import OverviewEduReform from '@/components/overviewedureform'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/store/slices/reducers'
-import { JWT } from '@/auth/jwt'
-import Taro from '@tarojs/taro'
+
+import './index.scss'
 
 const Sectionone = (props: PropsWithChildren) => {
-  
+
   const token = useSelector((state: RootState) => state.userData.token);
 
   useEffect(() => {

@@ -1,13 +1,17 @@
+import { Text, View } from '@tarojs/components';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import Taro,{ useDidShow } from '@tarojs/taro';
+import { PropsWithChildren, useEffect, useState } from 'react'
+
+
+import { Button, Empty, Pagination, Skeleton } from '@nutui/nutui-react-taro';
+import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro';
+
 import { deleteUGPGGuidanceMutation } from '@/graphql/mutation/ugpgguidance.mutation.graphql';
 import { uGPGGuidancesByFilterQuery } from '@/graphql/query/ugpgguidance.query.graphql';
 import { UGPGGuidance, UGPGGuidanceFilter } from '@/models/models/uGPGGuidance.model';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro';
-import { Button, Empty, Pagination, Skeleton } from '@nutui/nutui-react-taro';
-import { Text, View } from '@tarojs/components';
-import Taro from '@tarojs/taro';
-import { useDidShow } from '@tarojs/taro';
-import { PropsWithChildren, useEffect, useState } from 'react'
+
+import './index.scss'
 
 const OverviewUGPGGuidance = (props: PropsWithChildren) => {
 
@@ -126,7 +130,7 @@ const OverviewUGPGGuidance = (props: PropsWithChildren) => {
                         justifyContent: 'center',
                         gap: '40rpx'
                       }}>
-                      <Button onClick={() => { Taro.navigateTo({ url: `/pages/editugpgguidance/index?id=${item.id}` }) }}>编辑</Button>
+                      <Button onClick={() => { Taro.navigateTo({ url: `/pages/updateugpgguidance/index?id=${item.id}` }) }}>编辑</Button>
                       <Button type="primary" onClick={() => onDelete(item.id)}>删除</Button>
                     </View>
                   </View>

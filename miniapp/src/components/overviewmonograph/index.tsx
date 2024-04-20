@@ -1,12 +1,17 @@
+import { Text, View } from '@tarojs/components';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import Taro, { useDidShow } from '@tarojs/taro';
+import { PropsWithChildren, useEffect, useState } from 'react'
+
+
+import { Button, Empty, Pagination, Skeleton } from '@nutui/nutui-react-taro';
+import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro';
+
 import { deleteMentorshipMutation } from '@/graphql/mutation/mentorship.mutation.graphql';
 import { monographsByFilterQuery } from '@/graphql/query/monograph.query.graphql';
 import { Monograph, MonographFilter } from '@/models/models/monograph.model';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro';
-import { Button, Empty, Pagination, Skeleton } from '@nutui/nutui-react-taro';
-import { Text, View } from '@tarojs/components';
-import Taro, { useDidShow } from '@tarojs/taro';
-import { PropsWithChildren, useEffect, useState } from 'react'
+
+import './index.scss'
 
 const OverviewMonograph = (props: PropsWithChildren) => {
 
@@ -126,7 +131,7 @@ const OverviewMonograph = (props: PropsWithChildren) => {
                       justifyContent: 'center',
                       gap: '40rpx'
                     }}>
-                    <Button onClick={() => { Taro.navigateTo({ url: `/pages/editmonograph/index?id=${item.id}` }) }}>编辑</Button>
+                    <Button onClick={() => { Taro.navigateTo({ url: `/pages/updatemonograph/index?id=${item.id}` }) }}>编辑</Button>
                     <Button type="primary" onClick={() => onDelete(item.id)}>删除</Button>
                   </View>
                 </View>)

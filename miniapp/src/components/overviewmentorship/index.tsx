@@ -1,15 +1,16 @@
 import { Text, View } from '@tarojs/components';
+import Taro, { useDidShow } from '@tarojs/taro';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { PropsWithChildren, useEffect, useState } from 'react'
 
-import './index.scss'
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { Button, Empty, Pagination, Skeleton } from '@nutui/nutui-react-taro';
+import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro';
+
 import { mentorshipsByFilterQuery } from '@/graphql/query/mentorship.query.graphql';
 import { deleteMentorshipMutation } from '@/graphql/mutation/mentorship.mutation.graphql';
 import { Mentorship, MentorshipFilter } from '@/models/models/mentorship.model';
-import Taro, { useDidShow } from '@tarojs/taro';
-import { Button, Empty, Pagination, Skeleton } from '@nutui/nutui-react-taro';
-import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro';
-import { it } from 'node:test';
+
+import './index.scss'
 
 const OverviewMentorship = (props: PropsWithChildren) => {
 
@@ -130,7 +131,7 @@ const OverviewMentorship = (props: PropsWithChildren) => {
                         justifyContent: 'center',
                         gap: '40rpx'
                       }}>
-                      <Button onClick={() => { Taro.navigateTo({ url: `/pages/editmentorship/index?id=${item.id}` }) }}>编辑</Button>
+                      <Button onClick={() => { Taro.navigateTo({ url: `/pages/updatementorship/index?id=${item.id}` }) }}>编辑</Button>
                       <Button type='primary' size='small' onClick={() => { onDelete(item.id) }}>删除</Button>
                     </View>
                   </View>

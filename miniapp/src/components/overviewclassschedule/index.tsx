@@ -1,12 +1,14 @@
+import { Text, View } from '@tarojs/components';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import Taro, { useDidShow } from '@tarojs/taro';
+import { PropsWithChildren, useEffect, useState } from 'react'
+
+import { SearchBar, Pagination, Empty, Skeleton, Button } from '@nutui/nutui-react-taro';
+import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro'
+
 import { deleteAcademicTermMutation } from '@/graphql/mutation/classschedule.mutation.graphql';
 import { academicTermsShortByFilterQuery } from '@/graphql/query/classschedule.query.graphql';
 import { ClassSchedule, ClassScheduleFilter } from '@/models/models/classSchedule.model';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { Text, View } from '@tarojs/components';
-import Taro, { useDidShow } from '@tarojs/taro';
-import { SearchBar, Pagination, Empty, Skeleton, Button, Dialog } from '@nutui/nutui-react-taro';
-import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro'
-import { PropsWithChildren, useEffect, useState } from 'react'
 
 import './index.scss'
 
@@ -137,7 +139,7 @@ const OverviewClassSchedule = (props: PropsWithChildren) => {
                         justifyContent: 'center',
                         gap: '40rpx'
                       }}>
-                      <Button onClick={() => { Taro.navigateTo({ url: `/pages/editclassschedule/index?id=${item.id}` }) }}>编辑</Button>
+                      <Button onClick={() => { Taro.navigateTo({ url: `/pages/editclassschedule/index?id=${item.id}` }) }}>查看</Button>
                       <Button type="primary" onClick={() => onDelete(item.id)}>删除</Button>
                     </View>
                   </View>

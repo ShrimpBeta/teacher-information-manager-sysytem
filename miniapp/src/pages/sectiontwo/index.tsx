@@ -1,15 +1,17 @@
 import { PropsWithChildren, useEffect, useState } from 'react'
-import { View, Text } from '@tarojs/components'
+import { View } from '@tarojs/components'
 import { useDidHide, useDidShow } from '@tarojs/taro'
 import { Tabs } from '@nutui/nutui-react-taro'
-import './index.scss'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/store/slices/reducers'
+import Taro from '@tarojs/taro'
+import { JWT } from '@/auth/jwt'
+
 import OverviewMonograph from '@/components/overviewmonograph'
 import OverviewPaper from '@/components/overviewpaper'
 import OverviewSciResearch from '@/components/overviewscisearch'
-import { RootState } from '@/store/slices/reducers'
-import { useSelector } from 'react-redux'
-import Taro from '@tarojs/taro'
-import { JWT } from '@/auth/jwt'
+
+import './index.scss'
 
 const Sectiontwo = (props: PropsWithChildren) => {
   const token = useSelector((state: RootState) => state.userData.token);

@@ -5,15 +5,13 @@ import {
   Form, Button, Input, Dialog,
   type FormItemRuleWithoutValidator,
 } from '@nutui/nutui-react-taro'
-
-import './index.scss'
 import { RootState } from '@/store/slices/reducers'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation } from '@apollo/client'
 import { updateUserMutation } from '@/graphql/mutation/user.mutation.graphql'
 import { UpdateUserResponse } from '@/models/models/user.model'
 import { userSlice } from '@/store/slices/userSlice'
-
+import './index.scss'
 
 const Updateuserinfo = (props: PropsWithChildren) => {
 
