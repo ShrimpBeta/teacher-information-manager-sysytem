@@ -43,7 +43,13 @@ export interface PasswordTrueResponse {
   data?: {
     passwordTrue: PasswordTrue
   }
+}
 
+export interface PasswordsTrueResponse {
+  error?: unknown;
+  data?: {
+    passwordsTrue: PasswordTrue[]
+  }
 }
 
 export interface PasswordsByFilterResponse {

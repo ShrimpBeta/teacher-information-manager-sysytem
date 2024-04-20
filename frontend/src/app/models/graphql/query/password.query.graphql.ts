@@ -31,3 +31,18 @@ export const passwordTrueQuery = gql`
     }
   }
 `
+
+export const passwordsTrueQuery = gql`
+  query passwordsTrue($ids: [ID!]!) {
+    passwordsTrue(ids: $ids) {
+      id
+      url
+      appName
+      account
+      password
+      description
+      updatedAt
+      createdAt
+    }
+  }
+`

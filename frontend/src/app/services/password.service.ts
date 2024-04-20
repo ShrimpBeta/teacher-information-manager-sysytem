@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { AuthRepository } from "../core/auth/auth.repository";
-import { passwordTrueQuery, passwordsByFilterQuery } from "../models/graphql/query/password.query.graphql";
+import { passwordTrueQuery, passwordsByFilterQuery, passwordsTrueQuery } from "../models/graphql/query/password.query.graphql";
 import { deletePasswordMutation, updatePasswordMutation, createPasswordMutation } from "../models/graphql/mutation/password.mutation.graphql";
-import { CreatePasswordResponse, DeletePasswordResponse, EditPassword, Password, PasswordFilter, PasswordsByFilterResponse, PasswordsPage, PasswordTrue, PasswordTrueResponse, UpdatePasswordResponse } from "../models/models/password.model";
+import { CreatePasswordResponse, DeletePasswordResponse, EditPassword, Password, PasswordFilter, PasswordsByFilterResponse, PasswordsPage, PasswordsTrueResponse, PasswordTrue, PasswordTrueResponse, UpdatePasswordResponse } from "../models/models/password.model";
 import { map, Observable } from "rxjs";
 
 @Injectable({
@@ -33,6 +33,24 @@ export class PasswordService {
         return null;
       })
     );
+  }
+
+  getPasswordsTrue(ids: string[]): Observable<PasswordTrue[] | null> {
+    return this.apollo.query({
+      query: passwordsTrueQuery,
+      variables: {
+        ids: ids
+      }
+    }).pipe(
+      map((response: unknown) => {
+        let passwords = (response as PasswordsTrueResponse).data?.passwordsTrue;
+        if (typeof passwords !== 'undefined' && passwords !== null) {
+          return passwords;
+        }
+        return null;
+      })
+    );
+
   }
 
   getPassword(id: string): Observable<PasswordTrue | null> {
