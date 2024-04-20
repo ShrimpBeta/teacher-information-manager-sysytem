@@ -19,9 +19,13 @@ import './index.scss';
 
 
 const Signin = (props: PropsWithChildren) => {
-  useEffect(() => { }, [])
+  useEffect(() => {
 
-  useDidShow(() => { })
+   }, [])
+
+  useDidShow(() => { 
+
+  })
 
   useDidHide(() => { })
 
@@ -89,7 +93,7 @@ const Signin = (props: PropsWithChildren) => {
         if (pages.length > 1) {
           Taro.navigateBack();
         } else {
-          Taro.navigateTo({ url: '/pages/index/index' });
+          Taro.switchTab({ url: '/pages/index/index' });
         }
       }
     }).catch((error) => {

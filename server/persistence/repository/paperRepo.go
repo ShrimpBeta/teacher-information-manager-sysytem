@@ -137,10 +137,10 @@ func (r *PaperRepo) CreatePaper(paper *models.Paper) (*primitive.ObjectID, error
 
 func (r *PaperRepo) UpdatePaper(paper *models.Paper) error {
 	paper.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
-	_, err := r.collection.UpdateOne(
+	_, err := r.collection.ReplaceOne(
 		context.Background(),
 		bson.M{"_id": paper.ID},
-		bson.M{"$set": paper},
+		paper,
 	)
 	return err
 }

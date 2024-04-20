@@ -121,10 +121,10 @@ func (r *UGPGGuidanceRepo) CreateUGPGGuidance(ugpgGuidance *models.UGPGGuidance)
 
 func (r *UGPGGuidanceRepo) UpdateUGPGGuidance(ugpgGuidance *models.UGPGGuidance) error {
 	ugpgGuidance.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
-	_, err := r.collection.UpdateOne(
+	_, err := r.collection.ReplaceOne(
 		context.Background(),
 		bson.M{"_id": ugpgGuidance.ID},
-		bson.M{"$set": ugpgGuidance},
+		ugpgGuidance,
 	)
 	return err
 }

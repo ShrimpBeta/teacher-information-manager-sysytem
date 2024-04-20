@@ -124,7 +124,7 @@ func (r *UserRepo) CreateUser(user *models.User) (*primitive.ObjectID, error) {
 
 func (r *UserRepo) UpdateUser(user *models.User) error {
 	user.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
-	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": user.ID}, bson.M{"$set": user})
+	_, err := r.collection.ReplaceOne(context.Background(), bson.M{"_id": user.ID}, user)
 	return err
 }
 

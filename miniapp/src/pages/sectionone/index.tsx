@@ -9,11 +9,39 @@ import OverviewMentorship from '@/components/overviewmentorship'
 import OverviewCompGuidance from '@/components/overviewcompguidance'
 import OverviewUGPGGuidance from '@/components/overviewugpgguidance'
 import OverviewEduReform from '@/components/overviewedureform'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/store/slices/reducers'
+import { JWT } from '@/auth/jwt'
+import Taro from '@tarojs/taro'
 
 const Sectionone = (props: PropsWithChildren) => {
-  useEffect(() => { }, [])
+  
+  const token = useSelector((state: RootState) => state.userData.token);
 
-  useDidShow(() => { })
+  useEffect(() => {
+    if (token === '') {
+      // 未登录
+      Taro.navigateTo({ url: '/pages/signin/index' });
+    } else {
+      // token过期
+      if (JWT.getTokenExpiration(token)) {
+        Taro.navigateTo({ url: '/pages/signin/index' });
+      }
+    }
+  }, [token]);
+
+  useDidShow(() => {
+    // 防止返回可访问
+    if (token === '') {
+      // 未登录
+      Taro.navigateTo({ url: '/pages/signin/index' });
+    } else {
+      // token过期
+      if (JWT.getTokenExpiration(token)) {
+        Taro.navigateTo({ url: '/pages/signin/index' });
+      }
+    }
+  });
 
   useDidHide(() => { })
 

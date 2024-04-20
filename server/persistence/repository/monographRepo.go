@@ -132,7 +132,7 @@ func (r *MonographRepo) CreateMonograph(monograph *models.Monograph) (*primitive
 
 func (r *MonographRepo) UpdateMonograph(monograph *models.Monograph) error {
 	monograph.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
-	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": monograph.ID}, bson.M{"$set": monograph})
+	_, err := r.collection.ReplaceOne(context.Background(), bson.M{"_id": monograph.ID}, monograph)
 	return err
 }
 

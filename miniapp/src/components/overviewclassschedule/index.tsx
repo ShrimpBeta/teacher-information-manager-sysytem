@@ -9,7 +9,6 @@ import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro'
 import { PropsWithChildren, useEffect, useState } from 'react'
 
 import './index.scss'
-import { set } from 'react-hook-form';
 
 const OverviewClassSchedule = (props: PropsWithChildren) => {
 
@@ -41,10 +40,10 @@ const OverviewClassSchedule = (props: PropsWithChildren) => {
   useEffect(() => {
     if (data) {
       console.log(data)
-      let classSchedulesPage = data.academicTermsByFilter;
-      if (classSchedulesPage) {
-        setClassScheduleList(classSchedulesPage.academicTerms);
-        setTotalCount(classSchedulesPage.totalCount);
+      let classSchedulePage = data.academicTermsByFilter;
+      if (classSchedulePage) {
+        setClassScheduleList(classSchedulePage.academicTerms);
+        setTotalCount(classSchedulePage.totalCount);
       }
     }
   }, [data]);
@@ -108,7 +107,7 @@ const OverviewClassSchedule = (props: PropsWithChildren) => {
   return (
     <View className='container'>
       <SearchBar shape="round" onChange={onChange} onSearch={onSearch} placeholder='课程表名称' />
-      
+
       {loading ? <Skeleton rows={3} title animated /> :
         classScheduleList.length === 0 ? (
           <Empty description="无数据" style={{ marginTop: '10px' }} />) : (

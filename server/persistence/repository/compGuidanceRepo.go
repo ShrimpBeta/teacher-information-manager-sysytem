@@ -130,7 +130,7 @@ func (r *CompGuidanceRepo) CratedCompGuidance(compGuidance *models.CompGuidance)
 
 func (r *CompGuidanceRepo) UpdateCompGuidance(compGuidance *models.CompGuidance) error {
 	compGuidance.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
-	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": compGuidance.ID}, bson.M{"$set": compGuidance})
+	_, err := r.collection.ReplaceOne(context.Background(), bson.M{"_id": compGuidance.ID}, compGuidance)
 	return err
 }
 

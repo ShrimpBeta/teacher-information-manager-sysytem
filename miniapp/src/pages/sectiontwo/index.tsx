@@ -6,11 +6,38 @@ import './index.scss'
 import OverviewMonograph from '@/components/overviewmonograph'
 import OverviewPaper from '@/components/overviewpaper'
 import OverviewSciResearch from '@/components/overviewscisearch'
+import { RootState } from '@/store/slices/reducers'
+import { useSelector } from 'react-redux'
+import Taro from '@tarojs/taro'
+import { JWT } from '@/auth/jwt'
 
 const Sectiontwo = (props: PropsWithChildren) => {
-  useEffect(() => { }, [])
+  const token = useSelector((state: RootState) => state.userData.token);
 
-  useDidShow(() => { })
+  useEffect(() => {
+    if (token === '') {
+      // 未登录
+      Taro.navigateTo({ url: '/pages/signin/index' });
+    } else {
+      // token过期
+      if (JWT.getTokenExpiration(token)) {
+        Taro.navigateTo({ url: '/pages/signin/index' });
+      }
+    }
+  }, [token]);
+
+  useDidShow(() => {
+    // 防止返回可访问
+    if (token === '') {
+      // 未登录
+      Taro.navigateTo({ url: '/pages/signin/index' });
+    } else {
+      // token过期
+      if (JWT.getTokenExpiration(token)) {
+        Taro.navigateTo({ url: '/pages/signin/index' });
+      }
+    }
+  });
 
   useDidHide(() => { })
 

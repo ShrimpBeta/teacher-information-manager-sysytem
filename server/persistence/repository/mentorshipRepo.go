@@ -127,10 +127,10 @@ func (r *MentorshipRepo) CreateMentorship(mentorship *models.Mentorship) (*primi
 
 func (r *MentorshipRepo) UpdateMentorship(mentorship *models.Mentorship) error {
 	mentorship.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
-	_, err := r.collection.UpdateOne(
+	_, err := r.collection.ReplaceOne(
 		context.Background(),
 		bson.M{"_id": mentorship.ID},
-		bson.M{"$set": mentorship},
+		mentorship,
 	)
 	return err
 }

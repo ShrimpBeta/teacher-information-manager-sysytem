@@ -189,7 +189,7 @@ func (r *SciResearchRepo) CreateSciResearch(sciResearch *models.SciResearch) (*p
 
 func (r *SciResearchRepo) UpdateSciResearch(sciResearch *models.SciResearch) error {
 	sciResearch.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
-	_, err := r.collection.UpdateOne(context.Background(), bson.M{"_id": sciResearch.ID}, bson.M{"$set": sciResearch})
+	_, err := r.collection.ReplaceOne(context.Background(), bson.M{"_id": sciResearch.ID}, sciResearch)
 	return err
 }
 

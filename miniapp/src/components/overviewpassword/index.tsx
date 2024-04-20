@@ -15,7 +15,6 @@ const OverviewPassword = (props: PropsWithChildren) => {
   const [passwordsByFilter, { data, loading, error }] = useLazyQuery(passwordsByFilterQuery, {
     fetchPolicy: 'network-only'
   })
-
   const [deletePassword] = useMutation(deletePasswordMutation);
 
   useEffect(() => {
@@ -29,10 +28,10 @@ const OverviewPassword = (props: PropsWithChildren) => {
   useEffect(() => {
     if (data) {
       console.log(data)
-      let passwordsPage = data.passwordsByFilter;
-      if (passwordsPage) {
-        setPasswordList(passwordsPage.passwords);
-        setTotalCount(passwordsPage.totalCount);
+      let passwordPage = data.passwordsByFilter;
+      if (passwordPage) {
+        setPasswordList(passwordPage.passwords);
+        setTotalCount(passwordPage.totalCount);
       }
     }
   }, [data]);
@@ -146,14 +145,15 @@ const OverviewPassword = (props: PropsWithChildren) => {
                 )
               })}
             </View>
-            <View style={{
-              marginTop: '20rpx',
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
-            }}>
+            <View
+              style={{
+                marginTop: '20rpx',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100%',
+              }}>
               <Pagination
                 value={pageIndex}
                 total={totalCount}

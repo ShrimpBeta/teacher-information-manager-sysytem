@@ -147,10 +147,10 @@ func (r *EduReformRepo) CreateEduReform(eduReform *models.EduReform) (*primitive
 
 func (r *EduReformRepo) UpdateEduReform(eduReform *models.EduReform) error {
 	eduReform.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
-	_, err := r.collection.UpdateOne(
+	_, err := r.collection.ReplaceOne(
 		context.Background(),
 		bson.M{"_id": eduReform.ID},
-		bson.M{"$set": eduReform},
+		eduReform,
 	)
 	return err
 }

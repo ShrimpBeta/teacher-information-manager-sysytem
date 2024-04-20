@@ -114,10 +114,10 @@ func (r *PasswordRepo) CreatePassword(password *models.Password) (*primitive.Obj
 
 func (r *PasswordRepo) UpdatePassword(password *models.Password) error {
 	password.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
-	_, err := r.collection.UpdateOne(
+	_, err := r.collection.ReplaceOne(
 		context.Background(),
 		bson.M{"_id": password.ID},
-		bson.M{"$set": password},
+		password,
 	)
 	return err
 }

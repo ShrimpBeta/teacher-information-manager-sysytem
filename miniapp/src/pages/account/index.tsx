@@ -10,6 +10,7 @@ import { addWechatAuthMutation, removeWechatAuthMutation } from '@/graphql/mutat
 import './index.scss';
 import { userSlice } from '@/store/slices/userSlice'
 import { ArrowRight } from '@nutui/icons-react-taro'
+import { JWT } from '@/auth/jwt'
 
 const Account = (props: PropsWithChildren) => {
   const user = useSelector((state: RootState) => state.userData.user);
@@ -18,6 +19,33 @@ const Account = (props: PropsWithChildren) => {
 
   const [addWechatAuth] = useMutation(addWechatAuthMutation);
   const [removeWechatAuth] = useMutation(removeWechatAuthMutation);
+
+  const token = useSelector((state: RootState) => state.userData.token);
+
+  useEffect(() => {
+    if (token === '') {
+      // 未登录
+      Taro.navigateTo({ url: '/pages/signin/index' });
+    } else {
+      // token过期
+      if (JWT.getTokenExpiration(token)) {
+        Taro.navigateTo({ url: '/pages/signin/index' });
+      }
+    }
+  }, [token]);
+
+  useDidShow(() => {
+    // 防止返回可访问
+    if (token === '') {
+      // 未登录
+      Taro.navigateTo({ url: '/pages/signin/index' });
+    } else {
+      // token过期
+      if (JWT.getTokenExpiration(token)) {
+        Taro.navigateTo({ url: '/pages/signin/index' });
+      }
+    }
+  });
 
   const AddWechatAuth = () => {
     Taro.login({
@@ -65,6 +93,9 @@ const Account = (props: PropsWithChildren) => {
         icon: 'success',
         duration: 2000
       });
+      let userTemp = Object.assign({}, user);
+      userTemp.wechatAuth = false;
+      dispatch(userSlice.actions.updateUserInfo(userTemp));
     }).catch((err) => {
       Taro.showToast({
         title: '解除失败',
