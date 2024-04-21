@@ -43,3 +43,31 @@ export const academicTermsShortByFilterQuery = gql`
     }
   }
 `;
+
+export const academicTermsByIdsQuery = gql`
+  query academicTermsByIdsQuery($ids:[ID]!) {
+    AcademicTerms(ids: $ids) {
+      id
+      termName
+      startDate
+      weekCount
+      courses{
+        id
+        teacherNames
+        courseName
+        courseLocation
+        courseType
+        courseWeeks
+        courseTimes{
+          dayOfWeek
+          start
+          end
+        }
+        studentCount
+        color
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;

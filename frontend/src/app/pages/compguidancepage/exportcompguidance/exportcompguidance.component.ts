@@ -24,13 +24,12 @@ export class ExportcompguidanceComponent implements OnInit, OnDestroy, AfterView
   private destory$ = new Subject<boolean>();
 
   compGuidanceList: CompGuidance[] = [];
-  compGuidancesTable: CompGuidanceTable[] = [];
   totalCount = 0;
   displayedColumns: string[] = ['select', 'prjectName', 'awardStatus', 'createdAt', 'updatedAt'];
 
-  dataSource!: MatTableDataSource<CompGuidanceTable>;
+  dataSource!: MatTableDataSource<CompGuidance>;
   @ViewChild(MatSort) sort!: MatSort;
-  selection = new SelectionModel<CompGuidanceTable>(true, []);
+  selection = new SelectionModel<CompGuidance>(true, []);
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -94,17 +93,7 @@ export class ExportcompguidanceComponent implements OnInit, OnDestroy, AfterView
             if (response) {
               this.compGuidanceList = response.compGuidances;
               this.totalCount = response.totalCount;
-              this.compGuidancesTable = this.compGuidanceList.map((compGuidance) => {
-                let compGuidanceTable: CompGuidanceTable = {
-                  id: compGuidance.id,
-                  prjectName: compGuidance.projectName,
-                  awardStatus: compGuidance.awardStatus,
-                  createdAt: compGuidance.createdAt,
-                  updatedAt: compGuidance.updatedAt,
-                };
-                return compGuidanceTable;
-              });
-              this.dataSource = new MatTableDataSource(this.compGuidancesTable);
+              this.dataSource = new MatTableDataSource(this.compGuidanceList);
               this.dataSource.sort = this.sort;
             }
           },
@@ -121,14 +110,6 @@ export class ExportcompguidanceComponent implements OnInit, OnDestroy, AfterView
     this.destory$.next(true);
     this.destory$.complete();
   }
-}
-
-export interface CompGuidanceTable {
-  id: string;
-  prjectName: string;
-  awardStatus: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export class CompGuidanceExport {

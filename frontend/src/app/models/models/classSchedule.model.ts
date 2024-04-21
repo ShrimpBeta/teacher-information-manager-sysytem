@@ -66,10 +66,17 @@ export class NewClassScheduleData {
   weekCount: number = 0;
 }
 
-export interface AcademicResponse {
+export interface AcademicTermResponse {
   error?: unknown;
   data?: {
     academicTerm: ClassSchedule
+  }
+}
+
+export interface AcademicTermsResponse {
+  error?: unknown;
+  data?: {
+    AcademicTerms: ClassSchedule[]
   }
 }
 

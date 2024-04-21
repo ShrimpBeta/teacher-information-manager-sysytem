@@ -45,47 +45,25 @@ export class ExportclassscheduleComponent implements OnInit, OnDestroy, AfterVie
   }
 
   exportSelectedSchedules() {
-    console.log(this.selection.selected);
+    const ids = this.selection.selected.map((schedule) => schedule.id);
 
-    const selectedSchedules = this.selection.selected.map(selected => {
-      const schedule = this.classScheduleList.find(schedule => schedule.id === selected.id);
-      return this.flattenSchedule(schedule?.courses!);
+    if (ids.length === 0) {
+      this.snackBar.open('请选择导出的数据', '关闭', { duration: 2000 });
+      return;
+    }
+
+    this.classScheduleService.getClassSchedules(ids).pipe(takeUntil(this.destory$)).subscribe({
+      next: (schedules) => {
+        if (schedules) {
+          console.log(schedules);
+        }
+      },
+      error: (error) => {
+        console.log(error);
+        this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
+      }
     });
 
-    const wb: XLSX.WorkBook = XLSX.utils.book_new();
-
-    selectedSchedules.forEach((schedule, index) => {
-      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet([schedule]);
-      XLSX.utils.book_append_sheet(wb, ws, `Sheet${index + 1}`);
-    });
-
-    XLSX.writeFile(wb, 'Schedules.xlsx');
-  }
-
-  flattenSchedule(courses: Course[]) {
-    return courses.map((course, index) => {
-      const flattenedCourse: any = {
-        [`course${index + 1}.id`]: course.id,
-        [`course${index + 1}.teacherNames`]: course.teacherNames,
-        [`course${index + 1}.courseName`]: course.courseName,
-        [`course${index + 1}.courseLocation`]: course.courseLocation,
-        [`course${index + 1}.courseType`]: course.courseType,
-        [`course${index + 1}.studentCount`]: course.studentCount,
-        [`course${index + 1}.color`]: course.color,
-      };
-
-      (course.courseWeeks || []).forEach((week, weekIndex) => {
-        flattenedCourse[`course${index + 1}.week${weekIndex + 1}`] = week;
-      });
-
-      (course.courseTimes || []).forEach((time, timeIndex) => {
-        flattenedCourse[`course${index + 1}.time${timeIndex + 1}.dayOfWeek`] = time.dayOfWeek;
-        flattenedCourse[`course${index + 1}.time${timeIndex + 1}.start`] = time.start;
-        flattenedCourse[`course${index + 1}.time${timeIndex + 1}.end`] = time.end;
-      });
-
-      return flattenedCourse;
-    });
   }
 
   ngAfterViewInit(): void {

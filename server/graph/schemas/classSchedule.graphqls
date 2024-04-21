@@ -108,7 +108,7 @@ extend type Query {
     offset: Int!
     limit: Int!
   ): AcademicTermQuery!
-  AcademicTermsID(id: [ID!]!): [AcademicTerm]!
+  AcademicTerms(ids: [ID]!): [AcademicTerm]!
 }
 
 extend type Mutation {

@@ -23,13 +23,12 @@ export class ExportedureformComponent implements OnInit, OnDestroy, AfterViewIni
   private destory$ = new Subject<boolean>();
 
   eduReformList: EduReform[] = [];
-  eduReformsTable: EduReformTable[] = [];
   totalCount = 0;
   displayedColumns: string[] = ['select', 'title', 'teachersIn', 'teachersOut', 'number', 'createdAt', 'updatedAt'];
 
-  dataSource!: MatTableDataSource<EduReformTable>;
+  dataSource!: MatTableDataSource<EduReform>;
   @ViewChild(MatSort) sort!: MatSort;
-  selection = new SelectionModel<EduReformTable>(true, []);
+  selection = new SelectionModel<EduReform>(true, []);
 
   isAllSelected() {
     const numSelected = this.selection.selected.length;
@@ -96,19 +95,7 @@ export class ExportedureformComponent implements OnInit, OnDestroy, AfterViewIni
             if (eduReforms) {
               this.eduReformList = eduReforms.eduReforms;
               this.totalCount = eduReforms.totalCount;
-              this.eduReformsTable = this.eduReformList.map((eduReform) => {
-                return {
-                  id: eduReform.id,
-                  title: eduReform.title,
-                  teachersIn: eduReform.teachersIn.map((teacher) => teacher.username).join(','),
-                  teachersOut: eduReform.teachersOut.join(','),
-                  number: eduReform.number,
-                  achievement: eduReform.achievement,
-                  createdAt: eduReform.createdAt,
-                  updatedAt: eduReform.updatedAt,
-                };
-              });
-              this.dataSource = new MatTableDataSource(this.eduReformsTable);
+              this.dataSource = new MatTableDataSource(this.eduReformList);
               this.dataSource.sort = this.sort;
             }
           },
@@ -123,17 +110,6 @@ export class ExportedureformComponent implements OnInit, OnDestroy, AfterViewIni
     this.destory$.next(true);
     this.destory$.complete();
   }
-}
-
-export interface EduReformTable {
-  id: string;
-  title: string;
-  teachersIn: string;
-  teachersOut: string;
-  number: string;
-  achievement: string
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export class EduReformExport {

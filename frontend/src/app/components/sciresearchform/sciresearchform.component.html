@@ -97,7 +97,8 @@
   <mat-divider></mat-divider>
   <div class="award-form" formArrayName="awardRecords">
     <div class="title">
-      <div>获奖记录{{$index+1}}</div>
+      <!-- <div>获奖记录{{$index+1}}</div> -->
+      <div></div>
       <button mat-mini-fab color="primary" aria-label="delete award" type="button" (click)="removeAwardRecord($index)">
         <mat-icon>delete</mat-icon>
       </button>
@@ -133,7 +134,8 @@
   }
   <mat-divider style="margin-top: 0;"></mat-divider>
   <div class="form-submit">
-    <button mat-raised-button color="primary" (click)="addAwardRecord()" type="button">
+    <button mat-raised-button color="primary" (click)="addAwardRecord()" [disabled]="awardRecords.length>=1"
+      type="button">
       <mat-icon>add</mat-icon>
       <span>添加获奖记录</span>
     </button>

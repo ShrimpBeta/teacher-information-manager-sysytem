@@ -23,7 +23,7 @@ const OverviewEduReform = (props: PropsWithChildren) => {
   const [eduReformsByFilter, { data, loading, error }] = useLazyQuery(eduReformsByFilterQuery, {
     fetchPolicy: 'network-only'
   });
-
+  
   const { data: UsersData } = useQuery(userExportsQuery, { fetchPolicy: 'network-only' });
 
   const [deleteEduReform] = useMutation(deleteEduReformMutation);
@@ -117,6 +117,11 @@ const OverviewEduReform = (props: PropsWithChildren) => {
   }
 
   const handleAddTeacherIn = (index: number) => {
+    let isExist = teachersIn.some((item) => item.id === users[index].id);
+    if (isExist) {
+      setShowDropdown(false);
+      return;
+    }
     const newTeachersIn = [...teachersIn, users[index]];
     setTeachersIn(newTeachersIn);
     setShowDropdown(false);
@@ -174,7 +179,7 @@ const OverviewEduReform = (props: PropsWithChildren) => {
         <View style={{ display: 'flex', alignItems: 'center', gap: '10rpx', height: '40rpx', paddingLeft: '20rpx' }}>
           <Text>系统内教师:</Text>
           {teachersIn.map((item, index) => (
-            <View key={index} style={{ display: 'flex', alignItems: 'center', gap: '5rpx', backgroundColor: '#f6f6f6', border: '1px solid #ccc', borderRadius: '30rpx' }}>
+            <View key={index} style={{ display: 'flex', alignItems: 'center', gap: '5rpx', backgroundColor: '#f6f6f6', border: '1px solid #ccc', borderRadius: '30rpx', paddingLeft: '20rpx' }}>
               <Text>{item.username}</Text>
               <Button size='small' fill="none" onClick={() => handleDeleteTeacherIn(index)}><Close /></Button>
             </View>
@@ -185,7 +190,7 @@ const OverviewEduReform = (props: PropsWithChildren) => {
           {showDropdown && (
             <View style={{ position: 'absolute', height: '350rpx', top: '60rpx', left: '0', right: '0', backgroundColor: '#f6f6f6', zIndex: '1000', overflow: 'auto', boxShadow: '0 0 10px rgba(0, 0, 0, 0.5)', borderRadius: '30rpx', padding: '30rpx' }}>
               {users.map((item, index) => (
-                <View key={index} style={{ width: '100%', paddingLeft: '20rpx', display: 'flex', flexDirection: 'row', gap: '40rpx' }} onClick={() => handleAddTeacherIn(index)}>
+                <View key={index} style={{ width: '100%', paddingLeft: '20rpx', display: 'flex', flexDirection: 'row', gap: '40rpx', border: '1px dotted #ccc' }} onClick={() => handleAddTeacherIn(index)}>
                   <Text>{item.username}</Text>
                   <Text>{item.email}</Text>
                 </View>
@@ -196,7 +201,7 @@ const OverviewEduReform = (props: PropsWithChildren) => {
         <View style={{ display: 'flex', alignItems: 'center', gap: '10rpx', height: '40rpx', paddingLeft: '20rpx' }}>
           <Text>系统外教师:</Text>
           {teachersOut.map((item, index) => (
-            <View key={index} style={{ display: 'flex', alignItems: 'center', gap: '5rpx', backgroundColor: '#f6f6f6', border: '1px solid #ccc', borderRadius: '30rpx' }}>
+            <View key={index} style={{ display: 'flex', alignItems: 'center', gap: '5rpx', backgroundColor: '#f6f6f6', border: '1px solid #ccc', borderRadius: '30rpx', paddingLeft: '20rpx' }}>
               <Text>{item}</Text>
               <Button size='small' fill="none" onClick={() => handleDeleteTeacherOut(index)}><Close /></Button>
             </View>

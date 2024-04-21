@@ -375,10 +375,10 @@ func (classScheduleService *ClassScheduleService) GetAcademicTermById(userId pri
 	}, nil
 }
 
-func (classScheduleService *ClassScheduleService) GetAcademicTermsByIds(userId primitive.ObjectID, ids []string) ([]*graphql_models.AcademicTerm, error) {
+func (classScheduleService *ClassScheduleService) GetAcademicTermsByIds(userId primitive.ObjectID, ids []*string) ([]*graphql_models.AcademicTerm, error) {
 	objectIds := make([]primitive.ObjectID, len(ids))
 	for i, id := range ids {
-		objectId, err := primitive.ObjectIDFromHex(id)
+		objectId, err := primitive.ObjectIDFromHex(*id)
 		if err != nil {
 			return nil, err
 		}

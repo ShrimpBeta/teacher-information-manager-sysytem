@@ -9,7 +9,7 @@ type Monograph struct {
 	ID           primitive.ObjectID   `bson:"_id"`
 	TeachersIn   []primitive.ObjectID `bson:"teachersIn"`
 	TeachersOut  []*string            `bson:"teachersOut,omitempty"`
-	Title        string               `bson:"string"`
+	Title        string               `bson:"title"`
 	PublishDate  *primitive.DateTime  `bson:"publishDate,omitempty"`
 	PublishLevel *string              `bson:"publishLevel,omitempty"`
 	Rank         *string              `bson:"rank,omitempty"`

@@ -134,7 +134,7 @@ const OverviewCompGuidance = (props: PropsWithChildren) => {
         <View style={{ display: 'flex', alignItems: 'center', gap: '10rpx', height: '40rpx', paddingLeft: '20rpx' }}>
           <Text>学生名称:</Text>
           {studentNames.map((item, index) => (
-            <View key={index} style={{ display: 'flex', alignItems: 'center', gap: '5rpx', backgroundColor: '#f6f6f6', border: '1px solid #ccc', borderRadius: '30rpx' }}>
+            <View key={index} style={{ display: 'flex', alignItems: 'center', gap: '5rpx', backgroundColor: '#f6f6f6', border: '1px solid #ccc', borderRadius: '30rpx', paddingLeft: '20rpx' }}>
               <Text>{item}</Text>
               <Button size='small' fill="none" onClick={() => handleDeleteStudentName(index)}><Close /></Button>
             </View>

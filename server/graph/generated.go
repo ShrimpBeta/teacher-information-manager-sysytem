@@ -353,8 +353,8 @@ type ComplexityRoot struct {
 
 	Query struct {
 		AcademicTerm          func(childComplexity int, id string) int
+		AcademicTerms         func(childComplexity int, ids []*string) int
 		AcademicTermsByFilter func(childComplexity int, filter graphql_models.AcademicTermFilter, offset int, limit int) int
-		AcademicTermsID       func(childComplexity int, id []string) int
 		AdminSignIn           func(childComplexity int, adminSignInInput *graphql_models.AdminSignInInput) int
 		CompGuidance          func(childComplexity int, id string) int
 		CompGuidancesByFilter func(childComplexity int, filter graphql_models.CompGuidanceFilter, offset int, limit int) int
@@ -532,7 +532,7 @@ type QueryResolver interface {
 	AdminSignIn(ctx context.Context, adminSignInInput *graphql_models.AdminSignInInput) (*graphql_models.AuthPayload, error)
 	AcademicTerm(ctx context.Context, id string) (*graphql_models.AcademicTerm, error)
 	AcademicTermsByFilter(ctx context.Context, filter graphql_models.AcademicTermFilter, offset int, limit int) (*graphql_models.AcademicTermQuery, error)
-	AcademicTermsID(ctx context.Context, id []string) ([]*graphql_models.AcademicTerm, error)
+	AcademicTerms(ctx context.Context, ids []*string) ([]*graphql_models.AcademicTerm, error)
 	CompGuidance(ctx context.Context, id string) (*graphql_models.CompGuidance, error)
 	CompGuidancesByFilter(ctx context.Context, filter graphql_models.CompGuidanceFilter, offset int, limit int) (*graphql_models.CompGuidanceQuery, error)
 	EduReform(ctx context.Context, id string) (*graphql_models.EduReform, error)
@@ -2305,6 +2305,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AcademicTerm(childComplexity, args["id"].(string)), true
 
+	case "Query.AcademicTerms":
+		if e.complexity.Query.AcademicTerms == nil {
+			break
+		}
+
+		args, err := ec.field_Query_AcademicTerms_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AcademicTerms(childComplexity, args["ids"].([]*string)), true
+
 	case "Query.academicTermsByFilter":
 		if e.complexity.Query.AcademicTermsByFilter == nil {
 			break
@@ -2316,18 +2328,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.AcademicTermsByFilter(childComplexity, args["filter"].(graphql_models.AcademicTermFilter), args["offset"].(int), args["limit"].(int)), true
-
-	case "Query.AcademicTermsID":
-		if e.complexity.Query.AcademicTermsID == nil {
-			break
-		}
-
-		args, err := ec.field_Query_AcademicTermsID_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.AcademicTermsID(childComplexity, args["id"].([]string)), true
 
 	case "Query.adminSignIn":
 		if e.complexity.Query.AdminSignIn == nil {
@@ -4106,18 +4106,18 @@ func (ec *executionContext) field_Mutation_wechatLogin_args(ctx context.Context,
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_AcademicTermsID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_AcademicTerms_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2ᚕstringᚄ(ctx, tmp)
+	var arg0 []*string
+	if tmp, ok := rawArgs["ids"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ids"))
+		arg0, err = ec.unmarshalNID2ᚕᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
+	args["ids"] = arg0
 	return args, nil
 }
 
@@ -15461,8 +15461,8 @@ func (ec *executionContext) fieldContext_Query_academicTermsByFilter(ctx context
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_AcademicTermsID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_AcademicTermsID(ctx, field)
+func (ec *executionContext) _Query_AcademicTerms(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_AcademicTerms(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -15475,7 +15475,7 @@ func (ec *executionContext) _Query_AcademicTermsID(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().AcademicTermsID(rctx, fc.Args["id"].([]string))
+		return ec.resolvers.Query().AcademicTerms(rctx, fc.Args["ids"].([]*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -15492,7 +15492,7 @@ func (ec *executionContext) _Query_AcademicTermsID(ctx context.Context, field gr
 	return ec.marshalNAcademicTerm2ᚕᚖserverᚋgraphᚋmodelᚐAcademicTerm(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_AcademicTermsID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_AcademicTerms(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -15525,7 +15525,7 @@ func (ec *executionContext) fieldContext_Query_AcademicTermsID(ctx context.Conte
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_AcademicTermsID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_AcademicTerms_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -25656,7 +25656,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "AcademicTermsID":
+		case "AcademicTerms":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -25665,7 +25665,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_AcademicTermsID(ctx, field)
+				res = ec._Query_AcademicTerms(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -27500,38 +27500,6 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 		}
 	}
 	return res
-}
-
-func (ec *executionContext) unmarshalNID2ᚕstringᚄ(ctx context.Context, v interface{}) ([]string, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]string, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNID2string(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
-}
-
-func (ec *executionContext) marshalNID2ᚕstringᚄ(ctx context.Context, sel ast.SelectionSet, v []string) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	for i := range v {
-		ret[i] = ec.marshalNID2string(ctx, sel, v[i])
-	}
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
 }
 
 func (ec *executionContext) unmarshalNID2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {

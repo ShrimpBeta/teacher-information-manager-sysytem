@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { map, Observable } from "rxjs";
-import { AcademicResponse, AcademicTermsByFilterResponse, ClassSchedule, ClassScheduleFilter, ClassSchedulePage, Course, CreateAcademicResponse, CreateCourseResponse, DeleteAcademicResponse, DeleteCourseResponse, EditClassSchedule, EditCourse, UpdateAcademicResponse, UpdateCourseResponse } from "../models/models/classSchedule.model";
-import { academicTermQuery, academicTermsShortByFilterQuery } from "../models/graphql/query/classschedule.query.graphql";
+import { AcademicTermResponse, AcademicTermsByFilterResponse, AcademicTermsResponse, ClassSchedule, ClassScheduleFilter, ClassSchedulePage, Course, CreateAcademicResponse, CreateCourseResponse, DeleteAcademicResponse, DeleteCourseResponse, EditClassSchedule, EditCourse, UpdateAcademicResponse, UpdateCourseResponse } from "../models/models/classSchedule.model";
+import { academicTermQuery, academicTermsByIdsQuery, academicTermsShortByFilterQuery } from "../models/graphql/query/classschedule.query.graphql";
 import { createAcademicTermMutation, createCourseMutation, deleteAcademicTermMutation, deleteCourseMutation, updateAcademicTerm, updateCourseMutation } from "../models/graphql/mutation/classschedule.mutation.graphql";
 
 @Injectable({
@@ -22,13 +22,31 @@ export class ClassScheduleService {
       }
     }).pipe(
       map(result => {
-        let classSchedule = (result as AcademicResponse).data?.academicTerm;
+        let classSchedule = (result as AcademicTermResponse).data?.academicTerm;
         if (typeof classSchedule === 'undefined' || classSchedule === null) {
           return null;
         }
         return classSchedule;
       })
     );
+  }
+
+  getClassSchedules(ids: string[]): Observable<ClassSchedule[] | null> {
+    return this.apollo.query({
+      query: academicTermsByIdsQuery,
+      variables: {
+        ids: ids
+      }
+    })
+      .pipe(
+        map(result => {
+          let classSchedules = (result as AcademicTermsResponse).data?.AcademicTerms;
+          if (typeof classSchedules === 'undefined' || classSchedules === null) {
+            return null;
+          }
+          return classSchedules;
+        })
+      )
   }
 
   getClassSchedulesByFilter(classScheduleFilter: ClassScheduleFilter, pageIndex: number, pageSize: number): Observable<ClassSchedulePage | null> {
