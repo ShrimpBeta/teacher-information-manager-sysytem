@@ -96,6 +96,7 @@ function Index() {
             title="选择日期"
             description={guidanceDate ? `${guidanceDate}` : '请选择'}
             onClick={() => setVisible(true)}
+            style={{ padding: '0' }}
           />
         </Form.Item>
       </Form>

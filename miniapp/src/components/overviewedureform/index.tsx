@@ -23,7 +23,7 @@ const OverviewEduReform = (props: PropsWithChildren) => {
   const [eduReformsByFilter, { data, loading, error }] = useLazyQuery(eduReformsByFilterQuery, {
     fetchPolicy: 'network-only'
   });
-  
+
   const { data: UsersData } = useQuery(userExportsQuery, { fetchPolicy: 'network-only' });
 
   const [deleteEduReform] = useMutation(deleteEduReformMutation);

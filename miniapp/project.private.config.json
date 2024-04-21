@@ -10,7 +10,7 @@
       "list": [
         {
           "name": "test",
-          "pathName": "pages/creatementorship/index",
+          "pathName": "pages/sectiontwo/index",
           "query": "",
           "launchMode": "default",
           "scene": null

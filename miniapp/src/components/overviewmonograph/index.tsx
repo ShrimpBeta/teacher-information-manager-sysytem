@@ -7,7 +7,7 @@ import { PropsWithChildren, useEffect, useState } from 'react'
 import { Button, Empty, Input, Pagination, Skeleton } from '@nutui/nutui-react-taro';
 import { ArrowLeft, ArrowRight, Close, Plus } from '@nutui/icons-react-taro';
 
-import { deleteMentorshipMutation } from '@/graphql/mutation/mentorship.mutation.graphql';
+import { deleteMonographMutation } from '@/graphql/mutation/monograph.mutation.graphql';
 import { monographsByFilterQuery } from '@/graphql/query/monograph.query.graphql';
 import { Monograph, MonographFilter } from '@/models/models/monograph.model';
 
@@ -24,7 +24,7 @@ const OverviewMonograph = (props: PropsWithChildren) => {
   const [monographsByFilter, { data, loading, error }] = useLazyQuery(monographsByFilterQuery, {
     fetchPolicy: 'network-only'
   });
-  const [deleteMentorship] = useMutation(deleteMentorshipMutation);
+  const [deleteMonograph] = useMutation(deleteMonographMutation);
 
   const { data: UsersData } = useQuery(userExportsQuery, { fetchPolicy: 'network-only' });
 
@@ -44,7 +44,7 @@ const OverviewMonograph = (props: PropsWithChildren) => {
   }
 
   const onDelete = (id: string) => {
-    deleteMentorship({
+    deleteMonograph({
       variables: {
         id: id
       }

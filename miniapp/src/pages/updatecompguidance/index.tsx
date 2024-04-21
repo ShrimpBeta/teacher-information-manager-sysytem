@@ -78,22 +78,22 @@ function Index() {
   const submitSucceed = (values: any) => {
     let { projectName, studentNames, competitionScore, awardStatus } = values
 
-    let createCompGuidanceData = new EditCompGuidance();
-    createCompGuidanceData.projectName = projectName;
-    createCompGuidanceData.studentNames = studentNames.split(/[,，]/);
-    createCompGuidanceData.competitionScore = competitionScore;
-    createCompGuidanceData.awardStatus = awardStatus;
+    let updateCompGuidanceData = new EditCompGuidance();
+    updateCompGuidanceData.projectName = projectName;
+    updateCompGuidanceData.studentNames = studentNames.split(/[,，]/);
+    updateCompGuidanceData.competitionScore = competitionScore;
+    updateCompGuidanceData.awardStatus = awardStatus;
 
     if (guidanceDate) {
-      createCompGuidanceData.guidanceDate = guidanceDate;
+      updateCompGuidanceData.guidanceDate = guidanceDate;
     }
 
-    console.log(createCompGuidanceData)
+    console.log(updateCompGuidanceData)
 
     updateCompGuidance({
       variables: {
         id: $instance.router?.params.id,
-        compGuidanceData: createCompGuidanceData
+        compGuidanceData: updateCompGuidanceData
       }
     }).then((res) => {
       Taro.showToast({
@@ -154,6 +154,7 @@ function Index() {
             title="选择日期"
             description={guidanceDate ? `${guidanceDate}` : '请选择'}
             onClick={() => setVisible(true)}
+            style={{ padding: '0' }}
           />
         </Form.Item>
       </Form>

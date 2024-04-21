@@ -77,20 +77,20 @@ function Index() {
   const submitSucceed = (values: any) => {
     let { projectName, studentNames, grade } = values
 
-    let createMentorshipData = new EditMentorship();
-    createMentorshipData.projectName = projectName;
-    createMentorshipData.studentNames = studentNames.split(/[,，]/);
-    createMentorshipData.grade = grade;
+    let updateMentorshipData = new EditMentorship();
+    updateMentorshipData.projectName = projectName;
+    updateMentorshipData.studentNames = studentNames.split(/[,，]/);
+    updateMentorshipData.grade = grade;
     if (guidanceDate) {
-      createMentorshipData.guidanceDate = guidanceDate;
+      updateMentorshipData.guidanceDate = guidanceDate;
     }
 
-    console.log(createMentorshipData)
+    console.log(updateMentorshipData)
 
     updateMentorship({
       variables: {
         id: $instance.router?.params.id,
-        mentorshipData: createMentorshipData
+        mentorshipData: updateMentorshipData
       }
     }).then((res) => {
       Taro.showToast({
@@ -147,6 +147,7 @@ function Index() {
             title="选择日期"
             description={guidanceDate ? `${guidanceDate}` : '请选择'}
             onClick={() => setVisible(true)}
+            style={{ padding: '0' }}
           />
         </Form.Item>
       </Form>}
