@@ -4,14 +4,13 @@ import { Button, Form, Input, Cell, Popup, CalendarCard, type CalendarCardValue 
 import './index.scss'
 import Taro from '@tarojs/taro'
 import { useMutation, useQuery } from '@apollo/client'
-import { EditEduReform } from '@/models/models/eduReform.model'
 import { UserExport } from '@/models/models/user.model'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store/slices/reducers'
 import { userExportsQuery } from '@/graphql/query/user.query.graphql'
 import { Close } from '@nutui/icons-react-taro'
 import { createSciResearchMutation } from '@/graphql/mutation/sciresearch.mutation.graphql'
-import { EditSciResearch } from '@/models/models/sciResearch.model'
+import { EditAwardRecord, EditSciResearch } from '@/models/models/sciResearch.model'
 
 function Index() {
 
@@ -25,9 +24,12 @@ function Index() {
 
   const [teachersIn, setTeachersIn] = useState<UserExport[]>([]);
   const [startDate, setStartDate] = useState<Date | null>(null)
+  const [awardRecord, setAwardRecord] = useState<boolean>(false)
+  const [awardRecordDate, setAwardRecordDate] = useState<Date | null>(null)
 
   const [teachersInSelectVisible, setTeachersInSelectVisible] = useState(false)
   const [startDateVisible, setStartDateVisible] = useState(false)
+  const [awardRecordDateVisible, setAwardRecordDateVisible] = useState(false)
 
   const handleDeleteTeacherIn = (index: number) => {
     const newTeachersIn = [...teachersIn];
@@ -60,11 +62,24 @@ function Index() {
       createSciResearchData.teachersIn = teachersIn.map((teacher) => teacher.id);
     }
 
+
+    if (awardRecord) {
+      let { awardName, awardLevel, awardRank } = values;
+      let awardRecord = new EditAwardRecord();
+      awardRecord.awardName = awardName;
+      awardRecord.awardLevel = awardLevel;
+      awardRecord.awardRank = awardRank;
+      if (awardRecordDate) {
+        awardRecord.awardDate = awardRecordDate;
+      }
+      createSciResearchData.awards = [awardRecord];
+    }
+
     console.log(createSciResearchData)
 
     createSciResearch({
       variables: {
-        eduReformData: createSciResearchData
+        sciResearchData: createSciResearchData
       }
     }).then((res) => {
       Taro.showToast({
@@ -115,12 +130,17 @@ function Index() {
               width: '100%',
             }}
           >
+            {awardRecord ?
+              <Button type='primary' style={{ marginRight: '20px' }} onClick={() => { setAwardRecord(false); setAwardRecordDate(null) }}>删除获奖记录</Button> :
+              <Button type='primary' style={{ marginRight: '20px' }} onClick={() => setAwardRecord(true)}>添加获奖记录</Button>
+            }
             <Button formType='submit' type='primary'>
               提交
             </Button>
             <Button formType='reset' style={{ marginLeft: '20px' }}
               onClick={() => {
                 setStartDate(null)
+                setAwardRecordDate(null)
                 setTeachersIn([])
               }}>
               重置
@@ -178,7 +198,27 @@ function Index() {
         <Form.Item label='项目基金' name='fund' validateTrigger='onBlur'>
           <Input placeholder='请输入项目基金' type='text' />
         </Form.Item>
-
+        {awardRecord && (
+          <>
+            <Form.Item label='获奖名称' name='awardName' validateTrigger='onBlur' rules={[{ required: true, message: '项目名不能为空' }]}>
+              <Input placeholder='请输入获奖名称' type='text' />
+            </Form.Item>
+            <Form.Item label='获奖等级' name='awardLevel' validateTrigger='onBlur'>
+              <Input placeholder='请输入获奖等级' type='text' />
+            </Form.Item>
+            <Form.Item label='获奖排名' name='awardRank' validateTrigger='onBlur'>
+              <Input placeholder='请输入获奖排名' type='text' />
+            </Form.Item>
+            <Form.Item label='获奖时间' name='awardRecordDate' validateTrigger='onBlur'>
+              <Cell
+                title="选择日期"
+                description={awardRecordDate ? `${awardRecordDate}` : '请选择'}
+                onClick={() => setAwardRecordDateVisible(true)}
+                style={{ padding: '0' }}
+              />
+            </Form.Item>
+          </>
+        )}
       </Form>
 
       <Popup
@@ -193,6 +233,23 @@ function Index() {
         />
         <div style={{ padding: '10px' }}>
           <Button block type="danger" onClick={() => setStartDateVisible(false)}>
+            确定
+          </Button>
+        </div>
+      </Popup>
+
+      <Popup
+        title="选择日期"
+        visible={awardRecordDateVisible}
+        position="bottom"
+        closeable
+        onClose={() => setAwardRecordDateVisible(false)}
+      >
+        <CalendarCard
+          onChange={(d: CalendarCardValue) => setAwardRecordDate(d as Date)}
+        />
+        <div style={{ padding: '10px' }}>
+          <Button block type="danger" onClick={() => setAwardRecordDateVisible(false)}>
             确定
           </Button>
         </div>
