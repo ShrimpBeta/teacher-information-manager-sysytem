@@ -3,8 +3,8 @@ import Taro, { useDidShow } from '@tarojs/taro';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { PropsWithChildren, useEffect, useState } from 'react'
 
-import { Button, Empty, Pagination, Skeleton } from '@nutui/nutui-react-taro';
-import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro';
+import { Button, Empty, Pagination, Skeleton, Input } from '@nutui/nutui-react-taro';
+import { ArrowLeft, ArrowRight, Plus, Close } from '@nutui/icons-react-taro';
 
 import { mentorshipsByFilterQuery } from '@/graphql/query/mentorship.query.graphql';
 import { deleteMentorshipMutation } from '@/graphql/mutation/mentorship.mutation.graphql';
@@ -64,6 +64,13 @@ const OverviewMentorship = (props: PropsWithChildren) => {
   const getMentorshipList = (GpageIndex: number, GpageSize: number) => {
     let mentorshipFilter = new MentorshipFilter();
 
+    if (projectName !== '') {
+      mentorshipFilter.projectName = projectName;
+    }
+    if (studentNames.length > 0) {
+      mentorshipFilter.studentNames = studentNames;
+    }
+
     mentorshipsByFilter({
       variables: {
         filter: mentorshipFilter,
@@ -71,6 +78,31 @@ const OverviewMentorship = (props: PropsWithChildren) => {
         limit: GpageSize
       }
     })
+  }
+
+  const [projectName, setProjectName] = useState<string>('');
+  const [studentNames, setStudentNames] = useState<string[]>([]);
+  const [newStudentName, setNewStudentName] = useState<string>('');
+
+  const handleDeleteStudentName = (index: number) => {
+    const newStudentNames = [...studentNames];
+    newStudentNames.splice(index, 1);
+    setStudentNames(newStudentNames);
+  }
+
+  const handleAddStudentName = () => {
+    if (newStudentName === '') {
+      return;
+    }
+    const newStudentNames = [...studentNames, newStudentName];
+    setStudentNames(newStudentNames);
+    setNewStudentName('');
+  }
+
+  const onClear = () => {
+    setProjectName('');
+    setStudentNames([]);
+    setNewStudentName('');
   }
 
   useEffect(() => {
@@ -94,6 +126,28 @@ const OverviewMentorship = (props: PropsWithChildren) => {
 
   return (
     <View className='container'>
+
+      <View style={{ display: 'flex', flexDirection: 'column', gap: '20rpx' }}>
+        <Input placeholder="请输入项目名称" value={projectName} onChange={(v) => setProjectName(v)} style={{ backgroundColor: '#f6f6f6', border: '1px solid #ccc', borderRadius: '40rpx', paddingTop: '8rpx', paddingBottom: '8rpx' }} />
+        <View style={{ display: 'flex', alignItems: 'center', gap: '10rpx', height: '40rpx', paddingLeft: '20rpx' }}>
+          <Text>学生名称:</Text>
+          {studentNames.map((item, index) => (
+            <View key={index} style={{ display: 'flex', alignItems: 'center', gap: '5rpx', backgroundColor: '#f6f6f6', border: '1px solid #ccc', borderRadius: '30rpx' }}>
+              <Text>{item}</Text>
+              <Button size='small' fill="none" onClick={() => handleDeleteStudentName(index)}><Close /></Button>
+            </View>
+          ))}
+        </View>
+        <View style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '20rpx' }}>
+          <Input placeholder="请输入学生名称" value={newStudentName} onChange={(v) => setNewStudentName(v)} style={{ backgroundColor: '#f6f6f6', border: '1px solid #ccc', borderRadius: '40rpx', paddingTop: '8rpx', paddingBottom: '8rpx' }} />
+          <Button size='small' onClick={handleAddStudentName}>添加</Button>
+        </View>
+        <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '50rpx' }}>
+          <Button type="primary" onClick={onSearch}>搜索</Button>
+          <Button onClick={onClear}>清空</Button>
+        </View>
+      </View>
+
       <Button block type="primary" style={{ marginTop: '40rpx', marginBottom: '40rpx' }}
         onClick={() => { Taro.navigateTo({ url: '/pages/creatementorship/index' }) }}>
         <Plus style={{ marginRight: '20rpx' }} />

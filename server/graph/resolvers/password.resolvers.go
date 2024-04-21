@@ -50,7 +50,7 @@ func (r *mutationResolver) UpdatePassword(ctx context.Context, id string, passwo
 		return nil, err
 	}
 
-	return r.PasswordService.UpdatePassword(id, user.MasterKey, passwordData)
+	return r.PasswordService.UpdatePassword(user.ID, id, user.MasterKey, passwordData)
 }
 
 // DeletePassword is the resolver for the deletePassword field.
@@ -60,12 +60,18 @@ func (r *mutationResolver) DeletePassword(ctx context.Context, id string) (*grap
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.PasswordService.DeletePassword(id)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.PasswordService.DeletePassword(user.ID, id)
 }
 
 // UploadPasswords is the resolver for the uploadPasswords field.
@@ -100,7 +106,7 @@ func (r *queryResolver) PasswordTrue(ctx context.Context, id string) (*graphql_m
 		return nil, err
 	}
 
-	return r.PasswordService.GetPasswordTrueById(id, user.MasterKey)
+	return r.PasswordService.GetPasswordTrueById(user.ID, id, user.MasterKey)
 }
 
 // PasswordsByFilter is the resolver for the passwordsByFilter field.
@@ -125,7 +131,6 @@ func (r *queryResolver) PasswordsByFilter(ctx context.Context, filter graphql_mo
 
 // PasswordsTrue is the resolver for the passwordsTrue field.
 func (r *queryResolver) PasswordsTrue(ctx context.Context, ids []*string) ([]*graphql_models.PasswordTrue, error) {
-
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -141,5 +146,5 @@ func (r *queryResolver) PasswordsTrue(ctx context.Context, ids []*string) ([]*gr
 		return nil, err
 	}
 
-	return r.PasswordService.GetPasswordsByIds(ids, user.MasterKey)
+	return r.PasswordService.GetPasswordsByIds(user.ID, ids, user.MasterKey)
 }

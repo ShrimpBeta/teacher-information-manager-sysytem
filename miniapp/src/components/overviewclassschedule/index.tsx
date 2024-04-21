@@ -108,7 +108,10 @@ const OverviewClassSchedule = (props: PropsWithChildren) => {
 
   return (
     <View className='container'>
-      <SearchBar shape="round" onChange={onChange} onSearch={onSearch} placeholder='课程表名称' />
+
+      <View style={{ marginBottom: '40rpx' }}>
+        <SearchBar shape="round" onChange={onChange} onSearch={onSearch} placeholder='课程表名称' />
+      </View>
 
       {loading ? <Skeleton rows={3} title animated /> :
         classScheduleList.length === 0 ? (

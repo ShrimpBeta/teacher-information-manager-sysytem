@@ -1,10 +1,10 @@
 import { Text, View } from '@tarojs/components';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import Taro,{ useDidShow } from '@tarojs/taro';
+import Taro, { useDidShow } from '@tarojs/taro';
 import { PropsWithChildren, useEffect, useState } from 'react'
 
 
-import { Button, Empty, Pagination, Skeleton } from '@nutui/nutui-react-taro';
+import { Button, Empty, Input, Pagination, Skeleton } from '@nutui/nutui-react-taro';
 import { ArrowLeft, ArrowRight, Plus } from '@nutui/icons-react-taro';
 
 import { deleteUGPGGuidanceMutation } from '@/graphql/mutation/ugpgguidance.mutation.graphql';
@@ -65,6 +65,14 @@ const OverviewUGPGGuidance = (props: PropsWithChildren) => {
   const getUGPGGuidanceList = (pageIndex: number, pageSize: number) => {
     let uGPGGuidanceFilter = new UGPGGuidanceFilter();
 
+    if (thesisTopic !== '') {
+      uGPGGuidanceFilter.thesisTopic = thesisTopic;
+    }
+
+    if (studentName !== '') {
+      uGPGGuidanceFilter.studentName = studentName;
+    }
+
     uGPGGuidancesByFilter({
       variables: {
         filter: uGPGGuidanceFilter,
@@ -73,6 +81,15 @@ const OverviewUGPGGuidance = (props: PropsWithChildren) => {
       }
     });
   }
+
+  const [thesisTopic, setThesisTopic] = useState<string>('');
+  const [studentName, setStudentName] = useState<string>('');
+
+  const onClear = () => {
+    setThesisTopic('');
+    setStudentName('');
+  }
+
 
   useEffect(() => {
     getUGPGGuidanceList(pageIndex, pageSize);
@@ -94,6 +111,16 @@ const OverviewUGPGGuidance = (props: PropsWithChildren) => {
 
   return (
     <View className='container'>
+
+      <View style={{ display: 'flex', flexDirection: 'column', gap: '20rpx' }}>
+        <Input placeholder="请输入项目名称" value={thesisTopic} onChange={(v) => setThesisTopic(v)} style={{ backgroundColor: '#f6f6f6', border: '1px solid #ccc', borderRadius: '40rpx', paddingTop: '8rpx', paddingBottom: '8rpx' }} />
+        <Input placeholder="请输入学生名称" value={studentName} onChange={(v) => setStudentName(v)} style={{ backgroundColor: '#f6f6f6', border: '1px solid #ccc', borderRadius: '40rpx', paddingTop: '8rpx', paddingBottom: '8rpx' }} />
+        <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '50rpx' }}>
+          <Button type="primary" onClick={onSearch}>搜索</Button>
+          <Button onClick={onClear}>清空</Button>
+        </View>
+      </View>
+
       <Button block type="primary" style={{ marginTop: '40rpx', marginBottom: '40rpx' }}
         onClick={() => { Taro.navigateTo({ url: '/pages/createugpgguidance/index' }) }}>
         <Plus style={{ marginRight: '20rpx' }} />
@@ -119,9 +146,9 @@ const OverviewUGPGGuidance = (props: PropsWithChildren) => {
                     }}
                     key={index}
                   >
-                    <Text>{item.studentName}</Text>
-                    <Text>{item.thesisTopic}</Text>
-                    <Text>{item.defenseResult}</Text>
+                    <Text>学生名称: {item.studentName}</Text>
+                    <Text>论文题目: {item.thesisTopic}</Text>
+                    <Text>毕设结果: {item.defenseResult}</Text>
                     <View
                       style={{
                         marginTop: '10rpx',

@@ -51,7 +51,7 @@ func (eduReformService *EduReformService) CreateEduReform(userId primitive.Objec
 		return nil, err
 	}
 
-	return eduReformService.GetEduReformById(objectId.Hex(), userRepo)
+	return eduReformService.GetEduReformById(userId, objectId.Hex(), userRepo)
 }
 
 func (eduReformService *EduReformService) UpdateEduReform(id string, userId primitive.ObjectID, edureformData graphql_models.EduReformData, userRepo *repository.UserRepo) (*graphql_models.EduReform, error) {
@@ -63,6 +63,17 @@ func (eduReformService *EduReformService) UpdateEduReform(id string, userId prim
 	eduReformUpdate, err := eduReformService.Repo.GetEduReformById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	existsUser := false
+	for _, teacherIn := range eduReformUpdate.TeachersIn {
+		if teacherIn == userId {
+			existsUser = true
+			break
+		}
+	}
+	if !existsUser {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	teachersIn := make([]primitive.ObjectID, len(edureformData.TeachersIn)+1)
@@ -97,12 +108,12 @@ func (eduReformService *EduReformService) UpdateEduReform(id string, userId prim
 		return nil, err
 	}
 
-	return eduReformService.GetEduReformById(id, userRepo)
+	return eduReformService.GetEduReformById(userId, id, userRepo)
 }
 
-func (eduReformService *EduReformService) DeleteEduReform(id string, userRepo *repository.UserRepo) (*graphql_models.EduReform, error) {
+func (eduReformService *EduReformService) DeleteEduReform(userId primitive.ObjectID, id string, userRepo *repository.UserRepo) (*graphql_models.EduReform, error) {
 
-	edureformData, err := eduReformService.GetEduReformById(id, userRepo)
+	edureformData, err := eduReformService.GetEduReformById(userId, id, userRepo)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +131,7 @@ func (eduReformService *EduReformService) DeleteEduReform(id string, userRepo *r
 	return edureformData, nil
 }
 
-func (eduReformService *EduReformService) GetEduReformById(id string, userRepo *repository.UserRepo) (*graphql_models.EduReform, error) {
+func (eduReformService *EduReformService) GetEduReformById(userId primitive.ObjectID, id string, userRepo *repository.UserRepo) (*graphql_models.EduReform, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -129,6 +140,17 @@ func (eduReformService *EduReformService) GetEduReformById(id string, userRepo *
 	edureformData, err := eduReformService.Repo.GetEduReformById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	exitsUser := false
+	for _, teacherIn := range edureformData.TeachersIn {
+		if teacherIn == userId {
+			exitsUser = true
+			break
+		}
+	}
+	if !exitsUser {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	var startDate *time.Time = nil

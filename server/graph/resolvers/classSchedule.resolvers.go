@@ -21,12 +21,17 @@ func (r *mutationResolver) CreateCourse(ctx context.Context, termID string, cour
 	}
 
 	// if no token found, return an error
-	_, err = middlewares.ForContext(ginContext)
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.ClassScheduleService.CreateCourese(termID, courseData)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.ClassScheduleService.CreateCourese(user.ID, termID, courseData)
 }
 
 // UpdateCourse is the resolver for the updateCourse field.
@@ -37,12 +42,17 @@ func (r *mutationResolver) UpdateCourse(ctx context.Context, termID string, cour
 	}
 
 	// if no token found, return an error
-	_, err = middlewares.ForContext(ginContext)
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.ClassScheduleService.UpdateCourse(termID, courseID, courseData)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.ClassScheduleService.UpdateCourse(user.ID, termID, courseID, courseData)
 }
 
 // DeleteCourse is the resolver for the deleteCourse field.
@@ -53,12 +63,17 @@ func (r *mutationResolver) DeleteCourse(ctx context.Context, termID string, cour
 	}
 
 	// if no token found, return an error
-	_, err = middlewares.ForContext(ginContext)
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.ClassScheduleService.DeleteCourse(termID, courseID)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.ClassScheduleService.DeleteCourse(user.ID, termID, courseID)
 }
 
 // CreateacademicTerm is the resolver for the createacademicTerm field.
@@ -90,12 +105,17 @@ func (r *mutationResolver) UpdateAcademicTerm(ctx context.Context, termID string
 	}
 
 	// if no token found, return an error
-	_, err = middlewares.ForContext(ginContext)
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.ClassScheduleService.UpdateAcademicTerm(termID, termData)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.ClassScheduleService.UpdateAcademicTerm(user.ID, termID, termData)
 }
 
 // DeleteacademicTerm is the resolver for the deleteacademicTerm field.
@@ -106,12 +126,17 @@ func (r *mutationResolver) DeleteAcademicTerm(ctx context.Context, termID string
 	}
 
 	// if no token found, return an error
-	_, err = middlewares.ForContext(ginContext)
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.ClassScheduleService.DeleteAcademicTerm(termID)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.ClassScheduleService.DeleteAcademicTerm(user.ID, termID)
 }
 
 // UploadAcademicTerm is the resolver for the uploadAcademicTerm field.
@@ -138,12 +163,17 @@ func (r *queryResolver) AcademicTerm(ctx context.Context, id string) (*graphql_m
 	}
 
 	// if no token found, return an error
-	_, err = middlewares.ForContext(ginContext)
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.ClassScheduleService.GetAcademicTermById(id)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.ClassScheduleService.GetAcademicTermById(user.ID, id)
 }
 
 // AcademicTermsByFilter is the resolver for the academicTermsByFilter field.
@@ -167,23 +197,23 @@ func (r *queryResolver) AcademicTermsByFilter(ctx context.Context, filter graphq
 	return r.ClassScheduleService.GetAcademicTermsByFilter(user.ID, filter, offset, limit)
 }
 
-// AcademicTermsID is the resolver for the academicTermsId field.
-func (r *queryResolver) AcademicTermsID(ctx context.Context, ids []*string) ([]*graphql_models.AcademicTerm, error) {
-	// ginContext, err := middlewares.GinContextFromContext(ctx)
-	// if err != nil {
-	// 	return nil, err
-	// }
+// AcademicTermsID is the resolver for the AcademicTermsID field.
+func (r *queryResolver) AcademicTermsID(ctx context.Context, id []string) ([]*graphql_models.AcademicTerm, error) {
+	ginContext, err := middlewares.GinContextFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
 
-	// // if no token found, return an error
-	// account, err := middlewares.ForContext(ginContext)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
+	if err != nil {
+		return nil, err
+	}
 
-	// user, err := r.UserService.Repo.GetUserByEmail(account.Account)
-	// if err != nil {
-	// 	return nil, err
-	// }
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
 
-	panic(fmt.Errorf("not implemented: AcademicTermsID - academicTermsId"))
+	return r.ClassScheduleService.GetAcademicTermsByIds(user.ID, id)
 }

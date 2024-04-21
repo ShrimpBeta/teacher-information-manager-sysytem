@@ -60,12 +60,18 @@ func (r *mutationResolver) DeleteEduReform(ctx context.Context, id string) (*gra
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.EduReformService.DeleteEduReform(id, r.UserService.Repo)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.EduReformService.DeleteEduReform(user.ID, id, r.UserService.Repo)
 }
 
 // UploadEduReforms is the resolver for the uploadEduReforms field.
@@ -90,12 +96,18 @@ func (r *queryResolver) EduReform(ctx context.Context, id string) (*graphql_mode
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.EduReformService.GetEduReformById(id, r.UserService.Repo)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.EduReformService.GetEduReformById(user.ID, id, r.UserService.Repo)
 }
 
 // EduReformsByFilter is the resolver for the eduReformsByFilter field.
@@ -116,9 +128,4 @@ func (r *queryResolver) EduReformsByFilter(ctx context.Context, filter graphql_m
 	}
 
 	return r.EduReformService.GetEduReformsByFilter(user.ID, filter, r.UserService.Repo, offset, limit)
-}
-
-// EduReforms is the resolver for the eduReforms field.
-func (r *queryResolver) EduReforms(ctx context.Context, ids []*string) ([]*graphql_models.EduReform, error) {
-	panic(fmt.Errorf("not implemented: EduReforms - eduReforms"))
 }

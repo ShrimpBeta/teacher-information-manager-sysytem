@@ -53,7 +53,7 @@ func (r *MentorshipRepo) GetMentorshipsByParams(params MentorshipQueryParams) ([
 	}
 	// filter for studentNames
 	if params.StudentNames != nil {
-		filter["studentNames"] = bson.M{"$in": params.StudentNames}
+		filter["studentNames"] = bson.M{"$all": params.StudentNames}
 	}
 	// filter for grade
 	if params.Grade != nil {

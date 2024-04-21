@@ -103,7 +103,6 @@ extend type Query {
     offset: Int!
     limit: Int!
   ): SciResearchQuery!
-  sciResearchs(ids: [ID]!): [SciResearch]!
 }
 
 extend type Mutation {

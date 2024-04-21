@@ -37,10 +37,10 @@ func (mentorshipService *MentorshipService) CreateMentorship(userId primitive.Ob
 		return nil, err
 	}
 
-	return mentorshipService.GetMentorshipById(objectId.Hex())
+	return mentorshipService.GetMentorshipById(userId, objectId.Hex())
 }
 
-func (mentorshipService *MentorshipService) UpdateMentorship(id string, mentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
+func (mentorshipService *MentorshipService) UpdateMentorship(userId primitive.ObjectID, id string, mentorshipData graphql_models.MentorshipData) (*graphql_models.Mentorship, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -49,6 +49,10 @@ func (mentorshipService *MentorshipService) UpdateMentorship(id string, mentorsh
 	mentorshipUpdate, err := mentorshipService.Repo.GetMentorshipById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	if mentorshipUpdate.UserId != userId {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	mentorshipUpdate.ProjectName = mentorshipData.ProjectName
@@ -67,11 +71,11 @@ func (mentorshipService *MentorshipService) UpdateMentorship(id string, mentorsh
 		return nil, err
 	}
 
-	return mentorshipService.GetMentorshipById(id)
+	return mentorshipService.GetMentorshipById(userId, id)
 }
 
-func (mentorshipService *MentorshipService) DeleteMentorship(id string) (*graphql_models.Mentorship, error) {
-	mentorshipData, err := mentorshipService.GetMentorshipById(id)
+func (mentorshipService *MentorshipService) DeleteMentorship(userId primitive.ObjectID, id string) (*graphql_models.Mentorship, error) {
+	mentorshipData, err := mentorshipService.GetMentorshipById(userId, id)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +93,7 @@ func (mentorshipService *MentorshipService) DeleteMentorship(id string) (*graphq
 	return mentorshipData, nil
 }
 
-func (mentorshipService *MentorshipService) GetMentorshipById(id string) (*graphql_models.Mentorship, error) {
+func (mentorshipService *MentorshipService) GetMentorshipById(userId primitive.ObjectID, id string) (*graphql_models.Mentorship, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -97,6 +101,10 @@ func (mentorshipService *MentorshipService) GetMentorshipById(id string) (*graph
 	mentorshipData, err := mentorshipService.Repo.GetMentorshipById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	if mentorshipData.UserId != userId {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	var guidanceDate *time.Time = nil

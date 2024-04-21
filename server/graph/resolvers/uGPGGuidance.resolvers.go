@@ -40,12 +40,18 @@ func (r *mutationResolver) UpdateUGPGGuidance(ctx context.Context, id string, uG
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.UGPGGuidanceService.UpdateUGPGGuidance(id, uGPGGuidanceData)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.UGPGGuidanceService.UpdateUGPGGuidance(user.ID, id, uGPGGuidanceData)
 }
 
 // DeleteUPGuidance is the resolver for the deleteUPGuidance field.
@@ -55,12 +61,18 @@ func (r *mutationResolver) DeleteUGPGGuidance(ctx context.Context, id string) (*
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.UGPGGuidanceService.DeleteUGPGGuidance(id)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.UGPGGuidanceService.DeleteUGPGGuidance(user.ID, id)
 }
 
 // UploadUGPGGuidances is the resolver for the uploadUGPGGuidances field.
@@ -85,12 +97,18 @@ func (r *queryResolver) UGPGGuidance(ctx context.Context, id string) (*graphql_m
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.UGPGGuidanceService.GetUGPGGuidanceById(id)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.UGPGGuidanceService.GetUGPGGuidanceById(user.ID, id)
 }
 
 // UGPGGuidancesByFilter is the resolver for the uGPGGuidancesByFilter field.
@@ -111,9 +129,4 @@ func (r *queryResolver) UGPGGuidancesByFilter(ctx context.Context, filter graphq
 	}
 
 	return r.UGPGGuidanceService.GetUGPGGuidancesByFilter(user.ID, filter, offset, limit)
-}
-
-// UGPGGuidances is the resolver for the uGPGGuidances field.
-func (r *queryResolver) UGPGGuidances(ctx context.Context, ids []*string) ([]*graphql_models.UGPGGuidance, error) {
-	panic(fmt.Errorf("not implemented: UGPGGuidances - uGPGGuidances"))
 }

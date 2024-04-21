@@ -51,7 +51,6 @@ extend type Query {
     offset: Int!
     limit: Int!
   ): CompGuidanceQuery!
-  compGuidances(ids: [ID]!): [CompGuidance]!
 }
 
 extend type Mutation {

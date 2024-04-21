@@ -38,10 +38,10 @@ func (compGuidanceService *CompGuidanceService) CreateCompGuidance(userId primit
 		return nil, err
 	}
 
-	return compGuidanceService.GetCompGuidanceById(objectId.Hex())
+	return compGuidanceService.GetCompGuidanceById(userId, objectId.Hex())
 }
 
-func (compGuidanceService *CompGuidanceService) UpdateCompGuidance(id string, compGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
+func (compGuidanceService *CompGuidanceService) UpdateCompGuidance(userId primitive.ObjectID, id string, compGuidanceData graphql_models.CompGuidanceData) (*graphql_models.CompGuidance, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -50,6 +50,10 @@ func (compGuidanceService *CompGuidanceService) UpdateCompGuidance(id string, co
 	compGuidanceUpdate, err := compGuidanceService.Repo.GetCompGuidanceById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	if compGuidanceUpdate.UserId != userId {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	compGuidanceUpdate.ProjectName = compGuidanceData.ProjectName
@@ -69,12 +73,12 @@ func (compGuidanceService *CompGuidanceService) UpdateCompGuidance(id string, co
 		return nil, err
 	}
 
-	return compGuidanceService.GetCompGuidanceById(id)
+	return compGuidanceService.GetCompGuidanceById(userId, id)
 }
 
-func (compGuidanceService *CompGuidanceService) DeleteCompGuidance(id string) (*graphql_models.CompGuidance, error) {
+func (compGuidanceService *CompGuidanceService) DeleteCompGuidance(userId primitive.ObjectID, id string) (*graphql_models.CompGuidance, error) {
 
-	compGuidanceData, err := compGuidanceService.GetCompGuidanceById(id)
+	compGuidanceData, err := compGuidanceService.GetCompGuidanceById(userId, id)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +96,7 @@ func (compGuidanceService *CompGuidanceService) DeleteCompGuidance(id string) (*
 	return compGuidanceData, nil
 }
 
-func (compGuidanceService *CompGuidanceService) GetCompGuidanceById(id string) (*graphql_models.CompGuidance, error) {
+func (compGuidanceService *CompGuidanceService) GetCompGuidanceById(userId primitive.ObjectID, id string) (*graphql_models.CompGuidance, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -100,6 +104,10 @@ func (compGuidanceService *CompGuidanceService) GetCompGuidanceById(id string) (
 	compGuidanceData, err := compGuidanceService.Repo.GetCompGuidanceById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	if compGuidanceData.UserId != userId {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	var guidanceDate *time.Time = nil

@@ -71,7 +71,6 @@ extend type Query {
     offset: Int!
     limit: Int!
   ): EduReformQuery!
-  eduReforms(ids: [ID]!): [EduReform]!
 }
 
 extend type Mutation {

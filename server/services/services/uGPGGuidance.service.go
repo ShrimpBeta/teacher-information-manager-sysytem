@@ -48,10 +48,10 @@ func (uGPGGuidanceService *UGPGGuidanceService) CreateUGPGGuidance(userId primit
 		return nil, err
 	}
 
-	return uGPGGuidanceService.GetUGPGGuidanceById(objectId.Hex())
+	return uGPGGuidanceService.GetUGPGGuidanceById(userId, objectId.Hex())
 }
 
-func (uGPGGuidanceService *UGPGGuidanceService) UpdateUGPGGuidance(id string, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error) {
+func (uGPGGuidanceService *UGPGGuidanceService) UpdateUGPGGuidance(userId primitive.ObjectID, id string, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -60,6 +60,10 @@ func (uGPGGuidanceService *UGPGGuidanceService) UpdateUGPGGuidance(id string, uG
 	uGPGGuidanceUpdate, err := uGPGGuidanceService.Repo.GetUGPGGuidanceById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	if uGPGGuidanceUpdate.UserId != userId {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	uGPGGuidanceUpdate.StudentName = uGPGGuidanceData.StudentName
@@ -94,12 +98,12 @@ func (uGPGGuidanceService *UGPGGuidanceService) UpdateUGPGGuidance(id string, uG
 		return nil, err
 	}
 
-	return uGPGGuidanceService.GetUGPGGuidanceById(id)
+	return uGPGGuidanceService.GetUGPGGuidanceById(userId, id)
 }
 
-func (uGPGGuidanceService *UGPGGuidanceService) DeleteUGPGGuidance(id string) (*graphql_models.UGPGGuidance, error) {
+func (uGPGGuidanceService *UGPGGuidanceService) DeleteUGPGGuidance(userId primitive.ObjectID, id string) (*graphql_models.UGPGGuidance, error) {
 
-	uGPGGuidanceData, err := uGPGGuidanceService.GetUGPGGuidanceById(id)
+	uGPGGuidanceData, err := uGPGGuidanceService.GetUGPGGuidanceById(userId, id)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +121,7 @@ func (uGPGGuidanceService *UGPGGuidanceService) DeleteUGPGGuidance(id string) (*
 	return uGPGGuidanceData, nil
 }
 
-func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidanceById(id string) (*graphql_models.UGPGGuidance, error) {
+func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidanceById(userId primitive.ObjectID, id string) (*graphql_models.UGPGGuidance, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -126,6 +130,10 @@ func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidanceById(id string) (
 	uGPGGuidanceData, err := uGPGGuidanceService.Repo.GetUGPGGuidanceById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	if uGPGGuidanceData.UserId != userId {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	var openingCheckDate *time.Time = nil

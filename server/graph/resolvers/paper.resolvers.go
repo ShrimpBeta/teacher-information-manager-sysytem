@@ -60,11 +60,18 @@ func (r *mutationResolver) DeletePaper(ctx context.Context, id string) (*graphql
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
-	return r.PaperService.DeletePaper(id, r.UserService.Repo)
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.PaperService.DeletePaper(user.ID, id, r.UserService.Repo)
 }
 
 // UploadPapers is the resolver for the uploadPapers field.
@@ -88,11 +95,18 @@ func (r *queryResolver) Paper(ctx context.Context, id string) (*graphql_models.P
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
-	return r.PaperService.GetPaperById(id, r.UserService.Repo)
+
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.PaperService.GetPaperById(user.ID, id, r.UserService.Repo)
 }
 
 // PapersByFilter is the resolver for the papersByFilter field.
@@ -113,9 +127,4 @@ func (r *queryResolver) PapersByFilter(ctx context.Context, filter graphql_model
 	}
 
 	return r.PaperService.GetPapersByFilter(user.ID, filter, r.UserService.Repo, offset, limit)
-}
-
-// Papers is the resolver for the papers field.
-func (r *queryResolver) Papers(ctx context.Context, ids []*string) ([]*graphql_models.Paper, error) {
-	panic(fmt.Errorf("not implemented: Papers - papers"))
 }

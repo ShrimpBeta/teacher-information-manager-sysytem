@@ -37,10 +37,10 @@ func (passwordService *PasswordService) CreatePassword(userID primitive.ObjectID
 		return nil, err
 	}
 
-	return passwordService.GetPasswordById(objectId.Hex())
+	return passwordService.GetPasswordById(userID, objectId.Hex())
 }
 
-func (passwordService *PasswordService) UpdatePassword(id string, masterKey string, passwordData graphql_models.PasswordData) (*graphql_models.Password, error) {
+func (passwordService *PasswordService) UpdatePassword(userId primitive.ObjectID, id string, masterKey string, passwordData graphql_models.PasswordData) (*graphql_models.Password, error) {
 
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -50,6 +50,10 @@ func (passwordService *PasswordService) UpdatePassword(id string, masterKey stri
 	passwordUpdate, err := passwordService.Repo.GetPasswordById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	if passwordUpdate.UserId != userId {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	passwordEncrypt, err := passwordencrypt.Encrypt(masterKey, passwordData.Password)
@@ -68,12 +72,12 @@ func (passwordService *PasswordService) UpdatePassword(id string, masterKey stri
 		return nil, err
 	}
 
-	return passwordService.GetPasswordById(id)
+	return passwordService.GetPasswordById(userId, id)
 }
 
-func (passwordService *PasswordService) DeletePassword(id string) (*graphql_models.Password, error) {
+func (passwordService *PasswordService) DeletePassword(userId primitive.ObjectID, id string) (*graphql_models.Password, error) {
 
-	passwordData, err := passwordService.GetPasswordById(id)
+	passwordData, err := passwordService.GetPasswordById(userId, id)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +95,7 @@ func (passwordService *PasswordService) DeletePassword(id string) (*graphql_mode
 	return passwordData, nil
 }
 
-func (passwordService *PasswordService) GetPasswordById(id string) (*graphql_models.Password, error) {
+func (passwordService *PasswordService) GetPasswordById(userId primitive.ObjectID, id string) (*graphql_models.Password, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -99,6 +103,10 @@ func (passwordService *PasswordService) GetPasswordById(id string) (*graphql_mod
 	passwordData, err := passwordService.Repo.GetPasswordById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	if passwordData.UserId != userId {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	return &graphql_models.Password{
@@ -112,7 +120,7 @@ func (passwordService *PasswordService) GetPasswordById(id string) (*graphql_mod
 	}, nil
 }
 
-func (passwordService *PasswordService) GetPasswordTrueById(id, masterKey string) (*graphql_models.PasswordTrue, error) {
+func (passwordService *PasswordService) GetPasswordTrueById(userId primitive.ObjectID, id, masterKey string) (*graphql_models.PasswordTrue, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -120,6 +128,10 @@ func (passwordService *PasswordService) GetPasswordTrueById(id, masterKey string
 	passwordData, err := passwordService.Repo.GetPasswordById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	if passwordData.UserId != userId {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	passwordDecrypt, err := passwordencrypt.Decrypt(masterKey, passwordData.Password)
@@ -204,7 +216,7 @@ func (passwordService *PasswordService) GetPasswordsByFilter(userId primitive.Ob
 	}, nil
 }
 
-func (passwordService *PasswordService) GetPasswordsByIds(ids []*string, masterKey string) ([]*graphql_models.PasswordTrue, error) {
+func (passwordService *PasswordService) GetPasswordsByIds(userId primitive.ObjectID, ids []*string, masterKey string) ([]*graphql_models.PasswordTrue, error) {
 	objectIds := make([]primitive.ObjectID, len(ids))
 	for _, id := range ids {
 		objectId, err := primitive.ObjectIDFromHex(*id)
@@ -221,6 +233,11 @@ func (passwordService *PasswordService) GetPasswordsByIds(ids []*string, masterK
 
 	passwords := make([]*graphql_models.PasswordTrue, len(passwordsData))
 	for i, passwordData := range passwordsData {
+
+		if passwordData.UserId != userId {
+			return nil, errors.New("the document not accessable for the user")
+		}
+
 		passwordDecrypt, err := passwordencrypt.Decrypt(masterKey, passwordData.Password)
 		if err != nil {
 			return nil, err

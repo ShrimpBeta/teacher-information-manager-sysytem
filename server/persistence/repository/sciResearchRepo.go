@@ -56,10 +56,10 @@ func (r *SciResearchRepo) GetSciResearchsByParams(params SciResearchQueryParams)
 	sciResearchs := []models.SciResearch{}
 
 	// filter for teachersIn, can not be empty
-	filter := bson.M{"teachersIn": bson.M{"$in": params.TeachersIn}}
+	filter := bson.M{"teachersIn": bson.M{"$all": params.TeachersIn}}
 	// filter for teachersOut
 	if params.TeachersOut != nil {
-		filter["teachersOut"] = bson.M{"$in": params.TeachersOut}
+		filter["teachersOut"] = bson.M{"$all": params.TeachersOut}
 	}
 	// filter for number
 	if params.Number != nil {

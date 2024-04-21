@@ -48,7 +48,7 @@ func (monographService *MonographService) CreateMonograph(userId primitive.Objec
 		return nil, err
 	}
 
-	return monographService.GetMonographById(objectId.Hex(), userRepo)
+	return monographService.GetMonographById(userId, objectId.Hex(), userRepo)
 }
 
 func (monographService *MonographService) UpdateMonograph(id string, userId primitive.ObjectID, monographData graphql_models.MonographData, userRepo *repository.UserRepo) (*graphql_models.Monograph, error) {
@@ -60,6 +60,17 @@ func (monographService *MonographService) UpdateMonograph(id string, userId prim
 	monographUpdate, err := monographService.Repo.GetMonographById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	exitsUser := false
+	for _, teacherIn := range monographUpdate.TeachersIn {
+		if teacherIn == userId {
+			exitsUser = true
+			break
+		}
+	}
+	if !exitsUser {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	teachersIn := make([]primitive.ObjectID, len(monographData.TeachersIn)+1)
@@ -90,12 +101,12 @@ func (monographService *MonographService) UpdateMonograph(id string, userId prim
 		return nil, err
 	}
 
-	return monographService.GetMonographById(id, userRepo)
+	return monographService.GetMonographById(userId, id, userRepo)
 }
 
-func (monographService *MonographService) DeleteMonograph(id string, userRepo *repository.UserRepo) (*graphql_models.Monograph, error) {
+func (monographService *MonographService) DeleteMonograph(userId primitive.ObjectID, id string, userRepo *repository.UserRepo) (*graphql_models.Monograph, error) {
 
-	monographData, err := monographService.GetMonographById(id, userRepo)
+	monographData, err := monographService.GetMonographById(userId, id, userRepo)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +123,7 @@ func (monographService *MonographService) DeleteMonograph(id string, userRepo *r
 	return monographData, nil
 }
 
-func (monographService *MonographService) GetMonographById(id string, userRepo *repository.UserRepo) (*graphql_models.Monograph, error) {
+func (monographService *MonographService) GetMonographById(userId primitive.ObjectID, id string, userRepo *repository.UserRepo) (*graphql_models.Monograph, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -121,6 +132,17 @@ func (monographService *MonographService) GetMonographById(id string, userRepo *
 	monographData, err := monographService.Repo.GetMonographById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	exitsUser := false
+	for _, teacherIn := range monographData.TeachersIn {
+		if teacherIn == userId {
+			exitsUser = true
+			break
+		}
+	}
+	if !exitsUser {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	usersInExport, err := userRepo.GetUsersExportByIds(monographData.TeachersIn)

@@ -67,15 +67,23 @@ func (classScheduleService *ClassScheduleService) CreateAcademicTerm(userId prim
 		return nil, err
 	}
 
-	return classScheduleService.GetAcademicTermById(objectId.Hex())
+	return classScheduleService.GetAcademicTermById(userId, objectId.Hex())
 
 }
 
-func (classScheduleService *ClassScheduleService) UpdateAcademicTerm(termID string, termData graphql_models.UpdateAcademicTerm) (*graphql_models.AcademicTerm, error) {
+func (classScheduleService *ClassScheduleService) UpdateAcademicTerm(userId primitive.ObjectID, termID string, termData graphql_models.UpdateAcademicTerm) (*graphql_models.AcademicTerm, error) {
 
 	objectId, err := primitive.ObjectIDFromHex(termID)
 	if err != nil {
 		return nil, err
+	}
+
+	academicTermData, err := classScheduleService.Repo.GetAcademicTermById(objectId)
+	if err != nil {
+		return nil, err
+	}
+	if academicTermData.UserId != userId {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	err = classScheduleService.Repo.UpdateAcademicTerm(&models.AcademicTerm{
@@ -88,17 +96,17 @@ func (classScheduleService *ClassScheduleService) UpdateAcademicTerm(termID stri
 		return nil, err
 	}
 
-	return classScheduleService.GetAcademicTermById(termID)
+	return classScheduleService.GetAcademicTermById(userId, termID)
 }
 
-func (classScheduleService *ClassScheduleService) DeleteAcademicTerm(termID string) (*graphql_models.AcademicTerm, error) {
+func (classScheduleService *ClassScheduleService) DeleteAcademicTerm(userId primitive.ObjectID, termID string) (*graphql_models.AcademicTerm, error) {
 
 	objectId, err := primitive.ObjectIDFromHex(termID)
 	if err != nil {
 		return nil, err
 	}
 
-	academicTermData, err := classScheduleService.GetAcademicTermById(termID)
+	academicTermData, err := classScheduleService.GetAcademicTermById(userId, termID)
 	if err != nil {
 		return nil, err
 	}
@@ -111,11 +119,19 @@ func (classScheduleService *ClassScheduleService) DeleteAcademicTerm(termID stri
 	return academicTermData, nil
 }
 
-func (classScheduleService *ClassScheduleService) CreateCourese(termID string, courseData graphql_models.CourseData) (*graphql_models.Course, error) {
+func (classScheduleService *ClassScheduleService) CreateCourese(userId primitive.ObjectID, termID string, courseData graphql_models.CourseData) (*graphql_models.Course, error) {
 
 	objectId, err := primitive.ObjectIDFromHex(termID)
 	if err != nil {
 		return nil, err
+	}
+
+	academicTermData, err := classScheduleService.Repo.GetAcademicTermById(objectId)
+	if err != nil {
+		return nil, err
+	}
+	if academicTermData.UserId != userId {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	if courseData.CourseTimes == nil || len(courseData.CourseTimes) == 0 {
@@ -153,10 +169,10 @@ func (classScheduleService *ClassScheduleService) CreateCourese(termID string, c
 		return nil, err
 	}
 
-	return classScheduleService.GetCourseById(termID, courseId.Hex())
+	return classScheduleService.GetCourseById(userId, termID, courseId.Hex())
 }
 
-func (classScheduleService *ClassScheduleService) UpdateCourse(termID string, courseID string, courseData graphql_models.CourseData) (*graphql_models.Course, error) {
+func (classScheduleService *ClassScheduleService) UpdateCourse(userId primitive.ObjectID, termID string, courseID string, courseData graphql_models.CourseData) (*graphql_models.Course, error) {
 	termObjectId, err := primitive.ObjectIDFromHex(termID)
 	if err != nil {
 		return nil, err
@@ -165,6 +181,14 @@ func (classScheduleService *ClassScheduleService) UpdateCourse(termID string, co
 	courseObjectId, err := primitive.ObjectIDFromHex(courseID)
 	if err != nil {
 		return nil, err
+	}
+
+	academicTermData, err := classScheduleService.Repo.GetAcademicTermById(termObjectId)
+	if err != nil {
+		return nil, err
+	}
+	if academicTermData.UserId != userId {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	if courseData.CourseTimes == nil || len(courseData.CourseTimes) == 0 {
@@ -209,10 +233,10 @@ func (classScheduleService *ClassScheduleService) UpdateCourse(termID string, co
 		return nil, err
 	}
 
-	return classScheduleService.GetCourseById(termID, courseID)
+	return classScheduleService.GetCourseById(userId, termID, courseID)
 }
 
-func (classScheduleService *ClassScheduleService) DeleteCourse(termID string, courseID string) (*graphql_models.Course, error) {
+func (classScheduleService *ClassScheduleService) DeleteCourse(userId primitive.ObjectID, termID string, courseID string) (*graphql_models.Course, error) {
 	termObjectId, err := primitive.ObjectIDFromHex(termID)
 	if err != nil {
 		return nil, err
@@ -223,7 +247,7 @@ func (classScheduleService *ClassScheduleService) DeleteCourse(termID string, co
 		return nil, err
 	}
 
-	courseData, err := classScheduleService.GetCourseById(termID, courseID)
+	courseData, err := classScheduleService.GetCourseById(userId, termID, courseID)
 	if err != nil {
 		return nil, err
 	}
@@ -240,7 +264,7 @@ func (classScheduleService *ClassScheduleService) DeleteCourse(termID string, co
 	return courseData, nil
 }
 
-func (classScheduleService *ClassScheduleService) GetCourseById(termId, courseID string) (*graphql_models.Course, error) {
+func (classScheduleService *ClassScheduleService) GetCourseById(userId primitive.ObjectID, termId, courseID string) (*graphql_models.Course, error) {
 	termObjectId, err := primitive.ObjectIDFromHex(termId)
 	if err != nil {
 		return nil, err
@@ -249,6 +273,14 @@ func (classScheduleService *ClassScheduleService) GetCourseById(termId, courseID
 	courseObjectId, err := primitive.ObjectIDFromHex(courseID)
 	if err != nil {
 		return nil, err
+	}
+
+	academicTermData, err := classScheduleService.Repo.GetAcademicTermById(termObjectId)
+	if err != nil {
+		return nil, err
+	}
+	if academicTermData.UserId != userId {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	courseData, err := classScheduleService.Repo.GetCourseById(termObjectId, courseObjectId)
@@ -288,7 +320,7 @@ func (classScheduleService *ClassScheduleService) GetCourseById(termId, courseID
 	}, nil
 }
 
-func (classScheduleService *ClassScheduleService) GetAcademicTermById(id string) (*graphql_models.AcademicTerm, error) {
+func (classScheduleService *ClassScheduleService) GetAcademicTermById(userId primitive.ObjectID, id string) (*graphql_models.AcademicTerm, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -296,6 +328,10 @@ func (classScheduleService *ClassScheduleService) GetAcademicTermById(id string)
 	academicTermData, err := classScheduleService.Repo.GetAcademicTermById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	if academicTermData.UserId != userId {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	courses := make([]*graphql_models.Course, len(academicTermData.Courses))
@@ -337,6 +373,72 @@ func (classScheduleService *ClassScheduleService) GetAcademicTermById(id string)
 		CreatedAt: academicTermData.CreatedAt.Time(),
 		UpdatedAt: academicTermData.UpdatedAt.Time(),
 	}, nil
+}
+
+func (classScheduleService *ClassScheduleService) GetAcademicTermsByIds(userId primitive.ObjectID, ids []string) ([]*graphql_models.AcademicTerm, error) {
+	objectIds := make([]primitive.ObjectID, len(ids))
+	for i, id := range ids {
+		objectId, err := primitive.ObjectIDFromHex(id)
+		if err != nil {
+			return nil, err
+		}
+		objectIds[i] = objectId
+	}
+
+	academicTermsData, err := classScheduleService.Repo.GetAcademicTermsByIds(objectIds)
+	if err != nil {
+		return nil, err
+	}
+
+	academicTerms := make([]*graphql_models.AcademicTerm, len(academicTermsData))
+	for i, academicTermData := range academicTermsData {
+
+		if academicTermData.UserId != userId {
+			return nil, errors.New("the document not accessable for the user")
+		}
+
+		courses := make([]*graphql_models.Course, len(academicTermData.Courses))
+		for j, courseData := range academicTermData.Courses {
+			classTimes := make([]*graphql_models.ClassTime, len(courseData.ClassTimes))
+			for k, classTimeData := range courseData.ClassTimes {
+				classTimes[k] = &graphql_models.ClassTime{
+					DayOfWeek: int(classTimeData.DayOfWeek),
+					Start:     int(classTimeData.Start),
+					End:       int(classTimeData.End),
+				}
+			}
+
+			var studentCount *int = nil
+			if courseData.StudentCount != nil {
+				studentCount = new(int)
+				*studentCount = int(*courseData.StudentCount)
+			}
+
+			courses[j] = &graphql_models.Course{
+				ID:             courseData.ID.Hex(),
+				TeacherNames:   courseData.TeacherNames,
+				CourseName:     courseData.Name,
+				CourseLocation: courseData.Location,
+				CourseType:     courseData.Type,
+				CourseWeeks:    courseData.Weeks,
+				StudentCount:   studentCount,
+				Color:          courseData.Color,
+				CourseTimes:    classTimes,
+			}
+		}
+
+		academicTerms[i] = &graphql_models.AcademicTerm{
+			ID:        academicTermData.ID.Hex(),
+			TermName:  academicTermData.Name,
+			StartDate: academicTermData.StartDate.Time(),
+			WeekCount: int(academicTermData.WeekCount),
+			Courses:   courses,
+			CreatedAt: academicTermData.CreatedAt.Time(),
+			UpdatedAt: academicTermData.UpdatedAt.Time(),
+		}
+	}
+
+	return academicTerms, nil
 }
 
 func (classScheduleService *ClassScheduleService) GetAcademicTermsByFilter(userId primitive.ObjectID, filter graphql_models.AcademicTermFilter, offset int, limit int) (*graphql_models.AcademicTermQuery, error) {

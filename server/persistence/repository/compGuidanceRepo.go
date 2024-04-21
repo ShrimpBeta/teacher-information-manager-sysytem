@@ -54,7 +54,7 @@ func (r *CompGuidanceRepo) GetCompGuidancesByParams(params CompGuidanceQueryPara
 	}
 	// filter for studentNames
 	if params.StudentNames != nil {
-		filter["studentNames"] = bson.M{"$in": params.StudentNames}
+		filter["studentNames"] = bson.M{"$all": params.StudentNames}
 	}
 	// filter for guidanceDate
 	if params.GuidanceDateStart != nil || params.GuidanceDateEnd != nil {

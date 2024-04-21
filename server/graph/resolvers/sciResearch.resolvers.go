@@ -6,7 +6,6 @@ package resolvers
 
 import (
 	"context"
-	"fmt"
 	graphql_models "server/graph/model"
 	"server/middlewares"
 
@@ -60,12 +59,18 @@ func (r *mutationResolver) DeleteSciResearch(ctx context.Context, id string) (*g
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.SciResearchService.DeleteSciResearch(id, r.UserService.Repo)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.SciResearchService.DeleteSciResearch(user.ID, id, r.UserService.Repo)
 }
 
 // UploadSciResearchs is the resolver for the uploadSciResearchs field.
@@ -90,12 +95,18 @@ func (r *queryResolver) SciResearch(ctx context.Context, id string) (*graphql_mo
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.SciResearchService.GetSciResearchById(id, r.UserService.Repo)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.SciResearchService.GetSciResearchById(user.ID, id, r.UserService.Repo)
 }
 
 // SciResearchsByFilter is the resolver for the sciResearchsByFilter field.
@@ -116,9 +127,4 @@ func (r *queryResolver) SciResearchsByFilter(ctx context.Context, filter graphql
 	}
 
 	return r.SciResearchService.GetSciResearchsByFilter(user.ID, filter, r.UserService.Repo, offset, limit)
-}
-
-// SciResearchs is the resolver for the sciResearchs field.
-func (r *queryResolver) SciResearchs(ctx context.Context, ids []*string) ([]*graphql_models.SciResearch, error) {
-	panic(fmt.Errorf("not implemented: SciResearchs - sciResearchs"))
 }

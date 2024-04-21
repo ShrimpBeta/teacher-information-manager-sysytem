@@ -75,7 +75,7 @@ func (s *SciResearchService) CreateSciResearch(userId primitive.ObjectID, newSci
 		return nil, err
 	}
 
-	return s.GetSciResearchById(objectId.Hex(), userRepo)
+	return s.GetSciResearchById(userId, objectId.Hex(), userRepo)
 }
 
 func (s *SciResearchService) UpdateSciResearch(sciResearchID string, userId primitive.ObjectID, sciResearchData graphql_models.SciResearchData, userRepo *repository.UserRepo) (*graphql_models.SciResearch, error) {
@@ -87,6 +87,17 @@ func (s *SciResearchService) UpdateSciResearch(sciResearchID string, userId prim
 	sciResearchUpdate, err := s.Repo.GetSciResearchById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	existsUser := false
+	for _, teacherIn := range sciResearchUpdate.TeachersIn {
+		if teacherIn == userId {
+			existsUser = true
+			break
+		}
+	}
+	if !existsUser {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	teachersIn := make([]primitive.ObjectID, len(sciResearchData.TeachersIn)+1)
@@ -145,11 +156,11 @@ func (s *SciResearchService) UpdateSciResearch(sciResearchID string, userId prim
 		return nil, err
 	}
 
-	return s.GetSciResearchById(sciResearchID, userRepo)
+	return s.GetSciResearchById(userId, sciResearchID, userRepo)
 }
 
-func (s *SciResearchService) DeleteSciResearch(sciResearchID string, userRepo *repository.UserRepo) (*graphql_models.SciResearch, error) {
-	sciResearchData, err := s.GetSciResearchById(sciResearchID, userRepo)
+func (s *SciResearchService) DeleteSciResearch(userId primitive.ObjectID, sciResearchID string, userRepo *repository.UserRepo) (*graphql_models.SciResearch, error) {
+	sciResearchData, err := s.GetSciResearchById(userId, sciResearchID, userRepo)
 	if err != nil {
 		return nil, err
 	}
@@ -166,7 +177,7 @@ func (s *SciResearchService) DeleteSciResearch(sciResearchID string, userRepo *r
 	return sciResearchData, nil
 }
 
-func (s *SciResearchService) GetSciResearchById(sciResearchID string, userRepo *repository.UserRepo) (*graphql_models.SciResearch, error) {
+func (s *SciResearchService) GetSciResearchById(userId primitive.ObjectID, sciResearchID string, userRepo *repository.UserRepo) (*graphql_models.SciResearch, error) {
 	objectId, err := primitive.ObjectIDFromHex(sciResearchID)
 	if err != nil {
 		return nil, err
@@ -175,6 +186,17 @@ func (s *SciResearchService) GetSciResearchById(sciResearchID string, userRepo *
 	sciResearchData, err := s.Repo.GetSciResearchById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	existsUser := false
+	for _, teacherIn := range sciResearchData.TeachersIn {
+		if teacherIn == userId {
+			existsUser = true
+			break
+		}
+	}
+	if !existsUser {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	usersInExport, err := userRepo.GetUsersExportByIds(sciResearchData.TeachersIn)

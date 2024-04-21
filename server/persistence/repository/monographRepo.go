@@ -47,10 +47,10 @@ func (r *MonographRepo) GetMonographsByParams(params MonoGraphParams) ([]models.
 	monographs := []models.Monograph{}
 
 	//  filter for teachersIn,can not be empty
-	filter := bson.M{"teachersIn": bson.M{"$in": params.TeachersIn}}
+	filter := bson.M{"teachersIn": bson.M{"$all": params.TeachersIn}}
 	//  filter for teachersOut
 	if len(params.TeachersOut) > 0 {
-		filter["teachersOut"] = bson.M{"$in": params.TeachersOut}
+		filter["teachersOut"] = bson.M{"$all": params.TeachersOut}
 	}
 	// filter for title
 	if params.Title != nil {

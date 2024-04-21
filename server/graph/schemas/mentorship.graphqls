@@ -48,7 +48,6 @@ extend type Query {
     offset: Int!
     limit: Int!
   ): MentorshipQuery!
-  mentorships(ids: [ID]!): [Mentorship]!
 }
 
 extend type Mutation {

@@ -59,7 +59,6 @@ extend type Query {
     offset: Int!
     limit: Int!
   ): UGPGGuidanceQuery!
-  uGPGGuidances(ids: [ID]!): [UGPGGuidance]!
 }
 
 extend type Mutation {

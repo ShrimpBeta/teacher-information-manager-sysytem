@@ -56,7 +56,6 @@ extend type Query {
   paper(id: ID!): Paper!
 
   papersByFilter(filter: PaperFilter!, offset: Int!, limit: Int!): PaperQuery!
-  papers(ids: [ID]!): [Paper]!
 }
 
 extend type Mutation {

@@ -48,7 +48,7 @@ func (paperService *PaperService) CreatePaper(userId primitive.ObjectID, newPape
 		return nil, err
 	}
 
-	return paperService.GetPaperById(objectId.Hex(), userRepo)
+	return paperService.GetPaperById(userId, objectId.Hex(), userRepo)
 }
 
 func (paperService *PaperService) UpdatePaper(id string, userId primitive.ObjectID, paperData graphql_models.PaperData, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
@@ -60,6 +60,17 @@ func (paperService *PaperService) UpdatePaper(id string, userId primitive.Object
 	paperUpdate, err := paperService.Repo.GetPaperById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	existsUser := false
+	for _, teacherIn := range paperUpdate.TeachersIn {
+		if teacherIn == userId {
+			existsUser = true
+			break
+		}
+	}
+	if !existsUser {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	teachersIn := make([]primitive.ObjectID, len(paperData.TeachersIn)+1)
@@ -91,12 +102,12 @@ func (paperService *PaperService) UpdatePaper(id string, userId primitive.Object
 		return nil, err
 	}
 
-	return paperService.GetPaperById(id, userRepo)
+	return paperService.GetPaperById(userId, id, userRepo)
 }
 
-func (paperService *PaperService) DeletePaper(id string, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
+func (paperService *PaperService) DeletePaper(userId primitive.ObjectID, id string, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
 
-	PaperData, err := paperService.GetPaperById(id, userRepo)
+	PaperData, err := paperService.GetPaperById(userId, id, userRepo)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +125,7 @@ func (paperService *PaperService) DeletePaper(id string, userRepo *repository.Us
 	return PaperData, nil
 }
 
-func (paperService *PaperService) GetPaperById(id string, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
+func (paperService *PaperService) GetPaperById(userId primitive.ObjectID, id string, userRepo *repository.UserRepo) (*graphql_models.Paper, error) {
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -123,6 +134,17 @@ func (paperService *PaperService) GetPaperById(id string, userRepo *repository.U
 	PaperData, err := paperService.Repo.GetPaperById(objectId)
 	if err != nil {
 		return nil, err
+	}
+
+	existsUser := false
+	for _, teacherIn := range PaperData.TeachersIn {
+		if teacherIn == userId {
+			existsUser = true
+			break
+		}
+	}
+	if !existsUser {
+		return nil, errors.New("the document not accessable for the user")
 	}
 
 	var publishDate *time.Time = nil

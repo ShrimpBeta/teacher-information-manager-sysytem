@@ -40,12 +40,18 @@ func (r *mutationResolver) UpdateMentorship(ctx context.Context, id string, ment
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.MentorshipService.UpdateMentorship(id, mentorshipData)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.MentorshipService.UpdateMentorship(user.ID, id, mentorshipData)
 }
 
 // DeleteMentorship is the resolver for the deleteMentorship field.
@@ -55,12 +61,18 @@ func (r *mutationResolver) DeleteMentorship(ctx context.Context, id string) (*gr
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.MentorshipService.DeleteMentorship(id)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.MentorshipService.DeleteMentorship(user.ID, id)
 }
 
 // UploadMentorships is the resolver for the uploadMentorships field.
@@ -85,12 +97,18 @@ func (r *queryResolver) Mentorship(ctx context.Context, id string) (*graphql_mod
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.MentorshipService.GetMentorshipById(id)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.MentorshipService.GetMentorshipById(user.ID, id)
 }
 
 // MentorshipsByFilter is the resolver for the mentorshipsByFilter field.
@@ -111,9 +129,4 @@ func (r *queryResolver) MentorshipsByFilter(ctx context.Context, filter graphql_
 	}
 
 	return r.MentorshipService.GetMentorshipsByFilter(user.ID, filter, offset, limit)
-}
-
-// Mentorships is the resolver for the mentorships field.
-func (r *queryResolver) Mentorships(ctx context.Context, ids []*string) ([]*graphql_models.Mentorship, error) {
-	panic(fmt.Errorf("not implemented: Mentorships - mentorships"))
 }

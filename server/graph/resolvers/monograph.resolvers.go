@@ -6,7 +6,6 @@ package resolvers
 
 import (
 	"context"
-	"fmt"
 	graphql_models "server/graph/model"
 	"server/middlewares"
 
@@ -60,12 +59,18 @@ func (r *mutationResolver) DeleteMonograph(ctx context.Context, id string) (*gra
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.MonographService.DeleteMonograph(id, r.UserService.Repo)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.MonographService.DeleteMonograph(user.ID, id, r.UserService.Repo)
 }
 
 // UploadMonographs is the resolver for the uploadMonographs field.
@@ -90,12 +95,18 @@ func (r *queryResolver) Monograph(ctx context.Context, id string) (*graphql_mode
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.MonographService.GetMonographById(id, r.UserService.Repo)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.MonographService.GetMonographById(user.ID, id, r.UserService.Repo)
 }
 
 // MonographsByFilter is the resolver for the monographsByFilter field.
@@ -116,9 +127,4 @@ func (r *queryResolver) MonographsByFilter(ctx context.Context, filter graphql_m
 	}
 
 	return r.MonographService.GetMonographsByFilter(user.ID, filter, r.UserService.Repo, offset, limit)
-}
-
-// Monographs is the resolver for the monographs field.
-func (r *queryResolver) Monographs(ctx context.Context, ids []*string) ([]*graphql_models.Monograph, error) {
-	panic(fmt.Errorf("not implemented: Monographs - monographs"))
 }

@@ -42,12 +42,17 @@ func (r *mutationResolver) UpdateCompGuidance(ctx context.Context, id string, co
 	}
 
 	// if no token found, return an error
-	_, err = middlewares.ForContext(ginContext)
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.CompGuidanceService.UpdateCompGuidance(id, compGuidanceData)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.CompGuidanceService.UpdateCompGuidance(user.ID, id, compGuidanceData)
 }
 
 // DeleteCompGuidance is the resolver for the deleteCompGuidance field.
@@ -58,12 +63,17 @@ func (r *mutationResolver) DeleteCompGuidance(ctx context.Context, id string) (*
 	}
 
 	// if no token found, return an error
-	_, err = middlewares.ForContext(ginContext)
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.CompGuidanceService.DeleteCompGuidance(id)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.CompGuidanceService.DeleteCompGuidance(user.ID, id)
 }
 
 // UploadCompGuidances is the resolver for the uploadCompGuidances field.
@@ -90,12 +100,17 @@ func (r *queryResolver) CompGuidance(ctx context.Context, id string) (*graphql_m
 	}
 
 	// if no token found, return an error
-	_, err = middlewares.ForContext(ginContext)
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.CompGuidanceService.GetCompGuidanceById(id)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.CompGuidanceService.GetCompGuidanceById(user.ID, id)
 }
 
 // CompGuidancesByFilter is the resolver for the compGuidancesByFilter field.
@@ -117,9 +132,4 @@ func (r *queryResolver) CompGuidancesByFilter(ctx context.Context, filter graphq
 	}
 
 	return r.CompGuidanceService.GetCompGuidancesByFilter(user.ID, filter, offset, limit)
-}
-
-// CompGuidances is the resolver for the compGuidances field.
-func (r *queryResolver) CompGuidances(ctx context.Context, ids []*string) ([]*graphql_models.CompGuidance, error) {
-	panic(fmt.Errorf("not implemented: CompGuidances - compGuidances"))
 }

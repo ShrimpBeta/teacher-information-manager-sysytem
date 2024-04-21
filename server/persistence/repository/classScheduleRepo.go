@@ -34,6 +34,26 @@ func (r *ClassScheduleRepo) GetAcademicTermById(id primitive.ObjectID) (*models.
 	return &academicTerm, nil
 }
 
+func (r *ClassScheduleRepo) GetAcademicTermsByIds(ids []primitive.ObjectID) ([]models.AcademicTerm, error) {
+	academicTerms := []models.AcademicTerm{}
+	cursor, err := r.collection.Find(context.Background(), bson.M{"_id": bson.M{"$in": ids}})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+
+	for cursor.Next(context.Background()) {
+		academicTerm := models.AcademicTerm{}
+		err := cursor.Decode(&academicTerm)
+		if err != nil {
+			return nil, err
+		}
+		academicTerms = append(academicTerms, academicTerm)
+	}
+
+	return academicTerms, nil
+}
+
 func (r *ClassScheduleRepo) GetAcademicTermsByParams(params ClassScheduleQueryParams) ([]models.AcademicTerm, error) {
 	academicTerms := []models.AcademicTerm{}
 

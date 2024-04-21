@@ -56,7 +56,6 @@ extend type Query {
     offset: Int!
     limit: Int!
   ): MonographQuery!
-  monographs(ids: [ID]!): [Monograph]!
 }
 
 extend type Mutation {
