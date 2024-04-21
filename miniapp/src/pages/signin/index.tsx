@@ -1,7 +1,7 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { View, Text } from '@tarojs/components';
 import Taro, { useDidHide, useDidShow } from '@tarojs/taro';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useMutation } from '@apollo/client';
 import { ApolloError } from '@apollo/client/errors';
 import { isEmail } from 'class-validator';
@@ -15,16 +15,26 @@ import {
 } from '@nutui/nutui-react-taro'
 
 import './index.scss';
+import { RootState } from '@/store/slices/reducers';
+import { JWT } from '@/auth/jwt';
 
 
 
 const Signin = (props: PropsWithChildren) => {
+
+  const user = useSelector((state: RootState) => state.userData.user);
+  const token = useSelector((state: RootState) => state.userData.token);
+
   useEffect(() => {
+    if (user && !JWT.getTokenExpiration(token)) {
+      Taro.switchTab({ url: '/pages/index/index' });
+    }
+  }, [])
 
-   }, [])
-
-  useDidShow(() => { 
-
+  useDidShow(() => {
+    if (user && !JWT.getTokenExpiration(token)) {
+      Taro.switchTab({ url: '/pages/index/index' });
+    }
   })
 
   useDidHide(() => { })

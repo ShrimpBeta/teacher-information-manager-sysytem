@@ -65,6 +65,7 @@ function Index() {
           icon: 'none',
           duration: 2000
         });
+        Taro.navigateBack()
       })
     }
   }, []);

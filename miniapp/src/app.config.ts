@@ -1,5 +1,10 @@
 export default {
   pages: [
+    'pages/signin/index',
+    'pages/index/index',
+    'pages/account/index',
+    'pages/sectionone/index',
+    'pages/sectiontwo/index',
     'pages/updateuserinfo/index',
     'pages/updateuserpassword/index',
     'pages/createcompguidance/index',
@@ -19,11 +24,6 @@ export default {
     'pages/updatepaper/index',
     'pages/updatesciresearch/index',
     'pages/updateugpgguidance/index',
-    'pages/index/index',
-    'pages/signin/index',
-    'pages/account/index',
-    'pages/sectionone/index',
-    'pages/sectiontwo/index',
   ],
   tabBar: {
     custom: true,
