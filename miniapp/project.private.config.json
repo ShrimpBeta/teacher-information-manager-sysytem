@@ -10,8 +10,8 @@
       "list": [
         {
           "name": "test",
-          "pathName": "pages/sectiontwo/index",
-          "query": "",
+          "pathName": "pages/editclassschedule/index",
+          "query": "id=661cd82859a5ed658b8ada7d",
           "launchMode": "default",
           "scene": null
         }

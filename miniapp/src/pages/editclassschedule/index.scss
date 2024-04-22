@@ -2,25 +2,3 @@
   width: 100%;
   height: 100vh;
 }
-
-.table {
-  display: flex;
-  flex-direction: column;
-}
-
-.thead, .tbody {
-  display: flex;
-  flex-direction: column;
-}
-
-.tr {
-  display: flex;
-  flex-direction: row;
-}
-
-.th, .td {
-  display: flex;
-  flex: 1;
-  /* 其他样式 */
-  border: 1px solid grey; 
-}
