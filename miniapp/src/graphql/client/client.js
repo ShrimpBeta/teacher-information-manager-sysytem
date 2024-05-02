@@ -5,8 +5,11 @@ import Taro from "@tarojs/taro";
 import qs from "qs";
 import { JWT } from "@/auth/jwt";
 
-const httpUrl = 'http://localhost:8080/graphql'
-const ENDPOINT = 'http://localhost:8080'
+// const httpUrl = 'http://localhost:8080/graphql'
+// const ENDPOINT = 'http://localhost:8080'
+
+const httpUrl = 'http://api.teacher.cn/graphql'
+const ENDPOINT = 'http://api.teacher.cn'
 
 export const request = async (
   url,

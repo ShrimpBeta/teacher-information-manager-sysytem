@@ -8,7 +8,8 @@ import extractFiles from 'extract-files/extractFiles.mjs';
 import isExtractableFile from 'extract-files/isExtractableFile.mjs';
 import { setContext } from '@apollo/client/link/context';
 
-const uri = 'http://127.0.0.1:8080/graphql'; // <-- add the URL of the GraphQL server here
+// const uri = 'http://127.0.0.1:8080/graphql'; // <-- add the URL of the GraphQL server here
+const uri = 'http://api.teacher.cn/graphql';
 export function apolloOptionsFactory(): ApolloClientOptions<any> {
   const httpLink = inject(HttpLink);
   return {
