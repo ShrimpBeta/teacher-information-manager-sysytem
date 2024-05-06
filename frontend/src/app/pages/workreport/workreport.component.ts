@@ -16,6 +16,8 @@ import { UserExport } from '../../models/models/user.model';
 import { UserService } from '../../services/user.service';
 import { ReportService } from '../../services/report.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-workreport',
@@ -34,6 +36,7 @@ export class WorkreportComponent {
 
   teachersInOptions: UserExport[] = [];
   @ViewChild('teacherInInput') teachersInInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('report') reoprt!: ElementRef<HTMLDivElement>;
 
   $destroy: Subject<boolean> = new Subject<boolean>();
 
@@ -98,8 +101,14 @@ export class WorkreportComponent {
 
   }
 
-  export() {
-
+  exportPdf() {
+    const data = this.reoprt.nativeElement;
+    html2canvas(data).then((canvas) => {
+      const contentDataURL = canvas.toDataURL('image/png');
+      let pdf = new jsPDF('p', 'mm', 'a4');
+      pdf.addImage(contentDataURL, 'PNG', 0, 0, 211, 298);
+      pdf.save('report.pdf');
+    });
   }
 
   get teachersIn() {
