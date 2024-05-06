@@ -154,7 +154,20 @@ export class OverviewpaperComponent implements OnInit, OnDestroy {
   }
 
   clearForm() {
-    this.SearchForm.reset();
+    this.SearchForm = new FormGroup({
+      title: new FormControl(''),
+      teachersIn: new FormArray([]),
+      teachersOut: new FormArray([]),
+      rank: new FormControl(''),
+      journalName: new FormControl(''),
+      journalLevel: new FormControl(''),
+      publishDateStart: new FormControl(null),
+      publishDateEnd: new FormControl(null),
+      createdStart: new FormControl(null),
+      createdEnd: new FormControl(null),
+      updatedStart: new FormControl(null),
+      updatedEnd: new FormControl(null),
+    });
   }
 
   onPageChange(event: PageEvent) {

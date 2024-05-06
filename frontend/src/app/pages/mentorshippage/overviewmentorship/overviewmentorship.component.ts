@@ -124,7 +124,17 @@ export class OverviewmentorshipComponent implements OnInit, OnDestroy {
   }
 
   clearForm() {
-    this.SearchForm.reset();
+    this.SearchForm = new FormGroup({
+      projectName: new FormControl(''),
+      studentNames: new FormArray([]),
+      grade: new FormControl(''),
+      guidanceDateStart: new FormControl(null),
+      guidanceDateEnd: new FormControl(null),
+      createdStart: new FormControl(null),
+      createdEnd: new FormControl(null),
+      updatedStart: new FormControl(null),
+      updatedEnd: new FormControl(null),
+    });
   }
 
   onPageChange(event: PageEvent) {

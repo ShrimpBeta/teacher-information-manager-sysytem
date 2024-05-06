@@ -152,7 +152,19 @@ export class OverviewmonographComponent {
   }
 
   clearForm() {
-    this.SearchForm.reset();
+    this.SearchForm = new FormGroup({
+      title: new FormControl(''),
+      teachersIn: new FormArray([]),
+      teachersOut: new FormArray([]),
+      publishLevel: new FormControl(''),
+      rank: new FormControl(''),
+      publishDateStart: new FormControl(null),
+      publishDateEnd: new FormControl(null),
+      createdStart: new FormControl(null),
+      createdEnd: new FormControl(null),
+      updatedStart: new FormControl(null),
+      updatedEnd: new FormControl(null),
+    });
   }
 
   onPageChange(event: PageEvent) {

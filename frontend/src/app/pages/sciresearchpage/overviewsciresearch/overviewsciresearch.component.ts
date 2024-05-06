@@ -179,7 +179,27 @@ export class OverviewsciresearchComponent implements OnInit, OnDestroy {
   }
 
   clearForm() {
-    this.SearchForm.reset();
+    this.SearchForm = new FormGroup({
+      title: new FormControl(''),
+      number: new FormControl(''),
+      teachersIn: new FormArray([]),
+      teachersOut: new FormArray([]),
+      level: new FormControl(''),
+      rank: new FormControl(''),
+      achievement: new FormControl(''),
+      fund: new FormControl(''),
+      startDateStart: new FormControl(null),
+      startDateEnd: new FormControl(null),
+      createdStart: new FormControl(null),
+      createdEnd: new FormControl(null),
+      updatedStart: new FormControl(null),
+      updatedEnd: new FormControl(null),
+      awardName: new FormControl(''),
+      awardlevel: new FormControl(''),
+      awardRank: new FormControl(''),
+      awardDateStart: new FormControl(null),
+      awardDateEnd: new FormControl(null),
+    });
   }
 
   onPageChange(event: PageEvent) {

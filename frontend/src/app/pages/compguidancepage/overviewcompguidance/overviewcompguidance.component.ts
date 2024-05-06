@@ -134,7 +134,17 @@ export class OverviewcompguidanceComponent implements OnInit, OnDestroy, AfterVi
   }
 
   clearForm() {
-    this.SearchForm.reset();
+    this.SearchForm = new FormGroup({
+      projectName: new FormControl(''),
+      studentNames: new FormArray([]),
+      guidanceDateStart: new FormControl(null),
+      guidanceDateEnd: new FormControl(null),
+      awardStatus: new FormControl(''),
+      createdStart: new FormControl(null),
+      createdEnd: new FormControl(null),
+      updatedStart: new FormControl(null),
+      updatedEnd: new FormControl(null),
+    });
   }
 
   onPageChange(event: PageEvent) {

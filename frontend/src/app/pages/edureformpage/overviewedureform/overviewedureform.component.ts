@@ -57,7 +57,7 @@ export class OverviewedureformComponent implements OnInit, OnDestroy {
   pageSize: number = 10;
   pageSizeOptions: number[] = [6, 10, 24, 50, 100];
 
-  displayedColumns: string[] = ['select', 'action','title', 'teachersIn', 'teachersOut', 'number', 'startDate', 'duration', 'level', 'rank', 'achievement', 'fund', 'createdAt', 'updatedAt'];
+  displayedColumns: string[] = ['select', 'action', 'title', 'teachersIn', 'teachersOut', 'number', 'startDate', 'duration', 'level', 'rank', 'achievement', 'fund', 'createdAt', 'updatedAt'];
 
   dataSource!: MatTableDataSource<EduReform>;
   @ViewChild(MatSort) sort!: MatSort;
@@ -174,7 +174,22 @@ export class OverviewedureformComponent implements OnInit, OnDestroy {
   }
 
   clearForm() {
-    this.SearchForm.reset();
+    this.SearchForm = new FormGroup({
+      title: new FormControl(''),
+      number: new FormControl(''),
+      teachersIn: new FormArray([]),
+      teachersOut: new FormArray([]),
+      level: new FormControl(''),
+      rank: new FormControl(''),
+      achievement: new FormControl(''),
+      fund: new FormControl(''),
+      startDateStart: new FormControl(null),
+      startDateEnd: new FormControl(null),
+      createdStart: new FormControl(null),
+      createdEnd: new FormControl(null),
+      updatedStart: new FormControl(null),
+      updatedEnd: new FormControl(null),
+    });
   }
 
   onPageChange(event: PageEvent) {

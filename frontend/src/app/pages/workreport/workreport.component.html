@@ -1,1 +1,103 @@
-<p>workreport works!</p>
+<div class="container">
+
+  <div class="title">
+    <h1>工作总结/报告</h1>
+  </div>
+
+  <div class="filter">
+    <div class="sub-title">
+      <h2>报告筛选条件</h2>
+    </div>
+    <mat-divider></mat-divider>
+    <form [formGroup]="SearchForm" class="filter-content">
+      <div class="filter-box">
+        <div class="filter-item">
+          <mat-checkbox formControlName="classSchedule">教授课程</mat-checkbox>
+          <mat-checkbox formControlName="mentorship">导师制</mat-checkbox>
+          <mat-checkbox formControlName="compGuidance">竞赛指导</mat-checkbox>
+          <mat-checkbox formControlName="uGPGGuidance">毕设指导</mat-checkbox>
+          <mat-checkbox formControlName="eduReform">教改项目</mat-checkbox>
+          <mat-checkbox formControlName="monograph">专著</mat-checkbox>
+          <mat-checkbox formControlName="paper">论文</mat-checkbox>
+          <mat-checkbox formControlName="sciResearch">科研项目</mat-checkbox>
+        </div>
+
+        <div class="filter-item">
+          <mat-form-field appearance="outline">
+            <mat-label>报告时间段</mat-label>
+            <mat-date-range-input [rangePicker]="DatePicker">
+              <input matStartDate formControlName="startDate" placeholder="Start date">
+              <input matEndDate formControlName="endDate" placeholder="End date">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matIconSuffix [for]="DatePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #DatePicker></mat-date-range-picker>
+            @if
+            (SearchForm.controls['startDate'].hasError('matStartDateInvalid')||SearchForm.controls['endDate'].hasError('matEndDateInvalid'))
+            {
+            <mat-error>开始日期晚于结束日期</mat-error>
+            }
+            @if(SearchForm.controls['startDate'].hasError('matDatepickerParse')) {
+            <mat-error>开始日期格式错误</mat-error>
+            }
+            @if(SearchForm.controls['endDate'].hasError('matDatepickerParse')) {
+            <mat-error>结束日期格式错误</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-checkbox formControlName="specifyTeacherIn">选择教师</mat-checkbox>
+
+          @if(SearchForm.get('specifyTeacherIn')?.value){
+          <mat-form-field appearance="outline">
+            <mat-label>内部教师</mat-label>
+            <mat-chip-grid #chipGridTeachersIn aria-label="Fruit selection">
+              @for(teacherIn of teachersIn.controls;track $index) {
+              <mat-chip-row (removed)="removeTeachersIn($index)">
+                {{teacherIn.value.username}}
+                <button matChipRemove aria-label="remove">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip-row>
+              }
+            </mat-chip-grid>
+            <input placeholder="New Tearcher..." #teacherInInput [formControl]="teachersInCtrl"
+              [matChipInputFor]="chipGridTeachersIn" [matAutocomplete]="auto"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="addTeachersIn($event)" />
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="teachersInSelected($event)">
+              @for(teacherInItem of teachersInOptions;track $index) {
+              <mat-option [value]="teacherInItem">
+                <div class="select-item">
+                  <img [src]="teacherInItem.avatar" alt="Avatar" />
+                  <div class="select-detail">
+                    <span>{{teacherInItem.username}}</span>
+                    <span>{{teacherInItem.email}}</span>
+                  </div>
+                </div>
+              </mat-option>
+              }
+            </mat-autocomplete>
+          </mat-form-field>
+          }
+        </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="filter-operation">
+        <button mat-raised-button color="primary" type="submit">
+          <span>生成报告</span>
+        </button>
+        <button mat-raised-button color="primary" (click)="resetForm()" type="button">重置表单</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="result">
+    <div class="sub-title">
+      <h2>报告</h2>
+      <button style="margin-right:20px" mat-raised-button color="primary" (click)="export()">导出工作总结/报告</button>
+    </div>
+    <mat-divider></mat-divider>
+    <div>
+
+    </div>
+  </div>
+
+</div>
