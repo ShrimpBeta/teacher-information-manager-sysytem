@@ -97,11 +97,11 @@ export class EditsciresearchComponent implements OnInit, OnDestroy {
             if (data) {
               this.sciResearch = data;
               this.sciResearchForm = new FormGroup({
-                number: new FormControl(this.sciResearch.number || '', [Validators.required]),
-                title: new FormControl(this.sciResearch.title || '', [Validators.required]),
+                number: new FormControl(this.sciResearch.number, [Validators.required]),
+                title: new FormControl(this.sciResearch.title, [Validators.required]),
                 teachersIn: new FormArray([]),
                 teachersOut: new FormArray([]),
-                startDate: new FormControl(this.sciResearch.startDate || null),
+                startDate: new FormControl(this.sciResearch.startDate, [Validators.required]),
                 duration: new FormControl(this.sciResearch.duration || ''),
                 level: new FormControl(this.sciResearch.level || ''),
                 rank: new FormControl(this.sciResearch.rank || ''),

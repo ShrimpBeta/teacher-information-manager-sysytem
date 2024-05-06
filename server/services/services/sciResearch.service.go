@@ -47,11 +47,7 @@ func (s *SciResearchService) CreateSciResearch(userId primitive.ObjectID, newSci
 		Achievement: newSciResearchData.Achievement,
 		Fund:        newSciResearchData.Fund,
 		IsAward:     isAward,
-	}
-
-	if newSciResearchData.StartDate != nil {
-		startDate := primitive.NewDateTimeFromTime(*newSciResearchData.StartDate)
-		newSciResearch.StartDate = &startDate
+		StartDate:   primitive.NewDateTimeFromTime(newSciResearchData.StartDate),
 	}
 
 	if newSciResearchData.Awards != nil {
@@ -125,13 +121,7 @@ func (s *SciResearchService) UpdateSciResearch(sciResearchID string, userId prim
 	sciResearchUpdate.Achievement = sciResearchData.Achievement
 	sciResearchUpdate.Fund = sciResearchData.Fund
 	sciResearchUpdate.IsAward = isAward
-
-	if sciResearchData.StartDate == nil {
-		sciResearchUpdate.StartDate = nil
-	} else {
-		startDate := primitive.NewDateTimeFromTime(*sciResearchData.StartDate)
-		sciResearchUpdate.StartDate = &startDate
-	}
+	sciResearchUpdate.StartDate = primitive.NewDateTimeFromTime(sciResearchData.StartDate)
 
 	if sciResearchData.Awards == nil {
 		sciResearchUpdate.AwardRecords = nil
@@ -204,12 +194,6 @@ func (s *SciResearchService) GetSciResearchById(userId primitive.ObjectID, sciRe
 		return nil, err
 	}
 
-	var startDate *time.Time = nil
-	if sciResearchData.StartDate != nil {
-		date := sciResearchData.StartDate.Time()
-		startDate = &date
-	}
-
 	var awards []*graphql_models.AwardRecord = nil
 	if sciResearchData.AwardRecords != nil {
 		awards = make([]*graphql_models.AwardRecord, len(sciResearchData.AwardRecords))
@@ -234,7 +218,7 @@ func (s *SciResearchService) GetSciResearchById(userId primitive.ObjectID, sciRe
 		TeachersOut: sciResearchData.TeachersOut,
 		Title:       sciResearchData.Title,
 		Number:      sciResearchData.Number,
-		StartDate:   startDate,
+		StartDate:   sciResearchData.StartDate.Time(),
 		Duration:    sciResearchData.Duration,
 		Level:       sciResearchData.Level,
 		Rank:        sciResearchData.Rank,
@@ -358,12 +342,6 @@ func (s *SciResearchService) GetSciResearchsByFilter(userId primitive.ObjectID, 
 			return nil, err
 		}
 
-		var startDate *time.Time = nil
-		if sciResearchData.StartDate != nil {
-			date := sciResearchData.StartDate.Time()
-			startDate = &date
-		}
-
 		var awards []*graphql_models.AwardRecord = nil
 		if sciResearchData.AwardRecords != nil {
 			awards = make([]*graphql_models.AwardRecord, len(sciResearchData.AwardRecords))
@@ -388,7 +366,7 @@ func (s *SciResearchService) GetSciResearchsByFilter(userId primitive.ObjectID, 
 			TeachersOut: sciResearchData.TeachersOut,
 			Title:       sciResearchData.Title,
 			Number:      sciResearchData.Number,
-			StartDate:   startDate,
+			StartDate:   sciResearchData.StartDate.Time(),
 			Duration:    sciResearchData.Duration,
 			Level:       sciResearchData.Level,
 			Rank:        sciResearchData.Rank,

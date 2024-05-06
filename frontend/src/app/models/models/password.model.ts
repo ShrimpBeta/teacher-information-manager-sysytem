@@ -4,8 +4,8 @@ export class Password {
   appName: string = ""
   account: string = ""
   description: string = ""
-  createdAt: Date = new Date(0)
-  updatedAt: Date = new Date(0)
+  createdAt!: Date
+  updatedAt!: Date
 }
 
 export class PasswordsPage {

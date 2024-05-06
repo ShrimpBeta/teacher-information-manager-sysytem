@@ -180,3 +180,38 @@ func (r *ClassScheduleRepo) GetCourseById(termId primitive.ObjectID, courseId pr
 	}
 	return nil, nil
 }
+
+func (r *ClassScheduleRepo) GetCourseReports(ids []primitive.ObjectID, startDate, endDate time.Time) ([]models.CourseReport, error) {
+	courseReports := []models.CourseReport{}
+
+	filter := bson.M{
+		"userId": bson.M{"$in": ids},
+		"startDate": bson.M{
+			"$gte": primitive.NewDateTimeFromTime(startDate),
+			"$lte": primitive.NewDateTimeFromTime(endDate),
+		},
+	}
+
+	cursor, err := r.collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+
+	for cursor.Next(context.Background()) {
+		academicTerm := models.AcademicTerm{}
+		err := cursor.Decode(&academicTerm)
+		if err != nil {
+			return nil, err
+		}
+		for _, course := range academicTerm.Courses {
+
+			courseReports = append(courseReports, models.CourseReport{
+				TeacherNames: course.TeacherNames,
+				Name:         course.Name,
+				StartDate:    academicTerm.StartDate,
+			})
+		}
+	}
+	return courseReports, nil
+}

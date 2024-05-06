@@ -81,7 +81,7 @@ export class NewpaperComponent implements OnInit, OnDestroy {
       title: new FormControl('', [Validators.required]),
       teachersIn: new FormArray([]),
       teachersOut: new FormArray([]),
-      publishDate: new FormControl(''),
+      publishDate: new FormControl(new Date(), [Validators.required]),
       rank: new FormControl(''),
       journalName: new FormControl(''),
       journalLevel: new FormControl(''),

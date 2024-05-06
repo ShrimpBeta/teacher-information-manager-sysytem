@@ -138,3 +138,34 @@ func (r *CompGuidanceRepo) DeleteCompGuidance(id primitive.ObjectID) error {
 	_, err := r.collection.DeleteOne(context.Background(), bson.M{"_id": id})
 	return err
 }
+
+func (r *CompGuidanceRepo) GetCompGuidanceReports(ids []primitive.ObjectID, startDate, endDate time.Time) ([]models.CompGuidanceReport, error) {
+	compGuidanceReports := []models.CompGuidanceReport{}
+
+	filter := bson.M{
+		"userId": bson.M{"$in": ids},
+		"guidanceDate": bson.M{
+			"$gte": primitive.NewDateTimeFromTime(startDate),
+			"$lte": primitive.NewDateTimeFromTime(endDate),
+		},
+	}
+
+	cursor, err := r.collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+	for cursor.Next(context.Background()) {
+		compGuidance := models.CompGuidance{}
+		err := cursor.Decode(&compGuidance)
+		if err != nil {
+			return nil, err
+		}
+		compGuidanceReports = append(compGuidanceReports, models.CompGuidanceReport{
+			UserId:       compGuidance.UserId,
+			ProjectName:  compGuidance.ProjectName,
+			GuidanceDate: compGuidance.GuidanceDate,
+		})
+	}
+	return compGuidanceReports, nil
+}

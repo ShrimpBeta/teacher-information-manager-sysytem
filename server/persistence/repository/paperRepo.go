@@ -149,3 +149,34 @@ func (r *PaperRepo) DeletePaper(id primitive.ObjectID) error {
 	_, err := r.collection.DeleteOne(context.Background(), bson.M{"_id": id})
 	return err
 }
+
+func (r *PaperRepo) GetPaperReports(ids []primitive.ObjectID, startDate, ednDate time.Time) ([]models.PaperReport, error) {
+	paperReports := []models.PaperReport{}
+
+	filter := bson.M{
+		"userId": bson.M{"$in": ids},
+		"publishDate": bson.M{
+			"$gte": primitive.NewDateTimeFromTime(startDate),
+			"$lte": primitive.NewDateTimeFromTime(ednDate),
+		},
+	}
+
+	cursor, err := r.collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+	for cursor.Next(context.Background()) {
+		paper := models.Paper{}
+		err := cursor.Decode(&paper)
+		if err != nil {
+			return nil, err
+		}
+		paperReports = append(paperReports, models.PaperReport{
+			TeachersIn:  paper.TeachersIn,
+			Title:       paper.Title,
+			PublishDate: paper.PublishDate,
+		})
+	}
+	return paperReports, nil
+}

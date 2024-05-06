@@ -139,3 +139,34 @@ func (r *MentorshipRepo) DeleteMentorship(id primitive.ObjectID) error {
 	_, err := r.collection.DeleteOne(context.Background(), bson.M{"_id": id})
 	return err
 }
+
+func (r *MentorshipRepo) GetMentorshipReports(ids []primitive.ObjectID, startDate, endDate time.Time) ([]models.MentorshipReport, error) {
+	mentorshipReports := []models.MentorshipReport{}
+	filter := bson.M{
+		"userId": bson.M{"$in": ids},
+		"guidanceDate": bson.M{
+			"$gte": primitive.NewDateTimeFromTime(startDate),
+			"$lte": primitive.NewDateTimeFromTime(endDate),
+		},
+	}
+
+	cursor, err := r.collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+
+	for cursor.Next(context.Background()) {
+		mentorship := models.Mentorship{}
+		err := cursor.Decode(&mentorship)
+		if err != nil {
+			return nil, err
+		}
+		mentorshipReports = append(mentorshipReports, models.MentorshipReport{
+			UserId:       mentorship.UserId,
+			ProjectName:  mentorship.ProjectName,
+			GuidanceDate: mentorship.GuidanceDate,
+		})
+	}
+	return mentorshipReports, nil
+}

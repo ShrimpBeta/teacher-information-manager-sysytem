@@ -1,0 +1,31 @@
+type Report{
+    classScheduleReport:[String]!
+    mentorshipReport:[String]!
+    compGuidanceReport:[String]!
+    uGPGGuidanceReport:[String]!
+    eduReformReport:[String]!
+    monographReport:[String]!
+    paperReport:[String]!
+    sciResearchReport:[String]!
+    startDate:Time!
+    endDate:Time!
+    teachers:[String]!
+}
+
+input reportFilter{
+    classSchedule: Boolean!
+    mentorship: Boolean!
+    compGuidance: Boolean!
+    uGPGGuidance: Boolean!
+    eduReform: Boolean!
+    monograph: Boolean!
+    paper: Boolean!
+    sciResearch: Boolean!
+    startDate: Time!
+    endDate: Time!
+    teachersIn: [ID]!
+}
+
+extend type Query{
+    report(filter:reportFilter!):Report!
+}

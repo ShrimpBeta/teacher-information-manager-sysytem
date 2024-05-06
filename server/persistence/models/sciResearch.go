@@ -19,7 +19,7 @@ type SciResearch struct {
 	TeachersOut  []*string            `bson:"teachersOut,omitempty"`
 	Number       string               `bson:"number"`
 	Title        string               `bson:"title"`
-	StartDate    *primitive.DateTime  `bson:"startDate,omitempty"`
+	StartDate    primitive.DateTime   `bson:"startDate,omitempty"`
 	Duration     *string              `bson:"duration,omitempty"`
 	Level        *string              `bson:"level,omitempty"`
 	Rank         *string              `bson:"rank,omitempty"`
@@ -29,4 +29,10 @@ type SciResearch struct {
 	AwardRecords []*AwardRecord       `bson:"awarddRecords,omitempty"`
 	CreatedAt    primitive.DateTime   `bson:"createdAt"`
 	UpdatedAt    primitive.DateTime   `bson:"updatedAt"`
+}
+
+type SciResearchReport struct {
+	TeachersIn []primitive.ObjectID
+	Title      string
+	StartDate  primitive.DateTime
 }

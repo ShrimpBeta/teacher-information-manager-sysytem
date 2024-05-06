@@ -6,13 +6,19 @@ import (
 
 // 竞赛指导
 type CompGuidance struct {
-	ID               primitive.ObjectID  `bson:"_id"`
-	UserId           primitive.ObjectID  `bson:"userId"`
-	ProjectName      string              `bson:"projectName"`
-	StudentNames     []*string           `bson:"studentNames"`
-	CompetitionScore *string             `bson:"competitionScore,omitempty"`
-	GuidanceDate     *primitive.DateTime `bson:"guidanceDate,omitempty"`
-	AwardStatus      *string             `bson:"awardStatus,omitempty"`
-	CreatedAt        primitive.DateTime  `bson:"createdAt"`
-	UpdatedAt        primitive.DateTime  `bson:"updatedAt"`
+	ID               primitive.ObjectID `bson:"_id"`
+	UserId           primitive.ObjectID `bson:"userId"`
+	ProjectName      string             `bson:"projectName"`
+	StudentNames     []*string          `bson:"studentNames"`
+	CompetitionScore *string            `bson:"competitionScore,omitempty"`
+	GuidanceDate     primitive.DateTime `bson:"guidanceDate,omitempty"`
+	AwardStatus      *string            `bson:"awardStatus,omitempty"`
+	CreatedAt        primitive.DateTime `bson:"createdAt"`
+	UpdatedAt        primitive.DateTime `bson:"updatedAt"`
+}
+
+type CompGuidanceReport struct {
+	UserId       primitive.ObjectID
+	ProjectName  string
+	GuidanceDate primitive.DateTime
 }

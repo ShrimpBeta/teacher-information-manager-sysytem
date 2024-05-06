@@ -97,22 +97,22 @@ type ClassTimePreview struct {
 }
 
 type CompGuidance struct {
-	ID               string     `json:"id"`
-	ProjectName      string     `json:"projectName"`
-	StudentNames     []*string  `json:"studentNames"`
-	CompetitionScore *string    `json:"competitionScore,omitempty"`
-	GuidanceDate     *time.Time `json:"guidanceDate,omitempty"`
-	AwardStatus      *string    `json:"awardStatus,omitempty"`
-	CreatedAt        time.Time  `json:"createdAt"`
-	UpdatedAt        time.Time  `json:"updatedAt"`
+	ID               string    `json:"id"`
+	ProjectName      string    `json:"projectName"`
+	StudentNames     []*string `json:"studentNames"`
+	CompetitionScore *string   `json:"competitionScore,omitempty"`
+	GuidanceDate     time.Time `json:"guidanceDate"`
+	AwardStatus      *string   `json:"awardStatus,omitempty"`
+	CreatedAt        time.Time `json:"createdAt"`
+	UpdatedAt        time.Time `json:"updatedAt"`
 }
 
 type CompGuidanceData struct {
-	ProjectName      string     `json:"projectName"`
-	StudentNames     []*string  `json:"studentNames"`
-	CompetitionScore *string    `json:"competitionScore,omitempty"`
-	GuidanceDate     *time.Time `json:"guidanceDate,omitempty"`
-	AwardStatus      *string    `json:"awardStatus,omitempty"`
+	ProjectName      string    `json:"projectName"`
+	StudentNames     []*string `json:"studentNames"`
+	CompetitionScore *string   `json:"competitionScore,omitempty"`
+	GuidanceDate     time.Time `json:"guidanceDate"`
+	AwardStatus      *string   `json:"awardStatus,omitempty"`
 }
 
 type CompGuidanceFilter struct {
@@ -180,7 +180,7 @@ type EduReform struct {
 	TeachersOut []*string     `json:"teachersOut,omitempty"`
 	Number      string        `json:"number"`
 	Title       string        `json:"title"`
-	StartDate   *time.Time    `json:"startDate,omitempty"`
+	StartDate   time.Time     `json:"startDate"`
 	Duration    *string       `json:"duration,omitempty"`
 	Level       *string       `json:"level,omitempty"`
 	Rank        *string       `json:"rank,omitempty"`
@@ -191,16 +191,16 @@ type EduReform struct {
 }
 
 type EduReformData struct {
-	TeachersIn  []*string  `json:"teachersIn,omitempty"`
-	TeachersOut []*string  `json:"teachersOut,omitempty"`
-	Number      string     `json:"number"`
-	Title       string     `json:"title"`
-	StartDate   *time.Time `json:"startDate,omitempty"`
-	Duration    *string    `json:"duration,omitempty"`
-	Level       *string    `json:"level,omitempty"`
-	Rank        *string    `json:"rank,omitempty"`
-	Achievement *string    `json:"achievement,omitempty"`
-	Fund        *string    `json:"fund,omitempty"`
+	TeachersIn  []*string `json:"teachersIn,omitempty"`
+	TeachersOut []*string `json:"teachersOut,omitempty"`
+	Number      string    `json:"number"`
+	Title       string    `json:"title"`
+	StartDate   time.Time `json:"startDate"`
+	Duration    *string   `json:"duration,omitempty"`
+	Level       *string   `json:"level,omitempty"`
+	Rank        *string   `json:"rank,omitempty"`
+	Achievement *string   `json:"achievement,omitempty"`
+	Fund        *string   `json:"fund,omitempty"`
 }
 
 type EduReformFilter struct {
@@ -239,20 +239,20 @@ type EduReformQuery struct {
 }
 
 type Mentorship struct {
-	ID           string     `json:"id"`
-	ProjectName  string     `json:"projectName"`
-	StudentNames []*string  `json:"studentNames"`
-	Grade        *string    `json:"grade,omitempty"`
-	GuidanceDate *time.Time `json:"guidanceDate,omitempty"`
-	CreatedAt    time.Time  `json:"createdAt"`
-	UpdatedAt    time.Time  `json:"updatedAt"`
+	ID           string    `json:"id"`
+	ProjectName  string    `json:"projectName"`
+	StudentNames []*string `json:"studentNames"`
+	Grade        *string   `json:"grade,omitempty"`
+	GuidanceDate time.Time `json:"guidanceDate"`
+	CreatedAt    time.Time `json:"createdAt"`
+	UpdatedAt    time.Time `json:"updatedAt"`
 }
 
 type MentorshipData struct {
-	ProjectName  string     `json:"projectName"`
-	StudentNames []*string  `json:"studentNames"`
-	Grade        *string    `json:"grade,omitempty"`
-	GuidanceDate *time.Time `json:"guidanceDate,omitempty"`
+	ProjectName  string    `json:"projectName"`
+	StudentNames []*string `json:"studentNames"`
+	Grade        *string   `json:"grade,omitempty"`
+	GuidanceDate time.Time `json:"guidanceDate"`
 }
 
 type MentorshipFilter struct {
@@ -284,7 +284,7 @@ type Monograph struct {
 	TeachersIn   []*UserExport `json:"teachersIn"`
 	TeachersOut  []*string     `json:"teachersOut,omitempty"`
 	Title        string        `json:"title"`
-	PublishDate  *time.Time    `json:"publishDate,omitempty"`
+	PublishDate  time.Time     `json:"publishDate"`
 	PublishLevel *string       `json:"publishLevel,omitempty"`
 	Rank         *string       `json:"rank,omitempty"`
 	CreatedAt    time.Time     `json:"createdAt"`
@@ -292,12 +292,12 @@ type Monograph struct {
 }
 
 type MonographData struct {
-	TeachersIn   []*string  `json:"teachersIn,omitempty"`
-	TeachersOut  []*string  `json:"teachersOut,omitempty"`
-	Title        string     `json:"title"`
-	PublishDate  *time.Time `json:"publishDate,omitempty"`
-	PublishLevel *string    `json:"publishLevel,omitempty"`
-	Rank         *string    `json:"rank,omitempty"`
+	TeachersIn   []*string `json:"teachersIn,omitempty"`
+	TeachersOut  []*string `json:"teachersOut,omitempty"`
+	Title        string    `json:"title"`
+	PublishDate  time.Time `json:"publishDate"`
+	PublishLevel *string   `json:"publishLevel,omitempty"`
+	Rank         *string   `json:"rank,omitempty"`
 }
 
 type MonographFilter struct {
@@ -348,7 +348,7 @@ type Paper struct {
 	TeachersIn   []*UserExport `json:"teachersIn"`
 	TeachersOut  []*string     `json:"teachersOut,omitempty"`
 	Title        string        `json:"title"`
-	PublishDate  *time.Time    `json:"publishDate,omitempty"`
+	PublishDate  time.Time     `json:"publishDate"`
 	Rank         *string       `json:"rank,omitempty"`
 	JournalName  *string       `json:"journalName,omitempty"`
 	JournalLevel *string       `json:"journalLevel,omitempty"`
@@ -357,13 +357,13 @@ type Paper struct {
 }
 
 type PaperData struct {
-	TeachersIn   []*string  `json:"teachersIn,omitempty"`
-	TeachersOut  []*string  `json:"teachersOut,omitempty"`
-	Title        string     `json:"title"`
-	PublishDate  *time.Time `json:"publishDate,omitempty"`
-	Rank         *string    `json:"rank,omitempty"`
-	JournalName  *string    `json:"journalName,omitempty"`
-	JournalLevel *string    `json:"journalLevel,omitempty"`
+	TeachersIn   []*string `json:"teachersIn,omitempty"`
+	TeachersOut  []*string `json:"teachersOut,omitempty"`
+	Title        string    `json:"title"`
+	PublishDate  time.Time `json:"publishDate"`
+	Rank         *string   `json:"rank,omitempty"`
+	JournalName  *string   `json:"journalName,omitempty"`
+	JournalLevel *string   `json:"journalLevel,omitempty"`
 }
 
 type PaperFilter struct {
@@ -447,6 +447,20 @@ type PasswordsQuery struct {
 type Query struct {
 }
 
+type Report struct {
+	ClassScheduleReport []*string `json:"classScheduleReport"`
+	MentorshipReport    []*string `json:"mentorshipReport"`
+	CompGuidanceReport  []*string `json:"compGuidanceReport"`
+	UGPGGuidanceReport  []*string `json:"uGPGGuidanceReport"`
+	EduReformReport     []*string `json:"eduReformReport"`
+	MonographReport     []*string `json:"monographReport"`
+	PaperReport         []*string `json:"paperReport"`
+	SciResearchReport   []*string `json:"sciResearchReport"`
+	StartDate           time.Time `json:"startDate"`
+	EndDate             time.Time `json:"endDate"`
+	Teachers            []*string `json:"teachers"`
+}
+
 type ResetPassword struct {
 	Email       string `json:"email"`
 	Code        string `json:"code"`
@@ -459,7 +473,7 @@ type SciResearch struct {
 	TeachersOut []*string      `json:"teachersOut,omitempty"`
 	Number      string         `json:"number"`
 	Title       string         `json:"title"`
-	StartDate   *time.Time     `json:"startDate,omitempty"`
+	StartDate   time.Time      `json:"startDate"`
 	Duration    *string        `json:"duration,omitempty"`
 	Level       *string        `json:"level,omitempty"`
 	Rank        *string        `json:"rank,omitempty"`
@@ -476,7 +490,7 @@ type SciResearchData struct {
 	TeachersOut []*string          `json:"teachersOut,omitempty"`
 	Number      string             `json:"number"`
 	Title       string             `json:"title"`
-	StartDate   *time.Time         `json:"startDate,omitempty"`
+	StartDate   time.Time          `json:"startDate"`
 	Duration    *string            `json:"duration,omitempty"`
 	Level       *string            `json:"level,omitempty"`
 	Rank        *string            `json:"rank,omitempty"`
@@ -546,8 +560,8 @@ type UGPGGuidance struct {
 	OpeningCheckResult *string    `json:"openingCheckResult,omitempty"`
 	MidtermCheckDate   *time.Time `json:"midtermCheckDate,omitempty"`
 	MidtermCheckResult *string    `json:"midtermCheckResult,omitempty"`
-	DefenseDate        *time.Time `json:"defenseDate,omitempty"`
-	DefenseResult      *string    `json:"defenseResult,omitempty"`
+	DefenseDate        time.Time  `json:"defenseDate"`
+	DefenseResult      string     `json:"defenseResult"`
 	CreatedAt          time.Time  `json:"createdAt"`
 	UpdatedAt          time.Time  `json:"updatedAt"`
 }
@@ -559,8 +573,8 @@ type UGPGGuidanceData struct {
 	OpeningCheckResult *string    `json:"openingCheckResult,omitempty"`
 	MidtermCheckDate   *time.Time `json:"midtermCheckDate,omitempty"`
 	MidtermCheckResult *string    `json:"midtermCheckResult,omitempty"`
-	DefenseDate        *time.Time `json:"defenseDate,omitempty"`
-	DefenseResult      *string    `json:"defenseResult,omitempty"`
+	DefenseDate        time.Time  `json:"defenseDate"`
+	DefenseResult      string     `json:"defenseResult"`
 }
 
 type UGPGGuidanceFilter struct {
@@ -630,4 +644,18 @@ type UserExport struct {
 	Email     string    `json:"email"`
 	Avatar    string    `json:"avatar"`
 	CreatedAt time.Time `json:"createdAt"`
+}
+
+type ReportFilter struct {
+	ClassSchedule bool      `json:"classSchedule"`
+	Mentorship    bool      `json:"mentorship"`
+	CompGuidance  bool      `json:"compGuidance"`
+	UGPGGuidance  bool      `json:"uGPGGuidance"`
+	EduReform     bool      `json:"eduReform"`
+	Monograph     bool      `json:"monograph"`
+	Paper         bool      `json:"paper"`
+	SciResearch   bool      `json:"sciResearch"`
+	StartDate     time.Time `json:"startDate"`
+	EndDate       time.Time `json:"endDate"`
+	TeachersIn    []*string `json:"teachersIn"`
 }

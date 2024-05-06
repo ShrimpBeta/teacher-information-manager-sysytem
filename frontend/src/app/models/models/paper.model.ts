@@ -5,12 +5,12 @@ export class Paper {
   teachersIn: UserExport[] = []
   teachersOut: string[] = []
   title: string = ""
-  publishDate?: Date
+  publishDate!: Date
   rank: string = ""
   journalName: string = ""
   journalLevel: string = ""
-  createdAt: Date = new Date(0)
-  updatedAt: Date = new Date(0)
+  createdAt!: Date
+  updatedAt!: Date
 }
 
 export class PaperPage {

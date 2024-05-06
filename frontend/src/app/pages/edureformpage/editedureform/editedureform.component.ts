@@ -94,11 +94,11 @@ export class EditedureformComponent implements OnInit, OnDestroy {
               this.eduReform = edureform;
 
               this.eduReformForm = new FormGroup({
-                number: new FormControl(this.eduReform.number || '', [Validators.required]),
-                title: new FormControl(this.eduReform.title || '', [Validators.required]),
+                number: new FormControl(this.eduReform.number, [Validators.required]),
+                title: new FormControl(this.eduReform.title, [Validators.required]),
                 teachersIn: new FormArray([]),
                 teachersOut: new FormArray([]),
-                startDate: new FormControl(this.eduReform.startDate || null),
+                startDate: new FormControl(this.eduReform.startDate, [Validators.required]),
                 duration: new FormControl(this.eduReform.duration || ''),
                 level: new FormControl(this.eduReform.level || ''),
                 rank: new FormControl(this.eduReform.rank || ''),

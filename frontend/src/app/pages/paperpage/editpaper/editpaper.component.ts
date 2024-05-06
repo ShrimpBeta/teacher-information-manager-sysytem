@@ -86,11 +86,11 @@ export class EditpaperComponent implements OnInit, OnDestroy {
             if (paper) {
               this.paper = paper;
               this.paperForm = new FormGroup({
-                title: new FormControl(paper.title || '', [Validators.required]),
+                title: new FormControl(paper.title, [Validators.required]),
                 rank: new FormControl(paper.rank || '',),
                 journalName: new FormControl(paper.journalName || '',),
                 journalLevel: new FormControl(paper.journalLevel || '',),
-                publishDate: new FormControl(paper.publishDate || null,),
+                publishDate: new FormControl(paper.publishDate, [Validators.required]),
                 teachersIn: new FormArray([]),
                 teachersOut: new FormArray([]),
               });

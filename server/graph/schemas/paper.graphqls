@@ -4,7 +4,7 @@ type Paper {
   teachersIn: [UserExport]!
   teachersOut: [String]
   title: String!
-  publishDate: Time
+  publishDate: Time!
   rank: String
   journalName: String
   journalLevel: String
@@ -31,7 +31,7 @@ input PaperData {
   teachersIn: [ID]
   teachersOut: [String]
   title: String!
-  publishDate: Time
+  publishDate: Time!
   rank: String
   journalName: String
   journalLevel: String

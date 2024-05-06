@@ -159,3 +159,32 @@ func (r *EduReformRepo) DeleteEduReform(id primitive.ObjectID) error {
 	_, err := r.collection.DeleteOne(context.Background(), bson.M{"_id": id})
 	return err
 }
+
+func (r *EduReformRepo) GetEduReformReports(ids []primitive.ObjectID, startDate, endDate time.Time) ([]models.EduReformReport, error) {
+	eduReformReports := []models.EduReformReport{}
+	filter := bson.M{
+		"teachersIn": bson.M{"$all": ids},
+		"startDate": bson.M{
+			"$gte": primitive.NewDateTimeFromTime(startDate),
+			"$lte": primitive.NewDateTimeFromTime(endDate),
+		},
+	}
+	cursor, err := r.collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+	for cursor.Next(context.Background()) {
+		eduReform := models.EduReform{}
+		err := cursor.Decode(&eduReform)
+		if err != nil {
+			return nil, err
+		}
+		eduReformReports = append(eduReformReports, models.EduReformReport{
+			TeachersIn: eduReform.TeachersIn,
+			Title:      eduReform.Title,
+			StartDate:  eduReform.StartDate,
+		})
+	}
+	return eduReformReports, nil
+}

@@ -197,3 +197,32 @@ func (r *SciResearchRepo) DeleteSciResearch(id primitive.ObjectID) error {
 	_, err := r.collection.DeleteOne(context.Background(), bson.M{"_id": id})
 	return err
 }
+
+func (r *SciResearchRepo) GetSciResearchReports(ids []primitive.ObjectID, startDate, endDate time.Time) ([]models.SciResearchReport, error) {
+	sciResearchReports := []models.SciResearchReport{}
+	filter := bson.M{
+		"teachersIn": bson.M{"$all": ids},
+		"startDate": bson.M{
+			"$gte": primitive.NewDateTimeFromTime(startDate),
+			"$lte": primitive.NewDateTimeFromTime(endDate),
+		},
+	}
+	cursor, err := r.collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+	for cursor.Next(context.Background()) {
+		sciResearch := models.SciResearch{}
+		err := cursor.Decode(&sciResearch)
+		if err != nil {
+			return nil, err
+		}
+		sciResearchReports = append(sciResearchReports, models.SciResearchReport{
+			TeachersIn: sciResearch.TeachersIn,
+			Title:      sciResearch.Title,
+			StartDate:  sciResearch.StartDate,
+		})
+	}
+	return sciResearchReports, nil
+}

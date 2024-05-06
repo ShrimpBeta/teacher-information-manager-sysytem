@@ -84,7 +84,7 @@ export class NewedureformComponent implements OnInit, OnDestroy {
       number: new FormControl('', [Validators.required]),
       teachersIn: new FormArray([]),
       teachersOut: new FormArray([]),
-      startDate: new FormControl(null),
+      startDate: new FormControl(new Date(), [Validators.required]),
       duration: new FormControl(''),
       level: new FormControl(''),
       rank: new FormControl(''),

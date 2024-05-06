@@ -41,6 +41,7 @@
     <mat-form-field appearance="outline">
       <mat-label>最终结果</mat-label>
       <input matInput type="text" formControlName="defenseResult" placeholder="最终结果">
+      <mat-error>最终结果不能为空</mat-error>
     </mat-form-field>
 
     <mat-form-field>
@@ -48,7 +49,7 @@
       <input matInput [matDatepicker]="defenseDatePicker" formControlName="defenseDate" placeholder="最终日期">
       <mat-datepicker-toggle matIconSuffix [for]="defenseDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #defenseDatePicker></mat-datepicker>
-      <mat-error>最终日期格式错误</mat-error>
+      <mat-error>最终日期格式错误/最终日期不能为空</mat-error>
     </mat-form-field>
 
   </div>

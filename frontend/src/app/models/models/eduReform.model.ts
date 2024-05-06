@@ -6,14 +6,14 @@ export class EduReform {
   teachersOut: string[] = []
   number: string = ""
   title: string = ""
-  startDate?: Date
+  startDate!: Date
   duration: string = ""
   level: string = ""
   rank: string = ""
   achievement: string = ""
   fund: string = ""
-  createdAt: Date = new Date(0)
-  updatedAt: Date = new Date(0)
+  createdAt!: Date
+  updatedAt!: Date
 }
 
 export class EduReformPage {

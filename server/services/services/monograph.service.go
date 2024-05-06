@@ -5,7 +5,6 @@ import (
 	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"server/persistence/repository"
-	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -36,11 +35,7 @@ func (monographService *MonographService) CreateMonograph(userId primitive.Objec
 		Title:        newMonographData.Title,
 		PublishLevel: newMonographData.PublishLevel,
 		Rank:         newMonographData.Rank,
-	}
-
-	if newMonographData.PublishDate != nil {
-		publishDate := primitive.NewDateTimeFromTime(*newMonographData.PublishDate)
-		newMonograph.PublishDate = &publishDate
+		PublishDate:  primitive.NewDateTimeFromTime(newMonographData.PublishDate),
 	}
 
 	objectId, err := monographService.Repo.CreateMonograph(&newMonograph)
@@ -88,13 +83,7 @@ func (monographService *MonographService) UpdateMonograph(id string, userId prim
 	monographUpdate.Title = monographData.Title
 	monographUpdate.PublishLevel = monographData.PublishLevel
 	monographUpdate.Rank = monographData.Rank
-
-	if monographData.PublishDate == nil {
-		monographUpdate.PublishDate = nil
-	} else {
-		publishDate := primitive.NewDateTimeFromTime(*monographData.PublishDate)
-		monographUpdate.PublishDate = &publishDate
-	}
+	monographUpdate.PublishDate = primitive.NewDateTimeFromTime(monographData.PublishDate)
 
 	err = monographService.Repo.UpdateMonograph(monographUpdate)
 	if err != nil {
@@ -150,18 +139,12 @@ func (monographService *MonographService) GetMonographById(userId primitive.Obje
 		return nil, err
 	}
 
-	var publishDate *time.Time = nil
-	if monographData.PublishDate != nil {
-		date := monographData.PublishDate.Time()
-		publishDate = &date
-	}
-
 	return &graphql_models.Monograph{
 		ID:           monographData.ID.Hex(),
 		TeachersIn:   usersInExport,
 		TeachersOut:  monographData.TeachersOut,
 		Title:        monographData.Title,
-		PublishDate:  publishDate,
+		PublishDate:  monographData.PublishDate.Time(),
 		PublishLevel: monographData.PublishLevel,
 		Rank:         monographData.Rank,
 		CreatedAt:    monographData.CreatedAt.Time(),
@@ -251,18 +234,12 @@ func (monographService *MonographService) GetMonographsByFilter(userId primitive
 			return nil, err
 		}
 
-		var publishDate *time.Time = nil
-		if monographData.PublishDate != nil {
-			date := monographData.PublishDate.Time()
-			publishDate = &date
-		}
-
 		monographs[i] = &graphql_models.Monograph{
 			ID:           monographData.ID.Hex(),
 			TeachersIn:   usersInExport,
 			TeachersOut:  monographData.TeachersOut,
 			Title:        monographData.Title,
-			PublishDate:  publishDate,
+			PublishDate:  monographData.PublishDate.Time(),
 			PublishLevel: monographData.PublishLevel,
 			Rank:         monographData.Rank,
 			CreatedAt:    monographData.CreatedAt.Time(),

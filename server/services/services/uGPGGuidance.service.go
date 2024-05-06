@@ -26,6 +26,7 @@ func (uGPGGuidanceService *UGPGGuidanceService) CreateUGPGGuidance(userId primit
 		OpeningCheckResult: guidanceData.OpeningCheckResult,
 		MidtermCheckResult: guidanceData.MidtermCheckResult,
 		DefenseResult:      guidanceData.DefenseResult,
+		DefenseDate:        primitive.NewDateTimeFromTime(guidanceData.DefenseDate),
 	}
 
 	if guidanceData.OpeningCheckDate != nil {
@@ -36,11 +37,6 @@ func (uGPGGuidanceService *UGPGGuidanceService) CreateUGPGGuidance(userId primit
 	if guidanceData.MidtermCheckDate != nil {
 		midtermCheckDate := primitive.NewDateTimeFromTime(*guidanceData.MidtermCheckDate)
 		newUGPUGuidance.MidtermCheckDate = &midtermCheckDate
-	}
-
-	if guidanceData.DefenseDate != nil {
-		defenseDate := primitive.NewDateTimeFromTime(*guidanceData.DefenseDate)
-		newUGPUGuidance.DefenseDate = &defenseDate
 	}
 
 	objectId, err := uGPGGuidanceService.Repo.CreateUGPGGuidance(&newUGPUGuidance)
@@ -71,6 +67,7 @@ func (uGPGGuidanceService *UGPGGuidanceService) UpdateUGPGGuidance(userId primit
 	uGPGGuidanceUpdate.OpeningCheckResult = uGPGGuidanceData.OpeningCheckResult
 	uGPGGuidanceUpdate.MidtermCheckResult = uGPGGuidanceData.MidtermCheckResult
 	uGPGGuidanceUpdate.DefenseResult = uGPGGuidanceData.DefenseResult
+	uGPGGuidanceUpdate.DefenseDate = primitive.NewDateTimeFromTime(uGPGGuidanceData.DefenseDate)
 
 	if uGPGGuidanceData.OpeningCheckDate == nil {
 		uGPGGuidanceUpdate.OpeningCheckDate = nil
@@ -84,13 +81,6 @@ func (uGPGGuidanceService *UGPGGuidanceService) UpdateUGPGGuidance(userId primit
 	} else {
 		midtermCheckDate := primitive.NewDateTimeFromTime(*uGPGGuidanceData.MidtermCheckDate)
 		uGPGGuidanceUpdate.MidtermCheckDate = &midtermCheckDate
-	}
-
-	if uGPGGuidanceData.DefenseDate == nil {
-		uGPGGuidanceUpdate.DefenseDate = nil
-	} else {
-		defenseDate := primitive.NewDateTimeFromTime(*uGPGGuidanceData.DefenseDate)
-		uGPGGuidanceUpdate.DefenseDate = &defenseDate
 	}
 
 	err = uGPGGuidanceService.Repo.UpdateUGPGGuidance(uGPGGuidanceUpdate)
@@ -146,11 +136,6 @@ func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidanceById(userId primi
 		date := uGPGGuidanceData.MidtermCheckDate.Time()
 		midtermCheckDate = &date
 	}
-	var defenseDate *time.Time = nil
-	if uGPGGuidanceData.DefenseDate != nil {
-		date := uGPGGuidanceData.DefenseDate.Time()
-		defenseDate = &date
-	}
 
 	return &graphql_models.UGPGGuidance{
 		ID:                 uGPGGuidanceData.ID.Hex(),
@@ -161,7 +146,7 @@ func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidanceById(userId primi
 		DefenseResult:      uGPGGuidanceData.DefenseResult,
 		OpeningCheckDate:   openingCheckDate,
 		MidtermCheckDate:   midtermCheckDate,
-		DefenseDate:        defenseDate,
+		DefenseDate:        uGPGGuidanceData.DefenseDate.Time(),
 		CreatedAt:          uGPGGuidanceData.CreatedAt.Time(),
 		UpdatedAt:          uGPGGuidanceData.UpdatedAt.Time(),
 	}, nil
@@ -251,11 +236,6 @@ func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidancesByFilter(userId 
 			date := uGPGGuidanceData.MidtermCheckDate.Time()
 			midtermCheckDate = &date
 		}
-		var defenseDate *time.Time = nil
-		if uGPGGuidanceData.DefenseDate != nil {
-			date := uGPGGuidanceData.DefenseDate.Time()
-			defenseDate = &date
-		}
 
 		uGPGGuidances[i] = &graphql_models.UGPGGuidance{
 			ID:                 uGPGGuidanceData.ID.Hex(),
@@ -266,7 +246,7 @@ func (uGPGGuidanceService *UGPGGuidanceService) GetUGPGGuidancesByFilter(userId 
 			DefenseResult:      uGPGGuidanceData.DefenseResult,
 			OpeningCheckDate:   openingCheckDate,
 			MidtermCheckDate:   midtermCheckDate,
-			DefenseDate:        defenseDate,
+			DefenseDate:        uGPGGuidanceData.DefenseDate.Time(),
 			CreatedAt:          uGPGGuidanceData.CreatedAt.Time(),
 			UpdatedAt:          uGPGGuidanceData.UpdatedAt.Time(),
 		}

@@ -35,3 +35,9 @@ type AcademicTerm struct {
 	CreatedAt primitive.DateTime `bson:"createdAt"`
 	UpdatedAt primitive.DateTime `bson:"updatedAt"`
 }
+
+type CourseReport struct {
+	TeacherNames string
+	Name         string
+	StartDate    primitive.DateTime
+}

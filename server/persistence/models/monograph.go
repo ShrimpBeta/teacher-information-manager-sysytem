@@ -10,9 +10,15 @@ type Monograph struct {
 	TeachersIn   []primitive.ObjectID `bson:"teachersIn"`
 	TeachersOut  []*string            `bson:"teachersOut,omitempty"`
 	Title        string               `bson:"title"`
-	PublishDate  *primitive.DateTime  `bson:"publishDate,omitempty"`
+	PublishDate  primitive.DateTime   `bson:"publishDate,omitempty"`
 	PublishLevel *string              `bson:"publishLevel,omitempty"`
 	Rank         *string              `bson:"rank,omitempty"`
 	CreatedAt    primitive.DateTime   `bson:"createdAt"`
 	UpdatedAt    primitive.DateTime   `bson:"updatedAt"`
+}
+
+type MonographReport struct {
+	TeachersIn  []primitive.ObjectID
+	Title       string
+	PublishDate primitive.DateTime
 }

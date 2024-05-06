@@ -4,7 +4,7 @@ type Mentorship {
   projectName: String!
   studentNames: [String]!
   grade: String
-  guidanceDate: Time
+  guidanceDate: Time!
   createdAt: Time!
   updatedAt: Time!
 }
@@ -25,7 +25,7 @@ input MentorshipData {
   projectName: String!
   studentNames: [String]!
   grade: String
-  guidanceDate: Time
+  guidanceDate: Time!
 }
 
 input MentorshipFilter {

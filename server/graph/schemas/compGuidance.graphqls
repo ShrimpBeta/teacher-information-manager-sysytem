@@ -4,7 +4,7 @@ type CompGuidance {
   projectName: String!
   studentNames: [String]!
   competitionScore: String
-  guidanceDate: Time
+  guidanceDate: Time!
   awardStatus: String
   createdAt: Time!
   updatedAt: Time!
@@ -27,7 +27,7 @@ input CompGuidanceData {
   projectName: String!
   studentNames: [String]!
   competitionScore: String
-  guidanceDate: Time
+  guidanceDate: Time!
   awardStatus: String
 }
 

@@ -69,7 +69,7 @@ export class NewcompguidanceComponent implements OnInit, OnDestroy {
       projectName: new FormControl('', [Validators.required]),
       studentNames: new FormArray([], [ArrayEmptyValidator()]),
       competitionScore: new FormControl(''),
-      guidanceDate: new FormControl(null),
+      guidanceDate: new FormControl(new Date(), [Validators.required]),
       awardStatus: new FormControl(''),
     });
   }

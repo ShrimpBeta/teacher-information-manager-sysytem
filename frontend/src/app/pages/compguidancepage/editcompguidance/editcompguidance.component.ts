@@ -71,10 +71,10 @@ export class EditcompguidanceComponent implements OnInit, OnDestroy {
               this.compGuidance = compGuidance;
 
               this.compGuidanceForm = new FormGroup({
-                projectName: new FormControl(this.compGuidance?.projectName || '', [Validators.required]),
+                projectName: new FormControl(this.compGuidance?.projectName, [Validators.required]),
                 studentNames: new FormArray([], [ArrayEmptyValidator()]),
                 competitionScore: new FormControl(this.compGuidance?.competitionScore || ''),
-                guidanceDate: new FormControl(this.compGuidance?.guidanceDate || null),
+                guidanceDate: new FormControl(this.compGuidance?.guidanceDate, [Validators.required]),
                 awardStatus: new FormControl(this.compGuidance?.awardStatus || ''),
               });
 

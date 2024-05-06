@@ -11,7 +11,7 @@ type EduReform struct {
 	TeachersOut []*string            `bson:"teachersOut,omitempty"`
 	Number      string               `bson:"number"`
 	Title       string               `bson:"title"`
-	StartDate   *primitive.DateTime  `bson:"startDate,omitempty"`
+	StartDate   primitive.DateTime   `bson:"startDate,omitempty"`
 	Duration    *string              `bson:"duration,omitempty"`
 	Level       *string              `bson:"level,omitempty"`
 	Rank        *string              `bson:"rank,omitempty"`
@@ -19,4 +19,10 @@ type EduReform struct {
 	Fund        *string              `bson:"fund,omitempty"`
 	CreatedAt   primitive.DateTime   `bson:"createdAt"`
 	UpdatedAt   primitive.DateTime   `bson:"updatedAt"`
+}
+
+type EduReformReport struct {
+	TeachersIn []primitive.ObjectID
+	Title      string
+	StartDate  primitive.DateTime
 }

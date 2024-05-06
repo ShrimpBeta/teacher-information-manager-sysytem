@@ -133,3 +133,33 @@ func (r *UGPGGuidanceRepo) DeleteUGPGGuidance(id primitive.ObjectID) error {
 	_, err := r.collection.DeleteOne(context.Background(), bson.M{"_id": id})
 	return err
 }
+
+func (r *UGPGGuidanceRepo) GetUGPGGuidanceReports(ids []primitive.ObjectID, startDate, endDate time.Time) ([]models.UGPGGuidanceReport, error) {
+	ugpgGuidanceReports := []models.UGPGGuidanceReport{}
+	filter := bson.M{
+		"_id": bson.M{
+			"$in": ids,
+		},
+		"defenseDate": bson.M{
+			"$gte": primitive.NewDateTimeFromTime(startDate),
+			"$lte": primitive.NewDateTimeFromTime(endDate),
+		},
+	}
+	cursor, err := r.collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+	for cursor.Next(context.Background()) {
+		var ugpgGuidance models.UGPGGuidance
+		if err := cursor.Decode(&ugpgGuidance); err != nil {
+			return nil, err
+		}
+		ugpgGuidanceReports = append(ugpgGuidanceReports, models.UGPGGuidanceReport{
+			UserId:      ugpgGuidance.UserId,
+			ThesisTopic: ugpgGuidance.ThesisTopic,
+			DefenseDate: ugpgGuidance.DefenseDate,
+		})
+	}
+	return ugpgGuidanceReports, nil
+}

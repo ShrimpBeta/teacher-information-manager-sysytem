@@ -14,8 +14,14 @@ type UGPGGuidance struct {
 	OpeningCheckResult *string             `bson:"openingCheckResult,omitempty"`
 	MidtermCheckDate   *primitive.DateTime `bson:"midtermCheckDate,omitempty"`
 	MidtermCheckResult *string             `bson:"midtermCheckResult,omitempty"`
-	DefenseDate        *primitive.DateTime `bson:"defenseDate,omitempty"`
-	DefenseResult      *string             `bson:"defenseResult,omitempty"`
+	DefenseDate        primitive.DateTime  `bson:"defenseDate,omitempty"`
+	DefenseResult      string              `bson:"defenseResult,omitempty"`
 	CreatedAt          primitive.DateTime  `bson:"createdAt"`
 	UpdatedAt          primitive.DateTime  `bson:"updatedAt"`
+}
+
+type UGPGGuidanceReport struct {
+	UserId      primitive.ObjectID
+	ThesisTopic string
+	DefenseDate primitive.DateTime
 }

@@ -5,7 +5,6 @@ import (
 	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"server/persistence/repository"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -25,11 +24,7 @@ func (mentorshipService *MentorshipService) CreateMentorship(userId primitive.Ob
 		ProjectName:  newMentorshipData.ProjectName,
 		StudentNames: newMentorshipData.StudentNames,
 		Grade:        newMentorshipData.Grade,
-	}
-
-	if newMentorshipData.GuidanceDate != nil {
-		guidanceDate := primitive.NewDateTimeFromTime(*newMentorshipData.GuidanceDate)
-		newMentorship.GuidanceDate = &guidanceDate
+		GuidanceDate: primitive.NewDateTimeFromTime(newMentorshipData.GuidanceDate),
 	}
 
 	objectId, err := mentorshipService.Repo.CreateMentorship(&newMentorship)
@@ -58,13 +53,7 @@ func (mentorshipService *MentorshipService) UpdateMentorship(userId primitive.Ob
 	mentorshipUpdate.ProjectName = mentorshipData.ProjectName
 	mentorshipUpdate.StudentNames = mentorshipData.StudentNames
 	mentorshipUpdate.Grade = mentorshipData.Grade
-
-	if mentorshipData.GuidanceDate == nil {
-		mentorshipUpdate.GuidanceDate = nil
-	} else {
-		guidanceDate := primitive.NewDateTimeFromTime(*mentorshipData.GuidanceDate)
-		mentorshipUpdate.GuidanceDate = &guidanceDate
-	}
+	mentorshipUpdate.GuidanceDate = primitive.NewDateTimeFromTime(mentorshipData.GuidanceDate)
 
 	err = mentorshipService.Repo.UpdateMentorship(mentorshipUpdate)
 	if err != nil {
@@ -107,18 +96,12 @@ func (mentorshipService *MentorshipService) GetMentorshipById(userId primitive.O
 		return nil, errors.New("the document not accessable for the user")
 	}
 
-	var guidanceDate *time.Time = nil
-	if mentorshipData.GuidanceDate != nil {
-		date := mentorshipData.GuidanceDate.Time()
-		guidanceDate = &date
-	}
-
 	return &graphql_models.Mentorship{
 		ID:           mentorshipData.ID.Hex(),
 		ProjectName:  mentorshipData.ProjectName,
 		StudentNames: mentorshipData.StudentNames,
 		Grade:        mentorshipData.Grade,
-		GuidanceDate: guidanceDate,
+		GuidanceDate: mentorshipData.GuidanceDate.Time(),
 		CreatedAt:    mentorshipData.CreatedAt.Time(),
 		UpdatedAt:    mentorshipData.UpdatedAt.Time(),
 	}, nil
@@ -178,17 +161,13 @@ func (mentorshipService *MentorshipService) GetMentorshipsByFilter(userId primit
 	mentorships := make([]*graphql_models.Mentorship, limit)
 	for i := 0; i < limit; i++ {
 		mentorshipData := mentorshipsData[i+offset]
-		var guidanceDate *time.Time = nil
-		if mentorshipData.GuidanceDate != nil {
-			date := mentorshipData.GuidanceDate.Time()
-			guidanceDate = &date
-		}
+
 		mentorships[i] = &graphql_models.Mentorship{
 			ID:           mentorshipData.ID.Hex(),
 			ProjectName:  mentorshipData.ProjectName,
 			StudentNames: mentorshipData.StudentNames,
 			Grade:        mentorshipData.Grade,
-			GuidanceDate: guidanceDate,
+			GuidanceDate: mentorshipData.GuidanceDate.Time(),
 			CreatedAt:    mentorshipData.CreatedAt.Time(),
 			UpdatedAt:    mentorshipData.UpdatedAt.Time(),
 		}

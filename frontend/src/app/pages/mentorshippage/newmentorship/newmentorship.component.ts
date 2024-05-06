@@ -32,16 +32,15 @@ export class NewmentorshipComponent implements OnInit, OnDestroy {
     let newMentorship = new EditMentorship();
     newMentorship.projectName = this.mentorshipForm.get('projectName')?.value;
     newMentorship.grade = this.mentorshipForm.get('grade')?.value;
+    newMentorship.guidanceDate = new Date(this.mentorshipForm.get('guidanceDate')?.value);
 
     let studentNamesControlArray = this.mentorshipForm.get('studentNames') as FormArray;
     if (studentNamesControlArray && studentNamesControlArray.length > 0) {
       newMentorship.studentNames = studentNamesControlArray.controls.map((control) => control.value);
     }
 
-    if (this.mentorshipForm.get('guidanceDate')?.value !== '') {
-      newMentorship.guidanceDate = new Date(this.mentorshipForm.get('guidanceDate')?.value);
-    }
     console.log(newMentorship);
+
     this.mentorshipService.createMentorship(newMentorship).subscribe({
       next: (response) => {
         if (response) {
@@ -69,7 +68,7 @@ export class NewmentorshipComponent implements OnInit, OnDestroy {
       projectName: new FormControl('', [Validators.required]),
       studentNames: new FormArray([], [ArrayEmptyValidator()]),
       grade: new FormControl(''),
-      guidanceDate: new FormControl(''),
+      guidanceDate: new FormControl(new Date(), [Validators.required]),
     });
   }
 

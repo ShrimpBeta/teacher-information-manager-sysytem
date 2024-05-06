@@ -69,10 +69,10 @@ export class EditmentorshipComponent implements OnInit, OnDestroy {
           if (mentorship) {
             this.mentorship = mentorship;
             this.mentorshipForm = new FormGroup({
-              projectName: new FormControl(this.mentorship.projectName || null, [Validators.required]),
+              projectName: new FormControl(this.mentorship.projectName, [Validators.required]),
               studentNames: new FormArray([], [ArrayEmptyValidator()]),
               grade: new FormControl(this.mentorship.grade || null),
-              guidanceDate: new FormControl(this.mentorship.guidanceDate || null),
+              guidanceDate: new FormControl(this.mentorship.guidanceDate, [Validators.required]),
             });
 
             if (this.mentorship.studentNames) {

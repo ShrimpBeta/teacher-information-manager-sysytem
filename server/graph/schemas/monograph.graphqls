@@ -4,7 +4,7 @@ type Monograph {
   teachersIn: [UserExport]!
   teachersOut: [String]
   title: String!
-  publishDate: Time
+  publishDate: Time!
   publishLevel: String
   rank: String
   createdAt: Time!
@@ -29,7 +29,7 @@ input MonographData {
   teachersIn: [ID]
   teachersOut: [String]
   title: String!
-  publishDate: Time
+  publishDate: Time!
   publishLevel: String
   rank: String
 }

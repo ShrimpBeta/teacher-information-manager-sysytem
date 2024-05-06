@@ -4,10 +4,10 @@ export class CompGuidance {
   projectName: string = ""
   studentNames: string[] = []
   competitionScore: string = ""
-  guidanceDate?: Date
+  guidanceDate!: Date
   awardStatus: string = ""
-  createdAt: Date = new Date(0)
-  updatedAt: Date = new Date(0)
+  createdAt!: Date
+  updatedAt!: Date
 }
 
 export class CompGuidancePage {

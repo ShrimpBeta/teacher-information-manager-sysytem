@@ -13,7 +13,7 @@ export class SciResearch {
   teachersOut: string[] = []
   number: string = ""
   title: string = ""
-  startDate?: Date
+  startDate!: Date
   duration: string = ""
   level: string = ""
   rank: string = ""
@@ -21,8 +21,8 @@ export class SciResearch {
   fund: string = ""
   isAward: boolean = false
   awards: AwardRecord[] = []
-  createdAt: Date = new Date(0)
-  updatedAt: Date = new Date(0)
+  createdAt!: Date
+  updatedAt!: Date
 }
 
 export class SciResearchPage {

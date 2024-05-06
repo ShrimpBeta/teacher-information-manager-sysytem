@@ -78,14 +78,14 @@ export class EditugpgguidanceComponent implements OnInit, OnDestroy {
             if (data) {
               this.uGPGGuidance = data;
               this.uGPGGuidanceForm = new FormGroup({
-                studentName: new FormControl(this.uGPGGuidance.studentName || '', [Validators.required]),
-                thesisTopic: new FormControl(this.uGPGGuidance.thesisTopic || '', [Validators.required]),
+                studentName: new FormControl(this.uGPGGuidance.studentName, [Validators.required]),
+                thesisTopic: new FormControl(this.uGPGGuidance.thesisTopic, [Validators.required]),
                 openingCheckResult: new FormControl(this.uGPGGuidance.openingCheckResult || '',),
                 openingCheckDate: new FormControl(this.uGPGGuidance.openingCheckDate || null,),
                 midtermCheckResult: new FormControl(this.uGPGGuidance.midtermCheckResult || '',),
                 midtermCheckDate: new FormControl(this.uGPGGuidance.midtermCheckDate || null,),
-                defenseResult: new FormControl(this.uGPGGuidance.defenseResult || '',),
-                defenseDate: new FormControl(this.uGPGGuidance.defenseDate || null,),
+                defenseResult: new FormControl(this.uGPGGuidance.defenseResult, [Validators.required]),
+                defenseDate: new FormControl(this.uGPGGuidance.defenseDate, [Validators.required]),
               });
 
               this.snackBar.open('获取毕设指导成功', '关闭', { duration: 2000 });

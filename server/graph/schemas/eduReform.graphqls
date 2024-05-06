@@ -5,7 +5,7 @@ type EduReform {
   teachersOut: [String]
   number: String!
   title: String!
-  startDate: Time
+  startDate: Time!
   duration: String
   level: String
   rank: String
@@ -38,7 +38,7 @@ input EduReformData {
   teachersOut: [String]
   number: String!
   title: String!
-  startDate: Time
+  startDate: Time!
   duration: String
   level: String
   rank: String

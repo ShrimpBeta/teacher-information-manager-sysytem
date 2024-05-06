@@ -5,7 +5,6 @@ import (
 	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"server/persistence/repository"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -39,11 +38,7 @@ func (eduReformService *EduReformService) CreateEduReform(userId primitive.Objec
 		Rank:        newEduReformData.Rank,
 		Achievement: newEduReformData.Achievement,
 		Fund:        newEduReformData.Fund,
-	}
-
-	if newEduReformData.StartDate != nil {
-		startDate := primitive.NewDateTimeFromTime(*newEduReformData.StartDate)
-		newEduReform.StartDate = &startDate
+		StartDate:   primitive.NewDateTimeFromTime(newEduReformData.StartDate),
 	}
 
 	objectId, err := eduReformService.Repo.CreateEduReform(&newEduReform)
@@ -95,13 +90,7 @@ func (eduReformService *EduReformService) UpdateEduReform(id string, userId prim
 	eduReformUpdate.Rank = edureformData.Rank
 	eduReformUpdate.Achievement = edureformData.Achievement
 	eduReformUpdate.Fund = edureformData.Fund
-
-	if edureformData.StartDate == nil {
-		eduReformUpdate.StartDate = nil
-	} else {
-		startDate := primitive.NewDateTimeFromTime(*edureformData.StartDate)
-		eduReformUpdate.StartDate = &startDate
-	}
+	eduReformUpdate.StartDate = primitive.NewDateTimeFromTime(edureformData.StartDate)
 
 	err = eduReformService.Repo.UpdateEduReform(eduReformUpdate)
 	if err != nil {
@@ -153,12 +142,6 @@ func (eduReformService *EduReformService) GetEduReformById(userId primitive.Obje
 		return nil, errors.New("the document not accessable for the user")
 	}
 
-	var startDate *time.Time = nil
-	if edureformData.StartDate != nil {
-		date := edureformData.StartDate.Time()
-		startDate = &date
-	}
-
 	usersInExport, err := userRepo.GetUsersExportByIds(edureformData.TeachersIn)
 	if err != nil {
 		return nil, err
@@ -175,7 +158,7 @@ func (eduReformService *EduReformService) GetEduReformById(userId primitive.Obje
 		Rank:        edureformData.Rank,
 		Achievement: edureformData.Achievement,
 		Fund:        edureformData.Fund,
-		StartDate:   startDate,
+		StartDate:   edureformData.StartDate.Time(),
 		CreatedAt:   edureformData.CreatedAt.Time(),
 		UpdatedAt:   edureformData.UpdatedAt.Time(),
 	}, nil
@@ -267,11 +250,6 @@ func (eduReformService *EduReformService) GetEduReformsByFilter(userId primitive
 	eduReforms := make([]*graphql_models.EduReform, limit)
 	for i := 0; i < limit; i++ {
 		edureformData := eduReformsData[i+offset]
-		var startDate *time.Time = nil
-		if edureformData.StartDate != nil {
-			date := edureformData.StartDate.Time()
-			startDate = &date
-		}
 
 		usersInExport, err := userRepo.GetUsersExportByIds(edureformData.TeachersIn)
 		if err != nil {
@@ -289,7 +267,7 @@ func (eduReformService *EduReformService) GetEduReformsByFilter(userId primitive
 			Rank:        edureformData.Rank,
 			Achievement: edureformData.Achievement,
 			Fund:        edureformData.Fund,
-			StartDate:   startDate,
+			StartDate:   edureformData.StartDate.Time(),
 			CreatedAt:   edureformData.CreatedAt.Time(),
 			UpdatedAt:   edureformData.UpdatedAt.Time(),
 		}

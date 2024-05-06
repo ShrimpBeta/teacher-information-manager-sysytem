@@ -5,7 +5,6 @@ import (
 	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"server/persistence/repository"
-	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -36,11 +35,7 @@ func (paperService *PaperService) CreatePaper(userId primitive.ObjectID, newPape
 		Rank:         newPaperData.Rank,
 		JournalName:  newPaperData.JournalName,
 		JournalLevel: newPaperData.JournalLevel,
-	}
-
-	if newPaperData.PublishDate != nil {
-		publishDate := primitive.NewDateTimeFromTime(*newPaperData.PublishDate)
-		newPaper.PublishDate = &publishDate
+		PublishDate:  primitive.NewDateTimeFromTime(newPaperData.PublishDate),
 	}
 
 	objectId, err := paperService.Repo.CreatePaper(&newPaper)
@@ -89,13 +84,7 @@ func (paperService *PaperService) UpdatePaper(id string, userId primitive.Object
 	paperUpdate.Rank = paperData.Rank
 	paperUpdate.JournalName = paperData.JournalName
 	paperUpdate.JournalLevel = paperData.JournalLevel
-
-	if paperData.PublishDate == nil {
-		paperUpdate.PublishDate = nil
-	} else {
-		publishDate := primitive.NewDateTimeFromTime(*paperData.PublishDate)
-		paperUpdate.PublishDate = &publishDate
-	}
+	paperUpdate.PublishDate = primitive.NewDateTimeFromTime(paperData.PublishDate)
 
 	err = paperService.Repo.UpdatePaper(paperUpdate)
 	if err != nil {
@@ -147,12 +136,6 @@ func (paperService *PaperService) GetPaperById(userId primitive.ObjectID, id str
 		return nil, errors.New("the document not accessable for the user")
 	}
 
-	var publishDate *time.Time = nil
-	if PaperData.PublishDate != nil {
-		date := PaperData.PublishDate.Time()
-		publishDate = &date
-	}
-
 	usersInExport, err := userRepo.GetUsersExportByIds(PaperData.TeachersIn)
 	if err != nil {
 		return nil, err
@@ -163,7 +146,7 @@ func (paperService *PaperService) GetPaperById(userId primitive.ObjectID, id str
 		TeachersIn:   usersInExport,
 		TeachersOut:  PaperData.TeachersOut,
 		Title:        PaperData.Title,
-		PublishDate:  publishDate,
+		PublishDate:  PaperData.PublishDate.Time(),
 		Rank:         PaperData.Rank,
 		JournalName:  PaperData.JournalName,
 		JournalLevel: PaperData.JournalLevel,
@@ -258,18 +241,12 @@ func (paperService *PaperService) GetPapersByFilter(userId primitive.ObjectID, f
 			return nil, err
 		}
 
-		var publishDate *time.Time = nil
-		if paperData.PublishDate != nil {
-			date := paperData.PublishDate.Time()
-			publishDate = &date
-		}
-
 		papers[i] = &graphql_models.Paper{
 			ID:           paperData.ID.Hex(),
 			TeachersIn:   usersInExport,
 			TeachersOut:  paperData.TeachersOut,
 			Title:        paperData.Title,
-			PublishDate:  publishDate,
+			PublishDate:  paperData.PublishDate.Time(),
 			Rank:         paperData.Rank,
 			JournalName:  paperData.JournalName,
 			JournalLevel: paperData.JournalLevel,

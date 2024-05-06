@@ -88,10 +88,10 @@ export class EditmonographComponent implements OnInit, OnDestroy {
             if (result) {
               this.monograph = result;
               this.monographForm = new FormGroup({
-                title: new FormControl(this.monograph.title || '', [Validators.required]),
+                title: new FormControl(this.monograph.title, [Validators.required]),
                 rank: new FormControl(this.monograph.rank || '',),
                 publishLevel: new FormControl(this.monograph.publishLevel || ''),
-                publishDate: new FormControl(this.monograph.publishDate || null),
+                publishDate: new FormControl(this.monograph.publishDate, [Validators.required]),
                 teachersIn: new FormArray([]),
                 teachersOut: new FormArray([]),
               });

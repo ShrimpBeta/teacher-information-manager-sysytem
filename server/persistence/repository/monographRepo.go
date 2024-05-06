@@ -140,3 +140,35 @@ func (r *MonographRepo) DeleteMonograph(id primitive.ObjectID) error {
 	_, err := r.collection.DeleteOne(context.Background(), bson.M{"_id": id})
 	return err
 }
+
+func (r *MonographRepo) GetMonographReports(ids []primitive.ObjectID, startDate, endDate time.Time) ([]models.MonographReport, error) {
+	monographReports := []models.MonographReport{}
+
+	filter := bson.M{
+		"userId": bson.M{"$in": ids},
+		"publishDate": bson.M{
+			"$gte": primitive.NewDateTimeFromTime(startDate),
+			"$lte": primitive.NewDateTimeFromTime(endDate),
+		},
+	}
+
+	cursor, err := r.collection.Find(context.Background(), filter)
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(context.Background())
+
+	for cursor.Next(context.Background()) {
+		monograph := models.Monograph{}
+		err := cursor.Decode(&monograph)
+		if err != nil {
+			return nil, err
+		}
+		monographReports = append(monographReports, models.MonographReport{
+			TeachersIn:  monograph.TeachersIn,
+			Title:       monograph.Title,
+			PublishDate: monograph.PublishDate,
+		})
+	}
+	return monographReports, nil
+}

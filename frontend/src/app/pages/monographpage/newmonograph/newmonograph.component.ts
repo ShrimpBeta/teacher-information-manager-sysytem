@@ -78,7 +78,7 @@ export class NewmonographComponent implements OnInit, OnDestroy {
       title: new FormControl('', [Validators.required]),
       teachersIn: new FormArray([]),
       teachersOut: new FormArray([]),
-      publishDate: new FormControl(null),
+      publishDate: new FormControl(new Date(), [Validators.required]),
       publishLevel: new FormControl(''),
       rank: new FormControl(''),
     });
