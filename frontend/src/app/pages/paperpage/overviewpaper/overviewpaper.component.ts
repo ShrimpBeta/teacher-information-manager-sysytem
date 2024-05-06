@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Subject, takeUntil } from 'rxjs';
@@ -23,6 +23,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Paper, PaperFilter } from '../../../models/models/paper.model';
 import { PaperService } from '../../../services/paper.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-overviewpaper',
@@ -31,7 +36,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   imports: [MatDividerModule, MatInputModule, MatFormFieldModule, MatIconModule,
     MatSelectModule, MatButtonModule, ReactiveFormsModule, RouterLink, MatCardModule,
     DatePipe, MatDatepickerModule, MatChipsModule, MatAutocompleteModule, MatTooltipModule,
-    MatPaginatorModule, MatProgressSpinnerModule],
+    MatPaginatorModule, MatProgressSpinnerModule, MatTableModule, MatSortModule, MatCheckboxModule],
   templateUrl: './overviewpaper.component.html',
   styleUrl: './overviewpaper.component.scss'
 })
@@ -44,6 +49,12 @@ export class OverviewpaperComponent implements OnInit, OnDestroy {
   @ViewChild('teacherInInput') teachersInInput!: ElementRef<HTMLInputElement>;
 
   $destroy: Subject<boolean> = new Subject<boolean>();
+
+  displayedColumns: string[] = ['select', 'action', 'title', 'teachersIn', 'teachersOut', 'publishDate', 'journalName', 'journalLevel', 'rank', 'createdAt', 'updatedAt'];
+
+  dataSource!: MatTableDataSource<Paper>;
+  @ViewChild(MatSort) sort!: MatSort;
+  selection = new SelectionModel<Paper>(true, []);
 
   paperList: Paper[] = [];
 
@@ -58,8 +69,50 @@ export class OverviewpaperComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private paperService: PaperService,
     private snackBar: MatSnackBar,
+    private router: Router
 
   ) { }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  exportSelectPaper() {
+    if (this.selection.selected.length === 0) {
+      this.snackBar.open("请选择要导出的论文", "关闭", {
+        duration: 2000
+      });
+      return;
+    }
+    const paperExportList: PaperExport[] = [];
+    this.selection.selected.forEach(paper => {
+      const paperExport = new PaperExport();
+      paperExport.title = paper.title;
+      paperExport.teachersIn = paper.teachersIn.map(teacher => teacher.username).join(',');
+      paperExport.teachersOut = paper.teachersOut.join(',');
+      paperExport.rank = paper.rank;
+      paperExport.journalName = paper.journalName;
+      paperExport.journalLevel = paper.journalLevel;
+      paperExport.publishDate = paper.publishDate;
+      paperExportList.push(paperExport);
+    });
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(paperExportList);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'Paper.xlsx');
+  }
+
+  getTeacherInNames(teacherIn: UserExport[]): string {
+    return teacherIn.map(teacher => teacher.username).join(',');
+  }
 
   ngOnInit(): void {
     this.SearchForm = new FormGroup({
@@ -108,6 +161,10 @@ export class OverviewpaperComponent implements OnInit, OnDestroy {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
     this.getPaperList();
+  }
+
+  editPaper(paper: Paper) {
+    this.router.navigate(['/main/paper/edit', paper.id]);
   }
 
   deletePaper(paper: Paper) {
@@ -168,10 +225,12 @@ export class OverviewpaperComponent implements OnInit, OnDestroy {
 
     this.paperService.getPapersByFilter(paperFilter, this.pageIndex, this.pageSize)
       .pipe(takeUntil(this.$destroy)).subscribe({
-        next: (response) => {
-          if (response) {
-            this.paperList = response.papers;
-            this.totalCount = response.totalCount;
+        next: (paperPage) => {
+          if (paperPage) {
+            this.paperList = paperPage.papers;
+            this.totalCount = paperPage.totalCount;
+            this.dataSource = new MatTableDataSource(this.paperList);
+            this.dataSource.sort = this.sort;
             this.isSearching = false;
           } else {
             this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
@@ -273,4 +332,14 @@ export class OverviewpaperComponent implements OnInit, OnDestroy {
       this.teachersOut.removeAt(index);
     }
   }
+}
+
+export class PaperExport {
+  teachersIn: string = ""
+  teachersOut: string = ""
+  title: string = ""
+  publishDate?: Date
+  rank: string = ""
+  journalName: string = ""
+  journalLevel: string = ""
 }

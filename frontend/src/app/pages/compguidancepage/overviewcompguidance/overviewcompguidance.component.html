@@ -2,6 +2,18 @@
 
   <div class="title">
     <h1>竞赛指导</h1>
+    <div style="display: flex; flex-direction: row; align-items: center; gap: 20px;">
+      <a mat-flat-button color="primary" matTooltip="创建竞赛指导" matTooltipPosition="left"
+        aria-label="create competition guidance" routerLink="/main/competitionguidance/new">
+        <mat-icon>add</mat-icon>
+        <span>创建竞赛指导</span>
+      </a>
+      <a mat-flat-button color="primary" matTooltip="导入竞赛指导" matTooltipPosition="left"
+        aria-label="import competition guidance" routerLink="/main/password/preview">
+        <mat-icon>upload_2</mat-icon>
+        <span>导入竞赛指导</span>
+      </a>
+    </div>
   </div>
 
   <div class="filter">
@@ -111,64 +123,82 @@
     </form>
   </div>
 
-  <div class="fab-container">
-    <a mat-fab color="primary" matTooltip="创建竞赛指导" matTooltipPosition="left" aria-label="create competition guidance"
-      routerLink="/main/competitionguidance/new">
-      <mat-icon>add</mat-icon>
-    </a>
-    <a mat-fab color="primary" matTooltip="导入竞赛指导" matTooltipPosition="left" aria-label="import competition guidance"
-      routerLink="/main/password/preview">
-      <mat-icon>upload_2</mat-icon>
-    </a>
-    <a mat-fab color="primary" matTooltip="导出竞赛指导" matTooltipPosition="left" aria-label="export competition guidance"
-      routerLink="/main/competitionguidance/export/{{totalCount}}">
-      <mat-icon>download_2</mat-icon>
-    </a>
-  </div>
-
   <div class="search-result">
     <div class="sub-title">
       <h2>结果</h2>
+      <button style="margin-right:20px" mat-raised-button color="primary"
+        (click)="exportSeletedSchedule()">导出选中竞赛指导</button>
     </div>
     <mat-divider></mat-divider>
     <div class="result-content">
-      @if(isSearching){
-      <mat-spinner></mat-spinner>
-      }@else{
-      @for(compGuidance of compGuidanceList;track $index) {
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>
-            <h3>{{compGuidance.projectName}}</h3>
-          </mat-card-title>
-        </mat-card-header>
-        <mat-divider></mat-divider>
-        <mat-card-content>
-          <p>学生姓名: {{compGuidance.studentNames}}</p>
-          <p>竞赛得分: {{compGuidance.competitionScore}}</p>
-          <p>获奖情况: {{compGuidance.awardStatus}}</p>
-          <p>项目时间: {{compGuidance.guidanceDate| date:'YYYY年MM月dd日HH时'}}</p>
-          <p>创建时间: {{compGuidance.createdAt| date:'YYYY年MM月dd日HH时'}}</p>
-          <p>更新时间: {{compGuidance.updatedAt| date:'YYYY年MM月dd日HH时'}}</p>
-        </mat-card-content>
-        <mat-divider></mat-divider>
-        <mat-card-actions>
-          <button mat-raised-button color="primary" routerLink="/main/competitionguidance/edit/{{compGuidance.id}}">
-            <mat-icon>edit</mat-icon>
-            <span>编辑</span>
-          </button>
-          <button mat-raised-button color="warn" (click)="deleteCompGuidance(compGuidance)">
-            <mat-icon>delete</mat-icon>
-            <span>删除</span>
-          </button>
-        </mat-card-actions>
-      </mat-card>
-      }@empty {
-      <div>
-        <h3>暂无数据</h3>
+      <div style="height: 400px;width:100%; overflow: auto;">
+        <table mat-table [dataSource]="dataSource" matSort>
+
+          <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef sticky>
+              <mat-checkbox (change)="$event ? masterToggle() : null"
+                [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()">
+              </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                [checked]="selection.isSelected(row)">
+              </mat-checkbox>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> 操作 </th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="primary" (click)="editCompGuidance(element)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteCompGuidance(element)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="projectName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目名称 </th>
+            <td mat-cell *matCellDef="let element"> {{element.projectName}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="studentNames">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 学生姓名 </th>
+            <td mat-cell *matCellDef="let element"> {{element.studentNames.join(',')}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="competitionScore">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 竞赛成绩 </th>
+            <td mat-cell *matCellDef="let element"> {{element.competitionScore}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="guidanceDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 指导日期 </th>
+            <td mat-cell *matCellDef="let element"> {{element.guidanceDate| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="awardStatus">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 获奖状态 </th>
+            <td mat-cell *matCellDef="let element"> {{element.awardStatus}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目创建时间 </th>
+            <td mat-cell *matCellDef="let element"> {{element.createdAt| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="updatedAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目更新时间 </th>
+            <td mat-cell *matCellDef="let element"> {{element.updatedAt| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
       </div>
-      }
-      }
     </div>
     <mat-divider></mat-divider>
     <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"

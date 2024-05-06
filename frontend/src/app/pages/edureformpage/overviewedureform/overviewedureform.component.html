@@ -2,6 +2,17 @@
 
   <div class="title">
     <h1>教改项目</h1>
+    <div style="display: flex; flex-direction: row; align-items: 20px; gap:20px;">
+      <a mat-flat-button color="primary" aria-label="create education reform" routerLink="/main/educationreform/new">
+        <mat-icon>add</mat-icon>
+        <span>创建教改项目</span>
+
+      </a>
+      <a mat-flat-button color="primary" aria-label="import education reform" routerLink="/main/password/preview">
+        <mat-icon>upload_2</mat-icon>
+        <span>导入教改项目</span>
+      </a>
+    </div>
   </div>
 
   <div class="filter">
@@ -161,77 +172,106 @@
     </form>
   </div>
 
-  <div class="fab-container">
-    <a mat-fab color="primary" matTooltip="创建教改项目" matTooltipPosition="left" aria-label="create education reform"
-      routerLink="/main/educationreform/new">
-      <mat-icon>add</mat-icon>
-    </a>
-    <a mat-fab color="primary" matTooltip="导入教改项目" matTooltipPosition="left" aria-label="import education reform"
-      routerLink="/main/password/preview">
-      <mat-icon>upload_2</mat-icon>
-    </a>
-    <a mat-fab color="primary" matTooltip="导出教改项目" matTooltipPosition="left" aria-label="export education reform"
-      routerLink="/main/educationreform/export/{{totalCount}}">
-      <mat-icon>download_2</mat-icon>
-    </a>
-  </div>
-
   <div class="search-result">
     <div class="sub-title">
       <h2>结果</h2>
+      <button style="margin-right:20px" mat-raised-button color="primary"
+        (click)="exportSeletedSchedule()">导出教改项目</button>
     </div>
     <mat-divider></mat-divider>
     <div class="result-content">
-      @if(isSearching){
-      <mat-spinner></mat-spinner>
-      }@else {
-      @for(eduReform of eduReformList;track $index){
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>
-            <h3>{{eduReform.title}}</h3>
-          </mat-card-title>
-        </mat-card-header>
-        <mat-divider></mat-divider>
-        <mat-card-content>
-          <p>系统内教师:
-            @for(teacherIn of eduReform.teachersIn;track $index;let last = $last){
-            @if(last){
-            <span>{{teacherIn.username}}</span>
-            }@else {
-            <span>{{teacherIn.username}}, </span>
-            }
-            }
-          </p>
-          <p>系统外教师: {{eduReform.teachersOut}}</p>
-          <p>项目编号: {{eduReform.number}}</p>
-          <p>开始时间: {{eduReform.startDate| date:'YYYY年MM月dd日HH时'}}</p>
-          <p>持续时间: {{eduReform.duration}}</p>
-          <p>项目级别: {{eduReform.level}}</p>
-          <p>项目排名: {{eduReform.rank}}</p>
-          <p>项目成果: {{eduReform.achievement}}</p>
-          <p>项目基金: {{eduReform.fund}}</p>
-          <p>创建时间: {{eduReform.updatedAt| date:'YYYY年MM月dd日HH时'}}</p>
-          <p>更新时间: {{eduReform.updatedAt| date:'YYYY年MM月dd日HH时'}}</p>
-        </mat-card-content>
-        <mat-divider></mat-divider>
-        <mat-card-actions>
-          <button mat-raised-button color="primary" routerLink="/main/educationreform/edit/{{eduReform.id}}">
-            <mat-icon>edit</mat-icon>
-            <span>编辑</span>
-          </button>
-          <button mat-raised-button color="warn" (click)="deleteEduReform(eduReform)">
-            <mat-icon>delete</mat-icon>
-            <span>删除</span>
-          </button>
-        </mat-card-actions>
-      </mat-card>
-      }@empty {
-      <div>
-        <h3>暂无数据</h3>
+      <div style="height: 400px; width: 100%;overflow: auto;">
+        <table mat-table [dataSource]="dataSource" matSort>
+          <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef sticky>
+              <mat-checkbox (change)="$event ? masterToggle() : null"
+                [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()">
+              </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                [checked]="selection.isSelected(row)">
+              </mat-checkbox>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> 操作 </th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="primary" (click)="editEduReform(element)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteEduReform(element)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目题目 </th>
+            <td mat-cell *matCellDef="let element"> {{element.title}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="teachersIn">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 系统内教师 </th>
+            <td mat-cell *matCellDef="let element"> {{getTeacherInNames(element.teachersIn)}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="teachersOut">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 系统外教师 </th>
+            <td mat-cell *matCellDef="let element"> {{element.teachersOut.join(',')}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="number">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目编号 </th>
+            <td mat-cell *matCellDef="let element"> {{element.number}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="startDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 开始时间 </th>
+            <td mat-cell *matCellDef="let element"> {{element.startDate| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="duration">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目时长 </th>
+            <td mat-cell *matCellDef="let element"> {{element.duration}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="level">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目级别 </th>
+            <td mat-cell *matCellDef="let element"> {{element.level}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="rank">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目排名 </th>
+            <td mat-cell *matCellDef="let element"> {{element.rank}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="achievement">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目获奖 </th>
+            <td mat-cell *matCellDef="let element"> {{element.achievement}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fund">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目资金 </th>
+            <td mat-cell *matCellDef="let element"> {{element.fund}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 创建时间 </th>
+            <td mat-cell *matCellDef="let element"> {{element.createdAt| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="updatedAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 更新时间 </th>
+            <td mat-cell *matCellDef="let element"> {{element.updatedAt| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
       </div>
-      }
-      }
     </div>
     <mat-divider></mat-divider>
     <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"

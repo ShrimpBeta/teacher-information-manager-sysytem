@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -19,6 +19,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, takeUntil } from 'rxjs';
 import { Mentorship, MentorshipFilter } from '../../../models/models/mentorship.model';
 import { MentorshipService } from '../../../services/mentorship.service';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-overviewmentorship',
@@ -27,7 +32,7 @@ import { MentorshipService } from '../../../services/mentorship.service';
   imports: [MatDividerModule, MatInputModule, MatFormFieldModule, MatIconModule,
     MatSelectModule, MatButtonModule, ReactiveFormsModule, RouterLink, MatCardModule,
     DatePipe, MatDatepickerModule, MatChipsModule, MatTooltipModule, MatPaginatorModule,
-    MatProgressSpinnerModule],
+    MatProgressSpinnerModule, MatTableModule, MatSortModule, MatCheckboxModule],
   templateUrl: './overviewmentorship.component.html',
   styleUrl: './overviewmentorship.component.scss'
 })
@@ -41,12 +46,55 @@ export class OverviewmentorshipComponent implements OnInit, OnDestroy {
   pageSize: number = 10;
   pageSizeOptions: number[] = [6, 10, 24, 50, 100];
 
+  displayedColumns: string[] = ['select', 'action', 'projectName', 'studentNames', 'grade', 'guidanceDate', 'createdAt', 'updatedAt'];
+
+  dataSource!: MatTableDataSource<Mentorship>;
+  @ViewChild(MatSort) sort!: MatSort;
+  selection = new SelectionModel<Mentorship>(true, []);
+
   isSearching: boolean = false;
 
   constructor(
     private mentorshipService: MentorshipService,
     private snackBar: MatSnackBar,
+    private router: Router
   ) { }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  exportSelectMentorship() {
+    if (this.selection.selected.length == 0) {
+      this.snackBar.open("请选择导出的数据", "关闭", {
+        duration: 2000,
+      });
+      return;
+    }
+
+    let mentorshipExports: MentorshipExport[] = [];
+    this.selection.selected.forEach(mentorship => {
+      let mentorshipExport = new MentorshipExport();
+      mentorshipExport.projectName = mentorship.projectName;
+      mentorshipExport.studentNames = mentorship.studentNames.join(",");
+      mentorshipExport.grade = mentorship.grade;
+      mentorshipExport.guidanceDate = mentorship.guidanceDate;
+      mentorshipExports.push(mentorshipExport);
+    });
+
+    let wb: XLSX.WorkBook = XLSX.utils.book_new();
+    let ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(mentorshipExports);
+    XLSX.utils.book_append_sheet(wb, ws, "导出数据");
+    XLSX.writeFile(wb, "Mentorship.xlsx");
+  }
 
   ngOnInit(): void {
     this.SearchForm = new FormGroup({
@@ -83,6 +131,10 @@ export class OverviewmentorshipComponent implements OnInit, OnDestroy {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
     this.getMenotrshipList();
+  }
+
+  editMentorship(mentorship: Mentorship) {
+    this.router.navigate(['/main/mentorship/edit', mentorship.id]);
   }
 
   deleteMentorship(mentorship: Mentorship) {
@@ -137,8 +189,10 @@ export class OverviewmentorshipComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$)).subscribe({
         next: (mentorshipPage) => {
           if (mentorshipPage) {
-            this.mentorshipList = mentorshipPage?.mentorships;
+            this.mentorshipList = mentorshipPage.mentorships;
             this.totalCount = mentorshipPage.totalCount;
+            this.dataSource = new MatTableDataSource(this.mentorshipList);
+            this.dataSource.sort = this.sort;
           } else {
             this.snackBar.open('获取导师制项目失败', '关闭', { duration: 2000 });
           }
@@ -183,4 +237,12 @@ export class OverviewmentorshipComponent implements OnInit, OnDestroy {
     }
   }
 
+}
+
+
+export class MentorshipExport {
+  projectName: string = ""
+  studentNames: string = ""
+  grade: string = ""
+  guidanceDate?: Date
 }

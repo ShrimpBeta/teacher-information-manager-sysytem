@@ -2,6 +2,16 @@
 
   <div class="title">
     <h1>毕设指导</h1>
+    <div style="display: flex; flex-direction: row; align-items: center; gap: 20px;">
+      <a mat-flat-button color="primary" aria-label="create password" routerLink="/main/ugpgguidance/new">
+        <mat-icon>add</mat-icon>
+        <span>创建毕设记录</span>
+      </a>
+      <a mat-flat-button color="primary" aria-label="import password" routerLink="/main/ugpgguidance/preview">
+        <mat-icon>upload_2</mat-icon>
+        <span>导入毕设记录</span>
+      </a>
+    </div>
   </div>
 
   <div class="filter">
@@ -94,67 +104,98 @@
     </form>
   </div>
 
-  <div class="fab-container">
-    <a mat-fab color="primary" matTooltip="创建毕设记录" matTooltipPosition="left" aria-label="create password"
-      routerLink="/main/ugpgguidance/new">
-      <mat-icon>add</mat-icon>
-    </a>
-    <a mat-fab color="primary" matTooltip="导入毕设记录" matTooltipPosition="left" aria-label="import password"
-      routerLink="/main/ugpgguidance/preview">
-      <mat-icon>upload_2</mat-icon>
-    </a>
-    <a mat-fab color="primary" matTooltip="导出毕设记录" matTooltipPosition="left" aria-label="export password"
-      routerLink="/main/ugpgguidance/export/{{totalCount}}">
-      <mat-icon>download_2</mat-icon>
-    </a>
-  </div>
 
   <div class="search-result">
     <div class="sub-title">
       <h2>结果</h2>
+      <button style="margin-right:20px" mat-raised-button color="primary"
+        (click)="exportSelectUGPGGuidance()">导出选中的专著</button>
     </div>
     <mat-divider></mat-divider>
     <div class="result-content">
-      @if(isSearching){
-      <mat-spinner></mat-spinner>
-      }@else{
-      @for(uGPGGuidance of uGPGGuidanceList;track $index){
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>
-            <h3>{{uGPGGuidance.thesisTopic}}</h3>
-          </mat-card-title>
-        </mat-card-header>
-        <mat-divider></mat-divider>
-        <mat-card-content>
-          <p>学生名称: {{uGPGGuidance.studentName}}</p>
-          <p>开题答辩结果:{{uGPGGuidance.openingCheckResult}}</p>
-          <p>开题答辩日期: {{uGPGGuidance.openingCheckDate| date:'YYYY年MM月dd日HH时'}}</p>
-          <p>中期检查结果: {{uGPGGuidance.midtermCheckResult}}</p>
-          <p>中期检查日期: {{uGPGGuidance.midtermCheckDate| date:'YYYY年MM月dd日HH时'}}</p>
-          <p>最终答辩结果: {{uGPGGuidance.defenseResult}}</p>
-          <p>最终答辩日期: {{uGPGGuidance.defenseDate| date:'YYYY年MM月dd日HH时'}}</p>
-          <p>创建时间: {{uGPGGuidance.createdAt| date:'YYYY年MM月dd日HH时'}}</p>
-          <p>更新时间: {{uGPGGuidance.updatedAt| date:'YYYY年MM月dd日HH时'}}</p>
-        </mat-card-content>
-        <mat-divider></mat-divider>
-        <mat-card-actions>
-          <button mat-raised-button color="primary" routerLink="/main/ugpgguidance/edit/{{uGPGGuidance.id}}">
-            <mat-icon>edit</mat-icon>
-            <span>编辑</span>
-          </button>
-          <button mat-raised-button color="warn" (click)="deleteUGPGGuidance(uGPGGuidance)">
-            <mat-icon>delete</mat-icon>
-            <span>删除</span>
-          </button>
-        </mat-card-actions>
-      </mat-card>
-      }@empty {
-      <div>
-        <h3>暂无数据</h3>
+      <div style="height: 400px; overflow: auto;">
+        <table mat-table [dataSource]="dataSource" matSort>
+
+          <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef sticky>
+              <mat-checkbox (change)="$event ? masterToggle() : null"
+                [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()">
+              </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                [checked]="selection.isSelected(row)">
+              </mat-checkbox>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> 操作 </th>
+            <td mat-cell *matCellDef="let element">
+              <a mat-icon-button color="primary" aria-label="edit" (click)="editUGPGGuidance(element)">
+                <mat-icon>edit</mat-icon>
+              </a>
+              <a mat-icon-button color="warn" aria-label="delete" (click)="deleteUGPGGuidance(element)">
+                <mat-icon>delete</mat-icon>
+              </a>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="studentName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 学生名称 </th>
+            <td mat-cell *matCellDef="let element"> {{element.studentName}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="thesisTopic">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 论文题目 </th>
+            <td mat-cell *matCellDef="let element"> {{element.thesisTopic}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="openingCheckDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 开题检查时间 </th>
+            <td mat-cell *matCellDef="let element"> {{element.openingCheckDate| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="openingCheckResult">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 开题检查结果 </th>
+            <td mat-cell *matCellDef="let element"> {{element.openingCheckResult}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="midtermCheckDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 中期检查时间 </th>
+            <td mat-cell *matCellDef="let element"> {{element.midtermCheckDate| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="midtermCheckResult">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 中期检查结果 </th>
+            <td mat-cell *matCellDef="let element"> {{element.midtermCheckResult}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="defenseDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 最终答辩时间 </th>
+            <td mat-cell *matCellDef="let element"> {{element.defenseDate| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="defenseResult">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 最终答辩结果 </th>
+            <td mat-cell *matCellDef="let element"> {{element.defenseResult}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 创建时间 </th>
+            <td mat-cell *matCellDef="let element"> {{element.createdAt| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="updatedAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 更新时间 </th>
+            <td mat-cell *matCellDef="let element"> {{element.updatedAt| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
       </div>
-      }
-      }
     </div>
     <mat-divider></mat-divider>
     <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"

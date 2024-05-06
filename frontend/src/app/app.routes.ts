@@ -42,23 +42,14 @@ import { OverviewsciresearchComponent } from './pages/sciresearchpage/overviewsc
 import { EditsciresearchComponent } from './pages/sciresearchpage/editsciresearch/editsciresearch.component';
 import { NewsciresearchComponent } from './pages/sciresearchpage/newsciresearch/newsciresearch.component';
 import { PreviewpasswordComponent } from './pages/passwordpage/previewpassword/previewpassword.component';
-import { ExportpasswordComponent } from './pages/passwordpage/exportpassword/exportpassword.component';
 import { PreviewclassscheduleComponent } from './pages/classschedulepage/previewclassschedule/previewclassschedule.component';
-import { ExportclassscheduleComponent } from './pages/classschedulepage/exportclassschedule/exportclassschedule.component';
 import { PreviewedureformComponent } from './pages/edureformpage/previewedureform/previewedureform.component';
-import { ExportedureformComponent } from './pages/edureformpage/exportedureform/exportedureform.component';
 import { PreviewcompguidanceComponent } from './pages/compguidancepage/previewcompguidance/previewcompguidance.component';
-import { ExportcompguidanceComponent } from './pages/compguidancepage/exportcompguidance/exportcompguidance.component';
 import { PreviewugpgguidanceComponent } from './pages/ugpuguidancepage/previewugpgguidance/previewugpgguidance.component';
-import { ExportugpgguidanceComponent } from './pages/ugpuguidancepage/exportugpgguidance/exportugpgguidance.component';
 import { PreviewmentorshipComponent } from './pages/mentorshippage/previewmentorship/previewmentorship.component';
-import { ExportmentorshipComponent } from './pages/mentorshippage/exportmentorship/exportmentorship.component';
 import { PreviewmonographComponent } from './pages/monographpage/previewmonograph/previewmonograph.component';
-import { ExportmonographComponent } from './pages/monographpage/exportmonograph/exportmonograph.component';
 import { PreviewpaperComponent } from './pages/paperpage/previewpaper/previewpaper.component';
-import { ExportpaperComponent } from './pages/paperpage/exportpaper/exportpaper.component';
 import { PreviewsciresearchComponent } from './pages/sciresearchpage/previewsciresearch/previewsciresearch.component';
-import { ExportsciresearchComponent } from './pages/sciresearchpage/exportsciresearch/exportsciresearch.component';
 
 export const routes: Routes = [
   {
@@ -74,7 +65,6 @@ export const routes: Routes = [
           { path: 'edit/:id', component: EditpasswordComponent, title: 'Edit Password' },
           { path: 'new', component: NewpasswordComponent, title: 'New Password' },
           { path: 'preview', component: PreviewpasswordComponent, title: 'Preview Password' },
-          { path: 'export/:count', component: ExportpasswordComponent, title: 'Export Password' },
         ]
       },
       {
@@ -83,7 +73,6 @@ export const routes: Routes = [
           { path: 'overview', component: OverviewclassscheduleComponent, title: 'Overview Class Schedule' },
           { path: 'edit/:id', component: EditclassscheduleComponent, title: 'Edit Class Schedule' },
           { path: 'preview', component: PreviewclassscheduleComponent, title: 'Preview Class Schedule' },
-          { path: 'export/:count', component: ExportclassscheduleComponent, title: 'Export Class Schedule' },
         ]
       },
       {
@@ -93,7 +82,6 @@ export const routes: Routes = [
           { path: 'edit/:id', component: EditedureformComponent, title: 'Edit Education Reform' },
           { path: 'new', component: NewedureformComponent, title: 'New Education Reform' },
           { path: 'preview', component: PreviewedureformComponent, title: 'Preview Education Reform' },
-          { path: 'export/:count', component: ExportedureformComponent, title: 'Export Education Reform' },
         ]
       },
       {
@@ -103,7 +91,6 @@ export const routes: Routes = [
           { path: 'edit/:id', component: EditcompguidanceComponent, title: 'Edit Competition Guidance' },
           { path: 'new', component: NewcompguidanceComponent, title: 'New Competition Guidance' },
           { path: 'preview', component: PreviewcompguidanceComponent, title: 'Preview Competition Guidance' },
-          { path: 'export/:count', component: ExportcompguidanceComponent, title: 'Export Competition Guidance' },
         ]
       },
       {
@@ -113,7 +100,6 @@ export const routes: Routes = [
           { path: 'edit/:id', component: EditugpgguidanceComponent, title: 'Edit UG/PG Guidance' },
           { path: 'new', component: NewugpgguidanceComponent, title: 'New UG/PG Guidance' },
           { path: 'preview', component: PreviewugpgguidanceComponent, title: 'Preview UG/PG Guidance' },
-          { path: 'export/:count', component: ExportugpgguidanceComponent, title: 'Export UG/PG Guidance' },
         ]
       },
       {
@@ -123,7 +109,6 @@ export const routes: Routes = [
           { path: 'edit/:id', component: EditmentorshipComponent, title: 'Edit Mentorship' },
           { path: 'new', component: NewmentorshipComponent, title: 'New Mentorship' },
           { path: 'preview', component: PreviewmentorshipComponent, title: 'Preview Mentorship' },
-          { path: 'export/:count', component: ExportmentorshipComponent, title: 'Export Mentorship' },
         ]
       },
       {
@@ -133,7 +118,6 @@ export const routes: Routes = [
           { path: 'edit/:id', component: EditmonographComponent, title: 'Edit Monograph' },
           { path: 'new', component: NewmonographComponent, title: 'New Monograph' },
           { path: 'preview', component: PreviewmonographComponent, title: 'Preview Monograph' },
-          { path: 'export/:count', component: ExportmonographComponent, title: 'Export Monograph' },
         ]
       },
       {
@@ -143,7 +127,6 @@ export const routes: Routes = [
           { path: 'edit/:id', component: EditpaperComponent, title: 'Edit Paper' },
           { path: 'new', component: NewpaperComponent, title: 'New Paper' },
           { path: 'preview', component: PreviewpaperComponent, title: 'Preview Paper' },
-          { path: 'export/:count', component: ExportpaperComponent, title: 'Export Paper' },
         ]
       },
       {
@@ -153,7 +136,6 @@ export const routes: Routes = [
           { path: 'edit/:id', component: EditsciresearchComponent, title: 'Edit Scientific Research' },
           { path: 'new', component: NewsciresearchComponent, title: 'New Scientific Research' },
           { path: 'preview', component: PreviewsciresearchComponent, title: 'Preview Scientific Research' },
-          { path: 'export/:count', component: ExportsciresearchComponent, title: 'Export Scientific Research' },
         ]
       },
     ],

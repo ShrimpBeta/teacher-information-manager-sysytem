@@ -23,6 +23,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { EduReform, EduReformFilter } from '../../../models/models/eduReform.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EduReformService } from '../../../services/edureform.service';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-overviewedureform',
@@ -31,7 +36,7 @@ import { EduReformService } from '../../../services/edureform.service';
   imports: [MatDividerModule, MatInputModule, MatFormFieldModule, MatIconModule,
     MatSelectModule, MatButtonModule, ReactiveFormsModule, RouterLink, MatCardModule,
     DatePipe, MatDatepickerModule, MatChipsModule, MatAutocompleteModule, MatTooltipModule,
-    MatPaginatorModule, MatProgressSpinnerModule],
+    MatPaginatorModule, MatProgressSpinnerModule, MatTableModule, MatSortModule, MatCheckboxModule],
   templateUrl: './overviewedureform.component.html',
   styleUrl: './overviewedureform.component.scss'
 })
@@ -52,6 +57,12 @@ export class OverviewedureformComponent implements OnInit, OnDestroy {
   pageSize: number = 10;
   pageSizeOptions: number[] = [6, 10, 24, 50, 100];
 
+  displayedColumns: string[] = ['select', 'action','title', 'teachersIn', 'teachersOut', 'number', 'startDate', 'duration', 'level', 'rank', 'achievement', 'fund', 'createdAt', 'updatedAt'];
+
+  dataSource!: MatTableDataSource<EduReform>;
+  @ViewChild(MatSort) sort!: MatSort;
+  selection = new SelectionModel<EduReform>(true, []);
+
   isSearching: boolean = false;
 
   constructor(
@@ -62,6 +73,53 @@ export class OverviewedureformComponent implements OnInit, OnDestroy {
   ) {
 
   }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  exportSeletedSchedule() {
+    if (this.selection.selected.length === 0) {
+      this.snackBar.open('请选择导出的数据', '关闭', { duration: 2000 });
+      return;
+    }
+
+    let selectedEduReforms = this.selection.selected.map((eduReformTable) => {
+      return this.eduReformList.find((eduReform) => eduReform.id === eduReformTable.id);
+    });
+
+    let eduReformExports: EduReformExport[] = selectedEduReforms
+      .filter(eduReform => eduReform !== undefined)
+      .map((eduReform) => {
+        let eduReformExport: EduReformExport = {
+          title: eduReform!.title,
+          teachersIn: eduReform!.teachersIn.map((teacher) => teacher.username).join(','),
+          teachersOut: eduReform!.teachersOut.join(','),
+          number: eduReform!.number,
+          startDate: eduReform!.startDate,
+          duration: eduReform!.duration,
+          level: eduReform!.level,
+          rank: eduReform!.rank,
+          achievement: eduReform!.achievement,
+          fund: eduReform!.fund,
+        };
+        return eduReformExport;
+      });
+
+    let worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(eduReformExports);
+    let workbook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    XLSX.writeFile(workbook, 'eduReform.xlsx');
+  }
+
 
   ngOnInit(): void {
     this.SearchForm = new FormGroup({
@@ -92,6 +150,15 @@ export class OverviewedureformComponent implements OnInit, OnDestroy {
     });
 
     this.getEduReformList();
+  }
+
+  getTeacherInNames(teacherIn: UserExport[]): string {
+    return teacherIn.map(teacher => teacher.username).join(',');
+  }
+
+
+  ngAfterViewInit(): void {
+
   }
 
   ngOnDestroy(): void {
@@ -161,10 +228,12 @@ export class OverviewedureformComponent implements OnInit, OnDestroy {
     this.isSearching = true;
 
     this.eduReformService.getEduReformsByFilter(eduReformFilter, this.pageIndex, this.pageSize).pipe(takeUntil(this.$destroy)).subscribe({
-      next: (response) => {
-        if (response) {
-          this.eduReformList = response.eduReforms;
-          this.totalCount = response.totalCount;
+      next: (eduReformPage) => {
+        if (eduReformPage) {
+          this.eduReformList = eduReformPage.eduReforms;
+          this.totalCount = eduReformPage.totalCount;
+          this.dataSource = new MatTableDataSource(this.eduReformList);
+          this.dataSource.sort = this.sort;
           this.isSearching = false;
         } else {
           this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
@@ -178,6 +247,10 @@ export class OverviewedureformComponent implements OnInit, OnDestroy {
       }
     });
 
+  }
+
+  editEduReform(eduReform: EduReform) {
+    this.router.navigate(['/main/educationreform/edit', eduReform.id]);
   }
 
   deleteEduReform(eduReform: EduReform) {
@@ -295,4 +368,17 @@ export class OverviewedureformComponent implements OnInit, OnDestroy {
       this.teachersOut.removeAt(index);
     }
   }
+}
+
+export class EduReformExport {
+  teachersIn: string = ""
+  teachersOut: string = ""
+  number: string = ""
+  title: string = ""
+  startDate?: Date
+  duration: string = ""
+  level: string = ""
+  rank: string = ""
+  achievement: string = ""
+  fund: string = ""
 }

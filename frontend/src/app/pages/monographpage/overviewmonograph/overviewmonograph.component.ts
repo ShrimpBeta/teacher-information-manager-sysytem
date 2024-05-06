@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { UserService } from '../../../services/user.service';
@@ -23,6 +23,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Monograph, MonographFilter } from '../../../models/models/monograph.model';
 import { MonographService } from '../../../services/monograph.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-overviewmonograph',
@@ -31,7 +36,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   imports: [MatDividerModule, MatInputModule, MatFormFieldModule, MatIconModule,
     MatSelectModule, MatButtonModule, ReactiveFormsModule, RouterLink, MatCardModule,
     DatePipe, MatDatepickerModule, MatChipsModule, MatAutocompleteModule, MatTooltipModule,
-    MatPaginatorModule, MatProgressSpinnerModule],
+    MatPaginatorModule, MatProgressSpinnerModule, MatTableModule, MatSortModule, MatCheckboxModule],
   templateUrl: './overviewmonograph.component.html',
   styleUrl: './overviewmonograph.component.scss'
 })
@@ -52,13 +57,60 @@ export class OverviewmonographComponent {
   pageSize: number = 10;
   pageSizeOptions: number[] = [6, 10, 24, 50, 100];
 
+  displayedColumns: string[] = ['select', 'action', 'title', 'teachersIn', 'teachersOut', 'publishDate', 'publishLevel', 'rank', 'createdAt', 'updatedAt'];
+
+  dataSource!: MatTableDataSource<Monograph>;
+  @ViewChild(MatSort) sort!: MatSort;
+  selection = new SelectionModel<Monograph>(true, []);
+
   isSearching: boolean = false;
 
   constructor(
     private userService: UserService,
     private monographService: MonographService,
     private snackBar: MatSnackBar,
+    private router: Router
   ) { }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  exportSelectMonograph() {
+    if (this.selection.selected.length === 0) {
+      this.snackBar.open("请选择要导出的专著", "关闭", {
+        duration: 2000
+      });
+      return;
+    }
+    const monographExportList: MonographExport[] = [];
+    this.selection.selected.forEach(monograph => {
+      const monographExport = new MonographExport();
+      monographExport.title = monograph.title;
+      monographExport.teachersIn = monograph.teachersIn.map(teacher => teacher.username).join(',');
+      monographExport.teachersOut = monograph.teachersOut.join(',');
+      monographExport.publishLevel = monograph.publishLevel;
+      monographExport.rank = monograph.rank;
+      monographExport.publishDate = monograph.publishDate;
+      monographExportList.push(monographExport);
+    });
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(monographExportList);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'Monograph.xlsx');
+  }
+
+  getTeacherInNames(teacherIn: UserExport[]): string {
+    return teacherIn.map(teacher => teacher.username).join(',');
+  }
 
   ngOnInit(): void {
     this.SearchForm = new FormGroup({
@@ -109,6 +161,9 @@ export class OverviewmonographComponent {
     this.getMonoGraphList();
   }
 
+  editMonograph(monograph: Monograph) {
+    this.router.navigate(['/main/monograph/edit', monograph.id]);
+  }
   deleteMonograph(monograph: Monograph) {
     this.monographService.deleteMonograph(monograph.id).subscribe({
       next: (response) => {
@@ -174,10 +229,12 @@ export class OverviewmonographComponent {
     this.isSearching = true;
 
     this.monographService.getMonographsByFilter(monographFilter, this.pageIndex, this.pageSize).subscribe({
-      next: (response) => {
-        if (response) {
-          this.monographList = response.monographs;
-          this.totalCount = response.totalCount;
+      next: (monographPage) => {
+        if (monographPage) {
+          this.monographList = monographPage.monographs;
+          this.totalCount = monographPage.totalCount;
+          this.dataSource = new MatTableDataSource(this.monographList);
+          this.dataSource.sort = this.sort;
         } else {
           this.snackBar.open('获取数据失败', '关闭', {
             duration: 2000,
@@ -285,4 +342,13 @@ export class OverviewmonographComponent {
     }
   }
 
+}
+
+export class MonographExport {
+  teachersIn: string = ""
+  teachersOut: string = ""
+  title: string = ""
+  publishDate?: Date
+  publishLevel: string = ""
+  rank: string = ""
 }
