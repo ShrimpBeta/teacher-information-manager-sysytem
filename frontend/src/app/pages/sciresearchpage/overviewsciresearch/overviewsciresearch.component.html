@@ -2,6 +2,16 @@
 
   <div class="title">
     <h1>科研项目管理</h1>
+    <div style="display: flex; flex-direction: row; align-items: center; gap: 20px;">
+      <a mat-flat-button color="primary" aria-label="create password" routerLink="/main/scientificresearch/new">
+        <mat-icon>add</mat-icon>
+        <span>创建科研项目</span>
+      </a>
+      <a mat-flat-button color="primary" aria-label="import password" routerLink="/main/scientificresearch/preview">
+        <mat-icon>upload_2</mat-icon>
+        <span>导入科研项目</span>
+      </a>
+    </div>
   </div>
 
   <div class="filter">
@@ -79,8 +89,8 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>项目获奖</mat-label>
-          <input matInput type="text" formControlName="achievement" placeholder="项目获奖">
+          <mat-label>项目成果</mat-label>
+          <input matInput type="text" formControlName="achievement" placeholder="项目成果">
         </mat-form-field>
 
         <mat-form-field appearance="outline">
@@ -210,87 +220,132 @@
     </form>
   </div>
 
-  <div class="fab-container">
-    <a mat-fab color="primary" matTooltip="创建科研项目" matTooltipPosition="left" aria-label="create password"
-      routerLink="/main/scientificresearch/new">
-      <mat-icon>add</mat-icon>
-    </a>
-    <a mat-fab color="primary" matTooltip="导入科研项目" matTooltipPosition="left" aria-label="import password"
-      routerLink="/main/scientificresearch/preview">
-      <mat-icon>upload_2</mat-icon>
-    </a>
-    <a mat-fab color="primary" matTooltip="导出科研项目" matTooltipPosition="left" aria-label="export password"
-      routerLink="/main/scientificresearch/export/{{totalCount}}">
-      <mat-icon>download_2</mat-icon>
-    </a>
-  </div>
 
   <div class="search-result">
     <div class="sub-title">
       <h2>结果</h2>
+      <button style="margin-right:20px" mat-raised-button color="primary"
+        (click)="exportSeletedSchedule()">导出科研项目</button>
     </div>
     <mat-divider></mat-divider>
     <div class="result-content">
-      @if(isSearching){
-      <mat-spinner></mat-spinner>
-      }@else {
-      @for (sciResearch of sciResearchList; track $index) {
-      <mat-card>
-        <mat-card-header>
-          <mat-card-title>
-            <h3>{{sciResearch.title}}</h3>
-          </mat-card-title>
-        </mat-card-header>
-        <mat-divider></mat-divider>
-        <mat-card-content>
-          <p>系统内教师:
-            @for(teacherIn of sciResearch.teachersIn;track $index;let last = $last){
-            @if(last){
-            <span>{{teacherIn.username}}</span>
-            }@else {
-            <span>{{teacherIn.username}}, </span>
-            }
-            }
-          </p>
-          <p>系统外教师: {{sciResearch.teachersOut}}</p>
-          <p>项目编号: {{sciResearch.number}}</p>
-          <p>开始时间: {{sciResearch.startDate| date:'YYYY年MM月dd日HH时'}}</p>
-          <p>持续时间: {{sciResearch.duration}}</p>
-          <p>项目级别: {{sciResearch.level}}</p>
-          <p>项目排名: {{sciResearch.rank}}</p>
-          <p>项目成果: {{sciResearch.achievement}}</p>
-          <p>项目基金: {{sciResearch.fund}}</p>
-          <p>创建时间: {{sciResearch.createdAt| date:'YYYY年MM月dd日HH时'}}</p>
-          <p>更新时间: {{sciResearch.updatedAt| date:'YYYY年MM月dd日HH时'}}</p>
-          <p>是否获奖: {{sciResearch.isAward? '是' : '否' }}</p>
-          @if(sciResearch.isAward){
-          @for (award of sciResearch.awards; track $index) {
-          <mat-divider></mat-divider>
-          <p>获奖名称: {{award.awardName}}</p>
-          <p>获奖级别: {{award.awardLevel}}</p>
-          <p>获奖排名: {{award.awardRank}}</p>
-          <p>获奖时间: {{award.awardDate| date:'YYYY年MM月dd日HH时'}}</p>
-          }
-          }
-        </mat-card-content>
-        <mat-divider></mat-divider>
-        <mat-card-actions>
-          <button mat-raised-button color="primary" routerLink="/main/scientificresearch/edit/{{sciResearch.id}}">
-            <mat-icon>edit</mat-icon>
-            <span>编辑</span>
-          </button>
-          <button mat-raised-button color="warn" (click)="deleteSciResearch(sciResearch)">
-            <mat-icon>delete</mat-icon>
-            <span>删除</span>
-          </button>
-        </mat-card-actions>
-      </mat-card>
-      }@empty {
-      <div>
-        <h3>暂无数据</h3>
+      <div style="height: 400px; width: 100%;overflow: auto;">
+        <table mat-table [dataSource]="dataSource" matSort style="width: 2200px;">
+          <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef sticky>
+              <mat-checkbox (change)="$event ? masterToggle() : null"
+                [checked]="selection.hasValue() && isAllSelected()"
+                [indeterminate]="selection.hasValue() && !isAllSelected()">
+              </mat-checkbox>
+            </th>
+            <td mat-cell *matCellDef="let row">
+              <mat-checkbox (click)="$event.stopPropagation()" (change)="$event ? selection.toggle(row) : null"
+                [checked]="selection.isSelected(row)">
+              </mat-checkbox>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> 操作 </th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="primary" (click)="editSciResearch(element)">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="deleteSciResearch(element)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目题目 </th>
+            <td mat-cell *matCellDef="let element"> {{element.title}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="teachersIn">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 系统内教师 </th>
+            <td mat-cell *matCellDef="let element"> {{getTeacherInNames(element.teachersIn)}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="teachersOut">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 系统外教师 </th>
+            <td mat-cell *matCellDef="let element"> {{element.teachersOut.join(',')}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="number">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目编号 </th>
+            <td mat-cell *matCellDef="let element"> {{element.number}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="startDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 开始时间 </th>
+            <td mat-cell *matCellDef="let element"> {{element.startDate| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="duration">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目时长 </th>
+            <td mat-cell *matCellDef="let element"> {{element.duration}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="level">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目级别 </th>
+            <td mat-cell *matCellDef="let element"> {{element.level}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="rank">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目排名 </th>
+            <td mat-cell *matCellDef="let element"> {{element.rank}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="achievement">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目成果 </th>
+            <td mat-cell *matCellDef="let element"> {{element.achievement}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fund">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目资金 </th>
+            <td mat-cell *matCellDef="let element"> {{element.fund}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="isAward">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 是否获奖 </th>
+            <td mat-cell *matCellDef="let element"> {{element.isAward ? '是' : '否'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="awardName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 获奖名称 </th>
+            <td mat-cell *matCellDef="let element"> {{element.awardName}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="awardLevel">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 获奖级别 </th>
+            <td mat-cell *matCellDef="let element"> {{element.awardLevel}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="awardRank">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 获奖排名 </th>
+            <td mat-cell *matCellDef="let element"> {{element.awardRank}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="awardDate">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 获奖时间 </th>
+            <td mat-cell *matCellDef="let element"> {{element.awardDate| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 创建时间 </th>
+            <td mat-cell *matCellDef="let element"> {{element.createdAt| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="updatedAt">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 更新时间 </th>
+            <td mat-cell *matCellDef="let element"> {{element.updatedAt| date: 'yyyy-MM-dd'}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
       </div>
-      }
-      }
     </div>
     <mat-divider></mat-divider>
     <mat-paginator [length]="totalCount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"

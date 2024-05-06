@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatChipEditedEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Subject, takeUntil } from 'rxjs';
@@ -23,6 +23,11 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SciResearchService } from '../../../services/sciresearch.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { SelectionModel } from '@angular/cdk/collections';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-overviewsciresearch',
@@ -31,7 +36,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   imports: [MatDividerModule, MatInputModule, MatFormFieldModule, MatIconModule,
     MatSelectModule, MatButtonModule, ReactiveFormsModule, RouterLink, MatCardModule,
     DatePipe, MatDatepickerModule, MatChipsModule, MatAutocompleteModule, MatTooltipModule,
-    MatPaginatorModule, MatProgressSpinnerModule],
+    MatPaginatorModule, MatProgressSpinnerModule, MatTableModule, MatSortModule, MatCheckboxModule],
   templateUrl: './overviewsciresearch.component.html',
   styleUrl: './overviewsciresearch.component.scss'
 })
@@ -48,20 +53,82 @@ export class OverviewsciresearchComponent implements OnInit, OnDestroy {
   $destroy: Subject<boolean> = new Subject<boolean>();
 
   sciResearchList: SciResearch[] = [];
+  sciResearchTableList: SciResearchTable[] = [];
 
   totalCount: number = 0;
   pageIndex: number = 0;
   pageSize: number = 10;
   pageSizeOptions: number[] = [6, 10, 24, 50, 100];
 
+  displayedColumns: string[] = ['select', 'action', 'title', 'teachersIn', 'teachersOut', 'number', 'startDate', 'duration', 'level', 'rank', 'achievement', 'fund', 'isAward', 'awardName', 'awardLevel', 'awardRank', 'awardDate', 'createdAt', 'updatedAt'];
+
+  dataSource!: MatTableDataSource<SciResearchTable>;
+  @ViewChild(MatSort) sort!: MatSort;
+  selection = new SelectionModel<SciResearchTable>(true, []);
+
   isSearching: boolean = false;
 
   constructor(
     private userService: UserService,
     private snackBar: MatSnackBar,
-    private sciResearchService: SciResearchService
+    private sciResearchService: SciResearchService,
+    private router: Router
   ) {
 
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected() ?
+      this.selection.clear() :
+      this.dataSource.data.forEach(row => this.selection.select(row));
+  }
+
+  exportSeletedSchedule() {
+    if (this.selection.selected.length === 0) {
+      this.snackBar.open('请选择导出的数据', '关闭', { duration: 2000 });
+      return;
+    }
+
+    let selectedSciResearchs = this.selection.selected.map((sciResearchTable) => {
+      return this.sciResearchList.find((sciResearch) => sciResearch.id === sciResearchTable.id);
+    });
+
+    let sciResearchExports: SciResearchExport[] = selectedSciResearchs
+      .filter(sciResearch => sciResearch !== undefined)
+      .map((sciResearch) => {
+        let sciResearchExport: SciResearchExport = {
+          title: sciResearch!.title,
+          teachersIn: sciResearch!.teachersIn.map((teacher) => teacher.username).join(','),
+          teachersOut: sciResearch!.teachersOut.join(','),
+          number: sciResearch!.number,
+          startDate: sciResearch!.startDate,
+          duration: sciResearch!.duration,
+          level: sciResearch!.level,
+          rank: sciResearch!.rank,
+          achievement: sciResearch!.achievement,
+          fund: sciResearch!.fund,
+          awardName: sciResearch!.isAward ? sciResearch!.awards[0].awardName : '',
+          awardLevel: sciResearch!.isAward ? sciResearch!.awards[0].awardLevel || '' : '',
+          awardRank: sciResearch!.isAward ? sciResearch!.awards[0].awardRank || '' : '',
+          awardDate: sciResearch!.isAward ? sciResearch!.awards[0].awardDate : null
+        };
+        return sciResearchExport;
+      });
+
+    let worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(sciResearchExports);
+    let workbook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    XLSX.writeFile(workbook, 'sciResearch.xlsx');
+  }
+
+  getTeacherInNames(teacherIn: UserExport[]): string {
+    return teacherIn.map(teacher => teacher.username).join(',');
   }
 
   ngOnInit(): void {
@@ -186,10 +253,35 @@ export class OverviewsciresearchComponent implements OnInit, OnDestroy {
     this.isSearching = true;
 
     this.sciResearchService.getSciResearchsByFilter(sciResearchFilter, this.pageIndex, this.pageSize).pipe(takeUntil(this.$destroy)).subscribe({
-      next: (response) => {
-        if (response) {
-          this.sciResearchList = response.sciResearchs;
-          this.totalCount = response.totalCount;
+      next: (sciResearchPage) => {
+        if (sciResearchPage) {
+          this.sciResearchList = sciResearchPage.sciResearchs;
+          this.totalCount = sciResearchPage.totalCount;
+          this.sciResearchTableList = this.sciResearchList.map((sciResearch) => {
+            let sciResearchTable: SciResearchTable = {
+              id: sciResearch.id,
+              title: sciResearch.title,
+              teachersIn: sciResearch.teachersIn,
+              teachersOut: sciResearch.teachersOut,
+              number: sciResearch.number,
+              startDate: sciResearch.startDate,
+              duration: sciResearch.duration,
+              level: sciResearch.level,
+              rank: sciResearch.rank,
+              achievement: sciResearch.achievement,
+              fund: sciResearch.fund,
+              isAward: sciResearch.isAward,
+              awardName: sciResearch.isAward ? sciResearch.awards[0].awardName : '',
+              awardLevel: sciResearch.isAward ? sciResearch.awards[0].awardLevel || '' : '',
+              awardRank: sciResearch.isAward ? sciResearch.awards[0].awardRank || '' : '',
+              awardDate: sciResearch.isAward ? sciResearch.awards[0].awardDate || undefined : undefined,
+              createdAt: sciResearch.createdAt,
+              updatedAt: sciResearch.updatedAt
+            };
+            return sciResearchTable;
+          });
+          this.dataSource = new MatTableDataSource(this.sciResearchTableList);
+          this.dataSource.sort = this.sort;
         } else {
           this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
         }
@@ -202,6 +294,10 @@ export class OverviewsciresearchComponent implements OnInit, OnDestroy {
       }
     });
 
+  }
+
+  editSciResearch(sciResearch: SciResearch) {
+    this.router.navigate(['/main/scientificresearch/edit', sciResearch.id]);
   }
 
   deleteSciResearch(sciResearch: SciResearch) {
@@ -311,4 +407,42 @@ export class OverviewsciresearchComponent implements OnInit, OnDestroy {
     }
   }
 
+}
+
+export interface SciResearchTable {
+  id: string
+  teachersIn: UserExport[]
+  teachersOut: string[]
+  number: string
+  title: string
+  startDate: Date | undefined
+  duration: string
+  level: string
+  rank: string
+  achievement: string
+  fund: string
+  isAward: boolean
+  awardName: string
+  awardLevel: string
+  awardRank: string
+  awardDate: Date | undefined
+  createdAt: Date
+  updatedAt: Date
+}
+
+export class SciResearchExport {
+  teachersIn: string = ""
+  teachersOut: string = ""
+  number: string = ""
+  title: string = ""
+  startDate?: Date | null
+  duration: string = ""
+  level: string = ""
+  rank: string = ""
+  achievement: string = ""
+  fund: string = ""
+  awardName: string = ""
+  awardLevel: string = ""
+  awardRank: string = ""
+  awardDate?: Date | null
 }
