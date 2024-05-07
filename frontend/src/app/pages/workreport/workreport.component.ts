@@ -1,5 +1,5 @@
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
-import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,15 +11,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { filter, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { UserExport } from '../../models/models/user.model';
 import { UserService } from '../../services/user.service';
 import { ReportService } from '../../services/report.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
 import { ReportFilter, Report } from '../../models/models/report.model';
 import { DatePipe } from '@angular/common';
+import { NgxPrintModule } from 'ngx-print';
 
 @Component({
   selector: 'app-workreport',
@@ -27,7 +26,7 @@ import { DatePipe } from '@angular/common';
   providers: [provideNativeDateAdapter()],
   imports: [MatButtonModule, ReactiveFormsModule, MatDividerModule, MatInputModule, MatFormFieldModule,
     MatIconModule, MatSelectModule, MatCheckboxModule, MatDatepickerModule, MatChipsModule, MatAutocompleteModule,
-    DatePipe],
+    DatePipe,NgxPrintModule],
   templateUrl: './workreport.component.html',
   styleUrl: './workreport.component.scss'
 })
@@ -130,15 +129,6 @@ export class WorkreportComponent {
       },
       error: (error) => {
         console.error(error);
-      }
-    });
-  }
-
-  exportPdf() {
-    let pdf = new jsPDF('p', 'mm', 'a4');
-    pdf.html(this.reportHtml.nativeElement, {
-      callback: function (pdf) {
-        pdf.save('report.pdf');
       }
     });
   }

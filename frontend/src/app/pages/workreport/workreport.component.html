@@ -96,91 +96,137 @@
   <div class="result">
     <div class="sub-title">
       <h2>报告</h2>
-      <button style="margin-right:20px" mat-raised-button color="primary" (click)="exportPdf()">导出工作总结/报告</button>
+      <button style="margin-right:20px" mat-raised-button color="primary" ngxPrint printSectionId="reportHtml"
+      [useExistingCss]="true" styleSheetFile="./workreport.component.scss"  [disabled]="!report">导出工作总结/报告</button>
     </div>
     <mat-divider></mat-divider>
-    <div #reportHtml>
+    <div #reportHtml id="reportHtml">
       @if(report){
+
       <div class="report-content">
-        <div class="report-header">
-          <div>
-            <h3 style="margin-left: 20px;">报告时间段 {{report.startDate| date: 'yyyy-MM-dd'}} 至 {{report.endDate|date:
-              'yyyy-MM-dd'}}</h3>
-          </div>
-        </div>
-        <mat-divider></mat-divider>
+        <table>
+          <thead>
+            <tr>
+              <th class="table-left">
+                <h2>主题</h2>
+              </th>
+              <th class="table-right">
+                <h2>内容</h2>
+              </th>
+            </tr>
+          </thead>
 
-        <div class="report-body">
-
-          <h4 style="margin:0">报告包含教师</h4>
-          <mat-divider></mat-divider>
-          <div>{{report.teachers.join('、')}}</div>
-
-          @if(report.monographReport.length>0||report.paperReport.length>0||report.sciResearchReport.length>0){
-          <h4 style="margin-bottom:0">科研工作</h4>
-          <mat-divider></mat-divider>
-          <div
-            style="width: 100%; display: flex; flex-direction: column; justify-content: center;align-items:center;gap: 20px;">
+          <tbody>
+            <tr>
+              <td colspan="2">
+                <h3 style="margin-left: 20px;">时间段: {{report.startDate| date: 'yyyy-MM-dd'}} 至 {{report.endDate|date:
+                  'yyyy-MM-dd'}}</h3>
+              </td>
+            </tr>
+            <tr>
+              <td class="table-left">
+                <h3 style="margin-left: 20px;">报告包含教师</h3>
+              </td>
+              <td class="table-right">{{report.teachers.join('、')}}</td>
+            </tr>
+            @if(report.monographReport.length>0||report.paperReport.length>0||report.sciResearchReport.length>0){
+            <tr>
+              <td colspan="2">
+                <h3 style="margin-left: 20px;">科研工作</h3>
+              </td>
+            </tr>
             @if(report.monographReport.length>0){
-            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
-              <h5 style="width: 20%;">专著</h5>
-              <div style="width: 80%;">{{report.monographReport.join('、')}}</div>
-            </div>
+            <tr>
+              <td class="table-left">
+                <h4 style="margin-left: 20px;">专著</h4>
+              </td>
+              <td class="table-right">
+                <div>{{report.monographReport.join('、')}}</div>
+              </td>
+            </tr>
             }
             @if(report.paperReport.length>0){
-            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
-              <h5 style="width: 20%;">论文</h5>
-              <div style="width: 80%;">{{report.paperReport.join('、')}}</div>
-            </div>
+            <tr>
+              <td class="table-left">
+                <h4 style="margin-left: 20px;">论文</h4>
+              </td>
+              <td class="table-right">
+                <div>{{report.paperReport.join('、')}}</div>
+              </td>
+            </tr>
             }
             @if(report.sciResearchReport.length>0) {
-            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
-              <h5 style="width: 20%;">科研项目</h5>
-              <div style="width: 80%;">{{report.sciResearchReport.join('、')}}</div>
-            </div>
+            <tr>
+              <td class="table-left">
+                <h4 style="margin-left: 20px;">科研项目</h4>
+              </td>
+              <td class="table-right">
+                <div>{{report.sciResearchReport.join('、')}}</div>
+              </td>
+            </tr>
             }
-          </div>
-          }
+            }
+            @if(report.classScheduleReport.length>0||report.mentorshipReport.length>0||report.compGuidanceReport.length>0||report.uGPGGuidanceReport.length>0||report.eduReformReport.length>0){
 
-          @if(report.classScheduleReport.length>0||report.mentorshipReport.length>0||report.compGuidanceReport.length>0||report.uGPGGuidanceReport.length>0||report.eduReformReport.length>0){
-          <h4 style="margin-bottom:0">教学工作</h4>
-          <mat-divider></mat-divider>
-          <div
-            style="width: 100%; display: flex; flex-direction: column; justify-content: center;align-items:center;gap: 20px;">
+            <tr>
+              <td colspan="2">
+                <h3 style="margin-left: 20px;">教学工作</h3>
+              </td>
+            </tr>
             @if(report.classScheduleReport.length>0){
-            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
-              <h5 style="width: 20%;">教授课程</h5>
-              <div style="width: 80%;">{{report.classScheduleReport.join('、')}}</div>
-            </div>
+            <tr>
+              <td class="table-left">
+                <h4 style="margin-left: 20px;">教授课程</h4>
+              </td>
+              <td class="table-right">
+                <div>{{report.classScheduleReport.join('、')}}</div>
+              </td>
+            </tr>
             }
             @if(report.mentorshipReport.length>0){
-            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
-              <h5 style="width: 20%;">导师制</h5>
-              <div style="width: 80%;">{{report.mentorshipReport.join('、')}}</div>
-            </div>
+            <tr>
+              <td class="table-left">
+                <h4 style="margin-left: 20px;">导师制</h4>
+              </td>
+              <td class="table-right">
+                <div>{{report.mentorshipReport.join('、')}}</div>
+              </td>
+            </tr>
             }
             @if(report.compGuidanceReport.length>0){
-            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
-              <h5 style="width: 20%;">竞赛指导</h5>
-              <div style="width: 80%;">{{report.compGuidanceReport.join('、')}}</div>
-            </div>
+            <tr>
+              <td class="table-left">
+                <h4 style="margin-left: 20px;">竞赛指导</h4>
+              </td>
+              <td class="table-right">
+                <div>{{report.compGuidanceReport.join('、')}}</div>
+              </td>
+            </tr>
             }
             @if(report.uGPGGuidanceReport.length>0){
-            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
-              <h5 style="width: 20%;">本科生/研究生毕设指导</h5>
-              <div style="width: 80%;">{{report.uGPGGuidanceReport.join('、')}}</div>
-            </div>
+            <tr>
+              <td class="table-left">
+                <h4 style="margin-left: 20px;">本科生/研究生毕设指导</h4>
+              </td>
+              <td class="table-right">
+                <div>{{report.uGPGGuidanceReport.join('、')}}</div>
+              </td>
+            </tr>
             }
             @if(report.eduReformReport.length>0){
-            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
-              <h5 style="width: 20%;">教改项目</h5>
-              <div style="width: 80%;">{{report.eduReformReport.join('、')}}</div>
-            </div>
-            }
-          </div>
-          }
-        </div>
+            <tr>
+              <td class="table-left">
+                <h4 style="margin-left: 20px;">教改项目</h4>
+              </td>
+              <td class="table-right">
+                <div>{{report.eduReformReport.join('、')}}</div>
+              </td>
 
+            </tr>
+            }
+            }
+          </tbody>
+        </table>
       </div>
       }
     </div>
