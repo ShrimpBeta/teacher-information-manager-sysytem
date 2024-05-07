@@ -1,6 +1,6 @@
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -11,20 +11,23 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { Subject, takeUntil } from 'rxjs';
+import { filter, Subject, takeUntil } from 'rxjs';
 import { UserExport } from '../../models/models/user.model';
 import { UserService } from '../../services/user.service';
 import { ReportService } from '../../services/report.service';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
+import { ReportFilter, Report } from '../../models/models/report.model';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-workreport',
   standalone: true,
   providers: [provideNativeDateAdapter()],
   imports: [MatButtonModule, ReactiveFormsModule, MatDividerModule, MatInputModule, MatFormFieldModule,
-    MatIconModule, MatSelectModule, MatCheckboxModule, MatDatepickerModule, MatChipsModule, MatAutocompleteModule],
+    MatIconModule, MatSelectModule, MatCheckboxModule, MatDatepickerModule, MatChipsModule, MatAutocompleteModule,
+    DatePipe],
   templateUrl: './workreport.component.html',
   styleUrl: './workreport.component.scss'
 })
@@ -33,10 +36,11 @@ export class WorkreportComponent {
   teachersInCtrl = new FormControl();
   separatorKeysCodes: number[] = [ENTER, COMMA];
   now = new Date();
+  report!: Report;
 
   teachersInOptions: UserExport[] = [];
   @ViewChild('teacherInInput') teachersInInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('report') reoprt!: ElementRef<HTMLDivElement>;
+  @ViewChild('reportHtml') reportHtml!: ElementRef<HTMLDivElement>;
 
   $destroy: Subject<boolean> = new Subject<boolean>();
 
@@ -57,8 +61,8 @@ export class WorkreportComponent {
       monograph: new FormControl(true),
       paper: new FormControl(true),
       sciResearch: new FormControl(true),
-      startDate: new FormControl(new Date(new Date(this.now).setFullYear(this.now.getFullYear() - 3))),
-      endDate: new FormControl(this.now),
+      startDate: new FormControl(new Date(new Date(this.now).setFullYear(this.now.getFullYear() - 3)), [Validators.required]),
+      endDate: new FormControl(this.now, [Validators.required]),
       teachersIn: new FormArray([]),
       specifyTeacherIn: new FormControl(false),
     });
@@ -89,8 +93,8 @@ export class WorkreportComponent {
       monograph: new FormControl(true),
       paper: new FormControl(true),
       sciResearch: new FormControl(true),
-      startDate: new FormControl(new Date(new Date(this.now).setFullYear(this.now.getFullYear() - 3))),
-      endDate: new FormControl(this.now),
+      startDate: new FormControl(new Date(new Date(this.now).setFullYear(this.now.getFullYear() - 3)), [Validators.required]),
+      endDate: new FormControl(this.now, [Validators.required]),
       teachersIn: new FormArray([]),
       specifyTeacherIn: new FormControl(false),
     });
@@ -99,15 +103,43 @@ export class WorkreportComponent {
 
   getReport() {
 
+    if (this.SearchForm.invalid) {
+      return;
+    }
+
+    let filter: ReportFilter = {
+      classSchedule: this.SearchForm.get('classSchedule')?.value,
+      mentorship: this.SearchForm.get('mentorship')?.value,
+      compGuidance: this.SearchForm.get('compGuidance')?.value,
+      uGPGGuidance: this.SearchForm.get('uGPGGuidance')?.value,
+      eduReform: this.SearchForm.get('eduReform')?.value,
+      monograph: this.SearchForm.get('monograph')?.value,
+      paper: this.SearchForm.get('paper')?.value,
+      sciResearch: this.SearchForm.get('sciResearch')?.value,
+      startDate: this.SearchForm.get('startDate')?.value,
+      endDate: this.SearchForm.get('endDate')?.value,
+      teachersIn: this.SearchForm.get('teachersIn')?.value.map((teacher: UserExport) => teacher.id),
+      specifyTeacherIn: this.SearchForm.get('specifyTeacherIn')?.value,
+    }
+
+    this.reportService.getReport(filter).pipe(takeUntil(this.$destroy)).subscribe({
+      next: (report) => {
+        if (report) {
+          this.report = report;
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
   }
 
   exportPdf() {
-    const data = this.reoprt.nativeElement;
-    html2canvas(data).then((canvas) => {
-      const contentDataURL = canvas.toDataURL('image/png');
-      let pdf = new jsPDF('p', 'mm', 'a4');
-      pdf.addImage(contentDataURL, 'PNG', 0, 0, 211, 298);
-      pdf.save('report.pdf');
+    let pdf = new jsPDF('p', 'mm', 'a4');
+    pdf.html(this.reportHtml.nativeElement, {
+      callback: function (pdf) {
+        pdf.save('report.pdf');
+      }
     });
   }
 

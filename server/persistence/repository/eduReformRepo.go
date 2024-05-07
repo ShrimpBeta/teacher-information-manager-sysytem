@@ -163,7 +163,7 @@ func (r *EduReformRepo) DeleteEduReform(id primitive.ObjectID) error {
 func (r *EduReformRepo) GetEduReformReports(ids []primitive.ObjectID, startDate, endDate time.Time) ([]models.EduReformReport, error) {
 	eduReformReports := []models.EduReformReport{}
 	filter := bson.M{
-		"teachersIn": bson.M{"$all": ids},
+		"teachersIn": bson.M{"$in": ids},
 		"startDate": bson.M{
 			"$gte": primitive.NewDateTimeFromTime(startDate),
 			"$lte": primitive.NewDateTimeFromTime(endDate),

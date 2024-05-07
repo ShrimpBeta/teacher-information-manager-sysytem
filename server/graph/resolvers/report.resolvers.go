@@ -9,6 +9,7 @@ import (
 	"fmt"
 	graphql_models "server/graph/model"
 	"server/middlewares"
+	"server/persistence/models"
 	"strings"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -31,23 +32,37 @@ func (r *queryResolver) Report(ctx context.Context, filter graphql_models.Report
 		return nil, err
 	}
 
-	ids := make([]primitive.ObjectID, len(filter.TeachersIn)+1)
-	ids[0] = user.ID
-	for i, id := range filter.TeachersIn {
-		objectId, err := primitive.ObjectIDFromHex(*id)
+	var userExports []models.User
+	var ids []primitive.ObjectID
+
+	if filter.SpecifyTeacherIn {
+		ids = make([]primitive.ObjectID, len(filter.TeachersIn)+1)
+		ids[0] = user.ID
+		for i, id := range filter.TeachersIn {
+			objectId, err := primitive.ObjectIDFromHex(*id)
+			if err != nil {
+				return nil, err
+			}
+			ids[i+1] = objectId
+		}
+
+		userExports, err = r.UserService.Repo.GetUsersByIds(ids)
 		if err != nil {
 			return nil, err
 		}
-		ids[i+1] = objectId
-	}
-
-	userExports, err := r.UserService.Repo.GetUsersByIds(ids)
-	if err != nil {
-		return nil, err
+	} else {
+		userExports, err = r.UserService.Repo.GetAllUsers()
+		if err != nil {
+			return nil, err
+		}
+		ids = make([]primitive.ObjectID, len(userExports))
+		for i, userExport := range userExports {
+			ids[i] = userExport.ID
+		}
 	}
 
 	userExportsMap := make(map[primitive.ObjectID]string)
-	userNames := make([]*string, len(userExports))
+	userNames := make([]*string, 0)
 
 	for _, userExport := range userExports {
 		userExportsMap[userExport.ID] = userExport.Username
@@ -195,10 +210,18 @@ func (r *queryResolver) Report(ctx context.Context, filter graphql_models.Report
 	return report, nil
 }
 
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
 func ConvertIdsToString(ids []primitive.ObjectID, userExportsMap map[primitive.ObjectID]string) string {
-	idsString := make([]string, len(ids))
-	for i, id := range ids {
-		idsString[i] = userExportsMap[id]
+	idsString := make([]string, 0)
+	for _, id := range ids {
+		if userExportsMap[id] != "" {
+			idsString = append(idsString, userExportsMap[id])
+		}
 	}
 	return strings.Join(idsString, ",")
 }

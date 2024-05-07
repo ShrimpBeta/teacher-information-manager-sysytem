@@ -154,7 +154,7 @@ func (r *PaperRepo) GetPaperReports(ids []primitive.ObjectID, startDate, ednDate
 	paperReports := []models.PaperReport{}
 
 	filter := bson.M{
-		"userId": bson.M{"$in": ids},
+		"teachersIn": bson.M{"$in": ids},
 		"publishDate": bson.M{
 			"$gte": primitive.NewDateTimeFromTime(startDate),
 			"$lte": primitive.NewDateTimeFromTime(ednDate),

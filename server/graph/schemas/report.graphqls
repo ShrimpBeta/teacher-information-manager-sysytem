@@ -12,7 +12,7 @@ type Report{
     teachers:[String]!
 }
 
-input reportFilter{
+input ReportFilter{
     classSchedule: Boolean!
     mentorship: Boolean!
     compGuidance: Boolean!
@@ -24,8 +24,9 @@ input reportFilter{
     startDate: Time!
     endDate: Time!
     teachersIn: [ID]!
+    specifyTeacherIn: Boolean!
 }
 
 extend type Query{
-    report(filter:reportFilter!):Report!
+    report(filter:ReportFilter!):Report!
 }

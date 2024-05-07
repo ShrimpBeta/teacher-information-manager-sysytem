@@ -100,6 +100,24 @@
   }
 }
 
+.report-content {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.report-body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-left: 20px;
+  padding-right: 20px;
+  box-sizing: border-box;
+}
+
 mat-divider {
   margin: 20px 0;
   border-top-width: 2px;
@@ -111,4 +129,8 @@ mat-form-field {
 
 mat-checkbox {
   max-width: 170px;
+}
+
+h5 {
+  margin: 0;
 }

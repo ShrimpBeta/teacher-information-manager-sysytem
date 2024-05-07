@@ -9,7 +9,7 @@
       <h2>报告筛选条件</h2>
     </div>
     <mat-divider></mat-divider>
-    <form [formGroup]="SearchForm" class="filter-content">
+    <form [formGroup]="SearchForm" class="filter-content" (ngSubmit)="getReport()">
       <div class="filter-box">
         <div class="filter-item">
           <mat-checkbox formControlName="classSchedule">教授课程</mat-checkbox>
@@ -41,6 +41,10 @@
             }
             @if(SearchForm.controls['endDate'].hasError('matDatepickerParse')) {
             <mat-error>结束日期格式错误</mat-error>
+            }
+            @if(SearchForm.controls['startDate'].hasError('required')||SearchForm.controls['endDate'].hasError('required'))
+            {
+            <mat-error>日期不能为空</mat-error>
             }
           </mat-form-field>
 
@@ -95,8 +99,90 @@
       <button style="margin-right:20px" mat-raised-button color="primary" (click)="exportPdf()">导出工作总结/报告</button>
     </div>
     <mat-divider></mat-divider>
-    <div #report>
+    <div #reportHtml>
+      @if(report){
+      <div class="report-content">
+        <div class="report-header">
+          <div>
+            <h3 style="margin-left: 20px;">报告时间段 {{report.startDate| date: 'yyyy-MM-dd'}} 至 {{report.endDate|date:
+              'yyyy-MM-dd'}}</h3>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
 
+        <div class="report-body">
+
+          <h4 style="margin:0">报告包含教师</h4>
+          <mat-divider></mat-divider>
+          <div>{{report.teachers.join('、')}}</div>
+
+          @if(report.monographReport.length>0||report.paperReport.length>0||report.sciResearchReport.length>0){
+          <h4 style="margin-bottom:0">科研工作</h4>
+          <mat-divider></mat-divider>
+          <div
+            style="width: 100%; display: flex; flex-direction: column; justify-content: center;align-items:center;gap: 20px;">
+            @if(report.monographReport.length>0){
+            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
+              <h5 style="width: 20%;">专著</h5>
+              <div style="width: 80%;">{{report.monographReport.join('、')}}</div>
+            </div>
+            }
+            @if(report.paperReport.length>0){
+            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
+              <h5 style="width: 20%;">论文</h5>
+              <div style="width: 80%;">{{report.paperReport.join('、')}}</div>
+            </div>
+            }
+            @if(report.sciResearchReport.length>0) {
+            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
+              <h5 style="width: 20%;">科研项目</h5>
+              <div style="width: 80%;">{{report.sciResearchReport.join('、')}}</div>
+            </div>
+            }
+          </div>
+          }
+
+          @if(report.classScheduleReport.length>0||report.mentorshipReport.length>0||report.compGuidanceReport.length>0||report.uGPGGuidanceReport.length>0||report.eduReformReport.length>0){
+          <h4 style="margin-bottom:0">教学工作</h4>
+          <mat-divider></mat-divider>
+          <div
+            style="width: 100%; display: flex; flex-direction: column; justify-content: center;align-items:center;gap: 20px;">
+            @if(report.classScheduleReport.length>0){
+            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
+              <h5 style="width: 20%;">教授课程</h5>
+              <div style="width: 80%;">{{report.classScheduleReport.join('、')}}</div>
+            </div>
+            }
+            @if(report.mentorshipReport.length>0){
+            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
+              <h5 style="width: 20%;">导师制</h5>
+              <div style="width: 80%;">{{report.mentorshipReport.join('、')}}</div>
+            </div>
+            }
+            @if(report.compGuidanceReport.length>0){
+            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
+              <h5 style="width: 20%;">竞赛指导</h5>
+              <div style="width: 80%;">{{report.compGuidanceReport.join('、')}}</div>
+            </div>
+            }
+            @if(report.uGPGGuidanceReport.length>0){
+            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
+              <h5 style="width: 20%;">本科生/研究生毕设指导</h5>
+              <div style="width: 80%;">{{report.uGPGGuidanceReport.join('、')}}</div>
+            </div>
+            }
+            @if(report.eduReformReport.length>0){
+            <div style="width: 100%; display: flex; flex-direction: row; justify-content: space-between;">
+              <h5 style="width: 20%;">教改项目</h5>
+              <div style="width: 80%;">{{report.eduReformReport.join('、')}}</div>
+            </div>
+            }
+          </div>
+          }
+        </div>
+
+      </div>
+      }
     </div>
   </div>
 

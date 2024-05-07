@@ -145,7 +145,7 @@ func (r *MonographRepo) GetMonographReports(ids []primitive.ObjectID, startDate,
 	monographReports := []models.MonographReport{}
 
 	filter := bson.M{
-		"userId": bson.M{"$in": ids},
+		"teachersIn": bson.M{"$in": ids},
 		"publishDate": bson.M{
 			"$gte": primitive.NewDateTimeFromTime(startDate),
 			"$lte": primitive.NewDateTimeFromTime(endDate),

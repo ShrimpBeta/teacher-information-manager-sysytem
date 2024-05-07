@@ -137,7 +137,7 @@ func (r *UGPGGuidanceRepo) DeleteUGPGGuidance(id primitive.ObjectID) error {
 func (r *UGPGGuidanceRepo) GetUGPGGuidanceReports(ids []primitive.ObjectID, startDate, endDate time.Time) ([]models.UGPGGuidanceReport, error) {
 	ugpgGuidanceReports := []models.UGPGGuidanceReport{}
 	filter := bson.M{
-		"_id": bson.M{
+		"userId": bson.M{
 			"$in": ids,
 		},
 		"defenseDate": bson.M{

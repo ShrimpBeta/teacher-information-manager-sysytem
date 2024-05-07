@@ -46,14 +46,14 @@ export class EditmonographComponent implements OnInit, OnDestroy {
     updateMonograph.publishLevel = this.monographForm.get('publishLevel')?.value;
     updateMonograph.publishDate = this.monographForm.get('publishDate')?.value;
 
-    let teachersInControlArray = this.monographForm.get('teachersInControl') as FormArray;
+    let teachersInControlArray = this.monographForm.get('teachersIn') as FormArray;
     if (teachersInControlArray && teachersInControlArray.length > 0) {
       updateMonograph.teachersIn = teachersInControlArray.controls
         .map((control) => control.value.id)
         .filter((id) => id !== this.userId);
     }
 
-    let teachersOutControlArray = this.monographForm.get('teachersOutControl') as FormArray;
+    let teachersOutControlArray = this.monographForm.get('teachersOut') as FormArray;
     if (teachersOutControlArray && teachersOutControlArray.length > 0) {
       updateMonograph.teachersOut = teachersOutControlArray.controls
         .map((control) => control.value);

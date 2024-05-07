@@ -201,7 +201,7 @@ func (r *SciResearchRepo) DeleteSciResearch(id primitive.ObjectID) error {
 func (r *SciResearchRepo) GetSciResearchReports(ids []primitive.ObjectID, startDate, endDate time.Time) ([]models.SciResearchReport, error) {
 	sciResearchReports := []models.SciResearchReport{}
 	filter := bson.M{
-		"teachersIn": bson.M{"$all": ids},
+		"teachersIn": bson.M{"$in": ids},
 		"startDate": bson.M{
 			"$gte": primitive.NewDateTimeFromTime(startDate),
 			"$lte": primitive.NewDateTimeFromTime(endDate),

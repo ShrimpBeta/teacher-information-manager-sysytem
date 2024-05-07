@@ -69,7 +69,7 @@ function Index() {
     }
 
     if (teachersIn.length > 0) {
-      updateMonographData.teachersIn = teachersIn.map((item) => item.id);
+      updateMonographData.teachersIn = teachersIn.map((teacher) => teacher.id).filter((id) => id !== user?.id);
     }
 
     updateMonograph({

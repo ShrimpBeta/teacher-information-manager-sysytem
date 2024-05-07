@@ -461,6 +461,21 @@ type Report struct {
 	Teachers            []*string `json:"teachers"`
 }
 
+type ReportFilter struct {
+	ClassSchedule    bool      `json:"classSchedule"`
+	Mentorship       bool      `json:"mentorship"`
+	CompGuidance     bool      `json:"compGuidance"`
+	UGPGGuidance     bool      `json:"uGPGGuidance"`
+	EduReform        bool      `json:"eduReform"`
+	Monograph        bool      `json:"monograph"`
+	Paper            bool      `json:"paper"`
+	SciResearch      bool      `json:"sciResearch"`
+	StartDate        time.Time `json:"startDate"`
+	EndDate          time.Time `json:"endDate"`
+	TeachersIn       []*string `json:"teachersIn"`
+	SpecifyTeacherIn bool      `json:"specifyTeacherIn"`
+}
+
 type ResetPassword struct {
 	Email       string `json:"email"`
 	Code        string `json:"code"`
@@ -644,18 +659,4 @@ type UserExport struct {
 	Email     string    `json:"email"`
 	Avatar    string    `json:"avatar"`
 	CreatedAt time.Time `json:"createdAt"`
-}
-
-type ReportFilter struct {
-	ClassSchedule bool      `json:"classSchedule"`
-	Mentorship    bool      `json:"mentorship"`
-	CompGuidance  bool      `json:"compGuidance"`
-	UGPGGuidance  bool      `json:"uGPGGuidance"`
-	EduReform     bool      `json:"eduReform"`
-	Monograph     bool      `json:"monograph"`
-	Paper         bool      `json:"paper"`
-	SciResearch   bool      `json:"sciResearch"`
-	StartDate     time.Time `json:"startDate"`
-	EndDate       time.Time `json:"endDate"`
-	TeachersIn    []*string `json:"teachersIn"`
 }

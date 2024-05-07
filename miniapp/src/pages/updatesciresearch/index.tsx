@@ -82,7 +82,7 @@ function Index() {
     }
 
     if (teachersIn.length > 0) {
-      updateSciResearchData.teachersIn = teachersIn.map((teacher) => teacher.id);
+      updateSciResearchData.teachersIn = teachersIn.map((teacher) => teacher.id).filter((id) => id !== user?.id);
     }
 
 

@@ -70,7 +70,7 @@ function Index() {
     updatePaperData.journalLevel = journalLevel;
 
     if (teachersIn.length > 0) {
-      updatePaperData.teachersIn = teachersIn.map((teacher) => teacher.id);
+      updatePaperData.teachersIn = teachersIn.map((teacher) => teacher.id).filter((id) => id !== user?.id);
     }
 
     console.log(updatePaperData);
