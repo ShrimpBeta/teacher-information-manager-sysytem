@@ -145,7 +145,7 @@ function Index() {
         <Form.Item label='指导时间' name='guidanceDate' validateTrigger='onBlur'>
           <Cell
             title="选择日期"
-            description={guidanceDate ? `${guidanceDate}` : '请选择'}
+            description={guidanceDate ? `${guidanceDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}` : '请选择'}
             onClick={() => setVisible(true)}
             style={{ padding: '0' }}
           />

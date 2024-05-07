@@ -220,7 +220,7 @@ function Index() {
         <Form.Item label='项目开始' name='startDate' validateTrigger='onBlur'>
           <Cell
             title="选择日期"
-            description={startDate ? `${startDate}` : '请选择'}
+            description={startDate ? `${startDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}` : '请选择'}
             onClick={() => setStartDateVisible(true)}
             style={{ padding: '0' }}
           />

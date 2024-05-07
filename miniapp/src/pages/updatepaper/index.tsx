@@ -213,7 +213,7 @@ function Index() {
         <Form.Item label='发表时间' name='publishDate' validateTrigger='onBlur'>
           <Cell
             title="选择日期"
-            description={publishDate ? `${publishDate}` : '请选择'}
+            description={publishDate ? `${publishDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}` : '请选择'}
             onClick={() => setPublishDateVisible(true)}
             style={{ padding: '0' }}
           />

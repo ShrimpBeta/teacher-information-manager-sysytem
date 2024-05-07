@@ -176,7 +176,7 @@ function Index() {
         <Form.Item label='开题检查时间' name='openingCheckDate' validateTrigger='onBlur'>
           <Cell
             title="选择日期"
-            description={openingCheckDate ? `${openingCheckDate}` : '请选择'}
+            description={openingCheckDate ? `${openingCheckDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}` : '请选择'}
             onClick={() => setOpeningCheckVisible(true)}
           />
         </Form.Item>
@@ -186,7 +186,7 @@ function Index() {
         <Form.Item label='中期检查时间' name='midtermCheckDate' validateTrigger='onBlur'>
           <Cell
             title="选择日期"
-            description={midtermCheckDate ? `${midtermCheckDate}` : '请选择'}
+            description={midtermCheckDate ? `${midtermCheckDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}` : '请选择'}
             onClick={() => setMidtermCheckVisible(true)}
           />
         </Form.Item>
@@ -196,7 +196,7 @@ function Index() {
         <Form.Item label='最终答辩时间' name='defenseDate' validateTrigger='onBlur'>
           <Cell
             title="选择日期"
-            description={defenseDate ? `${defenseDate}` : '请选择'}
+            description={defenseDate ? `${defenseDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}` : '请选择'}
             onClick={() => setDefenseVisible(true)}
             style={{ padding: '0' }}
           />

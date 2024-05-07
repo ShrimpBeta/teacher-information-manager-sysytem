@@ -261,8 +261,8 @@ const OverviewSciResearch = (props: PropsWithChildren) => {
                     <Text>项目名称: {item.title}</Text>
                     <Text>项目编号: {item.number}</Text>
                     <Text>系统内教师: {item.teachersIn.map(teacher => teacher.username).join(',')}</Text>
-                    <Text>系统外教师: {item.teachersOut.join(',')}</Text>
-                    <Text>成就: {item.achievement}</Text>
+                    <Text>系统外教师: {item.teachersOut?.join(',')}</Text>
+                    <Text>成果: {item.achievement}</Text>
                     <Text>是否获奖: {item.isAward ? '是' : '否'}</Text>
                     {item.isAward && (
                       <Text>获奖名称: {item.awards[0].awardName}</Text>

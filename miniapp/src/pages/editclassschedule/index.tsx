@@ -115,24 +115,24 @@ function Index() {
 
           <View style={{ height: '2500rpx', overflow: 'auto' }}>
             <View style={{ height: '100%', display: 'flex', flexDirection: 'row' }}>
-              <View style={{ display: 'flex', flexDirection: 'column', flex: '1', borderRight: '1px solid #f0f5fe', borderLeft: '1px solid #f0f5fe' }}>
-                <View style={{ flex: '0.5', borderBottom: '1px solid #f0f5fe', borderTop: '1px solid #f0f5fe', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>时间</View>
+              <View style={{ display: 'flex', flexDirection: 'column', flex: '1', borderRight: '1px solid #b7c9e9', borderLeft: '1px solid #b7c9e9' }}>
+                <View style={{ flex: '0.5', borderBottom: '1px solid #b7c9e9', borderTop: '1px solid #b7c9e9', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>时间</View>
                 {periods.map((period, periodIndex) => {
-                  return <View key={periodIndex} style={{ flex: '1', borderBottom: '1px solid #f0f5fe', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{period}</View>
+                  return <View key={periodIndex} style={{ flex: '1', borderBottom: '1px solid #b7c9e9', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{period}</View>
                 })}
               </View>
               {daysOfWeek.map((dayOfWeek, dayOfWeekIndex) => {
                 return (
-                  <View key={dayOfWeekIndex} style={{ display: 'flex', flexDirection: 'column', flex: '1', borderRight: '1px solid #f0f5fe' }}>
-                    <View style={{ flex: '0.5', borderBottom: '1px solid #f0f5fe', borderTop: '1px solid #f0f5fe', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{dayOfWeek}</View>
+                  <View key={dayOfWeekIndex} style={{ display: 'flex', flexDirection: 'column', flex: '1', borderRight: '1px solid #b7c9e9' }}>
+                    <View style={{ flex: '0.5', borderBottom: '1px solid #b7c9e9', borderTop: '1px solid #b7c9e9', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{dayOfWeek}</View>
                     {periods.map((period, periodIndex) => {
                       let courseCell = classScheduleMatrix[dayOfWeekIndex][periodIndex];
                       if (courseCell === null || courseCell === undefined) {
-                        return <View key={periodIndex} style={{ flex: '1', borderBottom: '1px solid #f0f5fe', display: 'flex', justifyContent: 'center', alignItems: 'center' }}></View>
+                        return <View key={periodIndex} style={{ flex: '1', borderBottom: '1px solid #b7c9e9', display: 'flex', justifyContent: 'center', alignItems: 'center' }}></View>
                       }
                       if (courseCell.start === periodIndex + 1 && courseCell.courseWeeks?.includes(currentWeek)) {
                         return (
-                          <View key={periodIndex} style={{ flex: courseCell.end! - courseCell.start! + 1, backgroundColor: courseCell.color!, borderBottom: '1px solid #f0f5fe', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: '20rpx', color: 'white' }}>
+                          <View key={periodIndex} style={{ flex: courseCell.end! - courseCell.start! + 1, backgroundColor: courseCell.color!, borderBottom: '1px solid #b7c9e9', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: '20rpx', color: 'white' }}>
                             {courseCell &&
                               <View>
                                 <View style={{ wordBreak: 'break-all' }}>{courseCell.courseName}</View>
@@ -143,7 +143,7 @@ function Index() {
                           </View>
                         )
                       } else if (!courseCell.courseWeeks?.includes(currentWeek)) {
-                        return <View key={periodIndex} style={{ flex: '1', borderBottom: '1px solid #f0f5fe', display: 'flex', justifyContent: 'center', alignItems: 'center' }}></View>
+                        return <View key={periodIndex} style={{ flex: '1', borderBottom: '1px solid #b7c9e9', display: 'flex', justifyContent: 'center', alignItems: 'center' }}></View>
                       }
                     })}
                   </View>

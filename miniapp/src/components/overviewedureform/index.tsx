@@ -249,7 +249,7 @@ const OverviewEduReform = (props: PropsWithChildren) => {
                     <Text>持续时间: {item.duration}</Text>
                     <Text>级别: {item.level}</Text>
                     <Text>等级: {item.rank}</Text>
-                    <Text>成就: {item.achievement}</Text>
+                    <Text>成果: {item.achievement}</Text>
                     <Text>资金: {item.fund}</Text>
                     <View
                       style={{
