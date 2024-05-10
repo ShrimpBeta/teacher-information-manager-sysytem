@@ -1,1 +1,14 @@
-<p>previewcompguidance works!</p>
+<div class="container">
+  <div cdkDropList (dragover)="onDragOver($event)" (drop)="onDrop($event)" class="upload-area">
+    <input type="file" (change)="onFileSelected($event)" #fileUpload style="display: none;">
+    @if(!file){
+    <p>点击或拖放文件到这里（jpg、png、xlsx、pdf）</p>
+    }@else {
+    <p>{{file.name}}</p>
+    }
+    <button mat-raised-button color="primary" (click)="fileUpload.click()">选择文件</button>
+  </div>
+  <div class="row-center">
+    <button mat-raised-button color="accent" (click)="onUpload()" [disabled]="!file">上传文件</button>
+  </div>
+</div>
