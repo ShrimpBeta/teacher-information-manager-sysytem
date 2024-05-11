@@ -108,6 +108,13 @@ export interface DeleteAcademicResponse {
   }
 }
 
+export interface UploadAcademicsResponse {
+  error?: unknown;
+  data?: {
+    uploadAcademicTerm: EditClassSchedule
+  }
+}
+
 export interface CreateCourseResponse {
   error?: unknown;
   data?: {

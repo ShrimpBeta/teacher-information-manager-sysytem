@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { map, Observable } from "rxjs";
-import { AcademicTermResponse, AcademicTermsByFilterResponse, AcademicTermsResponse, ClassSchedule, ClassScheduleFilter, ClassSchedulePage, Course, CreateAcademicResponse, CreateCourseResponse, DeleteAcademicResponse, DeleteCourseResponse, EditClassSchedule, EditCourse, UpdateAcademicResponse, UpdateCourseResponse } from "../models/models/classSchedule.model";
+import { AcademicTermResponse, AcademicTermsByFilterResponse, AcademicTermsResponse, ClassSchedule, ClassScheduleFilter, ClassSchedulePage, Course, CreateAcademicResponse, CreateCourseResponse, DeleteAcademicResponse, DeleteCourseResponse, EditClassSchedule, EditCourse, UpdateAcademicResponse, UpdateCourseResponse, UploadAcademicsResponse } from "../models/models/classSchedule.model";
 import { academicTermQuery, academicTermsByIdsQuery, academicTermsShortByFilterQuery } from "../models/graphql/query/classschedule.query.graphql";
-import { createAcademicTermMutation, createCourseMutation, deleteAcademicTermMutation, deleteCourseMutation, updateAcademicTerm, updateCourseMutation } from "../models/graphql/mutation/classschedule.mutation.graphql";
+import { createAcademicTermMutation, createCourseMutation, deleteAcademicTermMutation, deleteCourseMutation, updateAcademicTerm, updateCourseMutation, uploadAcademicTermMutation } from "../models/graphql/mutation/classschedule.mutation.graphql";
 
 @Injectable({
   providedIn: 'root'
@@ -177,6 +177,23 @@ export class ClassScheduleService {
           return null;
         }
         return course;
+      })
+    );
+  }
+
+  uploadFile(file: File): Observable<EditClassSchedule | null> {
+    return this.apollo.mutate({
+      mutation: uploadAcademicTermMutation,
+      variables: {
+        file: file
+      }
+    }).pipe(
+      map(result => {
+        let classSchedules = (result as UploadAcademicsResponse).data?.uploadAcademicTerm;
+        if (typeof classSchedules === 'undefined' || classSchedules === null) {
+          return null;
+        }
+        return classSchedules;
       })
     );
   }

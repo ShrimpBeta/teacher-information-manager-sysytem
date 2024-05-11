@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { map, Observable } from "rxjs";
-import { CreateMentorshipResponse, DeleteMentorshipResponse, EditMentorship, Mentorship, MentorshipFilter, MentorshipPage, MentorshipResponse, MentorshipsByFilterResponse, UpdateMentorshipResponse } from "../models/models/mentorship.model";
+import { CreateMentorshipResponse, DeleteMentorshipResponse, EditMentorship, Mentorship, MentorshipFilter, MentorshipPage, MentorshipResponse, MentorshipsByFilterResponse, UpdateMentorshipResponse, UploadMentorshipsResponse } from "../models/models/mentorship.model";
 import { Apollo } from "apollo-angular";
 import { mentorshipQuery, mentorshipsByFilterQuery } from "../models/graphql/query/mentorship.query.graphql";
-import { createMentorshipMutation, deleteMentorshipMutation, updateMentorshipMutation } from "../models/graphql/mutation/mentorship.mutation.graphql";
+import { createMentorshipMutation, deleteMentorshipMutation, updateMentorshipMutation, uploadMentorshipsMutation } from "../models/graphql/mutation/mentorship.mutation.graphql";
 
 @Injectable({
   providedIn: 'root'
@@ -97,6 +97,23 @@ export class MentorshipService {
         let mentorship = (response as DeleteMentorshipResponse).data?.deleteMentorship;
         if (typeof mentorship !== 'undefined' && mentorship !== null) {
           return mentorship;
+        }
+        return null;
+      })
+    );
+  }
+
+  uploadFile(file: File): Observable<EditMentorship[] | null> {
+    return this.apollo.mutate({
+      mutation: uploadMentorshipsMutation,
+      variables: {
+        file: file
+      }
+    }).pipe(
+      map((response: unknown) => {
+        let mentorships = (response as UploadMentorshipsResponse).data?.uploadMentorships;
+        if (typeof mentorships !== 'undefined' && mentorships !== null) {
+          return mentorships;
         }
         return null;
       })

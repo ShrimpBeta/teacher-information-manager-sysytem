@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
-import { CreateMonographResponse, DeleteMonographResponse, EditMonograph, Monograph, MonographFilter, MonographPage, MonographResponse, MonographsByFilterResponse, UpdateMonographResponse } from "../models/models/monograph.model";
+import { CreateMonographResponse, DeleteMonographResponse, EditMonograph, Monograph, MonographFilter, MonographPage, MonographResponse, MonographsByFilterResponse, UpdateMonographResponse, UploadMonographsResponse } from "../models/models/monograph.model";
 import { map, Observable } from "rxjs";
 import { Apollo } from "apollo-angular";
 import { monographQuery, monographsByFilterQuery } from "../models/graphql/query/monograph.query.graphql";
-import { createMonographMutation, deleteMonographMutation, updateMonographMutation } from "../models/graphql/mutation/monograph.mutation.graphql";
+import { createMonographMutation, deleteMonographMutation, updateMonographMutation, uploadMonographsMutation } from "../models/graphql/mutation/monograph.mutation.graphql";
 
 
 @Injectable({
@@ -96,6 +96,23 @@ export class MonographService {
     }).pipe(
       map((response: unknown) => {
         let monograph = (response as DeleteMonographResponse).data?.deleteMonograph;
+        if (typeof monograph !== 'undefined' && monograph !== null) {
+          return monograph;
+        }
+        return null;
+      })
+    );
+  }
+
+  uploadFile(file: File): Observable<EditMonograph[] | null> {
+    return this.apollo.mutate({
+      mutation: uploadMonographsMutation,
+      variables: {
+        file: file
+      }
+    }).pipe(
+      map((response: unknown) => {
+        let monograph = (response as UploadMonographsResponse).data?.uploadMonographs;
         if (typeof monograph !== 'undefined' && monograph !== null) {
           return monograph;
         }

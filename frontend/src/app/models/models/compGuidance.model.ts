@@ -73,3 +73,10 @@ export interface DeleteCompGuidanceResponse {
     deleteCompGuidance: CompGuidance
   }
 }
+
+export interface UploadCompGuidancesResponse {
+  error?: unknown;
+  data?: {
+    uploadCompGuidances: EditCompGuidance[]
+  }
+}

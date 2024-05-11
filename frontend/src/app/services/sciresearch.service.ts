@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
-import { CreateSciResearchResponse, DeleteSciResearchResponse, EditSciResearch, SciResearch, SciResearchFilter, SciResearchPage, SciResearchResponse, SciResearchsByFilterResponse, UpdateSciResearchResponse } from "../models/models/sciResearch.model";
+import { CreateSciResearchResponse, DeleteSciResearchResponse, EditSciResearch, SciResearch, SciResearchFilter, SciResearchPage, SciResearchResponse, SciResearchsByFilterResponse, UpdateSciResearchResponse, UploadSciResearchsResponse } from "../models/models/sciResearch.model";
 import { map, Observable } from "rxjs";
 import { sciResearchQuery, sciResearchsByFilterQuery } from "../models/graphql/query/sciresearch.query.graphql";
-import { createSciResearchMutation, deleteSciResearchMutation, updateSciResearchMutation } from "../models/graphql/mutation/sciresearch.mutation.graphql";
+import { createSciResearchMutation, deleteSciResearchMutation, updateSciResearchMutation, uploadSciResearchsMutation } from "../models/graphql/mutation/sciresearch.mutation.graphql";
 
 @Injectable({
   providedIn: 'root'
@@ -95,6 +95,23 @@ export class SciResearchService {
     }).pipe(
       map((response: unknown) => {
         let sciResearch = (response as DeleteSciResearchResponse).data?.deleteSciResearch;
+        if (typeof sciResearch !== 'undefined' && sciResearch !== null) {
+          return sciResearch;
+        }
+        return null;
+      })
+    );
+  }
+
+  uploadFile(file: File): Observable<EditSciResearch[] | null> {
+    return this.apollo.mutate({
+      mutation: uploadSciResearchsMutation,
+      variables: {
+        file: file
+      }
+    }).pipe(
+      map((response: unknown) => {
+        let sciResearch = (response as UploadSciResearchsResponse).data?.uploadSciResearchs;
         if (typeof sciResearch !== 'undefined' && sciResearch !== null) {
           return sciResearch;
         }

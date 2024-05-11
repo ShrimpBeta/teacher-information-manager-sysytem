@@ -69,3 +69,10 @@ export interface DeleteMentorshipResponse {
     deleteMentorship: Mentorship
   }
 }
+
+export interface UploadMentorshipsResponse {
+  error?: unknown;
+  data?: {
+    uploadMentorships: EditMentorship[]
+  }
+}

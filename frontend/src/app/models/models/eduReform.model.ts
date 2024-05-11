@@ -89,3 +89,10 @@ export interface DeleteEduReformResponse {
     deleteEduReform: EduReform
   }
 }
+
+export interface UploadEduReformsResponse {
+  error?: unknown;
+  data?: {
+    uploadEduReforms: EditEduReform[]
+  }
+}

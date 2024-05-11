@@ -81,3 +81,10 @@ export interface DeletePaperResponse {
     deletePaper: Paper
   }
 }
+
+export interface UploadPapersResponse {
+  error?: unknown;
+  data?: {
+    uploadPapers: EditPaper[]
+  }
+}

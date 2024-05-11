@@ -82,3 +82,10 @@ export interface DeletePasswordResponse {
     deletePassword: Password
   }
 }
+
+export interface UploadPasswordsResponse {
+  error?: unknown;
+  data?: {
+    uploadPasswords: EditPassword[]
+  }
+}

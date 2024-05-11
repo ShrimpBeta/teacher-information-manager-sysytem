@@ -76,3 +76,10 @@ export interface DeleteUGPGGuidanceResponse {
     deleteUGPGGuidance: UGPGGuidance
   }
 }
+
+export interface UploadUGPGGuidancesResponse {
+  error?: unknown;
+  data?: {
+    uploadUGPGGuidances: EditUGPGGuidance[]
+  }
+}

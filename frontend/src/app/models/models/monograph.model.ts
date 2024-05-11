@@ -77,3 +77,10 @@ export interface DeleteMonographResponse {
     deleteMonograph: Monograph
   }
 }
+
+export interface UploadMonographsResponse {
+  error?: unknown;
+  data?: {
+    uploadMonographs: EditMonograph[]
+  }
+}

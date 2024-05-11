@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { map, Observable, of } from "rxjs";
-import { CompGuidance, CompGuidanceFilter, CompGuidancePage, CompGuidanceResponse, CompGuidancesByFilterResponse, CreateCompGuidanceResponse, DeleteCompGuidanceResponse, EditCompGuidance, UpdateCompGuidanceResponse } from "../models/models/compGuidance.model";
+import { CompGuidance, CompGuidanceFilter, CompGuidancePage, CompGuidanceResponse, CompGuidancesByFilterResponse, CreateCompGuidanceResponse, DeleteCompGuidanceResponse, EditCompGuidance, UpdateCompGuidanceResponse, UploadCompGuidancesResponse } from "../models/models/compGuidance.model";
 import { compGuidanceQuery, compGuidancesByFilterQuery } from "../models/graphql/query/compguidance.query.graphql";
-import { createCompGuidanceMutation, deleteCompGuidanceMutation, updateCompGuidanceMutation } from "../models/graphql/mutation/compguidance.mutation.graphql";
+import { createCompGuidanceMutation, deleteCompGuidanceMutation, updateCompGuidanceMutation, uploadCompGuidancesMutation } from "../models/graphql/mutation/compguidance.mutation.graphql";
 
 @Injectable({
   providedIn: 'root'
@@ -101,6 +101,24 @@ export class CompGuidanceService {
           let compGuidance = (response as DeleteCompGuidanceResponse).data?.deleteCompGuidance;
           if (typeof compGuidance !== 'undefined' && compGuidance !== null) {
             return compGuidance;
+          }
+          return null;
+        })
+      );
+  }
+
+  uploadFile(file: File): Observable<EditCompGuidance[] | null> {
+    return this.apollo.mutate({
+      mutation: uploadCompGuidancesMutation,
+      variables: {
+        file: file
+      }
+    })
+      .pipe(
+        map((response: unknown) => {
+          let compGuidances = (response as UploadCompGuidancesResponse).data?.uploadCompGuidances;
+          if (typeof compGuidances !== 'undefined' && compGuidances !== null) {
+            return compGuidances;
           }
           return null;
         })

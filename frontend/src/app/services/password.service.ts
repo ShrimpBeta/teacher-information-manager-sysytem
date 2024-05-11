@@ -3,8 +3,9 @@ import { Apollo } from "apollo-angular";
 import { AuthRepository } from "../core/auth/auth.repository";
 import { passwordTrueQuery, passwordsByFilterQuery, passwordsTrueQuery } from "../models/graphql/query/password.query.graphql";
 import { deletePasswordMutation, updatePasswordMutation, createPasswordMutation } from "../models/graphql/mutation/password.mutation.graphql";
-import { CreatePasswordResponse, DeletePasswordResponse, EditPassword, Password, PasswordFilter, PasswordsByFilterResponse, PasswordsPage, PasswordsTrueResponse, PasswordTrue, PasswordTrueResponse, UpdatePasswordResponse } from "../models/models/password.model";
+import { CreatePasswordResponse, DeletePasswordResponse, EditPassword, Password, PasswordFilter, PasswordsByFilterResponse, PasswordsPage, PasswordsTrueResponse, PasswordTrue, PasswordTrueResponse, UpdatePasswordResponse, UploadPasswordsResponse } from "../models/models/password.model";
 import { map, Observable } from "rxjs";
+import { uploadPapersMutation } from "../models/graphql/mutation/paper.mutation.graphql";
 
 @Injectable({
   providedIn: 'root'
@@ -120,6 +121,23 @@ export class PasswordService {
         return null;
       }
       )
+    );
+  }
+
+  uploadFile(file: File): Observable<EditPassword[] | null> {
+    return this.apollo.mutate({
+      mutation: uploadPapersMutation,
+      variables: {
+        file: file
+      }
+    }).pipe(
+      map((response: unknown) => {
+        let passwords = (response as UploadPasswordsResponse).data?.uploadPasswords;
+        if (typeof passwords !== 'undefined' && passwords !== null) {
+          return passwords;
+        }
+        return null;
+      })
     );
   }
 }

@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { map, Observable } from "rxjs";
 import { uGPGGuidancesByFilterQuery, uGPUGGuidanceQuery } from "../models/graphql/query/ugpgguidance.query.graphql";
-import { CreateUGPGGuidanceResponse, DeleteUGPGGuidanceResponse, EditUGPGGuidance, UGPGGuidance, UGPGGuidanceFilter, UGPGGuidancePage, UGPGGuidanceResponse, UGPGGuidancesByFilterResponse, UpdateUGPGGuidanceResponse } from "../models/models/uGPGGuidance.model";
-import { createUGPGGuidanceMutation, deleteUGPGGuidanceMutation, updateUGPGGuidanceMutation } from "../models/graphql/mutation/ugpgguidance.mutation.graphql";
+import { CreateUGPGGuidanceResponse, DeleteUGPGGuidanceResponse, EditUGPGGuidance, UGPGGuidance, UGPGGuidanceFilter, UGPGGuidancePage, UGPGGuidanceResponse, UGPGGuidancesByFilterResponse, UpdateUGPGGuidanceResponse, UploadUGPGGuidancesResponse } from "../models/models/uGPGGuidance.model";
+import { createUGPGGuidanceMutation, deleteUGPGGuidanceMutation, updateUGPGGuidanceMutation, uploadUGPGGuidancesMutation } from "../models/graphql/mutation/ugpgguidance.mutation.graphql";
 
 @Injectable({
   providedIn: 'root'
@@ -96,6 +96,23 @@ export class UGPGGuidanceService {
         let id = (response as DeleteUGPGGuidanceResponse).data?.deleteUGPGGuidance?.id;
         if (typeof id !== 'undefined' && id !== null) {
           return id;
+        }
+        return null;
+      })
+    );
+  }
+
+  uploadFile(file:File):Observable<EditUGPGGuidance[] | null>{
+    return this.apollo.mutate({
+      mutation: uploadUGPGGuidancesMutation,
+      variables: {
+        file: file
+      }
+    }).pipe(
+      map((response: unknown) => {
+        let ugpgguidance = (response as UploadUGPGGuidancesResponse).data?.uploadUGPGGuidances;
+        if (typeof ugpgguidance !== 'undefined' && ugpgguidance !== null) {
+          return ugpgguidance;
         }
         return null;
       })

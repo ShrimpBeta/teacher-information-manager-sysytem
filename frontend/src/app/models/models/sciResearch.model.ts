@@ -112,3 +112,9 @@ export interface DeleteSciResearchResponse {
   }
 }
 
+export interface UploadSciResearchsResponse {
+  error?: unknown;
+  data?: {
+    uploadSciResearchs: EditSciResearch[]
+  }
+}

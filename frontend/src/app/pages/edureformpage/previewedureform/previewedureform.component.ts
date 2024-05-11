@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { EduReformService } from '../../../services/edureform.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-previewedureform',
@@ -12,10 +14,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './previewedureform.component.html',
   styleUrl: './previewedureform.component.scss'
 })
-export class PreviewedureformComponent {
+export class PreviewedureformComponent implements OnInit, OnDestroy {
+
+  private destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private eduReformService: EduReformService
   ) { }
 
   progress = 0;
@@ -55,8 +60,24 @@ export class PreviewedureformComponent {
 
   onUpload() {
     if (this.file) {
-
+      this.eduReformService.uploadFile(this.file).pipe(takeUntil(this.destroy$)).subscribe({
+        next: (data) => {
+          console.log(data);
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
     }
+  }
+
+  ngOnInit(): void {
+
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
 

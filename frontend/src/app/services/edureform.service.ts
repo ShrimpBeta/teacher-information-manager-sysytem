@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { map, Observable } from "rxjs";
-import { CreateEduReformResponse, DeleteEduReformResponse, EditEduReform, EduReform, EduReformFilter, EduReformPage, EduReformResponse, EduReformsByFilterResponse, UpdateEduReformResponse } from "../models/models/eduReform.model";
+import { CreateEduReformResponse, DeleteEduReformResponse, EditEduReform, EduReform, EduReformFilter, EduReformPage, EduReformResponse, EduReformsByFilterResponse, UpdateEduReformResponse, UploadEduReformsResponse } from "../models/models/eduReform.model";
 import { eduReformQuery, eduReformsByFilterQuery } from "../models/graphql/query/edureform.query.graphql";
-import { createEduReformMutation, deleteEduReformMutation, updateEduReformMutation } from "../models/graphql/mutation/edureform.mutation.graphql";
+import { createEduReformMutation, deleteEduReformMutation, updateEduReformMutation, uploadEduReformsMutation } from "../models/graphql/mutation/edureform.mutation.graphql";
 
 
 @Injectable({
@@ -98,6 +98,23 @@ export class EduReformService {
         let eduReform = (response as DeleteEduReformResponse).data?.deleteEduReform;
         if (typeof eduReform !== 'undefined' && eduReform !== null) {
           return eduReform;
+        }
+        return null;
+      })
+    );
+  }
+
+  uploadFile(file: File): Observable<EditEduReform[] | null> {
+    return this.apollo.mutate({
+      mutation: uploadEduReformsMutation,
+      variables: {
+        file: file
+      }
+    }).pipe(
+      map((response: unknown) => {
+        let eduReforms = (response as UploadEduReformsResponse).data?.uploadEduReforms;
+        if (typeof eduReforms !== 'undefined' && eduReforms !== null) {
+          return eduReforms;
         }
         return null;
       })
