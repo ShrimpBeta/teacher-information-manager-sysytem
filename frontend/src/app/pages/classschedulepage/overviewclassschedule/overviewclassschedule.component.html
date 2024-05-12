@@ -32,14 +32,14 @@
   <div class="search-result">
     <div class="sub-title">
       <h2>结果</h2>
-      <button style="margin-right:20px" mat-raised-button color="primary"
-        (click)="exportSelectedSchedules()">导出选中的课表</button>
+      <!-- <button style="margin-right:20px" mat-raised-button color="primary"
+        (click)="exportSelectedSchedules()">导出选中的课表</button> -->
     </div>
     <mat-divider></mat-divider>
     <div class="result-content">
       <div style="height: 400px; width:100%; overflow: auto;">
         <table mat-table [dataSource]="dataSource" matSort>
-          <ng-container matColumnDef="select">
+          <!-- <ng-container matColumnDef="select">
             <th mat-header-cell *matHeaderCellDef sticky>
               <mat-checkbox (change)="$event ? masterToggle() : null"
                 [checked]="selection.hasValue() && isAllSelected()"
@@ -51,7 +51,7 @@
                 [checked]="selection.isSelected(row)">
               </mat-checkbox>
             </td>
-          </ng-container>
+          </ng-container> -->
 
           <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef> 操作 </th>

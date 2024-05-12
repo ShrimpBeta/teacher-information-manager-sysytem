@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
 import { CreateclassscheduledialogComponent } from '../../../components/createclassscheduledialog/createclassscheduledialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ClassSchedule, ClassScheduleFilter, EditClassSchedule, NewClassScheduleData } from '../../../models/models/classSchedule.model';
+import { ClassSchedule, ClassScheduleFilter, ClassTime, EditClassSchedule, NewClassScheduleData } from '../../../models/models/classSchedule.model';
 import { ClassScheduleService } from '../../../services/classschedule.service';
 import { Subject, takeUntil } from 'rxjs';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -47,7 +47,9 @@ export class OverviewclassscheduleComponent implements OnInit, OnDestroy, AfterV
   pageSizeOptions: number[] = [6, 10, 24, 50, 100];
 
   classSchedulesTable: ClassScheduleTable[] = [];
-  displayedColumns: string[] = ['select', 'action', 'termName', 'startDate', 'weekCount', 'createdAt', 'updatedAt'];
+  // displayedColumns: string[] = ['select', 'action', 'termName', 'startDate', 'weekCount', 'createdAt', 'updatedAt'];
+  displayedColumns: string[] = ['action', 'termName', 'startDate', 'weekCount', 'createdAt', 'updatedAt'];
+
 
   dataSource!: MatTableDataSource<ClassScheduleTable>;
   @ViewChild(MatSort) sort!: MatSort;
@@ -107,39 +109,48 @@ export class OverviewclassscheduleComponent implements OnInit, OnDestroy, AfterV
       });
   }
 
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
-  }
+  // isAllSelected() {
+  //   const numSelected = this.selection.selected.length;
+  //   const numRows = this.dataSource.data.length;
+  //   return numSelected === numRows;
+  // }
 
-  masterToggle() {
-    this.isAllSelected() ?
-      this.selection.clear() :
-      this.dataSource.data.forEach(row => this.selection.select(row));
-  }
+  // masterToggle() {
+  //   this.isAllSelected() ?
+  //     this.selection.clear() :
+  //     this.dataSource.data.forEach(row => this.selection.select(row));
+  // }
 
-  exportSelectedSchedules() {
-    const ids = this.selection.selected.map((schedule) => schedule.id);
+  // exportSelectedSchedules() {
+  //   const ids = this.selection.selected.map((schedule) => schedule.id);
 
-    if (ids.length === 0) {
-      this.snackBar.open('请选择导出的数据', '关闭', { duration: 2000 });
-      return;
-    }
+  //   if (ids.length === 0) {
+  //     this.snackBar.open('请选择导出的数据', '关闭', { duration: 2000 });
+  //     return;
+  //   }
 
-    this.classScheduleService.getClassSchedules(ids).pipe(takeUntil(this.destory$)).subscribe({
-      next: (schedules) => {
-        if (schedules) {
-          console.log(schedules);
-        }
-      },
-      error: (error) => {
-        console.log(error);
-        this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
-      }
-    });
-
-  }
+  //   this.classScheduleService.getClassSchedules(ids).pipe(takeUntil(this.destory$)).subscribe({
+  //     next: (schedules) => {
+  //       if (schedules) {
+  //         console.log(schedules);
+  //         const schedulesJson = JSON.stringify(schedules);
+  //         const blob = new Blob([schedulesJson], { type: 'application/json' });
+  //         const url = window.URL.createObjectURL(blob);
+  //         const a = document.createElement('a');
+  //         a.href = url;
+  //         a.download = 'classSchedules.json';
+  //         document.body.appendChild(a);
+  //         a.click();
+  //         document.body.removeChild(a);
+  //         window.URL.revokeObjectURL(url);
+  //       }
+  //     },
+  //     error: (error) => {
+  //       console.log(error);
+  //       this.snackBar.open('获取数据失败', '关闭', { duration: 2000 });
+  //     }
+  //   });
+  // }
 
   ngOnInit(): void {
     this.getClassScheduleList();
