@@ -7,8 +7,10 @@ package resolvers
 import (
 	"context"
 	"fmt"
+	"io"
 	graphql_models "server/graph/model"
 	"server/middlewares"
+	"server/services/excel"
 
 	"github.com/99designs/gqlgen/graphql"
 )
@@ -86,7 +88,15 @@ func (r *mutationResolver) UploadPasswords(ctx context.Context, file graphql.Upl
 		return nil, err
 	}
 
-	panic(fmt.Errorf("not implemented: UploadPasswords - uploadPasswords"))
+	if file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" {
+		fileBytes, err := io.ReadAll(file.File)
+		if err != nil {
+			return nil, err
+		}
+		return excel.ConvertToPassword(fileBytes)
+	} else {
+		return nil, fmt.Errorf("Invalid file type")
+	}
 }
 
 // PasswordTrue is the resolver for the passwordTrue field.

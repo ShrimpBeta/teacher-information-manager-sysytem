@@ -6,8 +6,10 @@ package resolvers
 
 import (
 	"context"
+	"io"
 	graphql_models "server/graph/model"
 	"server/middlewares"
+	"server/services/excel"
 
 	"github.com/99designs/gqlgen/graphql"
 )
@@ -85,7 +87,19 @@ func (r *mutationResolver) UploadMonographs(ctx context.Context, file graphql.Up
 		return nil, err
 	}
 
-	return r.MonographService.UploadMonographs(file, r.UserService.Repo)
+	if file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" {
+		fileBytes, err := io.ReadAll(file.File)
+		if err != nil {
+			return nil, err
+		}
+		users, err := r.UserService.GetUserExports()
+		if err != nil {
+			return nil, err
+		}
+		return excel.ConvertToMonograph(fileBytes, users)
+	} else {
+		return nil, nil
+	}
 }
 
 // Monograph is the resolver for the monograph field.

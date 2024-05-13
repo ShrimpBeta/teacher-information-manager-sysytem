@@ -105,6 +105,9 @@ export class UGPGGuidanceService {
   uploadFile(file:File):Observable<EditUGPGGuidance[] | null>{
     return this.apollo.mutate({
       mutation: uploadUGPGGuidancesMutation,
+      context: {
+        useMultipart: true
+      },
       variables: {
         file: file
       }

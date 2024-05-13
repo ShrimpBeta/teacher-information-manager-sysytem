@@ -6,8 +6,11 @@ package resolvers
 
 import (
 	"context"
+	"fmt"
+	"io"
 	graphql_models "server/graph/model"
 	"server/middlewares"
+	"server/services/excel"
 
 	"github.com/99designs/gqlgen/graphql"
 )
@@ -74,7 +77,7 @@ func (r *mutationResolver) DeleteSciResearch(ctx context.Context, id string) (*g
 }
 
 // UploadSciResearchs is the resolver for the uploadSciResearchs field.
-func (r *mutationResolver) UploadSciResearchs(ctx context.Context, file graphql.Upload) (*graphql_models.SciResearchPreview, error) {
+func (r *mutationResolver) UploadSciResearchs(ctx context.Context, file graphql.Upload) ([]*graphql_models.SciResearchPreview, error) {
 	ginContext, err := middlewares.GinContextFromContext(ctx)
 	if err != nil {
 		return nil, err
@@ -85,7 +88,19 @@ func (r *mutationResolver) UploadSciResearchs(ctx context.Context, file graphql.
 		return nil, err
 	}
 
-	return r.SciResearchService.UploadSciResearchs(file, r.UserService.Repo)
+	if file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" {
+		fileBytes, err := io.ReadAll(file.File)
+		if err != nil {
+			return nil, err
+		}
+		users, err := r.UserService.GetUserExports()
+		if err != nil {
+			return nil, err
+		}
+		return excel.ConvertToSciResearch(fileBytes, users)
+	} else {
+		return nil, fmt.Errorf("Invalid file type")
+	}
 }
 
 // SciResearch is the resolver for the sciResearch field.

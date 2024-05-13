@@ -110,6 +110,9 @@ export class CompGuidanceService {
   uploadFile(file: File): Observable<EditCompGuidance[] | null> {
     return this.apollo.mutate({
       mutation: uploadCompGuidancesMutation,
+      context: {
+        useMultipart: true
+      },
       variables: {
         file: file
       }

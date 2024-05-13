@@ -113,6 +113,9 @@ export class PaperService {
   uploadFile(file: File): Observable<EditPaper[] | null> {
     return this.apollo.mutate({
       mutation: uploadPapersMutation,
+      context: {
+        useMultipart: true
+      },
       variables: {
         file: file
       }

@@ -7,8 +7,10 @@ package resolvers
 import (
 	"context"
 	"fmt"
+	"io"
 	graphql_models "server/graph/model"
 	"server/middlewares"
+	"server/services/excel"
 
 	"github.com/99designs/gqlgen/graphql"
 )
@@ -86,7 +88,19 @@ func (r *mutationResolver) UploadEduReforms(ctx context.Context, file graphql.Up
 		return nil, err
 	}
 
-	panic(fmt.Errorf("not implemented: UploadEduReforms - uploadEduReforms"))
+	if file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" {
+		fileBytes, err := io.ReadAll(file.File)
+		if err != nil {
+			return nil, err
+		}
+		users, err := r.UserService.GetUserExports()
+		if err != nil {
+			return nil, err
+		}
+		return excel.ConvertToEduReform(fileBytes, users)
+	} else {
+		return nil, fmt.Errorf("invalid file type")
+	}
 }
 
 // EduReform is the resolver for the eduReform field.

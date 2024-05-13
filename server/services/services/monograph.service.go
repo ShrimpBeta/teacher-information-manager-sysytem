@@ -6,7 +6,6 @@ import (
 	"server/persistence/models"
 	"server/persistence/repository"
 
-	"github.com/99designs/gqlgen/graphql"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -251,8 +250,4 @@ func (monographService *MonographService) GetMonographsByFilter(userId primitive
 		TotalCount: len(monographsData),
 		Monographs: monographs,
 	}, nil
-}
-
-func (monographService *MonographService) UploadMonographs(file graphql.Upload, userRepo *repository.UserRepo) ([]*graphql_models.MonographPreview, error) {
-	panic("not implemented")
 }

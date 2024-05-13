@@ -31,10 +31,25 @@ func ReadFile(file []byte) ([][]string, error) {
 		return nil, err
 	}
 
+	if len(rows) == 0 {
+		return nil, fmt.Errorf("sheet is empty")
+	}
+
+	// 获取标题行的长度
+	titleLength := len(rows[0])
+
+	// 确保每行的长度与标题行一致
+	for i, row := range rows {
+		if len(row) < titleLength {
+			// 不足的部分用空字符串填充
+			rows[i] = append(row, make([]string, titleLength-len(row))...)
+		}
+	}
+
 	return rows, nil
 }
 
-func ConvertToCompGuidance(file []byte) ([]graphql_models.CompGuidancePreview, error) {
+func ConvertToCompGuidance(file []byte) ([]*graphql_models.CompGuidancePreview, error) {
 
 	datas, err := ReadFile(file)
 	if err != nil {
@@ -68,7 +83,7 @@ func ConvertToCompGuidance(file []byte) ([]graphql_models.CompGuidancePreview, e
 		awardStatusKey = "awardStatus"
 	}
 
-	var compGuidancePreviews []graphql_models.CompGuidancePreview
+	var compGuidancePreviews []*graphql_models.CompGuidancePreview
 	for i, data := range datas {
 		if i == 0 {
 			continue
@@ -97,13 +112,13 @@ func ConvertToCompGuidance(file []byte) ([]graphql_models.CompGuidancePreview, e
 			GuidanceDate:     &guidanceDate,
 			AwardStatus:      &awardStatus,
 		}
-		compGuidancePreviews = append(compGuidancePreviews, compGuidancePreview)
+		compGuidancePreviews = append(compGuidancePreviews, &compGuidancePreview)
 	}
 
 	return compGuidancePreviews, nil
 }
 
-func ConvertToEduReform(file []byte, users []graphql_models.UserExport) ([]graphql_models.EduReformPreview, error) {
+func ConvertToEduReform(file []byte, users []*graphql_models.UserExport) ([]*graphql_models.EduReformPreview, error) {
 
 	datas, err := ReadFile(file)
 	if err != nil {
@@ -159,10 +174,10 @@ func ConvertToEduReform(file []byte, users []graphql_models.UserExport) ([]graph
 
 	usersMap := make(map[string]graphql_models.UserExport)
 	for _, user := range users {
-		usersMap[user.Username] = user
+		usersMap[user.Username] = *user
 	}
 
-	var eduReformPreviews []graphql_models.EduReformPreview
+	var eduReformPreviews []*graphql_models.EduReformPreview
 	for i, data := range datas {
 
 		if i == 0 {
@@ -208,13 +223,13 @@ func ConvertToEduReform(file []byte, users []graphql_models.UserExport) ([]graph
 			Achievement: &achievement,
 			Fund:        &fund,
 		}
-		eduReformPreviews = append(eduReformPreviews, eduReformPreview)
+		eduReformPreviews = append(eduReformPreviews, &eduReformPreview)
 	}
 
 	return eduReformPreviews, nil
 }
 
-func ConvertToMentorship(file []byte) ([]graphql_models.MentorshipPreview, error) {
+func ConvertToMentorship(file []byte) ([]*graphql_models.MentorshipPreview, error) {
 
 	datas, err := ReadFile(file)
 	if err != nil {
@@ -244,7 +259,7 @@ func ConvertToMentorship(file []byte) ([]graphql_models.MentorshipPreview, error
 		guidanceDateKey = "guidanceDate"
 	}
 
-	var mentorshipPreviews []graphql_models.MentorshipPreview
+	var mentorshipPreviews []*graphql_models.MentorshipPreview
 	for i, data := range datas {
 
 		if i == 0 {
@@ -272,13 +287,13 @@ func ConvertToMentorship(file []byte) ([]graphql_models.MentorshipPreview, error
 			Grade:        &grade,
 			GuidanceDate: &guidanceDate,
 		}
-		mentorshipPreviews = append(mentorshipPreviews, mentorshipPreview)
+		mentorshipPreviews = append(mentorshipPreviews, &mentorshipPreview)
 	}
 
 	return mentorshipPreviews, nil
 }
 
-func ConvertToMonoGraph(file []byte, users []graphql_models.UserExport) ([]graphql_models.MonographPreview, error) {
+func ConvertToMonograph(file []byte, users []*graphql_models.UserExport) ([]*graphql_models.MonographPreview, error) {
 
 	datas, err := ReadFile(file)
 	if err != nil {
@@ -318,10 +333,10 @@ func ConvertToMonoGraph(file []byte, users []graphql_models.UserExport) ([]graph
 
 	usersMap := make(map[string]graphql_models.UserExport)
 	for _, user := range users {
-		usersMap[user.Username] = user
+		usersMap[user.Username] = *user
 	}
 
-	var monoGraphPreviews []graphql_models.MonographPreview
+	var monoGraphPreviews []*graphql_models.MonographPreview
 	for i, data := range datas {
 
 		if i == 0 {
@@ -359,13 +374,13 @@ func ConvertToMonoGraph(file []byte, users []graphql_models.UserExport) ([]graph
 			Rank:         &rank,
 			PublishDate:  &publishDate,
 		}
-		monoGraphPreviews = append(monoGraphPreviews, monoGraphPreview)
+		monoGraphPreviews = append(monoGraphPreviews, &monoGraphPreview)
 	}
 
 	return monoGraphPreviews, nil
 }
 
-func ConvertToPaper(file []byte, users []graphql_models.UserExport) ([]graphql_models.PaperPreview, error) {
+func ConvertToPaper(file []byte, users []*graphql_models.UserExport) ([]*graphql_models.PaperPreview, error) {
 
 	datas, err := ReadFile(file)
 	if err != nil {
@@ -409,10 +424,10 @@ func ConvertToPaper(file []byte, users []graphql_models.UserExport) ([]graphql_m
 
 	usersMap := make(map[string]graphql_models.UserExport)
 	for _, user := range users {
-		usersMap[user.Username] = user
+		usersMap[user.Username] = *user
 	}
 
-	var paperPreviews []graphql_models.PaperPreview
+	var paperPreviews []*graphql_models.PaperPreview
 	for i, data := range datas {
 
 		if i == 0 {
@@ -452,13 +467,13 @@ func ConvertToPaper(file []byte, users []graphql_models.UserExport) ([]graphql_m
 			JournalLevel: &journalLevel,
 			PublishDate:  &publishDate,
 		}
-		paperPreviews = append(paperPreviews, paperPreview)
+		paperPreviews = append(paperPreviews, &paperPreview)
 	}
 
 	return paperPreviews, nil
 }
 
-func ConvertToPassword(file []byte) ([]graphql_models.PasswordPreview, error) {
+func ConvertToPassword(file []byte) ([]*graphql_models.PasswordPreview, error) {
 
 	datas, err := ReadFile(file)
 	if err != nil {
@@ -492,7 +507,7 @@ func ConvertToPassword(file []byte) ([]graphql_models.PasswordPreview, error) {
 		descriptionKey = "description"
 	}
 
-	var passwordPreviews []graphql_models.PasswordPreview
+	var passwordPreviews []*graphql_models.PasswordPreview
 	for i, data := range datas {
 		if i == 0 {
 			continue
@@ -511,13 +526,13 @@ func ConvertToPassword(file []byte) ([]graphql_models.PasswordPreview, error) {
 			Password:    &password,
 			Description: &description,
 		}
-		passwordPreviews = append(passwordPreviews, passwordPreview)
+		passwordPreviews = append(passwordPreviews, &passwordPreview)
 	}
 
 	return passwordPreviews, nil
 }
 
-func ConvertToSciResearch(file []byte, users []graphql_models.UserExport) ([]graphql_models.SciResearchPreview, error) {
+func ConvertToSciResearch(file []byte, users []*graphql_models.UserExport) ([]*graphql_models.SciResearchPreview, error) {
 
 	datas, err := ReadFile(file)
 	if err != nil {
@@ -589,10 +604,10 @@ func ConvertToSciResearch(file []byte, users []graphql_models.UserExport) ([]gra
 
 	usersMap := make(map[string]graphql_models.UserExport)
 	for _, user := range users {
-		usersMap[user.Username] = user
+		usersMap[user.Username] = *user
 	}
 
-	var sciResearchPreviews []graphql_models.SciResearchPreview
+	var sciResearchPreviews []*graphql_models.SciResearchPreview
 	for i, data := range datas {
 
 		if i == 0 {
@@ -658,13 +673,13 @@ func ConvertToSciResearch(file []byte, users []graphql_models.UserExport) ([]gra
 			Awards:      awardRecordsPreview,
 		}
 
-		sciResearchPreviews = append(sciResearchPreviews, sciResearchPreview)
+		sciResearchPreviews = append(sciResearchPreviews, &sciResearchPreview)
 	}
 
 	return sciResearchPreviews, nil
 }
 
-func ConvertToUGPGGuidance(file []byte) ([]graphql_models.UGPGGuidancePreview, error) {
+func ConvertToUGPGGuidance(file []byte) ([]*graphql_models.UGPGGuidancePreview, error) {
 
 	datas, err := ReadFile(file)
 	if err != nil {
@@ -710,7 +725,7 @@ func ConvertToUGPGGuidance(file []byte) ([]graphql_models.UGPGGuidancePreview, e
 		defenseDateKey = "defenseDate"
 	}
 
-	var ugpgGuidancePreviews []graphql_models.UGPGGuidancePreview
+	var ugpgGuidancePreviews []*graphql_models.UGPGGuidancePreview
 	for i, data := range datas {
 
 		if i == 0 {
@@ -751,7 +766,7 @@ func ConvertToUGPGGuidance(file []byte) ([]graphql_models.UGPGGuidancePreview, e
 			MidtermCheckDate:   &midtermCheckDate,
 			DefenseDate:        &defenseDate,
 		}
-		ugpgGuidancePreviews = append(ugpgGuidancePreviews, ugpgGuidancePreview)
+		ugpgGuidancePreviews = append(ugpgGuidancePreviews, &ugpgGuidancePreview)
 	}
 
 	return ugpgGuidancePreviews, nil

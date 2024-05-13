@@ -18,6 +18,9 @@ export class MonographService {
   getMonograph(id: string): Observable<Monograph | null> {
     return this.apollo.query({
       query: monographQuery,
+      context: {
+        useMultipart: true
+      },
       variables: {
         id: id
       }

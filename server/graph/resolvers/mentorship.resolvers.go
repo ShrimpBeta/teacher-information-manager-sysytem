@@ -7,8 +7,10 @@ package resolvers
 import (
 	"context"
 	"fmt"
+	"io"
 	graphql_models "server/graph/model"
 	"server/middlewares"
+	"server/services/excel"
 
 	"github.com/99designs/gqlgen/graphql"
 )
@@ -87,7 +89,15 @@ func (r *mutationResolver) UploadMentorships(ctx context.Context, file graphql.U
 		return nil, err
 	}
 
-	panic(fmt.Errorf("not implemented: UploadMentorships - uploadMentorships"))
+	if file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" {
+		fileBytes, err := io.ReadAll(file.File)
+		if err != nil {
+			return nil, err
+		}
+		return excel.ConvertToMentorship(fileBytes)
+	} else {
+		return nil, fmt.Errorf("file type not supported")
+	}
 }
 
 // Mentorship is the resolver for the mentorship field.

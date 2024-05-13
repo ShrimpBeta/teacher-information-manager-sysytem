@@ -106,6 +106,9 @@ export class SciResearchService {
   uploadFile(file: File): Observable<EditSciResearch[] | null> {
     return this.apollo.mutate({
       mutation: uploadSciResearchsMutation,
+      context: {
+        useMultipart: true
+      },
       variables: {
         file: file
       }

@@ -17,6 +17,9 @@ export class MentorshipService {
   getMentorship(id: string): Observable<Mentorship | null> {
     return this.apollo.query({
       query: mentorshipQuery,
+      context: {
+        useMultipart: true
+      },
       variables: {
         id: id
       }

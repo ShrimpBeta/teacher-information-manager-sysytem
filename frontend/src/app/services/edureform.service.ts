@@ -107,6 +107,9 @@ export class EduReformService {
   uploadFile(file: File): Observable<EditEduReform[] | null> {
     return this.apollo.mutate({
       mutation: uploadEduReformsMutation,
+      context: {
+        useMultipart: true
+      },
       variables: {
         file: file
       }

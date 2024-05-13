@@ -527,7 +527,7 @@ type MutationResolver interface {
 	CreateSciResearch(ctx context.Context, sciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error)
 	UpdateSciResearch(ctx context.Context, id string, sciResearchData graphql_models.SciResearchData) (*graphql_models.SciResearch, error)
 	DeleteSciResearch(ctx context.Context, id string) (*graphql_models.SciResearch, error)
-	UploadSciResearchs(ctx context.Context, file graphql.Upload) (*graphql_models.SciResearchPreview, error)
+	UploadSciResearchs(ctx context.Context, file graphql.Upload) ([]*graphql_models.SciResearchPreview, error)
 	CreateUGPGGuidance(ctx context.Context, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error)
 	UpdateUGPGGuidance(ctx context.Context, id string, uGPGGuidanceData graphql_models.UGPGGuidanceData) (*graphql_models.UGPGGuidance, error)
 	DeleteUGPGGuidance(ctx context.Context, id string) (*graphql_models.UGPGGuidance, error)
@@ -12634,9 +12634,9 @@ func (ec *executionContext) _Mutation_uploadSciResearchs(ctx context.Context, fi
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*graphql_models.SciResearchPreview)
+	res := resTmp.([]*graphql_models.SciResearchPreview)
 	fc.Result = res
-	return ec.marshalNSciResearchPreview2ᚖserverᚋgraphᚋmodelᚐSciResearchPreview(ctx, field.Selections, res)
+	return ec.marshalNSciResearchPreview2ᚕᚖserverᚋgraphᚋmodelᚐSciResearchPreview(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_uploadSciResearchs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -29109,18 +29109,42 @@ func (ec *executionContext) unmarshalNSciResearchFilter2serverᚋgraphᚋmodel�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNSciResearchPreview2serverᚋgraphᚋmodelᚐSciResearchPreview(ctx context.Context, sel ast.SelectionSet, v graphql_models.SciResearchPreview) graphql.Marshaler {
-	return ec._SciResearchPreview(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNSciResearchPreview2ᚖserverᚋgraphᚋmodelᚐSciResearchPreview(ctx context.Context, sel ast.SelectionSet, v *graphql_models.SciResearchPreview) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
+func (ec *executionContext) marshalNSciResearchPreview2ᚕᚖserverᚋgraphᚋmodelᚐSciResearchPreview(ctx context.Context, sel ast.SelectionSet, v []*graphql_models.SciResearchPreview) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
 	}
-	return ec._SciResearchPreview(ctx, sel, v)
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalOSciResearchPreview2ᚖserverᚋgraphᚋmodelᚐSciResearchPreview(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	return ret
 }
 
 func (ec *executionContext) marshalNSciResearchQuery2serverᚋgraphᚋmodelᚐSciResearchQuery(ctx context.Context, sel ast.SelectionSet, v graphql_models.SciResearchQuery) graphql.Marshaler {
@@ -30226,6 +30250,13 @@ func (ec *executionContext) marshalOSciResearch2ᚖserverᚋgraphᚋmodelᚐSciR
 		return graphql.Null
 	}
 	return ec._SciResearch(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOSciResearchPreview2ᚖserverᚋgraphᚋmodelᚐSciResearchPreview(ctx context.Context, sel ast.SelectionSet, v *graphql_models.SciResearchPreview) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return ec._SciResearchPreview(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalOString2ᚕᚖstring(ctx context.Context, v interface{}) ([]*string, error) {

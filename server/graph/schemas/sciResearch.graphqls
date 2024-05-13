@@ -110,5 +110,5 @@ extend type Mutation {
   updateSciResearch(id: ID!, sciResearchData: SciResearchData!): SciResearch!
   deleteSciResearch(id: ID!): SciResearch!
 
-  uploadSciResearchs(file: Upload!): SciResearchPreview!
+  uploadSciResearchs(file: Upload!): [SciResearchPreview]!
 }

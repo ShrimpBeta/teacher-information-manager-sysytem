@@ -2,13 +2,11 @@ package services
 
 import (
 	"errors"
-	"fmt"
 	graphql_models "server/graph/model"
 	"server/persistence/models"
 	"server/persistence/repository"
 	"time"
 
-	"github.com/99designs/gqlgen/graphql"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -383,8 +381,4 @@ func (s *SciResearchService) GetSciResearchsByFilter(userId primitive.ObjectID, 
 		TotalCount:   len(sciResearchsData),
 		SciResearchs: sciResearchs,
 	}, nil
-}
-
-func (s *SciResearchService) UploadSciResearchs(file graphql.Upload, userRepo *repository.UserRepo) (*graphql_models.SciResearchPreview, error) {
-	panic(fmt.Errorf("not implemented: UploadSciResearchs - uploadSciResearchs"))
 }

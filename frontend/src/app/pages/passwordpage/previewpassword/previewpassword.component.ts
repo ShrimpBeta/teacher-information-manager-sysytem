@@ -1,24 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { PasswordService } from '../../../services/password.service';
+import { Subject, takeUntil } from 'rxjs';
+import { EditPassword } from '../../../models/models/password.model';
 
 @Component({
   selector: 'app-previewpassword',
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, MatProgressBarModule, MatCardModule],
+  imports: [MatButtonModule, MatIconModule, MatProgressBarModule, MatCardModule, MatProgressSpinnerModule],
   templateUrl: './previewpassword.component.html',
   styleUrl: './previewpassword.component.scss'
 })
-export class PreviewpasswordComponent {
+export class PreviewpasswordComponent implements OnInit, OnDestroy {
+
+  private destroy$: Subject<boolean> = new Subject<boolean>();
+
   constructor(
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private passwordService: PasswordService
   ) { }
 
-  progress = 0;
+  progressing = false;
   file: File | null = null;
+  newPasswordList: EditPassword[] = [];
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -54,8 +63,29 @@ export class PreviewpasswordComponent {
 
   onUpload() {
     if (this.file) {
-
+      this.progressing = true;
+      this.passwordService.uploadFile(this.file).pipe(takeUntil(this.destroy$)).subscribe({
+        next: (datas) => {
+          console.log(datas);
+          this.file = null;
+          this.progressing = false;
+        },
+        error: (error) => {
+          console.log(error);
+          this.progressing = false;
+          this.snackBar.open('解析失败或上传失败', '关闭', { duration: 2000 });
+        }
+      });
     }
+  }
+
+  ngOnInit() {
+
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
 }

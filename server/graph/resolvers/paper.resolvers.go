@@ -7,8 +7,10 @@ package resolvers
 import (
 	"context"
 	"fmt"
+	"io"
 	graphql_models "server/graph/model"
 	"server/middlewares"
+	"server/services/excel"
 
 	"github.com/99designs/gqlgen/graphql"
 )
@@ -85,7 +87,21 @@ func (r *mutationResolver) UploadPapers(ctx context.Context, file graphql.Upload
 	if err != nil {
 		return nil, err
 	}
-	panic(fmt.Errorf("not implemented: UploadPapers - uploadPapers"))
+
+	if file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" {
+		fileBytes, err := io.ReadAll(file.File)
+		if err != nil {
+			return nil, err
+		}
+		users, err := r.UserService.GetUserExports()
+		if err != nil {
+			return nil, err
+		}
+		return excel.ConvertToPaper(fileBytes, users)
+	} else {
+		return nil, fmt.Errorf("Invalid file type")
+
+	}
 }
 
 // Paper is the resolver for the paper field.

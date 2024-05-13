@@ -2,10 +2,9 @@ import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { AuthRepository } from "../core/auth/auth.repository";
 import { passwordTrueQuery, passwordsByFilterQuery, passwordsTrueQuery } from "../models/graphql/query/password.query.graphql";
-import { deletePasswordMutation, updatePasswordMutation, createPasswordMutation } from "../models/graphql/mutation/password.mutation.graphql";
+import { deletePasswordMutation, updatePasswordMutation, createPasswordMutation, uploadPasswordsMutation } from "../models/graphql/mutation/password.mutation.graphql";
 import { CreatePasswordResponse, DeletePasswordResponse, EditPassword, Password, PasswordFilter, PasswordsByFilterResponse, PasswordsPage, PasswordsTrueResponse, PasswordTrue, PasswordTrueResponse, UpdatePasswordResponse, UploadPasswordsResponse } from "../models/models/password.model";
 import { map, Observable } from "rxjs";
-import { uploadPapersMutation } from "../models/graphql/mutation/paper.mutation.graphql";
 
 @Injectable({
   providedIn: 'root'
@@ -126,7 +125,10 @@ export class PasswordService {
 
   uploadFile(file: File): Observable<EditPassword[] | null> {
     return this.apollo.mutate({
-      mutation: uploadPapersMutation,
+      mutation: uploadPasswordsMutation,
+      context: {
+        useMultipart: true
+      },
       variables: {
         file: file
       }
