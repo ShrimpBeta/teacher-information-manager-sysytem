@@ -423,8 +423,8 @@ type PasswordFilter struct {
 type PasswordPreview struct {
 	URL         *string `json:"url,omitempty"`
 	AppName     *string `json:"appName,omitempty"`
-	Account     string  `json:"account"`
-	Password    string  `json:"password"`
+	Account     *string `json:"account,omitempty"`
+	Password    *string `json:"password,omitempty"`
 	Description *string `json:"description,omitempty"`
 }
 

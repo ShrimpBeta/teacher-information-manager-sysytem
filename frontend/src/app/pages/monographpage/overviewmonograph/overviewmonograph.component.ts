@@ -96,7 +96,7 @@ export class OverviewmonographComponent {
       const monographExport = new MonographExport();
       monographExport.title = monograph.title;
       monographExport.teachersIn = monograph.teachersIn.map(teacher => teacher.username).join(',');
-      monographExport.teachersOut = monograph.teachersOut.join(',');
+      monographExport.teachersOut = monograph.teachersOut?.join(',');
       monographExport.publishLevel = monograph.publishLevel;
       monographExport.rank = monograph.rank;
       monographExport.publishDate = monograph.publishDate;

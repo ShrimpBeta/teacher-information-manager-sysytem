@@ -117,7 +117,7 @@ export class OverviewedureformComponent implements OnInit, OnDestroy {
     let worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(eduReformExports);
     let workbook: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-    XLSX.writeFile(workbook, 'eduReform.xlsx');
+    XLSX.writeFile(workbook, 'EduReform.xlsx');
   }
 
 

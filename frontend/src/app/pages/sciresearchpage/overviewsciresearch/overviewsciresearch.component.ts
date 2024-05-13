@@ -124,7 +124,7 @@ export class OverviewsciresearchComponent implements OnInit, OnDestroy {
     let worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(sciResearchExports);
     let workbook: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
-    XLSX.writeFile(workbook, 'sciResearch.xlsx');
+    XLSX.writeFile(workbook, 'SciResearch.xlsx');
   }
 
   getTeacherInNames(teacherIn: UserExport[]): string {

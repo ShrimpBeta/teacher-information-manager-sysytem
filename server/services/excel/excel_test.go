@@ -15,7 +15,7 @@ func TestReadFile(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	data, err := ReadFile(file)
+	data, err := ConvertToUGPGGuidance(file)
 	if err != nil {
 		t.Fatal(err)
 	}
