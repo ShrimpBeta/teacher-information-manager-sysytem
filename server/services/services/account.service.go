@@ -68,7 +68,7 @@ func (accountService *AccountService) GetAccounts() ([]*models.RestfulUser, erro
 			ID:        userData.ID.Hex(),
 			Username:  userData.Username,
 			Email:     userData.Email,
-			Avatar:    environment.ServeURL + "/avatars/" + userData.Avatar,
+			Avatar:    environment.ServerURL + "/avatars/" + userData.Avatar,
 			Activate:  userData.Activate,
 			CreatedAt: userData.CreatedAt.Time(),
 		})

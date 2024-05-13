@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"encoding/json"
 	"fmt"
 	"io/fs"
 	"log"
@@ -19,6 +20,7 @@ import (
 	"server/services/services"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
@@ -71,10 +73,110 @@ func playgroundHandler() gin.HandlerFunc {
 	}
 }
 
+type Config struct {
+	ServerURL                string        `json:"server_url"`
+	ServerPort               string        `json:"server_port"`
+	MongodbUrl               string        `json:"mongodb_url"`
+	DatabaseName             string        `json:"database_name"`
+	RedisAddress             string        `json:"redis_address"`
+	AllowOrigins             string        `json:"allow_origins"`
+	GraphQL                  string        `json:"graphql"`
+	Playground               string        `json:"playground"`
+	Restful                  string        `json:"restful"`
+	AdminAccount             string        `json:"admin_account"`
+	AdminPassword            string        `json:"admin_password"`
+	UserTokenExpireTime      time.Duration `json:"user_token_expire_time"`
+	AdminTokenExpireDuration time.Duration `json:"admin_token_expire_duration"`
+	CodeExpireTime           time.Duration `json:"code_expire_time"`
+	GenerateLimitTime        time.Duration `json:"generate_limit_time"`
+	EmailHost                string        `json:"email_host"`
+	EmailPort                int           `json:"email_port"`
+	EmailUsername            string        `json:"email_username"`
+	EmailPassword            string        `json:"email_password"`
+	AppID                    string        `json:"app_id"`
+	AppSecret                string        `json:"app_secret"`
+	TesseractPath            string        `json:"tesseract_path"`
+}
+
 func main() {
 
+	//load config.json
+	configFile := "config.json"
+	if _, err := os.Stat(configFile); os.IsNotExist(err) {
+		// if config.json not exist, create it
+		defaultConfig := Config{
+			ServerURL:                environment.ServerURL,
+			ServerPort:               environment.ServerPort,
+			MongodbUrl:               environment.MongodbUrl,
+			DatabaseName:             environment.DatabaseName,
+			RedisAddress:             environment.RedisAddress,
+			AllowOrigins:             environment.AllowOrigins,
+			GraphQL:                  environment.GraphQL,
+			Playground:               environment.Playground,
+			Restful:                  environment.Restful,
+			AdminAccount:             environment.AdminAccount,
+			AdminPassword:            environment.AdminPassword,
+			UserTokenExpireTime:      environment.UserTokenExpireTime,
+			AdminTokenExpireDuration: environment.AdminTokenExpireDuration,
+			CodeExpireTime:           environment.CodeExpireTime,
+			GenerateLimitTime:        environment.GenerateLimitTime,
+			EmailHost:                environment.EmailHost,
+			EmailPort:                environment.EmailPort,
+			EmailUsername:            environment.EmailUsername,
+			EmailPassword:            environment.EmailPassword,
+			AppID:                    environment.AppID,
+			AppSecret:                environment.AppSecret,
+			TesseractPath:            environment.TesseractPath,
+		}
+
+		// Serialization Config
+		data, err := json.MarshalIndent(defaultConfig, "", "    ")
+		if err != nil {
+			log.Fatalf("Failed to marshal default config: %v", err)
+		}
+		err = os.WriteFile(configFile, data, 0666)
+		if err != nil {
+			log.Fatal("Failed to write config file")
+		}
+		fmt.Println("No Config file, created Config file, please modify it and restart the server")
+		os.Exit(0)
+	} else {
+		// if config.json exist, load it
+		data, err := os.ReadFile(configFile)
+		if err != nil {
+			log.Fatal("Failed to read config file")
+		}
+		var config Config
+		err = json.Unmarshal(data, &config)
+		if err != nil {
+			log.Fatal("Failed to unmarshal config file")
+		}
+		environment.ServerURL = config.ServerURL
+		environment.ServerPort = config.ServerPort
+		environment.MongodbUrl = config.MongodbUrl
+		environment.DatabaseName = config.DatabaseName
+		environment.RedisAddress = config.RedisAddress
+		environment.AllowOrigins = config.AllowOrigins
+		environment.GraphQL = config.GraphQL
+		environment.Playground = config.Playground
+		environment.Restful = config.Restful
+		environment.AdminAccount = config.AdminAccount
+		environment.AdminPassword = config.AdminPassword
+		environment.UserTokenExpireTime = config.UserTokenExpireTime
+		environment.AdminTokenExpireDuration = config.AdminTokenExpireDuration
+		environment.CodeExpireTime = config.CodeExpireTime
+		environment.GenerateLimitTime = config.GenerateLimitTime
+		environment.EmailHost = config.EmailHost
+		environment.EmailPort = config.EmailPort
+		environment.EmailUsername = config.EmailUsername
+		environment.EmailPassword = config.EmailPassword
+		environment.AppID = config.AppID
+		environment.AppSecret = config.AppSecret
+		environment.TesseractPath = config.TesseractPath
+	}
+
 	// Database Connect
-	DB := database.Connect(environment.DefaultMongodbUrl)
+	DB := database.Connect(environment.MongodbUrl)
 	defer DB.DisConnect()
 
 	// init redis
@@ -110,6 +212,11 @@ func main() {
 
 	// if static folder not exist, create it
 	err := os.MkdirAll(filepath.Dir("assets/avatars/avatar.png"), os.ModePerm)
+	if err != nil {
+		log.Fatal("Failed to create static folder")
+	}
+	// create temp folder for file upload
+	err = os.MkdirAll(filepath.Dir("temp/unknown"), os.ModePerm)
 	if err != nil {
 		log.Fatal("Failed to create static folder")
 	}
@@ -162,7 +269,7 @@ func main() {
 	})
 
 	go func() {
-		if err := r.Run(`:` + environment.DefaultPort); err != nil {
+		if err := r.Run(`:` + environment.ServerPort); err != nil {
 			log.Fatalf("Failed to start server: %v", err)
 		}
 	}()
