@@ -5,20 +5,30 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDividerModule } from '@angular/material/divider';
+import { PasswordformComponent } from '../../../components/passwordform/passwordform.component';
 import { PasswordService } from '../../../services/password.service';
 import { Subject, takeUntil } from 'rxjs';
 import { EditPassword } from '../../../models/models/password.model';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { URLValidator } from '../../../shared/formvalidator/url.validator';
 
 @Component({
   selector: 'app-previewpassword',
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, MatProgressBarModule, MatCardModule, MatProgressSpinnerModule],
+  imports: [MatButtonModule, MatIconModule, MatProgressBarModule, MatCardModule, MatProgressSpinnerModule,
+    PasswordformComponent, MatDividerModule
+  ],
   templateUrl: './previewpassword.component.html',
   styleUrl: './previewpassword.component.scss'
 })
 export class PreviewpasswordComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<boolean> = new Subject<boolean>();
+  passwordForm!: FormGroup;
+  newPasswordList: EditPassword[] = [];
+  index: number = 0;
+  buttonLabel: string = '创建';
 
   constructor(
     private snackBar: MatSnackBar,
@@ -27,7 +37,7 @@ export class PreviewpasswordComponent implements OnInit, OnDestroy {
 
   progressing = false;
   file: File | null = null;
-  newPasswordList: EditPassword[] = [];
+
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
@@ -66,9 +76,19 @@ export class PreviewpasswordComponent implements OnInit, OnDestroy {
       this.progressing = true;
       this.passwordService.uploadFile(this.file).pipe(takeUntil(this.destroy$)).subscribe({
         next: (datas) => {
-          console.log(datas);
-          this.file = null;
-          this.progressing = false;
+          if (datas) {
+            console.log(datas);
+            this.file = null;
+            this.progressing = false;
+            this.newPasswordList = datas
+            this.passwordForm = new FormGroup({
+              url: new FormControl(datas[0].url || '', [URLValidator()]),
+              appName: new FormControl(datas[0].appName || ''),
+              account: new FormControl(datas[0].account || '', [Validators.required]),
+              password: new FormControl(datas[0].password || '', [Validators.required]),
+              description: new FormControl(datas[0].description || '')
+            });
+          }
         },
         error: (error) => {
           console.log(error);
@@ -77,6 +97,24 @@ export class PreviewpasswordComponent implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  createPassword(event: any) {
+    this.passwordService.createPassword(this.passwordForm.value)
+      .pipe(takeUntil(this.destroy$)).subscribe(
+        {
+          next: (password) => {
+            if (password) {
+              this.snackBar.open('创建密码成功', '关闭', { duration: 3000 });
+
+            } else {
+              this.snackBar.open('创建密码失败', '关闭', { duration: 3000 });
+            }
+          },
+          error: (error) => {
+            this.snackBar.open('创建密码失败', '关闭', { duration: 3000 });
+          }
+        })
   }
 
   ngOnInit() {
