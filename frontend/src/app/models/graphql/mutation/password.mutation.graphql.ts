@@ -39,6 +39,7 @@ export const uploadPasswordsMutation = gql`
     uploadPasswords(file: $file) {
       url
       appName
+      account
       password
       description
     }

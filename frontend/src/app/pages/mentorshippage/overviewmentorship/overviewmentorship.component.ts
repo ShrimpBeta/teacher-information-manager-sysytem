@@ -44,7 +44,7 @@ export class OverviewmentorshipComponent implements OnInit, OnDestroy {
   totalCount: number = 0;
   pageIndex: number = 0;
   pageSize: number = 10;
-  pageSizeOptions: number[] = [6, 10, 24, 50, 100];
+  pageSizeOptions: number[] = [10, 25, 50, 100];
 
   displayedColumns: string[] = ['select', 'action', 'projectName', 'studentNames', 'grade', 'guidanceDate', 'createdAt', 'updatedAt'];
 

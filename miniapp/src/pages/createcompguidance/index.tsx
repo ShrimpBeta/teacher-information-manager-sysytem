@@ -22,6 +22,8 @@ function Index() {
   const submitSucceed = (values: any) => {
     let { projectName, studentNames, competitionScore, awardStatus } = values
 
+    
+
     let createCompGuidanceData = new EditCompGuidance();
     createCompGuidanceData.projectName = projectName;
     createCompGuidanceData.studentNames = studentNames.split(/[,，]/);

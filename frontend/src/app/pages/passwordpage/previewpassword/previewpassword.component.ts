@@ -49,6 +49,8 @@ export class PreviewpasswordComponent implements OnInit, OnDestroy {
         this.snackBar.open('文件格式错误', '关闭', { duration: 2000 })
       }
     }
+
+    input.value = '';
   }
 
   onDrop(event: DragEvent) {
@@ -99,12 +101,56 @@ export class PreviewpasswordComponent implements OnInit, OnDestroy {
     }
   }
 
+  onPrevious() {
+    if (this.index > 0) {
+      this.index--;
+      this.passwordForm = new FormGroup({
+        url: new FormControl(this.newPasswordList[this.index].url || '', [URLValidator()]),
+        appName: new FormControl(this.newPasswordList[this.index].appName || ''),
+        account: new FormControl(this.newPasswordList[this.index].account || '', [Validators.required]),
+        password: new FormControl(this.newPasswordList[this.index].password || '', [Validators.required]),
+        description: new FormControl(this.newPasswordList[this.index].description || '')
+      });
+    }
+  }
+
+  onNext() {
+    if (this.index < this.newPasswordList.length - 1) {
+      this.index++;
+      this.passwordForm = new FormGroup({
+        url: new FormControl(this.newPasswordList[this.index].url || '', [URLValidator()]),
+        appName: new FormControl(this.newPasswordList[this.index].appName || ''),
+        account: new FormControl(this.newPasswordList[this.index].account || '', [Validators.required]),
+        password: new FormControl(this.newPasswordList[this.index].password || '', [Validators.required]),
+        description: new FormControl(this.newPasswordList[this.index].description || '')
+      });
+    }
+  }
+
   createPassword(event: any) {
+
     this.passwordService.createPassword(this.passwordForm.value)
       .pipe(takeUntil(this.destroy$)).subscribe(
         {
           next: (password) => {
             if (password) {
+              // remove the password from the list
+              this.newPasswordList.splice(this.index, 1);
+              // reset the form
+              if (this.index > this.newPasswordList.length - 1 && this.newPasswordList.length > 0) {
+                this.index = this.newPasswordList.length - 1;
+              }
+
+              if (this.newPasswordList.length > 0) {
+                this.passwordForm = new FormGroup({
+                  url: new FormControl(this.newPasswordList[this.index].url || '', [URLValidator()]),
+                  appName: new FormControl(this.newPasswordList[this.index].appName || ''),
+                  account: new FormControl(this.newPasswordList[this.index].account || '', [Validators.required]),
+                  password: new FormControl(this.newPasswordList[this.index].password || '', [Validators.required]),
+                  description: new FormControl(this.newPasswordList[this.index].description || '')
+                });
+              }
+
               this.snackBar.open('创建密码成功', '关闭', { duration: 3000 });
 
             } else {
