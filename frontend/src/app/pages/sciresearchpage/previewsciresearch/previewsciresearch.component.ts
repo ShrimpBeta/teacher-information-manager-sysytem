@@ -11,11 +11,16 @@ import { UserExport } from '../../../models/models/user.model';
 import { SciResearchService } from '../../../services/sciresearch.service';
 import { AuthRepository } from '../../../core/auth/auth.repository';
 import { UserService } from '../../../services/user.service';
+import { SciresearchformComponent } from '../../../components/sciresearchform/sciresearchform.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-previewsciresearch',
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, MatProgressBarModule, MatCardModule],
+  imports: [MatButtonModule, MatIconModule, MatProgressBarModule, MatCardModule, MatProgressSpinnerModule,
+    SciresearchformComponent, MatDividerModule
+  ],
   templateUrl: './previewsciresearch.component.html',
   styleUrl: './previewsciresearch.component.scss'
 })
@@ -112,7 +117,7 @@ export class PreviewsciresearchComponent implements OnInit, OnDestroy {
 
     let teachersInControlArray = this.sciResearchForm.get('teachersIn') as FormArray;
     if (teachersInControlArray && teachersInControlArray.length > 0) {
-      newSciResearch.teachersIn = teachersInControlArray.controls.map((control) => control.value.id);
+      newSciResearch.teachersIn = teachersInControlArray.controls.map((control) => control.value.id).filter((id) => id !== this.userId);
     }
     let teachersOutControlArray = this.sciResearchForm.get('teachersOut') as FormArray;
     if (teachersOutControlArray && teachersOutControlArray.length > 0) {

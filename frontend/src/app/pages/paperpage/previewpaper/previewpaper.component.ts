@@ -115,7 +115,7 @@ export class PreviewpaperComponent implements OnInit, OnDestroy {
 
     let teachersInControlArray = this.paperForm.get('teachersIn') as FormArray;
     if (teachersInControlArray && teachersInControlArray.length > 0) {
-      newPaper.teachersIn = teachersInControlArray.controls.map((control) => control.value.id);
+      newPaper.teachersIn = teachersInControlArray.controls.map((control) => control.value.id).filter((id) => id !== this.userId);
     }
 
     let teachersOutControlArray = this.paperForm.get('teachersOut') as FormArray;

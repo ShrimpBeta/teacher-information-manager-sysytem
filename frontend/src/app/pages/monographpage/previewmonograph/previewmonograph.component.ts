@@ -115,7 +115,7 @@ export class PreviewmonographComponent implements OnInit, OnDestroy {
 
     let teachersInControlArray = this.monographForm.get('teachersIn') as FormArray;
     if (teachersInControlArray && teachersInControlArray.length > 0) {
-      newMonograph.teachersIn = teachersInControlArray.controls.map((control) => control.value.id);
+      newMonograph.teachersIn = teachersInControlArray.controls.map((control) => control.value.id).filter((id) => id !== this.userId);
     }
 
     let teachersOutControlArray = this.monographForm.get('teachersOut') as FormArray;

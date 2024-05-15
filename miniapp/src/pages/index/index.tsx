@@ -126,7 +126,7 @@ const Index = (props: PropsWithChildren) => {
 
   return (
     <>
-      <View className='container'>
+      <View className='container' style={{ overflowY: 'auto' }}>
 
         <View style={{
           display: 'flex', flexWrap: 'wrap', gap: '40rpx', marginTop: '30rpx',
@@ -175,11 +175,60 @@ const Index = (props: PropsWithChildren) => {
           </View>
         </View>
 
-        {data && <View style={{ padding: '20px', width: '100%', boxSizing: 'border-box' }}>
-          <View style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-            <View style={{ flex: 1 }}>主题</View>
+        {data && <View style={{ padding: '20px', width: '100%', boxSizing: 'border-box', }}>
+          <View style={{ display: 'flex', flexDirection: 'row', width: '100%', border: '1px solid #ccc' }}>
+            <View style={{ flex: 1, borderRight: '1px solid #ccc' }}>主题</View>
             <View style={{ flex: 4 }}>内容</View>
           </View>
+          <View style={{ display: 'flex', flexDirection: 'row', width: '100%', border: '1px solid #ccc' }}>
+            时间段 {startDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })} 到 {endDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}
+          </View>
+          <View style={{ display: 'flex', flexDirection: 'row', width: '100%', border: '1px solid #ccc' }}>
+            <View style={{ flex: 1, borderRight: '1px solid #ccc' }}>包含教师</View>
+            <View style={{ flex: 4 }}>{data.report.teachers.join('、')}</View>
+          </View>
+          {(data.report.paperReport.length > 0 || data.report.monographReport.length > 0 || data.report.sciResearchReport.length > 0)
+            && <View style={{ display: 'flex', flexDirection: 'row', width: '100%', border: '1px solid #ccc' }}>
+              科研工作
+            </View>
+          }
+          {data.report.monographReport.length > 0 && <View style={{ display: 'flex', flexDirection: 'row', width: '100%', border: '1px solid #ccc' }}>
+            <View style={{ flex: 1, borderRight: '1px solid #ccc' }}>专著</View>
+            <View style={{ flex: 4 }}>{data.report.monographReport.join('、')}</View>
+          </View>}
+          {data.report.paperReport.length > 0 && <View style={{ display: 'flex', flexDirection: 'row', width: '100%', border: '1px solid #ccc' }}>
+            <View style={{ flex: 1, borderRight: '1px solid #ccc' }}>论文</View>
+            <View style={{ flex: 4 }}>{data.report.paperReport.join('、')}</View>
+          </View>}
+          {data.report.sciResearchReport.length > 0 && <View style={{ display: 'flex', flexDirection: 'row', width: '100%', border: '1px solid #ccc' }}>
+            <View style={{ flex: 1, borderRight: '1px solid #ccc' }}>科研项目</View>
+            <View style={{ flex: 4 }}>{data.report.sciResearchReport.join('、')}</View>
+          </View>}
+          {(data.report.classScheduleReport.length > 0 || data.report.mentorshipReport.length > 0 || data.report.compGuidanceReport.length > 0 || data.report.uGPGGuidanceReport.length > 0 || data.report.eduReformReport.length > 0)
+            && <View style={{ display: 'flex', flexDirection: 'row', width: '100%', border: '1px solid #ccc' }}>
+              教学工作
+            </View>
+          }
+          {data.report.classScheduleReport.length > 0 && <View style={{ display: 'flex', flexDirection: 'row', width: '100%', border: '1px solid #ccc' }}>
+            <View style={{ flex: 1, borderRight: '1px solid #ccc' }}>教授课程</View>
+            <View style={{ flex: 4 }}>{data.report.classScheduleReport.join('、')}</View>
+          </View>}
+          {data.report.mentorshipReport.length > 0 && <View style={{ display: 'flex', flexDirection: 'row', width: '100%', border: '1px solid #ccc' }}>
+            <View style={{ flex: 1, borderRight: '1px solid #ccc' }}>导师制</View>
+            <View style={{ flex: 4 }}>{data.report.mentorshipReport.join('、')}</View>
+          </View>}
+          {data.report.compGuidanceReport.length > 0 && <View style={{ display: 'flex', flexDirection: 'row', width: '100%', border: '1px solid #ccc' }}>
+            <View style={{ flex: 1, borderRight: '1px solid #ccc' }}>竞赛指导</View>
+            <View style={{ flex: 4 }}>{data.report.compGuidanceReport.join('、')}</View>
+          </View>}
+          {data.report.uGPGGuidanceReport.length > 0 && <View style={{ display: 'flex', flexDirection: 'row', width: '100%', border: '1px solid #ccc' }}>
+            <View style={{ flex: 1, borderRight: '1px solid #ccc' }}>本科生/研究生毕设指导</View>
+            <View style={{ flex: 4 }}>{data.report.uGPGGuidanceReport.join('、')}</View>
+          </View>}
+          {data.report.eduReformReport.length > 0 && <View style={{ display: 'flex', flexDirection: 'row', width: '100%', border: '1px solid #ccc' }}>
+            <View style={{ flex: 1, borderRight: '1px solid #ccc' }}>教改项目</View>
+            <View style={{ flex: 4 }}>{data.report.eduReformReport.join('、')}</View>
+          </View>}
         </View>}
 
         <Popup

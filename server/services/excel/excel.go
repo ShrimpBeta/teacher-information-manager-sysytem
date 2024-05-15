@@ -49,6 +49,18 @@ func ReadFile(file []byte) ([][]string, error) {
 	return rows, nil
 }
 
+func parseTimeOrNil(timeStr string) *time.Time {
+	if timeStr == "" {
+		return nil
+	}
+	t, err := time.Parse(time.RFC3339, timeStr)
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	return &t
+}
+
 func ConvertToCompGuidance(file []byte) ([]*graphql_models.CompGuidancePreview, error) {
 
 	datas, err := ReadFile(file)
@@ -62,25 +74,11 @@ func ConvertToCompGuidance(file []byte) ([]*graphql_models.CompGuidancePreview, 
 		indexMap[title] = i
 	}
 
-	projectNameKey := "项目名称"
-	if _, ok := indexMap[projectNameKey]; !ok {
-		projectNameKey = "projectName"
-	}
-	studentNamesKey := "学生姓名"
-	if _, ok := indexMap[studentNamesKey]; !ok {
-		studentNamesKey = "studentNames"
-	}
-	competitionScoreKey := "竞赛成绩"
-	if _, ok := indexMap[competitionScoreKey]; !ok {
-		competitionScoreKey = "competitionScore"
-	}
-	guidanceDateKey := "指导日期"
-	if _, ok := indexMap[guidanceDateKey]; !ok {
-		guidanceDateKey = "guidanceDate"
-	}
-	awardStatusKey := "获奖情况"
-	if _, ok := indexMap[awardStatusKey]; !ok {
-		awardStatusKey = "awardStatus"
+	safeGetData := func(data []string, key string) string {
+		if index, ok := indexMap[key]; ok {
+			return data[index]
+		}
+		return ""
 	}
 
 	var compGuidancePreviews []*graphql_models.CompGuidancePreview
@@ -89,27 +87,40 @@ func ConvertToCompGuidance(file []byte) ([]*graphql_models.CompGuidancePreview, 
 			continue
 		}
 
-		projectName := data[indexMap[projectNameKey]]
-		studentNamesStrs := strings.Split(data[indexMap[studentNamesKey]], ",")
+		projectName := safeGetData(data, "项目名称")
+		if projectName == "" {
+			projectName = safeGetData(data, "projectName")
+		}
+		studentNamesStrs := safeGetData(data, "学生姓名")
+		if studentNamesStrs == "" {
+			studentNamesStrs = safeGetData(data, "studentNames")
+		}
 		var studentNames []*string
-		for _, name := range studentNamesStrs {
-			name := name
-			studentNames = append(studentNames, &name)
+		if studentNamesStrs != "" {
+			for _, name := range strings.Split(studentNamesStrs, ",") {
+				tempName := name
+				studentNames = append(studentNames, &tempName)
+			}
 		}
-		competitionScore := data[indexMap[competitionScoreKey]]
-		guidanceDateStr := data[indexMap[guidanceDateKey]]
-		guidanceDate, err := time.Parse(time.RFC3339, guidanceDateStr)
-		if err != nil {
-			fmt.Println(err)
-			return nil, err
+		competitionScore := safeGetData(data, "竞赛成绩")
+		if competitionScore == "" {
+			competitionScore = safeGetData(data, "competitionScore")
 		}
-		awardStatus := data[indexMap[awardStatusKey]]
+		guidanceDateStr := safeGetData(data, "指导日期")
+		if guidanceDateStr == "" {
+			guidanceDateStr = safeGetData(data, "guidanceDate")
+		}
+		guidanceDate := parseTimeOrNil(guidanceDateStr)
+		awardStatus := safeGetData(data, "获奖情况")
+		if awardStatus == "" {
+			awardStatus = safeGetData(data, "awardStatus")
+		}
 
 		compGuidancePreview := graphql_models.CompGuidancePreview{
 			ProjectName:      &projectName,
 			StudentNames:     studentNames,
 			CompetitionScore: &competitionScore,
-			GuidanceDate:     &guidanceDate,
+			GuidanceDate:     guidanceDate,
 			AwardStatus:      &awardStatus,
 		}
 		compGuidancePreviews = append(compGuidancePreviews, &compGuidancePreview)
@@ -131,45 +142,11 @@ func ConvertToEduReform(file []byte, users []*graphql_models.UserExport) ([]*gra
 		indexMap[title] = i
 	}
 
-	titleKey := "项目名称"
-	if _, ok := indexMap[titleKey]; !ok {
-		titleKey = "title"
-	}
-	teachersInKey := "系统内教师"
-	if _, ok := indexMap[teachersInKey]; !ok {
-		teachersInKey = "teachersIn"
-	}
-	teachersOutKey := "系统外教师"
-	if _, ok := indexMap[teachersOutKey]; !ok {
-		teachersOutKey = "teachersOut"
-	}
-	numberkey := "项目编号"
-	if _, ok := indexMap[numberkey]; !ok {
-		numberkey = "number"
-	}
-	startDateKey := "开始日期"
-	if _, ok := indexMap[startDateKey]; !ok {
-		startDateKey = "startDate"
-	}
-	durationKey := "持续时间"
-	if _, ok := indexMap[durationKey]; !ok {
-		durationKey = "duration"
-	}
-	levelKey := "项目级别"
-	if _, ok := indexMap[levelKey]; !ok {
-		levelKey = "level"
-	}
-	rankKey := "项目等级"
-	if _, ok := indexMap[rankKey]; !ok {
-		rankKey = "rank"
-	}
-	achievementKey := "项目成果"
-	if _, ok := indexMap[achievementKey]; !ok {
-		achievementKey = "achievement"
-	}
-	fundKey := "项目资金"
-	if _, ok := indexMap[fundKey]; !ok {
-		fundKey = "fund"
+	safeGetData := func(data []string, key string) string {
+		if index, ok := indexMap[key]; ok {
+			return data[index]
+		}
+		return ""
 	}
 
 	usersMap := make(map[string]graphql_models.UserExport)
@@ -184,39 +161,69 @@ func ConvertToEduReform(file []byte, users []*graphql_models.UserExport) ([]*gra
 			continue
 		}
 
-		title := data[indexMap[titleKey]]
-		teachersInStrs := strings.Split(data[indexMap[teachersInKey]], ",")
+		title := safeGetData(data, "项目名称")
+		if title == "" {
+			title = safeGetData(data, "title")
+		}
+		teachersInStrs := safeGetData(data, "系统内教师")
+		if teachersInStrs == "" {
+			teachersInStrs = safeGetData(data, "teachersIn")
+		}
 		var teachersIn []*graphql_models.UserExport
-		for _, name := range teachersInStrs {
-			if user, ok := usersMap[name]; ok {
-				teachersIn = append(teachersIn, &user)
+		if teachersInStrs != "" {
+			for _, name := range strings.Split(teachersInStrs, ",") {
+				if user, ok := usersMap[name]; ok {
+					teachersIn = append(teachersIn, &user)
+				}
 			}
 		}
-		teachersOutStrs := strings.Split(data[indexMap[teachersOutKey]], ",")
+		teachersOutStrs := safeGetData(data, "系统外教师")
+		if teachersOutStrs == "" {
+			teachersOutStrs = safeGetData(data, "teachersOut")
+		}
 		var teachersOut []*string
-		for _, name := range teachersOutStrs {
-			name := name
-			teachersOut = append(teachersOut, &name)
+		if teachersOutStrs != "" {
+			for _, name := range strings.Split(teachersOutStrs, ",") {
+				tempName := name
+				teachersOut = append(teachersOut, &tempName)
+			}
 		}
-		number := data[indexMap[numberkey]]
-		startDateStr := data[indexMap[startDateKey]]
-		startDate, err := time.Parse(time.RFC3339, startDateStr)
-		if err != nil {
-			fmt.Println(err)
-			return nil, err
+		number := safeGetData(data, "项目编号")
+		if number == "" {
+			number = safeGetData(data, "number")
 		}
-		duration := data[indexMap[durationKey]]
-		level := data[indexMap[levelKey]]
-		rank := data[indexMap[rankKey]]
-		achievement := data[indexMap[achievementKey]]
-		fund := data[indexMap[fundKey]]
+		startDateStr := safeGetData(data, "开始日期")
+		if startDateStr == "" {
+			startDateStr = safeGetData(data, "startDate")
+		}
+		startDate := parseTimeOrNil(startDateStr)
+		duration := safeGetData(data, "持续时间")
+		if duration == "" {
+			duration = safeGetData(data, "duration")
+		}
+		level := safeGetData(data, "项目级别")
+		if level == "" {
+			level = safeGetData(data, "level")
+		}
+		rank := safeGetData(data, "项目排名")
+		if rank == "" {
+			rank = safeGetData(data, "rank")
+		}
+		achievement := safeGetData(data, "项目成果")
+		if achievement == "" {
+			achievement = safeGetData(data, "achievement")
+		}
+		fund := safeGetData(data, "项目资金")
+		if fund == "" {
+			fund = safeGetData(data, "fund")
+		}
 
 		eduReformPreview := graphql_models.EduReformPreview{
 			Title:       &title,
 			TeachersIn:  teachersIn,
 			TeachersOut: teachersOut,
 			Number:      &number,
-			StartDate:   &startDate,
+			StartDate:   startDate,
 			Duration:    &duration,
 			Level:       &level,
 			Rank:        &rank,
@@ -242,21 +249,11 @@ func ConvertToMentorship(file []byte) ([]*graphql_models.MentorshipPreview, erro
 		indexMap[title] = i
 	}
 
-	projectNameKey := "项目名称"
-	if _, ok := indexMap[projectNameKey]; !ok {
-		projectNameKey = "projectName"
-	}
-	studentNamesKey := "学生姓名"
-	if _, ok := indexMap[studentNamesKey]; !ok {
-		studentNamesKey = "studentNames"
-	}
-	gradeKey := "成绩"
-	if _, ok := indexMap[gradeKey]; !ok {
-		gradeKey = "grade"
-	}
-	guidanceDateKey := "指导日期"
-	if _, ok := indexMap[guidanceDateKey]; !ok {
-		guidanceDateKey = "guidanceDate"
+	safeGetData := func(data []string, key string) string {
+		if index, ok := indexMap[key]; ok {
+			return data[index]
+		}
+		return ""
 	}
 
 	var mentorshipPreviews []*graphql_models.MentorshipPreview
@@ -266,26 +263,37 @@ func ConvertToMentorship(file []byte) ([]*graphql_models.MentorshipPreview, erro
 			continue
 		}
 
-		projectName := data[indexMap[projectNameKey]]
-		studentNamesStrs := strings.Split(data[indexMap[studentNamesKey]], ",")
+		projectName := safeGetData(data, "项目名称")
+		if projectName == "" {
+			projectName = safeGetData(data, "projectName")
+		}
+
+		studentNamesStrs := safeGetData(data, "学生姓名")
+		if studentNamesStrs == "" {
+			studentNamesStrs = safeGetData(data, "studentNames")
+		}
 		var studentNames []*string
-		for _, name := range studentNamesStrs {
-			name := name
-			studentNames = append(studentNames, &name)
+		if studentNamesStrs != "" {
+			for _, name := range strings.Split(studentNamesStrs, ",") {
+				tempName := name
+				studentNames = append(studentNames, &tempName)
+			}
 		}
-		grade := data[indexMap[gradeKey]]
-		guidanceDateStr := data[indexMap[guidanceDateKey]]
-		guidanceDate, err := time.Parse(time.RFC3339, guidanceDateStr)
-		if err != nil {
-			fmt.Println(err)
-			return nil, err
+		grade := safeGetData(data, "项目成绩")
+		if grade == "" {
+			grade = safeGetData(data, "grade")
 		}
+		guidanceDateStr := safeGetData(data, "指导日期")
+		if guidanceDateStr == "" {
+			guidanceDateStr = safeGetData(data, "guidanceDate")
+		}
+		guidanceDate := parseTimeOrNil(guidanceDateStr)
 
 		mentorshipPreview := graphql_models.MentorshipPreview{
 			ProjectName:  &projectName,
 			StudentNames: studentNames,
 			Grade:        &grade,
-			GuidanceDate: &guidanceDate,
+			GuidanceDate: guidanceDate,
 		}
 		mentorshipPreviews = append(mentorshipPreviews, &mentorshipPreview)
 	}
@@ -306,29 +314,11 @@ func ConvertToMonograph(file []byte, users []*graphql_models.UserExport) ([]*gra
 		indexMap[title] = i
 	}
 
-	titleKey := "项目名称"
-	if _, ok := indexMap[titleKey]; !ok {
-		titleKey = "title"
-	}
-	teachersInKey := "系统内教师"
-	if _, ok := indexMap[teachersInKey]; !ok {
-		teachersInKey = "teachersIn"
-	}
-	teachersOutKey := "系统外教师"
-	if _, ok := indexMap[teachersOutKey]; !ok {
-		teachersOutKey = "teachersOut"
-	}
-	publishLevelKey := "出版级别"
-	if _, ok := indexMap[publishLevelKey]; !ok {
-		publishLevelKey = "publishLevel"
-	}
-	rankKey := "项目排名"
-	if _, ok := indexMap[rankKey]; !ok {
-		rankKey = "rank"
-	}
-	publishDateKey := "出版日期"
-	if _, ok := indexMap[publishDateKey]; !ok {
-		publishDateKey = "publishDate"
+	safeGetData := func(data []string, key string) string {
+		if index, ok := indexMap[key]; ok {
+			return data[index]
+		}
+		return ""
 	}
 
 	usersMap := make(map[string]graphql_models.UserExport)
@@ -343,28 +333,46 @@ func ConvertToMonograph(file []byte, users []*graphql_models.UserExport) ([]*gra
 			continue
 		}
 
-		title := data[indexMap[titleKey]]
-		teachersInStrs := strings.Split(data[indexMap[teachersInKey]], ",")
+		title := safeGetData(data, "专著名称")
+		if title == "" {
+			title = safeGetData(data, "title")
+		}
+		teachersInStrs := safeGetData(data, "系统内教师")
+		if teachersInStrs == "" {
+			teachersInStrs = safeGetData(data, "teachersIn")
+		}
 		var teachersIn []*graphql_models.UserExport
-		for _, name := range teachersInStrs {
-			if user, ok := usersMap[name]; ok {
-				teachersIn = append(teachersIn, &user)
+		if teachersInStrs != "" {
+			for _, name := range strings.Split(teachersInStrs, ",") {
+				if user, ok := usersMap[name]; ok {
+					teachersIn = append(teachersIn, &user)
+				}
 			}
 		}
-		teachersOutStrs := strings.Split(data[indexMap[teachersOutKey]], ",")
+		teachersOutStrs := safeGetData(data, "系统外教师")
+		if teachersOutStrs == "" {
+			teachersOutStrs = safeGetData(data, "teachersOut")
+		}
 		var teachersOut []*string
-		for _, name := range teachersOutStrs {
-			name := name
-			teachersOut = append(teachersOut, &name)
+		if teachersOutStrs != "" {
+			for _, name := range strings.Split(teachersOutStrs, ",") {
+				tempName := name
+				teachersOut = append(teachersOut, &tempName)
+			}
 		}
-		publishLevel := data[indexMap[publishLevelKey]]
-		rank := data[indexMap[rankKey]]
-		publishDateStr := data[indexMap[publishDateKey]]
-		publishDate, err := time.Parse(time.RFC3339, publishDateStr)
-		if err != nil {
-			fmt.Println(err)
-			return nil, err
+		publishLevel := safeGetData(data, "出版级别")
+		if publishLevel == "" {
+			publishLevel = safeGetData(data, "publishLevel")
 		}
+		rank := safeGetData(data, "排名")
+		if rank == "" {
+			rank = safeGetData(data, "rank")
+		}
+		publishDateStr := safeGetData(data, "出版日期")
+		if publishDateStr == "" {
+			publishDateStr = safeGetData(data, "publishDate")
+		}
+		publishDate := parseTimeOrNil(publishDateStr)
 
 		monoGraphPreview := graphql_models.MonographPreview{
 			Title:        &title,
@@ -372,7 +380,7 @@ func ConvertToMonograph(file []byte, users []*graphql_models.UserExport) ([]*gra
 			TeachersOut:  teachersOut,
 			PublishLevel: &publishLevel,
 			Rank:         &rank,
-			PublishDate:  &publishDate,
+			PublishDate:  publishDate,
 		}
 		monoGraphPreviews = append(monoGraphPreviews, &monoGraphPreview)
 	}
@@ -393,33 +401,11 @@ func ConvertToPaper(file []byte, users []*graphql_models.UserExport) ([]*graphql
 		indexMap[title] = i
 	}
 
-	teachersInKey := "系统内教师"
-	if _, ok := indexMap[teachersInKey]; !ok {
-		teachersInKey = "teachersIn"
-	}
-	teachersOutKey := "系统外教师"
-	if _, ok := indexMap[teachersOutKey]; !ok {
-		teachersOutKey = "teachersOut"
-	}
-	titleKey := "论文题目"
-	if _, ok := indexMap[titleKey]; !ok {
-		titleKey = "title"
-	}
-	rankKey := "论文排名"
-	if _, ok := indexMap[rankKey]; !ok {
-		rankKey = "rank"
-	}
-	journalNameKey := "期刊名称"
-	if _, ok := indexMap[journalNameKey]; !ok {
-		journalNameKey = "journalName"
-	}
-	journalLevelKey := "期刊级别"
-	if _, ok := indexMap[journalLevelKey]; !ok {
-		journalLevelKey = "journalLevel"
-	}
-	publishDateKey := "发表日期"
-	if _, ok := indexMap[publishDateKey]; !ok {
-		publishDateKey = "publishDate"
+	safeGetData := func(data []string, key string) string {
+		if index, ok := indexMap[key]; ok {
+			return data[index]
+		}
+		return ""
 	}
 
 	usersMap := make(map[string]graphql_models.UserExport)
@@ -434,29 +420,50 @@ func ConvertToPaper(file []byte, users []*graphql_models.UserExport) ([]*graphql
 			continue
 		}
 
-		teachersInStrs := strings.Split(data[indexMap[teachersInKey]], ",")
+		teachersInStrs := safeGetData(data, "系统内教师")
+		if teachersInStrs == "" {
+			teachersInStrs = safeGetData(data, "teachersIn")
+		}
 		var teachersIn []*graphql_models.UserExport
-		for _, name := range teachersInStrs {
-			if user, ok := usersMap[name]; ok {
-				teachersIn = append(teachersIn, &user)
+		if teachersInStrs != "" {
+			for _, name := range strings.Split(teachersInStrs, ",") {
+				if user, ok := usersMap[name]; ok {
+					teachersIn = append(teachersIn, &user)
+				}
 			}
 		}
-		teachersOutStrs := strings.Split(data[indexMap[teachersOutKey]], ",")
+		teachersOutStrs := safeGetData(data, "系统外教师")
+		if teachersOutStrs == "" {
+			teachersOutStrs = safeGetData(data, "teachersOut")
+		}
 		var teachersOut []*string
-		for _, name := range teachersOutStrs {
-			name := name
-			teachersOut = append(teachersOut, &name)
+		if teachersOutStrs != "" {
+			for _, name := range strings.Split(teachersOutStrs, ",") {
+				tempName := name
+				teachersOut = append(teachersOut, &tempName)
+			}
 		}
-		title := data[indexMap[titleKey]]
-		rank := data[indexMap[rankKey]]
-		journalName := data[indexMap[journalNameKey]]
-		journalLevel := data[indexMap[journalLevelKey]]
-		publishDateStr := data[indexMap[publishDateKey]]
-		publishDate, err := time.Parse(time.RFC3339, publishDateStr)
-		if err != nil {
-			fmt.Println(err)
-			return nil, err
+		title := safeGetData(data, "论文题目")
+		if title == "" {
+			title = safeGetData(data, "title")
 		}
+		rank := safeGetData(data, "排名")
+		if rank == "" {
+			rank = safeGetData(data, "rank")
+		}
+		journalName := safeGetData(data, "期刊名称")
+		if journalName == "" {
+			journalName = safeGetData(data, "journalName")
+		}
+		journalLevel := safeGetData(data, "期刊级别")
+		if journalLevel == "" {
+			journalLevel = safeGetData(data, "journalLevel")
+		}
+		publishDateStr := safeGetData(data, "发表日期")
+		if publishDateStr == "" {
+			publishDateStr = safeGetData(data, "publishDate")
+		}
+		publishDate := parseTimeOrNil(publishDateStr)
 
 		paperPreview := graphql_models.PaperPreview{
 			TeachersIn:   teachersIn,
@@ -465,7 +472,7 @@ func ConvertToPaper(file []byte, users []*graphql_models.UserExport) ([]*graphql
 			Rank:         &rank,
 			JournalName:  &journalName,
 			JournalLevel: &journalLevel,
-			PublishDate:  &publishDate,
+			PublishDate:  publishDate,
 		}
 		paperPreviews = append(paperPreviews, &paperPreview)
 	}
@@ -486,25 +493,11 @@ func ConvertToPassword(file []byte) ([]*graphql_models.PasswordPreview, error) {
 		indexMap[title] = i
 	}
 
-	urlKey := "网址"
-	if _, ok := indexMap[urlKey]; !ok {
-		urlKey = "url"
-	}
-	appNameKey := "应用名称"
-	if _, ok := indexMap[appNameKey]; !ok {
-		appNameKey = "appName"
-	}
-	accountKey := "用户名"
-	if _, ok := indexMap[accountKey]; !ok {
-		accountKey = "account"
-	}
-	passwordKey := "密码"
-	if _, ok := indexMap[passwordKey]; !ok {
-		passwordKey = "password"
-	}
-	descriptionKey := "描述"
-	if _, ok := indexMap[descriptionKey]; !ok {
-		descriptionKey = "description"
+	safeGetData := func(data []string, key string) string {
+		if index, ok := indexMap[key]; ok {
+			return data[index]
+		}
+		return ""
 	}
 
 	var passwordPreviews []*graphql_models.PasswordPreview
@@ -513,11 +506,26 @@ func ConvertToPassword(file []byte) ([]*graphql_models.PasswordPreview, error) {
 			continue
 		}
 
-		url := data[indexMap[urlKey]]
-		appName := data[indexMap[appNameKey]]
-		account := data[indexMap[accountKey]]
-		password := data[indexMap[passwordKey]]
-		description := data[indexMap[descriptionKey]]
+		url := safeGetData(data, "网址")
+		if url == "" {
+			url = safeGetData(data, "url")
+		}
+		appName := safeGetData(data, "应用名称")
+		if appName == "" {
+			appName = safeGetData(data, "appName")
+		}
+		account := safeGetData(data, "用户名")
+		if account == "" {
+			account = safeGetData(data, "account")
+		}
+		password := safeGetData(data, "密码")
+		if password == "" {
+			password = safeGetData(data, "password")
+		}
+		description := safeGetData(data, "描述")
+		if description == "" {
+			description = safeGetData(data, "description")
+		}
 
 		passwordPreview := graphql_models.PasswordPreview{
 			URL:         &url,
@@ -545,61 +553,11 @@ func ConvertToSciResearch(file []byte, users []*graphql_models.UserExport) ([]*g
 		indexMap[title] = i
 	}
 
-	titleKey := "项目名称"
-	if _, ok := indexMap[titleKey]; !ok {
-		titleKey = "title"
-	}
-	teachersInKey := "系统内教师"
-	if _, ok := indexMap[teachersInKey]; !ok {
-		teachersInKey = "teachersIn"
-	}
-	teachersOutKey := "系统外教师"
-	if _, ok := indexMap[teachersOutKey]; !ok {
-		teachersOutKey = "teachersOut"
-	}
-	numberKey := "项目编号"
-	if _, ok := indexMap[numberKey]; !ok {
-		numberKey = "number"
-	}
-	startDateKey := "开始日期"
-	if _, ok := indexMap[startDateKey]; !ok {
-		startDateKey = "startDate"
-	}
-	durationKey := "持续时间"
-	if _, ok := indexMap[durationKey]; !ok {
-		durationKey = "duration"
-	}
-	levelKey := "项目级别"
-	if _, ok := indexMap[levelKey]; !ok {
-		levelKey = "level"
-	}
-	rankKey := "项目排名"
-	if _, ok := indexMap[rankKey]; !ok {
-		rankKey = "rank"
-	}
-	achievementKey := "项目成果"
-	if _, ok := indexMap[achievementKey]; !ok {
-		achievementKey = "achievement"
-	}
-	fundKey := "项目资金"
-	if _, ok := indexMap[fundKey]; !ok {
-		fundKey = "fund"
-	}
-	awardNameKey := "获奖名称"
-	if _, ok := indexMap[awardNameKey]; !ok {
-		awardNameKey = "awardName"
-	}
-	awardLevelKey := "获奖级别"
-	if _, ok := indexMap[awardLevelKey]; !ok {
-		awardLevelKey = "awardLevel"
-	}
-	awardRankKey := "获奖排名"
-	if _, ok := indexMap[awardRankKey]; !ok {
-		awardRankKey = "awardRank"
-	}
-	awardDateKey := "获奖日期"
-	if _, ok := indexMap[awardDateKey]; !ok {
-		awardDateKey = "awardDate"
+	safeGetData := func(data []string, key string) string {
+		if index, ok := indexMap[key]; ok {
+			return data[index]
+		}
+		return ""
 	}
 
 	usersMap := make(map[string]graphql_models.UserExport)
@@ -614,57 +572,97 @@ func ConvertToSciResearch(file []byte, users []*graphql_models.UserExport) ([]*g
 			continue
 		}
 
-		title := data[indexMap[titleKey]]
-		teachersInStrs := strings.Split(data[indexMap[teachersInKey]], ",")
+		title := safeGetData(data, "项目名称")
+		if title == "" {
+			title = safeGetData(data, "title")
+		}
+		teachersInStrs := safeGetData(data, "系统内教师")
+		if teachersInStrs == "" {
+			teachersInStrs = safeGetData(data, "teachersIn")
+		}
 		var teachersIn []*graphql_models.UserExport
-		for _, name := range teachersInStrs {
-			if user, ok := usersMap[name]; ok {
-				teachersIn = append(teachersIn, &user)
+		if teachersInStrs != "" {
+			for _, name := range strings.Split(teachersInStrs, ",") {
+				if user, ok := usersMap[name]; ok {
+					teachersIn = append(teachersIn, &user)
+				}
 			}
 		}
-		teachersOutStrs := strings.Split(data[indexMap[teachersOutKey]], ",")
+		teachersOutStrs := safeGetData(data, "系统外教师")
+		if teachersOutStrs == "" {
+			teachersOutStrs = safeGetData(data, "teachersOut")
+		}
 		var teachersOut []*string
-		for _, name := range teachersOutStrs {
-			name := name
-			teachersOut = append(teachersOut, &name)
+		if teachersOutStrs != "" {
+			for _, name := range strings.Split(teachersOutStrs, ",") {
+				tempName := name
+				teachersOut = append(teachersOut, &tempName)
+			}
 		}
-		number := data[indexMap[numberKey]]
-		startDateStr := data[indexMap[startDateKey]]
-		startDate, err := time.Parse(time.RFC3339, startDateStr)
-		if err != nil {
-			fmt.Println(err)
-			return nil, err
+		number := safeGetData(data, "项目编号")
+		if number == "" {
+			number = safeGetData(data, "number")
 		}
-		duration := data[indexMap[durationKey]]
-		level := data[indexMap[levelKey]]
-		rank := data[indexMap[rankKey]]
-		achievement := data[indexMap[achievementKey]]
-		fund := data[indexMap[fundKey]]
-		awardName := data[indexMap[awardNameKey]]
-		awardLevel := data[indexMap[awardLevelKey]]
-		awardRank := data[indexMap[awardRankKey]]
-		awardDateStr := data[indexMap[awardDateKey]]
-		awardDate, err := time.Parse(time.RFC3339, awardDateStr)
-		if err != nil {
-			fmt.Println(err)
-			return nil, err
+		startDateStr := safeGetData(data, "开始日期")
+		if startDateStr == "" {
+			startDateStr = safeGetData(data, "startDate")
 		}
+		startDate := parseTimeOrNil(startDateStr)
+		duration := safeGetData(data, "持续时间")
+		if duration == "" {
+			duration = safeGetData(data, "duration")
+		}
+		level := safeGetData(data, "项目级别")
+		if level == "" {
+			level = safeGetData(data, "level")
+		}
+		rank := safeGetData(data, "项目排名")
+		if rank == "" {
+			rank = safeGetData(data, "rank")
+		}
+		achievement := safeGetData(data, "项目成果")
+		if achievement == "" {
+			achievement = safeGetData(data, "achievement")
+		}
+		fund := safeGetData(data, "项目资金")
+		if fund == "" {
+			fund = safeGetData(data, "fund")
+		}
+		awardName := safeGetData(data, "获奖名称")
+		if awardName == "" {
+			awardName = safeGetData(data, "awardName")
+		}
+		awardLevel := safeGetData(data, "获奖级别")
+		if awardLevel == "" {
+			awardLevel = safeGetData(data, "awardLevel")
+		}
+		awardRank := safeGetData(data, "获奖排名")
+		if awardRank == "" {
+			awardRank = safeGetData(data, "awardRank")
+		}
+		awardDateStr := safeGetData(data, "获奖日期")
+		if awardDateStr == "" {
+			awardDateStr = safeGetData(data, "awardDate")
+		}
+		awardDate := parseTimeOrNil(awardDateStr)
 
 		var awardRecordsPreview []*graphql_models.AwardRecordPreview
-		awardRecord := graphql_models.AwardRecordPreview{
-			AwardName:  &awardName,
-			AwardLevel: &awardLevel,
-			AwardRank:  &awardRank,
-			AwardDate:  &awardDate,
+		if awardName != "" || awardLevel != "" || awardRank != "" || awardDate != nil {
+			awardRecord := graphql_models.AwardRecordPreview{
+				AwardName:  &awardName,
+				AwardLevel: &awardLevel,
+				AwardRank:  &awardRank,
+				AwardDate:  awardDate,
+			}
+			awardRecordsPreview = append(awardRecordsPreview, &awardRecord)
 		}
-		awardRecordsPreview = append(awardRecordsPreview, &awardRecord)
 
 		sciResearchPreview := graphql_models.SciResearchPreview{
 			Title:       &title,
 			TeachersIn:  teachersIn,
 			TeachersOut: teachersOut,
 			Number:      &number,
-			StartDate:   &startDate,
+			StartDate:   startDate,
 			Duration:    &duration,
 			Level:       &level,
 			Rank:        &rank,
@@ -692,37 +690,11 @@ func ConvertToUGPGGuidance(file []byte) ([]*graphql_models.UGPGGuidancePreview, 
 		indexMap[title] = i
 	}
 
-	studentNameKey := "学生姓名"
-	if _, ok := indexMap[studentNameKey]; !ok {
-		studentNameKey = "studentName"
-	}
-	thesisTopicKey := "论文题目"
-	if _, ok := indexMap[thesisTopicKey]; !ok {
-		thesisTopicKey = "thesisTopic"
-	}
-	openingCheckResultKey := "开题检查结果"
-	if _, ok := indexMap[openingCheckResultKey]; !ok {
-		openingCheckResultKey = "openingCheckResult"
-	}
-	midtermCheckResultKey := "中期检查结果"
-	if _, ok := indexMap[midtermCheckResultKey]; !ok {
-		midtermCheckResultKey = "midtermCheckResult"
-	}
-	defenseResultKey := "最终结果"
-	if _, ok := indexMap[defenseResultKey]; !ok {
-		defenseResultKey = "defenseResult"
-	}
-	openingCheckDateKey := "开题检查日期"
-	if _, ok := indexMap[openingCheckDateKey]; !ok {
-		openingCheckDateKey = "openingCheckDate"
-	}
-	midtermCheckDateKey := "中期检查日期"
-	if _, ok := indexMap[midtermCheckDateKey]; !ok {
-		midtermCheckDateKey = "midtermCheckDate"
-	}
-	defenseDateKey := "答辩日期"
-	if _, ok := indexMap[defenseDateKey]; !ok {
-		defenseDateKey = "defenseDate"
+	safeGetData := func(data []string, key string) string {
+		if index, ok := indexMap[key]; ok {
+			return data[index]
+		}
+		return ""
 	}
 
 	var ugpgGuidancePreviews []*graphql_models.UGPGGuidancePreview
@@ -732,29 +704,38 @@ func ConvertToUGPGGuidance(file []byte) ([]*graphql_models.UGPGGuidancePreview, 
 			continue
 		}
 
-		studentName := data[indexMap[studentNameKey]]
-		thesisTopic := data[indexMap[thesisTopicKey]]
-		openingCheckResult := data[indexMap[openingCheckResultKey]]
-		midtermCheckResult := data[indexMap[midtermCheckResultKey]]
-		defenseResult := data[indexMap[defenseResultKey]]
-		openingCheckDateStr := data[indexMap[openingCheckDateKey]]
-		openingCheckDate, err := time.Parse(time.RFC3339, openingCheckDateStr)
-		if err != nil {
-			fmt.Println(err)
-			return nil, err
+		studentName := safeGetData(data, "学生姓名")
+		if studentName == "" {
+			studentName = safeGetData(data, "studentName")
 		}
-		midtermCheckDateStr := data[indexMap[midtermCheckDateKey]]
-		midtermCheckDate, err := time.Parse(time.RFC3339, midtermCheckDateStr)
-		if err != nil {
-			fmt.Println(err)
-			return nil, err
+		thesisTopic := safeGetData(data, "论文题目")
+		if thesisTopic == "" {
+			thesisTopic = safeGetData(data, "thesisTopic")
 		}
-		defenseDateStr := data[indexMap[defenseDateKey]]
-		defenseDate, err := time.Parse(time.RFC3339, defenseDateStr)
-		if err != nil {
-			fmt.Println(err)
-			return nil, err
+		openingCheckResult := safeGetData(data, "开题检查结果")
+		if openingCheckResult == "" {
+			openingCheckResult = safeGetData(data, "openingCheckResult")
 		}
+		midtermCheckResult := safeGetData(data, "中期检查结果")
+		if midtermCheckResult == "" {
+			midtermCheckResult = safeGetData(data, "midtermCheckResult")
+		}
+		defenseResult := safeGetData(data, "最终答辩结果")
+		if defenseResult == "" {
+			defenseResult = safeGetData(data, "defenseResult")
+		}
+		openingCheckDateStr := safeGetData(data, "开题检查日期")
+		if openingCheckDateStr == "" {
+			openingCheckDateStr = safeGetData(data, "openingCheckDate")
+		}
+		openingCheckDate := parseTimeOrNil(openingCheckDateStr)
+		midtermCheckDateStr := safeGetData(data, "中期检查日期")
+		if midtermCheckDateStr == "" {
+			midtermCheckDateStr = safeGetData(data, "midtermCheckDate")
+		}
+		midtermCheckDate := parseTimeOrNil(midtermCheckDateStr)
+		defenseDateStr := safeGetData(data, "最终答辩日期")
+		defenseDate := parseTimeOrNil(defenseDateStr)
 
 		ugpgGuidancePreview := graphql_models.UGPGGuidancePreview{
 			StudentName:        &studentName,
@@ -762,9 +743,9 @@ func ConvertToUGPGGuidance(file []byte) ([]*graphql_models.UGPGGuidancePreview, 
 			OpeningCheckResult: &openingCheckResult,
 			MidtermCheckResult: &midtermCheckResult,
 			DefenseResult:      &defenseResult,
-			OpeningCheckDate:   &openingCheckDate,
-			MidtermCheckDate:   &midtermCheckDate,
-			DefenseDate:        &defenseDate,
+			OpeningCheckDate:   openingCheckDate,
+			MidtermCheckDate:   midtermCheckDate,
+			DefenseDate:        defenseDate,
 		}
 		ugpgGuidancePreviews = append(ugpgGuidancePreviews, &ugpgGuidancePreview)
 	}

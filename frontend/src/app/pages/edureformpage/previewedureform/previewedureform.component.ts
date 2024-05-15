@@ -134,7 +134,7 @@ export class PreviewedureformComponent implements OnInit, OnDestroy {
 
     let teachersInControlArray = this.eduReformForm.get('teachersIn') as FormArray;
     if (teachersInControlArray && teachersInControlArray.length > 0) {
-      newEduReform.teachersIn = teachersInControlArray.controls.map((control) => control.value.id);
+      newEduReform.teachersIn = teachersInControlArray.controls.map((control) => control.value.id).filter((id) => id !== this.userId);
     }
 
     let teachersOutControlArray = this.eduReformForm.get('teachersOut') as FormArray;
