@@ -32,6 +32,14 @@ export class EditPassword {
   description: string | null = null
 }
 
+export class PreviewPassword {
+  url: string | null = null
+  appName: string | null = null
+  account: string = ""
+  password: string = ""
+  description: string | null = null
+}
+
 export class PasswordFilter {
   url: string | null = null
   appName: string | null = null
@@ -86,6 +94,6 @@ export interface DeletePasswordResponse {
 export interface UploadPasswordsResponse {
   error?: unknown;
   data?: {
-    uploadPasswords: EditPassword[]
+    uploadPasswords: PreviewPassword[]
   }
 }

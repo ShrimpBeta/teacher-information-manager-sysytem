@@ -9,7 +9,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { PasswordformComponent } from '../../../components/passwordform/passwordform.component';
 import { PasswordService } from '../../../services/password.service';
 import { Subject, takeUntil } from 'rxjs';
-import { EditPassword } from '../../../models/models/password.model';
+import { PreviewPassword } from '../../../models/models/password.model';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { URLValidator } from '../../../shared/formvalidator/url.validator';
 
@@ -25,7 +25,7 @@ import { URLValidator } from '../../../shared/formvalidator/url.validator';
 export class PreviewpasswordComponent implements OnInit, OnDestroy {
   private destroy$: Subject<boolean> = new Subject<boolean>();
   passwordForm!: FormGroup;
-  newPasswordList: EditPassword[] = [];
+  newPasswordList: PreviewPassword[] = [];
   index: number = 0;
   buttonLabel: string = '创建';
 
@@ -82,14 +82,9 @@ export class PreviewpasswordComponent implements OnInit, OnDestroy {
             this.file = null;
             this.progressing = false;
             this.newPasswordList = datas
+            this.index = 0;
             if (datas.length > 0) {
-              this.passwordForm = new FormGroup({
-                url: new FormControl(datas[0].url || '', [URLValidator()]),
-                appName: new FormControl(datas[0].appName || ''),
-                account: new FormControl(datas[0].account || '', [Validators.required]),
-                password: new FormControl(datas[0].password || '', [Validators.required]),
-                description: new FormControl(datas[0].description || '')
-              });
+              this.generatePasswordForm();
             }
           }
         },
@@ -105,26 +100,14 @@ export class PreviewpasswordComponent implements OnInit, OnDestroy {
   onPrevious() {
     if (this.index > 0) {
       this.index--;
-      this.passwordForm = new FormGroup({
-        url: new FormControl(this.newPasswordList[this.index].url || '', [URLValidator()]),
-        appName: new FormControl(this.newPasswordList[this.index].appName || ''),
-        account: new FormControl(this.newPasswordList[this.index].account || '', [Validators.required]),
-        password: new FormControl(this.newPasswordList[this.index].password || '', [Validators.required]),
-        description: new FormControl(this.newPasswordList[this.index].description || '')
-      });
+      this.generatePasswordForm();
     }
   }
 
   onNext() {
     if (this.index < this.newPasswordList.length - 1) {
       this.index++;
-      this.passwordForm = new FormGroup({
-        url: new FormControl(this.newPasswordList[this.index].url || '', [URLValidator()]),
-        appName: new FormControl(this.newPasswordList[this.index].appName || ''),
-        account: new FormControl(this.newPasswordList[this.index].account || '', [Validators.required]),
-        password: new FormControl(this.newPasswordList[this.index].password || '', [Validators.required]),
-        description: new FormControl(this.newPasswordList[this.index].description || '')
-      });
+      this.generatePasswordForm();
     }
   }
 
@@ -143,13 +126,7 @@ export class PreviewpasswordComponent implements OnInit, OnDestroy {
               }
 
               if (this.newPasswordList.length > 0) {
-                this.passwordForm = new FormGroup({
-                  url: new FormControl(this.newPasswordList[this.index].url || '', [URLValidator()]),
-                  appName: new FormControl(this.newPasswordList[this.index].appName || ''),
-                  account: new FormControl(this.newPasswordList[this.index].account || '', [Validators.required]),
-                  password: new FormControl(this.newPasswordList[this.index].password || '', [Validators.required]),
-                  description: new FormControl(this.newPasswordList[this.index].description || '')
-                });
+                this.generatePasswordForm();
               }
 
               this.snackBar.open('创建密码成功', '关闭', { duration: 3000 });
@@ -162,6 +139,16 @@ export class PreviewpasswordComponent implements OnInit, OnDestroy {
             this.snackBar.open('创建密码失败', '关闭', { duration: 3000 });
           }
         })
+  }
+
+  generatePasswordForm() {
+    this.passwordForm = new FormGroup({
+      url: new FormControl(this.newPasswordList[this.index].url || '', [URLValidator()]),
+      appName: new FormControl(this.newPasswordList[this.index].appName || ''),
+      account: new FormControl(this.newPasswordList[this.index].account || '', [Validators.required]),
+      password: new FormControl(this.newPasswordList[this.index].password || '', [Validators.required]),
+      description: new FormControl(this.newPasswordList[this.index].description || '')
+    });
   }
 
   ngOnInit() {

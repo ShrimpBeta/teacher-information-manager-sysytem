@@ -6,7 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MentorshipService } from '../../../services/mentorship.service';
 import { Subject } from 'rxjs';
-import { EditMentorship } from '../../../models/models/mentorship.model';
+import { EditMentorship, PreviewMentorship } from '../../../models/models/mentorship.model';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -25,7 +25,7 @@ import { MentorshipformComponent } from '../../../components/mentorshipform/ment
 export class PreviewmentorshipComponent implements OnInit, OnDestroy {
   private destroy$: Subject<boolean> = new Subject<boolean>();
   mentorshipForm!: FormGroup;
-  newMentorshipList: EditMentorship[] = [];
+  newMentorshipList: PreviewMentorship[] = [];
   index: number = 0;
   buttonLabel: string = '创建';
 
@@ -82,16 +82,7 @@ export class PreviewmentorshipComponent implements OnInit, OnDestroy {
             this.file = null;
             this.newMentorshipList = datas;
             if (datas.length > 0) {
-              this.mentorshipForm = new FormGroup({
-                projectName: new FormControl(datas[0].projectName || '', [Validators.required]),
-                grade: new FormControl(datas[0].grade || null),
-                guidanceDate: new FormControl(datas[0].guidanceDate || new Date(), [Validators.required]),
-                studentNames: new FormArray([], [ArrayEmptyValidator()])
-              });
-              let studentNamesControlArray = this.mentorshipForm.get('studentNames') as FormArray;
-              datas[0].studentNames.forEach((studentName) => {
-                studentNamesControlArray.push(new FormControl(studentName));
-              });
+              this.generateMentorshipForm();
             }
           }
 
@@ -131,17 +122,8 @@ export class PreviewmentorshipComponent implements OnInit, OnDestroy {
             this.index = this.newMentorshipList.length - 1;
           }
 
-          if(this.newMentorshipList.length > 0) {
-            this.mentorshipForm = new FormGroup({
-              projectName: new FormControl(this.newMentorshipList[this.index].projectName || '', [Validators.required]),
-              grade: new FormControl(this.newMentorshipList[this.index].grade || null),
-              guidanceDate: new FormControl(this.newMentorshipList[this.index].guidanceDate || new Date(), [Validators.required]),
-              studentNames: new FormArray([], [ArrayEmptyValidator()])
-            });
-            let studentNamesControlArray = this.mentorshipForm.get('studentNames') as FormArray;
-            this.newMentorshipList[this.index].studentNames.forEach((studentName) => {
-              studentNamesControlArray.push(new FormControl(studentName));
-            });
+          if (this.newMentorshipList.length > 0) {
+            this.generateMentorshipForm();
           }
 
           this.snackBar.open('创建成功', '关闭', {
@@ -165,36 +147,28 @@ export class PreviewmentorshipComponent implements OnInit, OnDestroy {
   onPrevious() {
     if (this.index > 0) {
       this.index--;
-
-      this.mentorshipForm = new FormGroup({
-        projectName: new FormControl(this.newMentorshipList[this.index].projectName || '', [Validators.required]),
-        grade: new FormControl(this.newMentorshipList[this.index].grade || null),
-        guidanceDate: new FormControl(this.newMentorshipList[this.index].guidanceDate || new Date(), [Validators.required]),
-        studentNames: new FormArray([], [ArrayEmptyValidator()])
-      });
-      let studentNamesControlArray = this.mentorshipForm.get('studentNames') as FormArray;
-      this.newMentorshipList[this.index].studentNames.forEach((studentName) => {
-        studentNamesControlArray.push(new FormControl(studentName));
-      });
+      this.generateMentorshipForm();
     }
   }
 
   onNext() {
     if (this.index < this.newMentorshipList.length - 1) {
       this.index++;
-
-      this.mentorshipForm = new FormGroup({
-        projectName: new FormControl(this.newMentorshipList[this.index].projectName || '', [Validators.required]),
-        grade: new FormControl(this.newMentorshipList[this.index].grade || null),
-        guidanceDate: new FormControl(this.newMentorshipList[this.index].guidanceDate || new Date(), [Validators.required]),
-        studentNames: new FormArray([], [ArrayEmptyValidator()])
-      });
-      let studentNamesControlArray = this.mentorshipForm.get('studentNames') as FormArray;
-      this.newMentorshipList[this.index].studentNames.forEach((studentName) => {
-        studentNamesControlArray.push(new FormControl(studentName));
-      });
-
+      this.generateMentorshipForm();
     }
+  }
+
+  generateMentorshipForm() {
+    this.mentorshipForm = new FormGroup({
+      projectName: new FormControl(this.newMentorshipList[this.index].projectName || '', [Validators.required]),
+      grade: new FormControl(this.newMentorshipList[this.index].grade || null),
+      guidanceDate: new FormControl(this.newMentorshipList[this.index].guidanceDate || new Date(), [Validators.required]),
+      studentNames: new FormArray([], [ArrayEmptyValidator()])
+    });
+    let studentNamesControlArray = this.mentorshipForm.get('studentNames') as FormArray;
+    this.newMentorshipList[this.index].studentNames.forEach((studentName) => {
+      studentNamesControlArray.push(new FormControl(studentName));
+    });
   }
 
   ngOnInit(): void {

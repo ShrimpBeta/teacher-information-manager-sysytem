@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { map, Observable } from "rxjs";
-import { CreatePaperResponse, DeletePaperResponse, EditPaper, Paper, PaperFilter, PaperPage, PaperResponse, PapersByFilterResponse, UpdatePaperResponse, UploadPapersResponse } from "../models/models/paper.model";
+import { CreatePaperResponse, DeletePaperResponse, EditPaper, Paper, PaperFilter, PaperPage, PaperResponse, PapersByFilterResponse, PreviewPaper, UpdatePaperResponse, UploadPapersResponse } from "../models/models/paper.model";
 import { paperQuery, papersByFilterQuery } from "../models/graphql/query/paper.query.graphql";
 import { createPaperMutation, deletePaperMutation, updatePaperMutation, uploadPapersMutation } from "../models/graphql/mutation/paper.mutation.graphql";
 
@@ -110,7 +110,7 @@ export class PaperService {
       );
   }
 
-  uploadFile(file: File): Observable<EditPaper[] | null> {
+  uploadFile(file: File): Observable<PreviewPaper[] | null> {
     return this.apollo.mutate({
       mutation: uploadPapersMutation,
       context: {

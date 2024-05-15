@@ -28,6 +28,17 @@ export class EditUGPGGuidance {
   defenseResult: string | null = null
 }
 
+export class PreviewUGPGGuidance {
+  studentName: string = ""
+  thesisTopic: string = ""
+  openingCheckDate: Date | null = null
+  openingCheckResult: string | null = null
+  midtermCheckDate: Date | null = null
+  midtermCheckResult: string | null = null
+  defenseDate: Date | null = null
+  defenseResult: string | null = null
+}
+
 export class UGPGGuidanceFilter {
   studentName: string | null = null
   thesisTopic: string | null = null

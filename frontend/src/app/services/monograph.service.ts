@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { CreateMonographResponse, DeleteMonographResponse, EditMonograph, Monograph, MonographFilter, MonographPage, MonographResponse, MonographsByFilterResponse, UpdateMonographResponse, UploadMonographsResponse } from "../models/models/monograph.model";
+import { CreateMonographResponse, DeleteMonographResponse, EditMonograph, Monograph, MonographFilter, MonographPage, MonographResponse, MonographsByFilterResponse, PreviewMonograph, UpdateMonographResponse, UploadMonographsResponse } from "../models/models/monograph.model";
 import { map, Observable } from "rxjs";
 import { Apollo } from "apollo-angular";
 import { monographQuery, monographsByFilterQuery } from "../models/graphql/query/monograph.query.graphql";
@@ -104,7 +104,7 @@ export class MonographService {
     );
   }
 
-  uploadFile(file: File): Observable<EditMonograph[] | null> {
+  uploadFile(file: File): Observable<PreviewMonograph[] | null> {
     return this.apollo.mutate({
       mutation: uploadMonographsMutation,
       context: {

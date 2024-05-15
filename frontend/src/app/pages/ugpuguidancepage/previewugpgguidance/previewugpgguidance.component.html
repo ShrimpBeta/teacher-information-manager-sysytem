@@ -9,6 +9,25 @@
     <button mat-raised-button color="primary" (click)="fileUpload.click()">选择文件</button>
   </div>
   <div class="row-center">
-    <!-- <button mat-raised-button color="accent" (click)="onUpload()" [disabled]="!file">上传文件</button> -->
+    @if(progressing){
+    <mat-spinner></mat-spinner>
+    }@else{
+    <button mat-raised-button color="accent" (click)="onUpload()" [disabled]="!file">上传文件</button>
+    }
   </div>
+
+  @if(newUGPGGuidanceList.length>0){
+  <div class="content">
+    <div style="display: flex; flex-direction: row; gap: 20px; align-items: center;">
+      <button mat-raised-button color="primary" (click)="onPrevious()"
+        [disabled]="index==0"><mat-icon>arrow_back_ios</mat-icon></button>
+      <div>当前{{index+1}}条/{{newUGPGGuidanceList.length}}条</div>
+      <button mat-raised-button color="primary" (click)="onNext()"
+        [disabled]="index===newUGPGGuidanceList.length-1"><mat-icon>arrow_forward_ios</mat-icon></button>
+    </div>
+    <mat-divider></mat-divider>
+    <app-ugpgguidanceform [buttonLabel]="buttonLabel" [ugpgGuidanceForm]="ugpgGuidanceForm"
+      (submitForm)="createUgpgGuidance()"></app-ugpgguidanceform>
+  </div>
+  }
 </div>

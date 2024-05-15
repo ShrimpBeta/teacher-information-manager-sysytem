@@ -51,6 +51,27 @@ export class EditSciResearch {
   awards: EditAwardRecord[] | null = null
 }
 
+export class PreviewAwardRecord {
+  awardName: string | null = null
+  awardDate: Date | null = null
+  awardLevel: string | null = null
+  awardRank: string | null = null
+}
+
+export class PreviewSciResearch {
+  teachersIn: UserExport[] = []
+  teachersOut: string[] | null = null
+  number: string | null = null
+  title: string | null = null
+  startDate: Date | null = null
+  duration: string | null = null
+  level: string | null = null
+  rank: string | null = null
+  achievement: string | null = null
+  fund: string | null = null
+  awards: PreviewAwardRecord[] | null = null
+}
+
 export class SciResearchFilter {
   title: string | null = null
   teachersIn: string[] | null = null
@@ -115,6 +136,6 @@ export interface DeleteSciResearchResponse {
 export interface UploadSciResearchsResponse {
   error?: unknown;
   data?: {
-    uploadSciResearchs: EditSciResearch[]
+    uploadSciResearchs: PreviewSciResearch[]
   }
 }

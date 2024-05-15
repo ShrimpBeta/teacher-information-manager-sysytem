@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
-import { CreateSciResearchResponse, DeleteSciResearchResponse, EditSciResearch, SciResearch, SciResearchFilter, SciResearchPage, SciResearchResponse, SciResearchsByFilterResponse, UpdateSciResearchResponse, UploadSciResearchsResponse } from "../models/models/sciResearch.model";
+import { CreateSciResearchResponse, DeleteSciResearchResponse, EditSciResearch, PreviewSciResearch, SciResearch, SciResearchFilter, SciResearchPage, SciResearchResponse, SciResearchsByFilterResponse, UpdateSciResearchResponse, UploadSciResearchsResponse } from "../models/models/sciResearch.model";
 import { map, Observable } from "rxjs";
 import { sciResearchQuery, sciResearchsByFilterQuery } from "../models/graphql/query/sciresearch.query.graphql";
 import { createSciResearchMutation, deleteSciResearchMutation, updateSciResearchMutation, uploadSciResearchsMutation } from "../models/graphql/mutation/sciresearch.mutation.graphql";
@@ -103,7 +103,7 @@ export class SciResearchService {
     );
   }
 
-  uploadFile(file: File): Observable<EditSciResearch[] | null> {
+  uploadFile(file: File): Observable<PreviewSciResearch[] | null> {
     return this.apollo.mutate({
       mutation: uploadSciResearchsMutation,
       context: {

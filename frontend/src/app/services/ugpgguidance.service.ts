@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { map, Observable } from "rxjs";
 import { uGPGGuidancesByFilterQuery, uGPUGGuidanceQuery } from "../models/graphql/query/ugpgguidance.query.graphql";
-import { CreateUGPGGuidanceResponse, DeleteUGPGGuidanceResponse, EditUGPGGuidance, UGPGGuidance, UGPGGuidanceFilter, UGPGGuidancePage, UGPGGuidanceResponse, UGPGGuidancesByFilterResponse, UpdateUGPGGuidanceResponse, UploadUGPGGuidancesResponse } from "../models/models/uGPGGuidance.model";
+import { CreateUGPGGuidanceResponse, DeleteUGPGGuidanceResponse, EditUGPGGuidance, PreviewUGPGGuidance, UGPGGuidance, UGPGGuidanceFilter, UGPGGuidancePage, UGPGGuidanceResponse, UGPGGuidancesByFilterResponse, UpdateUGPGGuidanceResponse, UploadUGPGGuidancesResponse } from "../models/models/uGPGGuidance.model";
 import { createUGPGGuidanceMutation, deleteUGPGGuidanceMutation, updateUGPGGuidanceMutation, uploadUGPGGuidancesMutation } from "../models/graphql/mutation/ugpgguidance.mutation.graphql";
 
 @Injectable({
@@ -102,7 +102,7 @@ export class UGPGGuidanceService {
     );
   }
 
-  uploadFile(file:File):Observable<EditUGPGGuidance[] | null>{
+  uploadFile(file:File):Observable<PreviewUGPGGuidance[] | null>{
     return this.apollo.mutate({
       mutation: uploadUGPGGuidancesMutation,
       context: {

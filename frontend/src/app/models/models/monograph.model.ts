@@ -26,6 +26,15 @@ export class EditMonograph {
   rank: string | null = null
 }
 
+export class PreviewMonograph {
+  teachersIn: UserExport[] = []
+  teachersOut: string[] | null = null
+  title: string | null = null
+  publishDate: Date | null = null
+  publishLevel: string | null = null
+  rank: string | null = null
+}
+
 export class MonographFilter {
   title: string | null = null
   teachersIn: string[] | null = null
@@ -81,6 +90,6 @@ export interface DeleteMonographResponse {
 export interface UploadMonographsResponse {
   error?: unknown;
   data?: {
-    uploadMonographs: EditMonograph[]
+    uploadMonographs: PreviewMonograph[]
   }
 }

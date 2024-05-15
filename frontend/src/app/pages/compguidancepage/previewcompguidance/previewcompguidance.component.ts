@@ -8,7 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CompGuidanceService } from '../../../services/compguidance.service';
 import { Subject, takeUntil } from 'rxjs';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { EditCompGuidance } from '../../../models/models/compGuidance.model';
+import { EditCompGuidance, PreviewCompGuidance } from '../../../models/models/compGuidance.model';
 import { ArrayEmptyValidator } from '../../../shared/formvalidator/arrayempty.validator';
 import { MatDividerModule } from '@angular/material/divider';
 import { CompguidanceformComponent } from '../../../components/compguidanceform/compguidanceform.component';
@@ -24,7 +24,7 @@ import { CompguidanceformComponent } from '../../../components/compguidanceform/
 export class PreviewcompguidanceComponent implements OnInit, OnDestroy {
   private destroy$: Subject<boolean> = new Subject<boolean>();
   compGuidanceForm!: FormGroup;
-  newCompGuidanceList: EditCompGuidance[] = [];
+  newCompGuidanceList: PreviewCompGuidance[] = [];
   index: number = 0;
   buttonLabel: string = '创建';
 
@@ -81,19 +81,7 @@ export class PreviewcompguidanceComponent implements OnInit, OnDestroy {
             this.progressing = false;
             this.newCompGuidanceList = datas;
             if (datas.length > 0) {
-              this.compGuidanceForm = new FormGroup({
-                projectName: new FormControl(datas[0].projectName || '', [Validators.required]),
-                studentNames: new FormArray([], [ArrayEmptyValidator()]),
-                competitionScore: new FormControl(datas[0].competitionScore || ''),
-                guidanceDate: new FormControl(datas[0].guidanceDate || new Date(), [Validators.required]),
-                awardStatus: new FormControl(datas[0].awardStatus || ''),
-              });
-
-              if (datas[0].studentNames.length > 0) {
-                datas[0].studentNames.forEach((studentName) => {
-                  (this.compGuidanceForm.get('studentNames') as FormArray).push(new FormControl(studentName, [Validators.required]));
-                });
-              }
+              this.generateCompguidanceForm();
             }
           }
         },
@@ -131,19 +119,7 @@ export class PreviewcompguidanceComponent implements OnInit, OnDestroy {
           }
 
           if (this.newCompGuidanceList.length > 0) {
-            this.compGuidanceForm = new FormGroup({
-              projectName: new FormControl(this.newCompGuidanceList[this.index].projectName || '', [Validators.required]),
-              studentNames: new FormArray([], [ArrayEmptyValidator()]),
-              competitionScore: new FormControl(this.newCompGuidanceList[this.index].competitionScore || ''),
-              guidanceDate: new FormControl(this.newCompGuidanceList[this.index].guidanceDate || new Date(), [Validators.required]),
-              awardStatus: new FormControl(this.newCompGuidanceList[this.index].awardStatus || ''),
-            });
-
-            if (this.newCompGuidanceList[this.index].studentNames.length > 0) {
-              this.newCompGuidanceList[this.index].studentNames.forEach((studentName) => {
-                (this.compGuidanceForm.get('studentNames') as FormArray).push(new FormControl(studentName, [Validators.required]));
-              });
-            }
+            this.generateCompguidanceForm();
           }
 
           this.snackBar.open('创建成功', '关闭', {
@@ -168,42 +144,32 @@ export class PreviewcompguidanceComponent implements OnInit, OnDestroy {
   onPrevious() {
     if (this.index > 0) {
       this.index--;
-      this.compGuidanceForm = new FormGroup({
-        projectName: new FormControl(this.newCompGuidanceList[this.index].projectName || '', [Validators.required]),
-        studentNames: new FormArray([], [ArrayEmptyValidator()]),
-        competitionScore: new FormControl(this.newCompGuidanceList[this.index].competitionScore || ''),
-        guidanceDate: new FormControl(this.newCompGuidanceList[this.index].guidanceDate || new Date(), [Validators.required]),
-        awardStatus: new FormControl(this.newCompGuidanceList[this.index].awardStatus || ''),
-      });
-
-      if (this.newCompGuidanceList[this.index].studentNames.length > 0) {
-        this.newCompGuidanceList[this.index].studentNames.forEach((studentName) => {
-          (this.compGuidanceForm.get('studentNames') as FormArray).push(new FormControl(studentName, [Validators.required]));
-        });
-      }
-
+      this.generateCompguidanceForm();
     }
   }
 
   onNext() {
     if (this.index < this.newCompGuidanceList.length - 1) {
       this.index++;
-      this.compGuidanceForm = new FormGroup({
-        projectName: new FormControl(this.newCompGuidanceList[this.index].projectName || '', [Validators.required]),
-        studentNames: new FormArray([], [ArrayEmptyValidator()]),
-        competitionScore: new FormControl(this.newCompGuidanceList[this.index].competitionScore || ''),
-        guidanceDate: new FormControl(this.newCompGuidanceList[this.index].guidanceDate || new Date(), [Validators.required]),
-        awardStatus: new FormControl(this.newCompGuidanceList[this.index].awardStatus || ''),
-      });
-
-      if (this.newCompGuidanceList[this.index].studentNames.length > 0) {
-        this.newCompGuidanceList[this.index].studentNames.forEach((studentName) => {
-          (this.compGuidanceForm.get('studentNames') as FormArray).push(new FormControl(studentName, [Validators.required]));
-        });
-      }
+      this.generateCompguidanceForm();
     }
   }
 
+  generateCompguidanceForm() {
+    this.compGuidanceForm = new FormGroup({
+      projectName: new FormControl(this.newCompGuidanceList[this.index].projectName || '', [Validators.required]),
+      studentNames: new FormArray([], [ArrayEmptyValidator()]),
+      competitionScore: new FormControl(this.newCompGuidanceList[this.index].competitionScore || ''),
+      guidanceDate: new FormControl(this.newCompGuidanceList[this.index].guidanceDate || new Date(), [Validators.required]),
+      awardStatus: new FormControl(this.newCompGuidanceList[this.index].awardStatus || ''),
+    });
+
+    if (this.newCompGuidanceList[this.index].studentNames.length > 0) {
+      this.newCompGuidanceList[this.index].studentNames.forEach((studentName) => {
+        (this.compGuidanceForm.get('studentNames') as FormArray).push(new FormControl(studentName, [Validators.required]));
+      });
+    }
+  }
   ngOnInit() {
 
   }

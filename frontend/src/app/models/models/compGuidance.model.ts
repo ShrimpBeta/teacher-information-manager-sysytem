@@ -36,6 +36,14 @@ export class CompGuidanceFilter {
   updatedEnd: Date | null = null
 }
 
+export class PreviewCompGuidance {
+  projectName: string = ""
+  studentNames: string[] = []
+  competitionScore: string | null = null
+  guidanceDate: Date | null = null
+  awardStatus: string | null = null
+}
+
 export interface CompGuidanceResponse {
   error?: unknown;
   data?: {
@@ -77,6 +85,6 @@ export interface DeleteCompGuidanceResponse {
 export interface UploadCompGuidancesResponse {
   error?: unknown;
   data?: {
-    uploadCompGuidances: EditCompGuidance[]
+    uploadCompGuidances: PreviewCompGuidance[]
   }
 }

@@ -32,6 +32,13 @@ export class MentorshipFilter {
   updatedEnd: Date | null = null
 }
 
+export class PreviewMentorship {
+  projectName: string = ""
+  studentNames: string[] = []
+  grade: string | null = null
+  guidanceDate: Date | null = null
+}
+
 export interface MentorshipResponse {
   error?: unknown;
   data?: {
@@ -73,6 +80,6 @@ export interface DeleteMentorshipResponse {
 export interface UploadMentorshipsResponse {
   error?: unknown;
   data?: {
-    uploadMentorships: EditMentorship[]
+    uploadMentorships: PreviewMentorship[]
   }
 }

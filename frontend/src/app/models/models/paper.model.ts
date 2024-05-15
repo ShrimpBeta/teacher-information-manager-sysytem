@@ -28,6 +28,16 @@ export class EditPaper {
   journalLevel: string | null = null
 }
 
+export class PreviewPaper {
+  teachersIn: UserExport[] = []
+  teachersOut: string[] | null = null
+  title: string | null = null
+  publishDate: Date | null = null
+  rank: string | null = null
+  journalName: string | null = null
+  journalLevel: string | null = null
+}
+
 export class PaperFilter {
   title: string | null = null
   teachersIn: string[] | null = null
@@ -85,6 +95,6 @@ export interface DeletePaperResponse {
 export interface UploadPapersResponse {
   error?: unknown;
   data?: {
-    uploadPapers: EditPaper[]
+    uploadPapers: PreviewPaper[]
   }
 }

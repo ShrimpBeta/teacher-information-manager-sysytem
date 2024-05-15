@@ -5,20 +5,21 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EduReformService } from '../../../services/edureform.service';
-import { Subject, takeUntil } from 'rxjs';
+import { generate, Subject, takeUntil } from 'rxjs';
 import { EdureformformComponent } from '../../../components/edureformform/edureformform.component';
 import { UserExport } from '../../../models/models/user.model';
 import { UserService } from '../../../services/user.service';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
-import { EditEduReform } from '../../../models/models/eduReform.model';
+import { EditEduReform, PreviewEduReform } from '../../../models/models/eduReform.model';
 import { AuthRepository } from '../../../core/auth/auth.repository';
 
 @Component({
   selector: 'app-previewedureform',
   standalone: true,
   imports: [MatButtonModule, MatIconModule, MatProgressBarModule, MatCardModule, EdureformformComponent,
-    MatDividerModule
+    MatDividerModule, MatProgressSpinnerModule
   ],
   templateUrl: './previewedureform.component.html',
   styleUrl: './previewedureform.component.scss'
@@ -27,7 +28,7 @@ export class PreviewedureformComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<boolean> = new Subject<boolean>();
   eduReformForm!: FormGroup;
-  newEduReformList: EditEduReform[] = [];
+  newEduReformList: PreviewEduReform[] = [];
   index: number = 0;
   buttonLabel: string = '创建';
   userId!: string;
@@ -80,70 +81,14 @@ export class PreviewedureformComponent implements OnInit, OnDestroy {
   onPrevious() {
     if (this.index > 0) {
       this.index--;
-      this.eduReformForm = new FormGroup({
-        number: new FormControl(this.newEduReformList[this.index].number, [Validators.required]),
-        title: new FormControl(this.newEduReformList[this.index].title, [Validators.required]),
-        teachersIn: new FormArray([]),
-        teachersOut: new FormArray([]),
-        startDate: new FormControl(this.newEduReformList[this.index].startDate, [Validators.required]),
-        duration: new FormControl(this.newEduReformList[this.index].duration || ''),
-        level: new FormControl(this.newEduReformList[this.index].level || ''),
-        rank: new FormControl(this.newEduReformList[this.index].rank || ''),
-        achievement: new FormControl(this.newEduReformList[this.index].achievement || ''),
-        fund: new FormControl(this.newEduReformList[this.index].fund || ''),
-      });
-
-      if (this.newEduReformList[this.index].teachersIn && this.newEduReformList[this.index].teachersIn.length > 0) {
-        let teachersInControlArray = this.eduReformForm.get('teachersIn') as FormArray;
-        this.newEduReformList[this.index].teachersIn.forEach((teacherId) => {
-          let teacher = this.teachersInOptions.find((user) => user.id === teacherId);
-          if (teacher) {
-            teachersInControlArray.push(new FormControl(teacher));
-          }
-        });
-      }
-
-      if (this.newEduReformList[this.index].teachersOut && this.newEduReformList[this.index].teachersOut!.length > 0) {
-        let teachersOutControlArray = this.eduReformForm.get('teachersOut') as FormArray;
-        this.newEduReformList[this.index].teachersOut!.forEach((teacher) => {
-          teachersOutControlArray.push(new FormControl(teacher));
-        });
-      }
+      this.generateEdureformForm();
     }
   }
 
   onNext() {
     if (this.index < this.newEduReformList.length - 1) {
       this.index++;
-      this.eduReformForm = new FormGroup({
-        number: new FormControl(this.newEduReformList[this.index].number, [Validators.required]),
-        title: new FormControl(this.newEduReformList[this.index].title, [Validators.required]),
-        teachersIn: new FormArray([]),
-        teachersOut: new FormArray([]),
-        startDate: new FormControl(this.newEduReformList[this.index].startDate, [Validators.required]),
-        duration: new FormControl(this.newEduReformList[this.index].duration || ''),
-        level: new FormControl(this.newEduReformList[this.index].level || ''),
-        rank: new FormControl(this.newEduReformList[this.index].rank || ''),
-        achievement: new FormControl(this.newEduReformList[this.index].achievement || ''),
-        fund: new FormControl(this.newEduReformList[this.index].fund || ''),
-      });
-
-      if (this.newEduReformList[this.index].teachersIn && this.newEduReformList[this.index].teachersIn.length > 0) {
-        let teachersInControlArray = this.eduReformForm.get('teachersIn') as FormArray;
-        this.newEduReformList[this.index].teachersIn.forEach((teacherId) => {
-          let teacher = this.teachersInOptions.find((user) => user.id === teacherId);
-          if (teacher) {
-            teachersInControlArray.push(new FormControl(teacher));
-          }
-        });
-      }
-
-      if (this.newEduReformList[this.index].teachersOut && this.newEduReformList[this.index].teachersOut!.length > 0) {
-        let teachersOutControlArray = this.eduReformForm.get('teachersOut') as FormArray;
-        this.newEduReformList[this.index].teachersOut!.forEach((teacher) => {
-          teachersOutControlArray.push(new FormControl(teacher));
-        });
-      }
+      this.generateEdureformForm();
     }
   }
 
@@ -157,36 +102,9 @@ export class PreviewedureformComponent implements OnInit, OnDestroy {
             this.file = null;
             this.progressing = false;
             this.newEduReformList = datas;
+            this.index = 0;
             if (datas.length > 0) {
-              this.eduReformForm = new FormGroup({
-                number: new FormControl(datas[0].number, [Validators.required]),
-                title: new FormControl(datas[0].title, [Validators.required]),
-                teachersIn: new FormArray([]),
-                teachersOut: new FormArray([]),
-                startDate: new FormControl(datas[0].startDate, [Validators.required]),
-                duration: new FormControl(datas[0].duration || ''),
-                level: new FormControl(datas[0].level || ''),
-                rank: new FormControl(datas[0].rank || ''),
-                achievement: new FormControl(datas[0].achievement || ''),
-                fund: new FormControl(datas[0].fund || ''),
-              });
-
-              if (datas[0].teachersIn && datas[0].teachersIn.length > 0) {
-                let teachersInControlArray = this.eduReformForm.get('teachersIn') as FormArray;
-                datas[0].teachersIn.forEach((teacherId) => {
-                  let teacher = this.teachersInOptions.find((user) => user.id === teacherId);
-                  if (teacher) {
-                    teachersInControlArray.push(new FormControl(teacher));
-                  }
-                });
-              }
-
-              if (datas[0].teachersOut && datas[0].teachersOut.length > 0) {
-                let teachersOutControlArray = this.eduReformForm.get('teachersOut') as FormArray;
-                datas[0].teachersOut.forEach((teacher) => {
-                  teachersOutControlArray.push(new FormControl(teacher));
-                });
-              }
+              this.generateEdureformForm();
             }
 
             this.snackBar.open('上传成功', '关闭', { duration: 2000 });
@@ -237,38 +155,8 @@ export class PreviewedureformComponent implements OnInit, OnDestroy {
             }
 
             if (this.newEduReformList.length > 0) {
-              this.eduReformForm = new FormGroup({
-                number: new FormControl(this.newEduReformList[this.index].number, [Validators.required]),
-                title: new FormControl(this.newEduReformList[this.index].title, [Validators.required]),
-                teachersIn: new FormArray([]),
-                teachersOut: new FormArray([]),
-                startDate: new FormControl(this.newEduReformList[this.index].startDate, [Validators.required]),
-                duration: new FormControl(this.newEduReformList[this.index].duration || ''),
-                level: new FormControl(this.newEduReformList[this.index].level || ''),
-                rank: new FormControl(this.newEduReformList[this.index].rank || ''),
-                achievement: new FormControl(this.newEduReformList[this.index].achievement || ''),
-                fund: new FormControl(this.newEduReformList[this.index].fund || ''),
-              });
-
-              if (this.newEduReformList[this.index].teachersIn && this.newEduReformList[this.index].teachersIn.length > 0) {
-                let teachersInControlArray = this.eduReformForm.get('teachersIn') as FormArray;
-                this.newEduReformList[this.index].teachersIn.forEach((teacherId) => {
-                  let teacher = this.teachersInOptions.find((user) => user.id === teacherId);
-                  if (teacher) {
-                    teachersInControlArray.push(new FormControl(teacher));
-                  }
-                });
-              }
-
-              if (this.newEduReformList[this.index].teachersOut && this.newEduReformList[this.index].teachersOut!.length > 0) {
-                let teachersOutControlArray = this.eduReformForm.get('teachersOut') as FormArray;
-                this.newEduReformList[this.index].teachersOut!.forEach((teacher) => {
-                  teachersOutControlArray.push(new FormControl(teacher));
-                });
-              }
+              this.generateEdureformForm();
             }
-
-
             this.snackBar.open('创建成功', '关闭', {
               duration: 2000,
             });
@@ -285,6 +173,35 @@ export class PreviewedureformComponent implements OnInit, OnDestroy {
           console.error(error);
         }
       });
+  }
+
+  generateEdureformForm() {
+    this.eduReformForm = new FormGroup({
+      number: new FormControl(this.newEduReformList[this.index].number, [Validators.required]),
+      title: new FormControl(this.newEduReformList[this.index].title, [Validators.required]),
+      teachersIn: new FormArray([]),
+      teachersOut: new FormArray([]),
+      startDate: new FormControl(this.newEduReformList[this.index].startDate, [Validators.required]),
+      duration: new FormControl(this.newEduReformList[this.index].duration || ''),
+      level: new FormControl(this.newEduReformList[this.index].level || ''),
+      rank: new FormControl(this.newEduReformList[this.index].rank || ''),
+      achievement: new FormControl(this.newEduReformList[this.index].achievement || ''),
+      fund: new FormControl(this.newEduReformList[this.index].fund || ''),
+    });
+
+    if (this.newEduReformList[this.index].teachersIn && this.newEduReformList[this.index].teachersIn.length > 0) {
+      let teachersInControlArray = this.eduReformForm.get('teachersIn') as FormArray;
+      this.newEduReformList[this.index].teachersIn.forEach((teacher) => {
+        teachersInControlArray.push(new FormControl(teacher));
+      });
+    }
+
+    if (this.newEduReformList[this.index].teachersOut && this.newEduReformList[this.index].teachersOut!.length > 0) {
+      let teachersOutControlArray = this.eduReformForm.get('teachersOut') as FormArray;
+      this.newEduReformList[this.index].teachersOut!.forEach((teacher) => {
+        teachersOutControlArray.push(new FormControl(teacher));
+      });
+    }
   }
 
   ngOnInit(): void {

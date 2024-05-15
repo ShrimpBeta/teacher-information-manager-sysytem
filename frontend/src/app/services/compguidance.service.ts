@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { map, Observable, of } from "rxjs";
-import { CompGuidance, CompGuidanceFilter, CompGuidancePage, CompGuidanceResponse, CompGuidancesByFilterResponse, CreateCompGuidanceResponse, DeleteCompGuidanceResponse, EditCompGuidance, UpdateCompGuidanceResponse, UploadCompGuidancesResponse } from "../models/models/compGuidance.model";
+import { CompGuidance, CompGuidanceFilter, CompGuidancePage, CompGuidanceResponse, CompGuidancesByFilterResponse, CreateCompGuidanceResponse, DeleteCompGuidanceResponse, EditCompGuidance, PreviewCompGuidance, UpdateCompGuidanceResponse, UploadCompGuidancesResponse } from "../models/models/compGuidance.model";
 import { compGuidanceQuery, compGuidancesByFilterQuery } from "../models/graphql/query/compguidance.query.graphql";
 import { createCompGuidanceMutation, deleteCompGuidanceMutation, updateCompGuidanceMutation, uploadCompGuidancesMutation } from "../models/graphql/mutation/compguidance.mutation.graphql";
 
@@ -107,7 +107,7 @@ export class CompGuidanceService {
       );
   }
 
-  uploadFile(file: File): Observable<EditCompGuidance[] | null> {
+  uploadFile(file: File): Observable<PreviewCompGuidance[] | null> {
     return this.apollo.mutate({
       mutation: uploadCompGuidancesMutation,
       context: {

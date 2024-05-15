@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Apollo } from "apollo-angular";
 import { map, Observable } from "rxjs";
-import { CreateEduReformResponse, DeleteEduReformResponse, EditEduReform, EduReform, EduReformFilter, EduReformPage, EduReformResponse, EduReformsByFilterResponse, UpdateEduReformResponse, UploadEduReformsResponse } from "../models/models/eduReform.model";
+import { CreateEduReformResponse, DeleteEduReformResponse, EditEduReform, EduReform, EduReformFilter, EduReformPage, EduReformResponse, EduReformsByFilterResponse, PreviewEduReform, UpdateEduReformResponse, UploadEduReformsResponse } from "../models/models/eduReform.model";
 import { eduReformQuery, eduReformsByFilterQuery } from "../models/graphql/query/edureform.query.graphql";
 import { createEduReformMutation, deleteEduReformMutation, updateEduReformMutation, uploadEduReformsMutation } from "../models/graphql/mutation/edureform.mutation.graphql";
 
@@ -104,7 +104,7 @@ export class EduReformService {
     );
   }
 
-  uploadFile(file: File): Observable<EditEduReform[] | null> {
+  uploadFile(file: File): Observable<PreviewEduReform[] | null> {
     return this.apollo.mutate({
       mutation: uploadEduReformsMutation,
       context: {

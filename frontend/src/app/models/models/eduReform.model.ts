@@ -51,6 +51,19 @@ export class EduReformFilter {
   updatedEnd: Date | null = null
 }
 
+export class PreviewEduReform {
+  teachersIn: UserExport[] = []
+  teachersOut: string[] | null = null
+  number: string | null = null
+  title: string | null = null
+  startDate: Date | null = null
+  duration: string | null = null
+  level: string | null = null
+  rank: string | null = null
+  achievement: string | null = null
+  fund: string | null = null
+}
+
 
 export interface EduReformResponse {
   error?: unknown;
@@ -93,6 +106,6 @@ export interface DeleteEduReformResponse {
 export interface UploadEduReformsResponse {
   error?: unknown;
   data?: {
-    uploadEduReforms: EditEduReform[]
+    uploadEduReforms: PreviewEduReform[]
   }
 }
