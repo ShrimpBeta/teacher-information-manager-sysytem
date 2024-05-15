@@ -6,11 +6,16 @@ package resolvers
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 	"io"
+	"os"
 	graphql_models "server/graph/model"
 	"server/middlewares"
+	dataextraction "server/services/dataExtraction"
 	"server/services/excel"
+	"server/services/ocr"
+	"server/services/pdf"
 
 	"github.com/99designs/gqlgen/graphql"
 )
@@ -94,8 +99,83 @@ func (r *mutationResolver) UploadPasswords(ctx context.Context, file graphql.Upl
 			return nil, err
 		}
 		return excel.ConvertToPassword(fileBytes)
+	} else if file.ContentType == "application/pdf" {
+		fileName := hex.EncodeToString([]byte(file.Filename))
+		filePath := "temp/" + fileName + ".pdf"
+		fileBytes, err := io.ReadAll(file.File)
+		if err != nil {
+			return nil, err
+		}
+		err = os.WriteFile(filePath, fileBytes, 0644)
+		if err != nil {
+			return nil, err
+		}
+		Strings, err := pdf.GetPlainTextFormPdf(filePath)
+		// delete the file
+		oserr := os.Remove(filePath)
+		if oserr != nil {
+			return nil, oserr
+		}
+		if err != nil {
+			return nil, err
+		}
+		passwordPreview, err := dataextraction.StringToPassword(Strings)
+		if err != nil {
+			return nil, err
+		}
+		return []*graphql_models.PasswordPreview{&passwordPreview}, nil
+	} else if file.ContentType == "image/png" {
+		fileName := hex.EncodeToString([]byte(file.Filename))
+		filePath := "temp/" + fileName + ".png"
+		fileBytes, err := io.ReadAll(file.File)
+		if err != nil {
+			return nil, err
+		}
+		err = os.WriteFile(filePath, fileBytes, 0644)
+		if err != nil {
+			return nil, err
+		}
+		Strings, err := ocr.GetTextFormImage(filePath)
+		// delete the file
+		oserr := os.Remove(filePath)
+		if oserr != nil {
+			return nil, oserr
+		}
+		if err != nil {
+			return nil, err
+		}
+		passwordPreview, err := dataextraction.StringToPassword(Strings)
+		if err != nil {
+			return nil, err
+		}
+		return []*graphql_models.PasswordPreview{&passwordPreview}, nil
+	} else if file.ContentType == "image/jpeg" {
+		fileName := hex.EncodeToString([]byte(file.Filename))
+		filePath := "temp/" + fileName + ".jpeg"
+		fileBytes, err := io.ReadAll(file.File)
+		if err != nil {
+			return nil, err
+		}
+		err = os.WriteFile(filePath, fileBytes, 0644)
+		if err != nil {
+			return nil, err
+		}
+		Strings, err := ocr.GetTextFormImage(filePath)
+		// delete the file
+		oserr := os.Remove(filePath)
+		if oserr != nil {
+			return nil, oserr
+		}
+		if err != nil {
+			return nil, err
+		}
+		passwordPreview, err := dataextraction.StringToPassword(Strings)
+		if err != nil {
+			return nil, err
+		}
+		return []*graphql_models.PasswordPreview{&passwordPreview}, nil
 	} else {
-		return nil, fmt.Errorf("Invalid file type")
+		return nil, fmt.Errorf("invalid file type")
 	}
 }
 

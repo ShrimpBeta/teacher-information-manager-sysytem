@@ -6,10 +6,16 @@ package resolvers
 
 import (
 	"context"
+	"encoding/hex"
+	"fmt"
 	"io"
+	"os"
 	graphql_models "server/graph/model"
 	"server/middlewares"
+	dataextraction "server/services/dataExtraction"
 	"server/services/excel"
+	"server/services/ocr"
+	"server/services/pdf"
 
 	"github.com/99designs/gqlgen/graphql"
 )
@@ -87,18 +93,94 @@ func (r *mutationResolver) UploadMonographs(ctx context.Context, file graphql.Up
 		return nil, err
 	}
 
+	users, err := r.UserService.GetUserExports()
+	if err != nil {
+		return nil, err
+	}
+
 	if file.ContentType == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" {
 		fileBytes, err := io.ReadAll(file.File)
 		if err != nil {
 			return nil, err
 		}
-		users, err := r.UserService.GetUserExports()
+		return excel.ConvertToMonograph(fileBytes, users)
+	} else if file.ContentType == "application/pdf" {
+		fileName := hex.EncodeToString([]byte(file.Filename))
+		filePath := "temp/" + fileName + ".pdf"
+		fileBytes, err := io.ReadAll(file.File)
 		if err != nil {
 			return nil, err
 		}
-		return excel.ConvertToMonograph(fileBytes, users)
+		err = os.WriteFile(filePath, fileBytes, 0644)
+		if err != nil {
+			return nil, err
+		}
+		Strings, err := pdf.GetPlainTextFormPdf(filePath)
+		// delete the file
+		oserr := os.Remove(filePath)
+		if oserr != nil {
+			return nil, oserr
+		}
+		if err != nil {
+			return nil, err
+		}
+		monographPreview, err := dataextraction.StringToMonograph(Strings, users)
+		if err != nil {
+			return nil, err
+		}
+		return []*graphql_models.MonographPreview{&monographPreview}, nil
+	} else if file.ContentType == "image/png" {
+		fileName := hex.EncodeToString([]byte(file.Filename))
+		filePath := "temp/" + fileName + ".png"
+		fileBytes, err := io.ReadAll(file.File)
+		if err != nil {
+			return nil, err
+		}
+		err = os.WriteFile(filePath, fileBytes, 0644)
+		if err != nil {
+			return nil, err
+		}
+		Strings, err := ocr.GetTextFormImage(filePath)
+		// delete the file
+		oserr := os.Remove(filePath)
+		if oserr != nil {
+			return nil, oserr
+		}
+		if err != nil {
+			return nil, err
+		}
+		monographPreview, err := dataextraction.StringToMonograph(Strings, users)
+		if err != nil {
+			return nil, err
+		}
+		return []*graphql_models.MonographPreview{&monographPreview}, nil
+	} else if file.ContentType == "image/jpeg" {
+		fileName := hex.EncodeToString([]byte(file.Filename))
+		filePath := "temp/" + fileName + ".jpeg"
+		fileBytes, err := io.ReadAll(file.File)
+		if err != nil {
+			return nil, err
+		}
+		err = os.WriteFile(filePath, fileBytes, 0644)
+		if err != nil {
+			return nil, err
+		}
+		Strings, err := ocr.GetTextFormImage(filePath)
+		// delete the file
+		oserr := os.Remove(filePath)
+		if oserr != nil {
+			return nil, oserr
+		}
+		if err != nil {
+			return nil, err
+		}
+		monographPreview, err := dataextraction.StringToMonograph(Strings, users)
+		if err != nil {
+			return nil, err
+		}
+		return []*graphql_models.MonographPreview{&monographPreview}, nil
 	} else {
-		return nil, nil
+		return nil, fmt.Errorf("invalid file type")
 	}
 }
 
