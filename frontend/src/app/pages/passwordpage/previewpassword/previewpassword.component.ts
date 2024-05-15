@@ -23,7 +23,6 @@ import { URLValidator } from '../../../shared/formvalidator/url.validator';
   styleUrl: './previewpassword.component.scss'
 })
 export class PreviewpasswordComponent implements OnInit, OnDestroy {
-
   private destroy$: Subject<boolean> = new Subject<boolean>();
   passwordForm!: FormGroup;
   newPasswordList: EditPassword[] = [];
@@ -83,13 +82,15 @@ export class PreviewpasswordComponent implements OnInit, OnDestroy {
             this.file = null;
             this.progressing = false;
             this.newPasswordList = datas
-            this.passwordForm = new FormGroup({
-              url: new FormControl(datas[0].url || '', [URLValidator()]),
-              appName: new FormControl(datas[0].appName || ''),
-              account: new FormControl(datas[0].account || '', [Validators.required]),
-              password: new FormControl(datas[0].password || '', [Validators.required]),
-              description: new FormControl(datas[0].description || '')
-            });
+            if (datas.length > 0) {
+              this.passwordForm = new FormGroup({
+                url: new FormControl(datas[0].url || '', [URLValidator()]),
+                appName: new FormControl(datas[0].appName || ''),
+                account: new FormControl(datas[0].account || '', [Validators.required]),
+                password: new FormControl(datas[0].password || '', [Validators.required]),
+                description: new FormControl(datas[0].description || '')
+              });
+            }
           }
         },
         error: (error) => {

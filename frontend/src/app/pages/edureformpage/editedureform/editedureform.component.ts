@@ -30,7 +30,7 @@ export class EditedureformComponent implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     private eduReformService: EduReformService,
-    private authRepositoy: AuthRepository,
+    private authRepository: AuthRepository,
     private snakBar: MatSnackBar,
     private userService: UserService,
   ) { }
@@ -134,7 +134,7 @@ export class EditedureformComponent implements OnInit, OnDestroy {
         });
     });
 
-    this.authRepositoy.$user.pipe(takeUntil(this.destroy$)).subscribe({
+    this.authRepository.$user.pipe(takeUntil(this.destroy$)).subscribe({
       next: (user) => {
         if (user) {
           this.userId = user.id;

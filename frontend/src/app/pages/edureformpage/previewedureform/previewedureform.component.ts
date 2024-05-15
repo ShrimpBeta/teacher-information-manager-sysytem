@@ -6,24 +6,41 @@ import { MatCardModule } from '@angular/material/card';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EduReformService } from '../../../services/edureform.service';
 import { Subject, takeUntil } from 'rxjs';
+import { EdureformformComponent } from '../../../components/edureformform/edureformform.component';
+import { UserExport } from '../../../models/models/user.model';
+import { UserService } from '../../../services/user.service';
+import { MatDividerModule } from '@angular/material/divider';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { EditEduReform } from '../../../models/models/eduReform.model';
+import { AuthRepository } from '../../../core/auth/auth.repository';
 
 @Component({
   selector: 'app-previewedureform',
   standalone: true,
-  imports: [MatButtonModule, MatIconModule, MatProgressBarModule, MatCardModule],
+  imports: [MatButtonModule, MatIconModule, MatProgressBarModule, MatCardModule, EdureformformComponent,
+    MatDividerModule
+  ],
   templateUrl: './previewedureform.component.html',
   styleUrl: './previewedureform.component.scss'
 })
 export class PreviewedureformComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<boolean> = new Subject<boolean>();
+  eduReformForm!: FormGroup;
+  newEduReformList: EditEduReform[] = [];
+  index: number = 0;
+  buttonLabel: string = '创建';
+  userId!: string;
+  teachersInOptions: UserExport[] = [];
 
   constructor(
     private snackBar: MatSnackBar,
-    private eduReformService: EduReformService
+    private eduReformService: EduReformService,
+    private userService: UserService,
+    private authRepository: AuthRepository,
   ) { }
 
-  progress = 0;
+  progressing = false;
   file: File | null = null;
 
   onFileSelected(event: Event) {
@@ -36,6 +53,8 @@ export class PreviewedureformComponent implements OnInit, OnDestroy {
         this.snackBar.open('文件格式错误', '关闭', { duration: 2000 })
       }
     }
+
+    input.value = '';
   }
 
   onDrop(event: DragEvent) {
@@ -58,27 +77,237 @@ export class PreviewedureformComponent implements OnInit, OnDestroy {
     event.preventDefault();
   }
 
+  onPrevious() {
+    if (this.index > 0) {
+      this.index--;
+      this.eduReformForm = new FormGroup({
+        number: new FormControl(this.newEduReformList[this.index].number, [Validators.required]),
+        title: new FormControl(this.newEduReformList[this.index].title, [Validators.required]),
+        teachersIn: new FormArray([]),
+        teachersOut: new FormArray([]),
+        startDate: new FormControl(this.newEduReformList[this.index].startDate, [Validators.required]),
+        duration: new FormControl(this.newEduReformList[this.index].duration || ''),
+        level: new FormControl(this.newEduReformList[this.index].level || ''),
+        rank: new FormControl(this.newEduReformList[this.index].rank || ''),
+        achievement: new FormControl(this.newEduReformList[this.index].achievement || ''),
+        fund: new FormControl(this.newEduReformList[this.index].fund || ''),
+      });
+
+      if (this.newEduReformList[this.index].teachersIn && this.newEduReformList[this.index].teachersIn.length > 0) {
+        let teachersInControlArray = this.eduReformForm.get('teachersIn') as FormArray;
+        this.newEduReformList[this.index].teachersIn.forEach((teacherId) => {
+          let teacher = this.teachersInOptions.find((user) => user.id === teacherId);
+          if (teacher) {
+            teachersInControlArray.push(new FormControl(teacher));
+          }
+        });
+      }
+
+      if (this.newEduReformList[this.index].teachersOut && this.newEduReformList[this.index].teachersOut!.length > 0) {
+        let teachersOutControlArray = this.eduReformForm.get('teachersOut') as FormArray;
+        this.newEduReformList[this.index].teachersOut!.forEach((teacher) => {
+          teachersOutControlArray.push(new FormControl(teacher));
+        });
+      }
+    }
+  }
+
+  onNext() {
+    if (this.index < this.newEduReformList.length - 1) {
+      this.index++;
+      this.eduReformForm = new FormGroup({
+        number: new FormControl(this.newEduReformList[this.index].number, [Validators.required]),
+        title: new FormControl(this.newEduReformList[this.index].title, [Validators.required]),
+        teachersIn: new FormArray([]),
+        teachersOut: new FormArray([]),
+        startDate: new FormControl(this.newEduReformList[this.index].startDate, [Validators.required]),
+        duration: new FormControl(this.newEduReformList[this.index].duration || ''),
+        level: new FormControl(this.newEduReformList[this.index].level || ''),
+        rank: new FormControl(this.newEduReformList[this.index].rank || ''),
+        achievement: new FormControl(this.newEduReformList[this.index].achievement || ''),
+        fund: new FormControl(this.newEduReformList[this.index].fund || ''),
+      });
+
+      if (this.newEduReformList[this.index].teachersIn && this.newEduReformList[this.index].teachersIn.length > 0) {
+        let teachersInControlArray = this.eduReformForm.get('teachersIn') as FormArray;
+        this.newEduReformList[this.index].teachersIn.forEach((teacherId) => {
+          let teacher = this.teachersInOptions.find((user) => user.id === teacherId);
+          if (teacher) {
+            teachersInControlArray.push(new FormControl(teacher));
+          }
+        });
+      }
+
+      if (this.newEduReformList[this.index].teachersOut && this.newEduReformList[this.index].teachersOut!.length > 0) {
+        let teachersOutControlArray = this.eduReformForm.get('teachersOut') as FormArray;
+        this.newEduReformList[this.index].teachersOut!.forEach((teacher) => {
+          teachersOutControlArray.push(new FormControl(teacher));
+        });
+      }
+    }
+  }
+
   onUpload() {
     if (this.file) {
+      this.progressing = true;
       this.eduReformService.uploadFile(this.file).pipe(takeUntil(this.destroy$)).subscribe({
-        next: (data) => {
-          console.log(data);
+        next: (datas) => {
+          if (datas) {
+            console.log(datas);
+            this.file = null;
+            this.progressing = false;
+            this.newEduReformList = datas;
+            if (datas.length > 0) {
+              this.eduReformForm = new FormGroup({
+                number: new FormControl(datas[0].number, [Validators.required]),
+                title: new FormControl(datas[0].title, [Validators.required]),
+                teachersIn: new FormArray([]),
+                teachersOut: new FormArray([]),
+                startDate: new FormControl(datas[0].startDate, [Validators.required]),
+                duration: new FormControl(datas[0].duration || ''),
+                level: new FormControl(datas[0].level || ''),
+                rank: new FormControl(datas[0].rank || ''),
+                achievement: new FormControl(datas[0].achievement || ''),
+                fund: new FormControl(datas[0].fund || ''),
+              });
+
+              if (datas[0].teachersIn && datas[0].teachersIn.length > 0) {
+                let teachersInControlArray = this.eduReformForm.get('teachersIn') as FormArray;
+                datas[0].teachersIn.forEach((teacherId) => {
+                  let teacher = this.teachersInOptions.find((user) => user.id === teacherId);
+                  if (teacher) {
+                    teachersInControlArray.push(new FormControl(teacher));
+                  }
+                });
+              }
+
+              if (datas[0].teachersOut && datas[0].teachersOut.length > 0) {
+                let teachersOutControlArray = this.eduReformForm.get('teachersOut') as FormArray;
+                datas[0].teachersOut.forEach((teacher) => {
+                  teachersOutControlArray.push(new FormControl(teacher));
+                });
+              }
+            }
+
+            this.snackBar.open('上传成功', '关闭', { duration: 2000 });
+          }
         },
         error: (error) => {
           console.log(error);
+          this.progressing = false;
+          this.snackBar.open('上传失败或解析失败', '关闭', { duration: 2000 });
         },
       });
     }
   }
 
-  ngOnInit(): void {
+  createEduReform() {
+    console.log(this.eduReformForm.value);
 
+    let newEduReform = new EditEduReform();
+    newEduReform.title = this.eduReformForm.get('title')?.value;
+    newEduReform.number = this.eduReformForm.get('number')?.value;
+    newEduReform.startDate = this.eduReformForm.get('startDate')?.value;
+    newEduReform.duration = this.eduReformForm.get('duration')?.value;
+    newEduReform.level = this.eduReformForm.get('level')?.value;
+    newEduReform.rank = this.eduReformForm.get('rank')?.value;
+    newEduReform.achievement = this.eduReformForm.get('achievement')?.value;
+    newEduReform.fund = this.eduReformForm.get('fund')?.value;
+
+    let teachersInControlArray = this.eduReformForm.get('teachersIn') as FormArray;
+    if (teachersInControlArray && teachersInControlArray.length > 0) {
+      newEduReform.teachersIn = teachersInControlArray.controls.map((control) => control.value.id);
+    }
+
+    let teachersOutControlArray = this.eduReformForm.get('teachersOut') as FormArray;
+    if (teachersOutControlArray && teachersOutControlArray.length > 0) {
+      newEduReform.teachersOut = teachersOutControlArray.controls.map((control) => control.value);
+    }
+
+    console.log(newEduReform);
+    this.eduReformService.createEduReform(newEduReform)
+      .pipe(takeUntil(this.destroy$)).subscribe({
+        next: (response) => {
+          if (response) {
+
+            this.newEduReformList.splice(this.index, 1);
+
+            if (this.index > this.newEduReformList.length - 1 && this.newEduReformList.length > 0) {
+              this.index = this.newEduReformList.length - 1;
+            }
+
+            if (this.newEduReformList.length > 0) {
+              this.eduReformForm = new FormGroup({
+                number: new FormControl(this.newEduReformList[this.index].number, [Validators.required]),
+                title: new FormControl(this.newEduReformList[this.index].title, [Validators.required]),
+                teachersIn: new FormArray([]),
+                teachersOut: new FormArray([]),
+                startDate: new FormControl(this.newEduReformList[this.index].startDate, [Validators.required]),
+                duration: new FormControl(this.newEduReformList[this.index].duration || ''),
+                level: new FormControl(this.newEduReformList[this.index].level || ''),
+                rank: new FormControl(this.newEduReformList[this.index].rank || ''),
+                achievement: new FormControl(this.newEduReformList[this.index].achievement || ''),
+                fund: new FormControl(this.newEduReformList[this.index].fund || ''),
+              });
+
+              if (this.newEduReformList[this.index].teachersIn && this.newEduReformList[this.index].teachersIn.length > 0) {
+                let teachersInControlArray = this.eduReformForm.get('teachersIn') as FormArray;
+                this.newEduReformList[this.index].teachersIn.forEach((teacherId) => {
+                  let teacher = this.teachersInOptions.find((user) => user.id === teacherId);
+                  if (teacher) {
+                    teachersInControlArray.push(new FormControl(teacher));
+                  }
+                });
+              }
+
+              if (this.newEduReformList[this.index].teachersOut && this.newEduReformList[this.index].teachersOut!.length > 0) {
+                let teachersOutControlArray = this.eduReformForm.get('teachersOut') as FormArray;
+                this.newEduReformList[this.index].teachersOut!.forEach((teacher) => {
+                  teachersOutControlArray.push(new FormControl(teacher));
+                });
+              }
+            }
+
+
+            this.snackBar.open('创建成功', '关闭', {
+              duration: 2000,
+            });
+          } else {
+            this.snackBar.open('创建失败', '关闭', {
+              duration: 2000,
+            });
+          }
+        },
+        error: (error) => {
+          this.snackBar.open('创建失败', '关闭', {
+            duration: 2000,
+          });
+          console.error(error);
+        }
+      });
+  }
+
+  ngOnInit(): void {
+    this.authRepository.$user.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (user) => {
+        if (user) {
+          this.userId = user.id;
+        }
+      }
+    });
+
+    this.userService.userExports().pipe(takeUntil(this.destroy$)).subscribe({
+      next: (users) => {
+        this.teachersInOptions = users;
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
   }
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
   }
-
-
 }

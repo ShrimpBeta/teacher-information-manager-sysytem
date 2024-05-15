@@ -18,9 +18,6 @@ export class MonographService {
   getMonograph(id: string): Observable<Monograph | null> {
     return this.apollo.query({
       query: monographQuery,
-      context: {
-        useMultipart: true
-      },
       variables: {
         id: id
       }
@@ -110,6 +107,9 @@ export class MonographService {
   uploadFile(file: File): Observable<EditMonograph[] | null> {
     return this.apollo.mutate({
       mutation: uploadMonographsMutation,
+      context: {
+        useMultipart: true
+      },
       variables: {
         file: file
       }

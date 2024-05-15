@@ -11,4 +11,19 @@
   <div class="row-center">
     <button mat-raised-button color="accent" (click)="onUpload()" [disabled]="!file">上传文件</button>
   </div>
+
+  @if(newEduReformList.length > 0){
+  <div class="content">
+    <div style="display: flex; flex-direction: row; gap: 20px; align-items: center;">
+      <button mat-raised-button color="primary" (click)="onPrevious()"
+        [disabled]="index==0"><mat-icon>arrow_back_ios</mat-icon></button>
+      <div>当前{{index+1}}条/{{newEduReformList.length}}条</div>
+      <button mat-raised-button color="primary" (click)="onNext()"
+        [disabled]="index===newEduReformList.length-1"><mat-icon>arrow_forward_ios</mat-icon></button>
+    </div>
+    <mat-divider></mat-divider>
+    <app-edureformform [buttonLabel]="buttonLabel" [eduReformForm]="eduReformForm" (submitForm)="createEduReform()"
+      [teachersInOptions]="teachersInOptions"></app-edureformform>
+  </div>
+  }
 </div>

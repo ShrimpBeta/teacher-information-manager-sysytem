@@ -29,6 +29,8 @@ export class PreviewsciresearchComponent {
       } else {
         this.snackBar.open('文件格式错误', '关闭', { duration: 2000 })
       }
+
+      input.value = '';
     }
   }
 

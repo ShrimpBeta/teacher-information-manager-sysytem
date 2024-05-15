@@ -36,29 +36,59 @@ func (r *queryResolver) Report(ctx context.Context, filter graphql_models.Report
 	var ids []primitive.ObjectID
 
 	if filter.SpecifyTeacherIn {
-		ids = make([]primitive.ObjectID, len(filter.TeachersIn)+1)
-		ids[0] = user.ID
-		for i, id := range filter.TeachersIn {
-			objectId, err := primitive.ObjectIDFromHex(*id)
+		// 导出多个用户的报表
+		if len(filter.TeachersIn) == 0 {
+			userExports, err = r.UserService.Repo.GetAllUsers()
 			if err != nil {
 				return nil, err
 			}
-			ids[i+1] = objectId
-		}
+			ids = make([]primitive.ObjectID, len(userExports))
+			for i, userExport := range userExports {
+				ids[i] = userExport.ID
+			}
+		} else {
+			ids = make([]primitive.ObjectID, len(filter.TeachersIn)+1)
+			ids[0] = user.ID
+			for i, id := range filter.TeachersIn {
+				objectId, err := primitive.ObjectIDFromHex(*id)
+				if err != nil {
+					return nil, err
+				}
+				ids[i+1] = objectId
+			}
 
-		userExports, err = r.UserService.Repo.GetUsersByIds(ids)
-		if err != nil {
-			return nil, err
+			userExports, err = r.UserService.Repo.GetUsersByIds(ids)
+			if err != nil {
+				return nil, err
+			}
 		}
+		// ids = make([]primitive.ObjectID, len(filter.TeachersIn)+1)
+		// ids[0] = user.ID
+		// for i, id := range filter.TeachersIn {
+		// 	objectId, err := primitive.ObjectIDFromHex(*id)
+		// 	if err != nil {
+		// 		return nil, err
+		// 	}
+		// 	ids[i+1] = objectId
+		// }
+
+		// userExports, err = r.UserService.Repo.GetUsersByIds(ids)
+		// if err != nil {
+		// 	return nil, err
+		// }
 	} else {
-		userExports, err = r.UserService.Repo.GetAllUsers()
-		if err != nil {
-			return nil, err
-		}
-		ids = make([]primitive.ObjectID, len(userExports))
-		for i, userExport := range userExports {
-			ids[i] = userExport.ID
-		}
+		// 导出单个用户的报表
+		ids = make([]primitive.ObjectID, 1)
+		ids[0] = user.ID
+		userExports, err = r.UserService.Repo.GetUsersByIds(ids)
+		// userExports, err = r.UserService.Repo.GetAllUsers()
+		// if err != nil {
+		// 	return nil, err
+		// }
+		// ids = make([]primitive.ObjectID, len(userExports))
+		// for i, userExport := range userExports {
+		// 	ids[i] = userExport.ID
+		// }
 	}
 
 	userExportsMap := make(map[primitive.ObjectID]string)

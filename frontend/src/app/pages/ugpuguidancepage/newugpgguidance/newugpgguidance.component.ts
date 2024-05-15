@@ -70,8 +70,8 @@ export class NewugpgguidanceComponent implements OnInit, OnDestroy {
       openingCheckResult: new FormControl(''),
       midtermCheckDate: new FormControl(null),
       midtermCheckResult: new FormControl(''),
-      defenseDate: new FormControl(null),
-      defenseResult: new FormControl(''),
+      defenseDate: new FormControl(null, [Validators.required]),
+      defenseResult: new FormControl('', [Validators.required]),
     });
   }
 

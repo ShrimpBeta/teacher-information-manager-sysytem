@@ -17,9 +17,6 @@ export class MentorshipService {
   getMentorship(id: string): Observable<Mentorship | null> {
     return this.apollo.query({
       query: mentorshipQuery,
-      context: {
-        useMultipart: true
-      },
       variables: {
         id: id
       }
@@ -109,6 +106,9 @@ export class MentorshipService {
   uploadFile(file: File): Observable<EditMentorship[] | null> {
     return this.apollo.mutate({
       mutation: uploadMentorshipsMutation,
+      context: {
+        useMultipart: true
+      },
       variables: {
         file: file
       }

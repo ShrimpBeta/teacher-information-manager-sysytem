@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -12,7 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './previewmonograph.component.html',
   styleUrl: './previewmonograph.component.scss'
 })
-export class PreviewmonographComponent {
+export class PreviewmonographComponent implements OnInit, OnDestroy {
   constructor(
     private snackBar: MatSnackBar
   ) { }
@@ -30,6 +30,8 @@ export class PreviewmonographComponent {
         this.snackBar.open('文件格式错误', '关闭', { duration: 2000 })
       }
     }
+
+    input.value = '';
   }
 
   onDrop(event: DragEvent) {
@@ -58,4 +60,9 @@ export class PreviewmonographComponent {
     }
   }
 
+
+
+  ngOnInit(): void { }
+
+  ngOnDestroy(): void { }
 }

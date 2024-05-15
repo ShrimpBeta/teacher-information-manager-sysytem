@@ -25,3 +25,14 @@
   flex-direction: row;
   justify-content: center;
 }
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 30px;
+  box-sizing: border-box;
+  border-radius: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
