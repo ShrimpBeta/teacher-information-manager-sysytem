@@ -19,6 +19,7 @@ func GetPlainTextFormPdf(file string) (string, error) {
 		return "", err
 	}
 	buf.ReadFrom(b)
+	fmt.Println(buf.String())
 	return buf.String(), nil
 }
 
