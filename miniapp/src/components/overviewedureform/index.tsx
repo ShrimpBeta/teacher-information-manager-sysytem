@@ -246,6 +246,7 @@ const OverviewEduReform = (props: PropsWithChildren) => {
                     {/* <Text>开始时间：{item.startDate}</Text> */}
                     <Text>系统内教师: {item.teachersIn.map((teacher) => teacher.username).join(',')}</Text>
                     <Text>系统外教师: {item.teachersOut ? item.teachersOut.join(',') : ''}</Text>
+                    <Text>项目开始日期：{new Date(item.startDate).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
                     <Text>持续时间: {item.duration}</Text>
                     <Text>级别: {item.level}</Text>
                     <Text>等级: {item.rank}</Text>

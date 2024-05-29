@@ -64,11 +64,11 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline">
-      <mat-label>出版时间</mat-label>
+      <mat-label>出版日期</mat-label>
       <input matInput [matDatepicker]="publishDatePicker" formControlName="publishDate" placeholder="出版时间">
       <mat-datepicker-toggle matSuffix [for]="publishDatePicker"></mat-datepicker-toggle>
       <mat-datepicker #publishDatePicker></mat-datepicker>
-      <mat-error>出版时间格式错误/出版时间不能为空</mat-error>
+      <mat-error>出版日期格式错误/出版日期不能为空</mat-error>
     </mat-form-field>
   </div>
   <mat-divider></mat-divider>

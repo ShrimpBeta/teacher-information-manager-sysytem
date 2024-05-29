@@ -5,7 +5,7 @@ export class Monograph {
   teachersIn: UserExport[] = []
   teachersOut: string[] = []
   title: string = ""
-  publishDate?: Date
+  publishDate: Date = new Date(0)
   publishLevel: string = ""
   rank: string = ""
   createdAt: Date = new Date(0)

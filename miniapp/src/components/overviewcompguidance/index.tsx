@@ -172,10 +172,11 @@ const OverviewCompGuidance = (props: PropsWithChildren) => {
                         gap: '10rpx',
                         marginTop: index === 0 ? '0' : '20rpx'
                       }} key={index}>
-                      <Text> 项目名称: {item.projectName}</Text>
+                      <Text>项目名称: {item.projectName}</Text>
                       <Text>学生名称: {item.studentNames.join(',')}</Text>
                       <Text>竞赛分数: {item.competitionScore}</Text>
                       <Text>获奖情况: {item.awardStatus}</Text>
+                      <Text>指导日期: {new Date(item.guidanceDate).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
                       <View
                         style={{
                           marginTop: '10rpx',

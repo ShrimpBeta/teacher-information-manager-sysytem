@@ -177,6 +177,9 @@ const OverviewMentorship = (props: PropsWithChildren) => {
                     <View>
                       <Text>学生名称: {item.studentNames.join(',')}</Text>
                     </View>
+                    <View>
+                      <Text>指导日期: {new Date(item.guidanceDate).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
+                    </View>
                     <View
                       style={{
                         marginTop: '10rpx',

@@ -5,7 +5,7 @@ export class Paper {
   teachersIn: UserExport[] = []
   teachersOut: string[] = []
   title: string = ""
-  publishDate?: Date
+  publishDate: Date= new Date(0)
   rank: string = ""
   journalName: string = ""
   journalLevel: string = ""

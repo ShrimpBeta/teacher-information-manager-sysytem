@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text } from '@tarojs/components'
-import { Button, Form, Input, Cell, Popup, CalendarCard, type CalendarCardValue } from "@nutui/nutui-react-taro"
+import { Button, Form, Input, Cell, Popup, CalendarCard, type CalendarCardValue, FormItemRuleWithoutValidator } from "@nutui/nutui-react-taro"
 import './index.scss'
 import Taro from '@tarojs/taro'
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client'
@@ -153,7 +153,15 @@ function Index() {
         });
       })
     }
-  }, [])
+  }, []);
+
+  const dateValidator = (rule: FormItemRuleWithoutValidator, value: string) => {
+    if (publishDate !== null) {
+      return true
+    } else {
+      return false;
+    }
+  }
 
 
   return (
@@ -210,7 +218,7 @@ function Index() {
         <Form.Item label='系统外教师' name='teachersOut' validateTrigger='onBlur'>
           <Input placeholder='请输入系统外教师，多个以 "," "，" 隔开 ' type='text' />
         </Form.Item>
-        <Form.Item label='发表时间' name='publishDate' validateTrigger='onBlur'>
+        <Form.Item label='发表日期' name='publishDate' validateTrigger='onBlur'rules={[{validator:dateValidator,message:'发表日期不能为空'}]}>
           <Cell
             title="选择日期"
             description={publishDate ? `${publishDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}` : '请选择'}

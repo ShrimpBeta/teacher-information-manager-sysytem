@@ -63,6 +63,9 @@ const Account = (props: PropsWithChildren) => {
               icon: 'success',
               duration: 2000
             });
+            let userTemp = Object.assign({}, user);
+            userTemp.wechatAuth = true;
+            dispatch(userSlice.actions.updateUserInfo(userTemp));
           }).catch((err) => {
             Taro.showToast({
               title: '绑定失败',

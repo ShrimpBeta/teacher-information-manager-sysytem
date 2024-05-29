@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View } from '@tarojs/components'
-import { Button, Form, Input, Cell, Popup, CalendarCard, type CalendarCardValue } from "@nutui/nutui-react-taro"
+import { Button, Form, Input, Cell, Popup, CalendarCard, type CalendarCardValue, FormItemRuleWithoutValidator } from "@nutui/nutui-react-taro"
 import './index.scss'
 import Taro from '@tarojs/taro'
 import { useMutation } from '@apollo/client'
@@ -70,6 +70,13 @@ function Index() {
     })
   }
 
+  const dateValidator = (rule: FormItemRuleWithoutValidator, value: string) => {
+    if (defenseDate !== null) {
+      return true
+    } else {
+      return false;
+    }
+  }
 
   return (
     <View style={{ width: '100%', height: '100vh' }}>
@@ -111,7 +118,7 @@ function Index() {
         <Form.Item label='开题检查结果' name='openingCheckResult' validateTrigger='onBlur'>
           <Input placeholder='请输入开题检查结果' type='text' />
         </Form.Item>
-        <Form.Item label='开题检查时间' name='openingCheckDate' validateTrigger='onBlur'>
+        <Form.Item label='开题检查日期' name='openingCheckDate' validateTrigger='onBlur'>
           <Cell
             title="选择日期"
             description={openingCheckDate ? `${openingCheckDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}` : '请选择'}
@@ -122,7 +129,7 @@ function Index() {
         <Form.Item label='中期检查结果' name='midtermCheckResult' validateTrigger='onBlur'>
           <Input placeholder='请输入中期检查结果' type='text' />
         </Form.Item>
-        <Form.Item label='中期检查时间' name='midtermCheckDate' validateTrigger='onBlur'>
+        <Form.Item label='中期检查日期' name='midtermCheckDate' validateTrigger='onBlur'>
           <Cell
             title="选择日期"
             description={midtermCheckDate ? `${midtermCheckDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}` : '请选择'}
@@ -130,10 +137,10 @@ function Index() {
             style={{ padding: '0' }}
           />
         </Form.Item>
-        <Form.Item label='最终答辩结果' name='defenseResult' validateTrigger='onBlur'>
+        <Form.Item label='最终答辩结果' name='defenseResult' validateTrigger='onBlur' rules={[{required:true,message:'最终答辩结果不能为空'}]}>
           <Input placeholder='请输入最终答辩结果' type='text' />
         </Form.Item>
-        <Form.Item label='最终答辩时间' name='defenseDate' validateTrigger='onBlur'>
+        <Form.Item label='最终答辩日期' name='defenseDate' validateTrigger='onBlur' rules={[{validator:dateValidator,message:'最终答辩日期不能为空'}]}>
           <Cell
             title="选择日期"
             description={defenseDate ? `${defenseDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}` : '请选择'}

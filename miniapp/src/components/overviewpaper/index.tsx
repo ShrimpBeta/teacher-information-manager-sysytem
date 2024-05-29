@@ -244,6 +244,7 @@ const OverviewPaper = (props: PropsWithChildren) => {
                     <Text>论文题目: {item.title}</Text>
                     <Text>系统内教师: {item.teachersIn.map(teacher => teacher.username).join(',')}</Text>
                     <Text>系统外教师: {item.teachersOut?.join(',')}</Text>
+                    <Text>发表日期: {new Date(item.publishDate).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
                     <Text>期刊名称: {item.journalName}</Text>
                     <Text>期刊级别: {item.journalLevel}</Text>
                     <Text>排名: {item.rank}</Text>

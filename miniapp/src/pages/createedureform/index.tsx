@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { View, Text } from '@tarojs/components'
-import { Button, Form, Input, Cell, Popup, CalendarCard, type CalendarCardValue } from "@nutui/nutui-react-taro"
+import { Button, Form, Input, Cell, Popup, CalendarCard, type CalendarCardValue, FormItemRuleWithoutValidator } from "@nutui/nutui-react-taro"
 import './index.scss'
 import Taro from '@tarojs/taro'
 import { useMutation, useQuery } from '@apollo/client'
@@ -97,6 +97,14 @@ function Index() {
     }
   }, [UsersData])
 
+  const dateValidator = (rule: FormItemRuleWithoutValidator, value: string) => {
+    if (startDate !== null) {
+      return true
+    } else {
+      return false;
+    }
+  }
+
   return (
     <View style={{ width: '100%', height: '100vh' }}>
 
@@ -154,7 +162,7 @@ function Index() {
         <Form.Item label='系统外教师' name='teachersOut' validateTrigger='onBlur'>
           <Input placeholder='请输入系统外教师，多个以 "," "，" 隔开 ' type='text' />
         </Form.Item>
-        <Form.Item label='项目开始' name='startDate' validateTrigger='onBlur'>
+        <Form.Item label='项目开始日期' name='startDate' validateTrigger='onBlur' rules={[{validator:dateValidator,message:'项目开始日期不能为空'}]}>
           <Cell
             title="选择日期"
             description={startDate ? `${startDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}` : '请选择'}

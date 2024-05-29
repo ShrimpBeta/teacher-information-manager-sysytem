@@ -70,14 +70,9 @@ func (userService *UserService) SignIn(signInData graphql_models.SigIn) (*graphq
 
 }
 
-func (userService *UserService) UpdateUser(userID string, userData graphql_models.UpdateUser) (*graphql_models.User, error) {
+func (userService *UserService) UpdateUser(userId primitive.ObjectID, userData graphql_models.UpdateUser) (*graphql_models.User, error) {
 
-	objectID, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
-
-	userUpdate, err := userService.Repo.GetUserById(objectID)
+	userUpdate, err := userService.Repo.GetUserById(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +127,7 @@ func (userService *UserService) UpdateUser(userID string, userData graphql_model
 		return nil, err
 	}
 
-	userUpdate, err = userService.Repo.GetUserById(objectID)
+	userUpdate, err = userService.Repo.GetUserById(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -155,14 +150,10 @@ func (userService *UserService) UpdateUser(userID string, userData graphql_model
 
 }
 
-func (userService *UserService) ActivateUser(userID string, userData graphql_models.ActivateUser) (*graphql_models.User, error) {
-	objectID, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return nil, err
-	}
+func (userService *UserService) ActivateUser(userId primitive.ObjectID, userData graphql_models.ActivateUser) (*graphql_models.User, error) {
 
 	// get user by id
-	userUpdate, err := userService.Repo.GetUserById(objectID)
+	userUpdate, err := userService.Repo.GetUserById(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -217,7 +208,7 @@ func (userService *UserService) ActivateUser(userID string, userData graphql_mod
 	if err != nil {
 		return nil, err
 	}
-	userUpdate, err = userService.Repo.GetUserById(objectID)
+	userUpdate, err = userService.Repo.GetUserById(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -240,13 +231,9 @@ func (userService *UserService) ActivateUser(userID string, userData graphql_mod
 	}, nil
 }
 
-func (userService *UserService) UpdatePassword(userID string, updatePasswordData graphql_models.UpdatePassword) (bool, error) {
-	objectID, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return false, err
-	}
+func (userService *UserService) UpdatePassword(userId primitive.ObjectID, updatePasswordData graphql_models.UpdatePassword) (bool, error) {
 
-	userData, err := userService.Repo.GetUserById(objectID)
+	userData, err := userService.Repo.GetUserById(userId)
 	if err != nil {
 		return false, err
 	}
@@ -281,13 +268,9 @@ func (userService *UserService) ResetPassword(resetPasswordData graphql_models.R
 	return true, nil
 }
 
-func (userService *UserService) GetUser(id string) (*graphql_models.User, error) {
-	objectID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
+func (userService *UserService) GetUser(id primitive.ObjectID) (*graphql_models.User, error) {
 
-	userData, err := userService.Repo.GetUserById(objectID)
+	userData, err := userService.Repo.GetUserById(id)
 	if err != nil {
 		return nil, err
 	}
@@ -329,13 +312,9 @@ func (userService *UserService) GetUserExports() ([]*graphql_models.UserExport, 
 	return users, nil
 }
 
-func (userService *UserService) DeleteUser(userID string) (bool, error) {
-	objectID, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		return false, err
-	}
+func (userService *UserService) DeleteUser(userId primitive.ObjectID) (bool, error) {
 
-	err = userService.Repo.DeleteUser(objectID)
+	err := userService.Repo.DeleteUser(userId)
 	if err != nil {
 		return false, err
 	}
@@ -383,7 +362,7 @@ type WechatSessionResponse struct {
 	ErrMsg     string `json:"errmsg"`
 }
 
-func (userService *UserService) AddWechatAuth(userId, code string) (bool, error) {
+func (userService *UserService) AddWechatAuth(userId primitive.ObjectID, code string) (bool, error) {
 	url := fmt.Sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", environment.AppID, environment.AppSecret, code)
 
 	response, err := http.Get(url)
@@ -402,12 +381,7 @@ func (userService *UserService) AddWechatAuth(userId, code string) (bool, error)
 		return false, fmt.Errorf(wechatSession.ErrMsg)
 	}
 
-	objectID, err := primitive.ObjectIDFromHex(userId)
-	if err != nil {
-		return false, err
-	}
-
-	userData, err := userService.Repo.GetUserById(objectID)
+	userData, err := userService.Repo.GetUserById(userId)
 	if err != nil {
 		return false, err
 	}
@@ -423,13 +397,9 @@ func (userService *UserService) AddWechatAuth(userId, code string) (bool, error)
 	return true, nil
 }
 
-func (userService *UserService) RemoveWechatAuth(userId string) (bool, error) {
-	objectID, err := primitive.ObjectIDFromHex(userId)
-	if err != nil {
-		return false, err
-	}
+func (userService *UserService) RemoveWechatAuth(userId primitive.ObjectID) (bool, error) {
 
-	userData, err := userService.Repo.GetUserById(objectID)
+	userData, err := userService.Repo.GetUserById(userId)
 	if err != nil {
 		return false, err
 	}

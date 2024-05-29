@@ -13,7 +13,7 @@ export class SciResearch {
   teachersOut: string[] = []
   number: string = ""
   title: string = ""
-  startDate?: Date
+  startDate: Date = new Date(0)
   duration: string = ""
   level: string = ""
   rank: string = ""

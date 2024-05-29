@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View } from '@tarojs/components'
-import { Button, Form, Input, Cell, Popup, CalendarCard, type CalendarCardValue } from "@nutui/nutui-react-taro"
+import { Button, Form, Input, Cell, Popup, CalendarCard, type CalendarCardValue, FormItemRuleWithoutValidator } from "@nutui/nutui-react-taro"
 import './index.scss'
 import { EditMentorship } from '@/models/models/mentorship.model'
 import Taro from '@tarojs/taro'
@@ -57,6 +57,14 @@ function Index() {
     })
   }
 
+  const dateValidator = (rule: FormItemRuleWithoutValidator, value: string) => {
+    if (guidanceDate !== null) {
+      return true
+    } else {
+      return false;
+    }
+  }
+
   return (
     <View style={{ width: '100%', height: '100vh' }}>
       <Form
@@ -91,7 +99,7 @@ function Index() {
         <Form.Item label='项目成绩' name='grade' validateTrigger='onBlur'>
           <Input placeholder='请输入项目成绩' type='text' />
         </Form.Item>
-        <Form.Item label='指导时间' name='guidanceDate' validateTrigger='onBlur'>
+        <Form.Item label='指导日期' name='guidanceDate' validateTrigger='onBlur' rules={[{validator:dateValidator,message:'指导日期不能为空'}]}>
           <Cell
             title="选择日期"
             description={guidanceDate ? `${guidanceDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}` : '请选择'}

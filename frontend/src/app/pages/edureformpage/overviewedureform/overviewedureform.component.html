@@ -100,7 +100,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>开始时间</mat-label>
+          <mat-label>项目开始日期</mat-label>
           <mat-date-range-input [rangePicker]="startDatePicker">
             <input matStartDate formControlName="startDateStart" placeholder="Start date">
             <input matEndDate formControlName="startDateEnd" placeholder="End date">
@@ -229,7 +229,7 @@
           </ng-container>
 
           <ng-container matColumnDef="startDate">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> 开始时间 </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 项目开始日期 </th>
             <td mat-cell *matCellDef="let element"> {{element.startDate| date: 'yyyy-MM-dd'}} </td>
           </ng-container>
 

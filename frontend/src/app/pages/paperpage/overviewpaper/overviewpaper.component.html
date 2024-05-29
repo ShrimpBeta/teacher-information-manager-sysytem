@@ -89,7 +89,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>发表时间</mat-label>
+          <mat-label>发表日期</mat-label>
           <mat-date-range-input [rangePicker]="publishDatePicker">
             <input matStartDate formControlName="publishDateStart" placeholder="Start date">
             <input matEndDate formControlName="publishDateEnd" placeholder="End date">
@@ -213,7 +213,7 @@
           </ng-container>
 
           <ng-container matColumnDef="publishDate">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> 发表时间 </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> 发表日期 </th>
             <td mat-cell *matCellDef="let element"> {{element.publishDate| date: 'yyyy-MM-dd'}} </td>
           </ng-container>
 

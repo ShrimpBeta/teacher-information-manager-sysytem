@@ -245,6 +245,7 @@ const OverviewMonograph = (props: PropsWithChildren) => {
                   <Text>专著名称: {item.title}</Text>
                   <Text>系统内教师: {item.teachersIn.map(teacher => teacher.username).join(',')}</Text>
                   <Text>系统外教师: {item.teachersOut?.join(',')}</Text>
+                  <Text>出版日期：{new Date(item.publishDate).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
                   <Text>出版级别: {item.publishLevel}</Text>
                   <Text>排名: {item.rank}</Text>
                   <View

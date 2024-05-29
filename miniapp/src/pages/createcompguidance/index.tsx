@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View } from '@tarojs/components'
-import { Button, Form, Input, Cell, Popup, CalendarCard, type CalendarCardValue } from "@nutui/nutui-react-taro"
+import { Button, Form, Input, Cell, Popup, CalendarCard, type CalendarCardValue, FormItemRuleWithoutValidator } from "@nutui/nutui-react-taro"
 import './index.scss'
 import Taro from '@tarojs/taro'
 import { useMutation } from '@apollo/client'
@@ -22,7 +22,7 @@ function Index() {
   const submitSucceed = (values: any) => {
     let { projectName, studentNames, competitionScore, awardStatus } = values
 
-    
+
 
     let createCompGuidanceData = new EditCompGuidance();
     createCompGuidanceData.projectName = projectName;
@@ -57,6 +57,14 @@ function Index() {
         duration: 2000
       });
     })
+  }
+
+  const dateValidator = (rule: FormItemRuleWithoutValidator, value: string) => {
+    if (guidanceDate !== null) {
+      return true
+    } else {
+      return false;
+    }
   }
 
   return (
@@ -97,7 +105,7 @@ function Index() {
         <Form.Item label='获奖情况' name='awardStatus' validateTrigger='onBlur'>
           <Input placeholder='请输入获奖情况' type='text' />
         </Form.Item>
-        <Form.Item label='指导时间' name='guidanceDate' validateTrigger='onBlur'>
+        <Form.Item label='指导日期' name='guidanceDate' validateTrigger='onBlur' rules={[{validator:dateValidator,message:'指导日期不能为空'}]}>
           <Cell
             title="选择日期"
             description={guidanceDate ? `${guidanceDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}` : '请选择'}

@@ -3,7 +3,7 @@ export class Mentorship {
   projectName: string = ""
   studentNames: string[] = []
   grade: string = ""
-  guidanceDate?: Date
+  guidanceDate: Date = new Date(0)
   createdAt: Date = new Date(0)
   updatedAt: Date = new Date(0)
 }

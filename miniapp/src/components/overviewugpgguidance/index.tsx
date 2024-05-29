@@ -148,7 +148,8 @@ const OverviewUGPGGuidance = (props: PropsWithChildren) => {
                   >
                     <Text>学生名称: {item.studentName}</Text>
                     <Text>论文题目: {item.thesisTopic}</Text>
-                    <Text>毕设结果: {item.defenseResult}</Text>
+                    <Text>最终答辩结果: {item.defenseResult}</Text>
+                    <Text>最终答辩日期: {new Date(item.defenseDate).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
                     <View
                       style={{
                         marginTop: '10rpx',

@@ -21,12 +21,18 @@ func (r *mutationResolver) DeleteAccount(ctx context.Context, userID string) (bo
 		return false, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return false, err
 	}
 
-	return r.UserService.DeleteUser(userID)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return false, err
+	}
+
+	return r.UserService.DeleteUser(user.ID)
 }
 
 // UpdateAccountPassword is the resolver for the updateAccountPassword field.
@@ -36,12 +42,18 @@ func (r *mutationResolver) UpdateAccountPassword(ctx context.Context, userID str
 		return false, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return false, err
 	}
 
-	return r.UserService.UpdatePassword(userID, updatePasswordData)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return false, err
+	}
+
+	return r.UserService.UpdatePassword(user.ID, updatePasswordData)
 }
 
 // ResetAccountPassword is the resolver for the resetAccountPassword field.
@@ -113,12 +125,18 @@ func (r *mutationResolver) UpdateUser(ctx context.Context, userID string, userDa
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.UserService.UpdateUser(userID, userData)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.UserService.UpdateUser(user.ID, userData)
 }
 
 // ActivateUser is the resolver for the activateUser field.
@@ -128,12 +146,18 @@ func (r *mutationResolver) ActivateUser(ctx context.Context, userID string, user
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.UserService.ActivateUser(userID, userData)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.UserService.ActivateUser(user.ID, userData)
 }
 
 // WechatLogin is the resolver for the wechatLogin field.
@@ -148,12 +172,18 @@ func (r *mutationResolver) AddWechatAuth(ctx context.Context, userID string, cod
 		return false, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return false, err
 	}
 
-	return r.UserService.AddWechatAuth(userID, code)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return false, err
+	}
+
+	return r.UserService.AddWechatAuth(user.ID, code)
 }
 
 // RemoveWechatAuth is the resolver for the removeWechatAuth field.
@@ -163,12 +193,18 @@ func (r *mutationResolver) RemoveWechatAuth(ctx context.Context, userID string) 
 		return false, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return false, err
 	}
 
-	return r.UserService.RemoveWechatAuth(userID)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return false, err
+	}
+
+	return r.UserService.RemoveWechatAuth(user.ID)
 }
 
 // User is the resolver for the user field.
@@ -178,12 +214,18 @@ func (r *queryResolver) User(ctx context.Context, id string) (*graphql_models.Us
 		return nil, err
 	}
 
-	_, err = middlewares.ForContext(ginContext)
+	// if no token found, return an error
+	account, err := middlewares.ForContext(ginContext)
 	if err != nil {
 		return nil, err
 	}
 
-	return r.UserService.GetUser(id)
+	user, err := r.UserService.Repo.GetUserByEmail(account.Account)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.UserService.GetUser(user.ID)
 }
 
 // UserExports is the resolver for the userExports field.

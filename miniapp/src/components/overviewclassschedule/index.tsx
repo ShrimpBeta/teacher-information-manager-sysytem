@@ -133,7 +133,8 @@ const OverviewClassSchedule = (props: PropsWithChildren) => {
                     key={index}
                   >
                     <Text>课表名称: {item.termName}</Text>
-                    <Text>课表开始时间: {new Date(item.startDate).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
+                    <Text>课表开始日期: {new Date(item.startDate).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</Text>
+                    <Text>学期总周数: {item.weekCount}</Text>
                     <View
                       style={{
                         marginTop: '10rpx',

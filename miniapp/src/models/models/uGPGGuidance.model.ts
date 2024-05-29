@@ -6,7 +6,7 @@ export class UGPGGuidance {
   openingCheckResult: string = ""
   midtermCheckDate?: Date
   midtermCheckResult: string = ""
-  defenseDate?: Date
+  defenseDate: Date = new Date(0)
   defenseResult: string = ""
   createdAt: Date = new Date(0)
   updatedAt: Date = new Date(0)
