@@ -2,16 +2,21 @@
 
 BINARY_NAME=server
 
-run:build
+run:build-debug
 	cd build && ./${BINARY_NAME}-debug.exe
 
 run_direct:
 	cd build && ./${BINARY_NAME}-debug.exe
 
-build:
+build-debug:
 	if [ ! -d "build" ]; then mkdir build; fi
-	GOARCH=amd64 GOOS=windows go build -o build/${BINARY_NAME}-debug.exe main.go
+	if [ ! -d "build/Debug" ]; then mkdir build/Debug; fi
+	GOARCH=amd64 GOOS=windows go build -o build/Debug/${BINARY_NAME}-debug.exe main.go
 
+build-release:
+	if [ ! -d "build" ]; then mkdir build; fi
+	if [ ! -d "build/Release" ]; then mkdir build/Release; fi
+	GOARCH=amd64 GOOS=windows go build -o build/Release/${BINARY_NAME}-release.exe main.go
 init:
 	go run github.com/99designs/gqlgen init
 
