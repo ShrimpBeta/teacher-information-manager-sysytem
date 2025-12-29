@@ -1,0 +1,20 @@
+{
+    "folders": [
+        {
+            "name": "root",
+            "path": "."
+        },
+        {
+            "name": "Front End",
+            "path": "frontend"
+        },
+        {
+            "name": "Back End",
+            "path": "server"
+        },
+        {
+            "name": "WeChat Mini Program",
+            "path": "miniapp"
+        }
+    ]
+}
